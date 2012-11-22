@@ -96,9 +96,7 @@ public class CasellaDownload extends JPanel{
 				try {
 					Download.downloadMagnet(torrent.getUrl(), torrent.getNomeSerieFolder());
 					torrent.setScaricato(Torrent.SCARICATO);
-					torrent.setSottotitolo(true, false);
-					//TODO verificare funzionamento
-					//Itasa.addSubScaricare(GestioneSerieTV.getSerieTV(torrent.getNomeSerie()).getItasaID(), torrent.getSerie(), torrent.getPuntata(), (torrent.is720p()?ITASA_Sub.HD720p:ITASA_Sub.HDTV));
+					torrent.setSottotitolo(true, true);
 					rimuovi_panel();
 				}
 				catch (IOException e) {
@@ -107,7 +105,7 @@ public class CasellaDownload extends JPanel{
 		});
 		rimuovi.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				torrent.setScaricato(Torrent.IGNORATO);
+				torrent.setScaricato(Torrent.IGNORATO, true);
 				rimuovi_panel();
 			}
 		});

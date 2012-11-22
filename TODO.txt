@@ -13,15 +13,13 @@ FARE
 - trovare informazioni sugli episodi
 - trovare informazioni sulle serie
 - controllo dimensione file in controllo dipendenze
-// - decommentare rimozione sub zip
-- spostare sottotitoli da scaricare nella classe Torrent 
-- opzioni se mostrare preair, 720p
+- opzioni se mostrare preair, 720p  //in download
+- opzioni se scaricare preair, 720p //in download automatico
 - rifare tab Sottotitoli
 - inserire opzioni per abilitare itasa, subsfactory
 - controlli libreria (check_scaricato)
 
 DA ULTIMARE
-- tab libreria(modificare tab modifica stato) con tasto play, delete, download sub, cancella episodio
 
 FATTO
 // rev 86
@@ -32,6 +30,7 @@ FATTO
 - convertire tutto in sqllite
 - durante la ricerca dei sottotitoli, cercare anche nel feed RSS
 - salvataggio cronologia sottotitoli scaricati
-
+- tab libreria con tasto play, delete, download sub, cancella episodio
+- spostare sottotitoli da scaricare nella classe Torrent 
 
 PROBABILMENTE FIXATO

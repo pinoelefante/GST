@@ -4,11 +4,10 @@ package Sottotitoli;
 public class ItasaSubNotFound extends Exception {
 
 	public ItasaSubNotFound() {
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
 	public ItasaSubNotFound(String arg0) {
 		super(arg0);
-		// TODO Auto-generated constructor stub
 	}
 }

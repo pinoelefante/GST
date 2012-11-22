@@ -307,6 +307,7 @@ public class GestioneSerieTV {
 		st.setInserita(0);
 		st.UpdateDB();
 		getElencoSerieInserite().remove(st);
+		//TODO reset stato torrent
 		return true;
 	}
 	public static GestoreSottotitoli getSubManager(){

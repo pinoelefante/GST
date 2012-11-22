@@ -17,19 +17,6 @@ import java.util.zip.ZipInputStream;
 import SerieTV.Torrent;
 
 public class OperazioniFile {
-	public static ArrayList<String> zipList(File zip) throws IOException {
-		ArrayList<String> nomi=new ArrayList<String>();
-		ZipInputStream input=new ZipInputStream(new FileInputStream(zip));
-		ZipEntry zip_file;
-		while((zip_file=input.getNextEntry())!=null){
-			if(zip_file.isDirectory())
-				continue;
-			else
-				nomi.add(zip_file.getName());
-		}
-		input.close();
-		return nomi;
-	}
 	public static boolean DeleteDirectory(File dir) {
 		if (dir.isDirectory()) {
 			String[] contenuto = dir.list();
@@ -42,8 +29,8 @@ public class OperazioniFile {
 		}
 		return dir.delete();
 	}
-	public static void deleteFile(String nomefile){
-		(new File(nomefile)).delete();
+	public static boolean deleteFile(String nomefile){
+		return (new File(nomefile)).delete();
 	}
 
 	public static boolean copyfile(String srFile, String dtFile) {
@@ -113,8 +100,6 @@ public class OperazioniFile {
 	}
 	public static boolean fileExists(String path){
 		File f=new File(path);
-		//FIXME remove this
-		System.out.println("Controllando esistenza file: "+f.getAbsolutePath());
 		if(f.exists()){
 			if(f.isFile())
 				return true;
@@ -131,7 +116,7 @@ public class OperazioniFile {
 			throw new FileNotFoundException("La cartella "+path_download+" non esiste");
 		if(!cartella_download.isDirectory())
 			throw new FileNotFoundException("Il percorso "+path_download+" non è una directory");
-		//
+
 		String[] lista=cartella_download.list();
 		String puntata_s=t.getPuntata()<10?"0"+t.getPuntata():t.getPuntata()+"";
 		String serie_s=t.getSerie()<10?"0"+t.getSerie():t.getSerie()+"";
@@ -159,22 +144,7 @@ public class OperazioniFile {
 				return lista[i];	
 			}
 		}
-		//
 		throw new FileNotFoundException("File non trovato");
-	}
-	public static boolean fileexistspartialfilename(String inizio, String fine, String folder){
-		String path=Settings.getDirectoryDownload()+File.separator+folder;
-		File cartella=new File(path);
-		if(cartella.exists()){
-			if(cartella.isDirectory()){
-				String[] elenco_file=cartella.list();
-				for(int i=0;i<elenco_file.length;i++){
-					if(elenco_file[i].startsWith(inizio) && elenco_file[i].endsWith(fine))
-						return true;
-				}
-			}
-		}
-		return false;
 	}
 	public static ArrayList<String> ZipDecompress(String input_zip, String cartella_output) throws IOException {
 		ArrayList<String> estratti=new ArrayList<String>();
@@ -193,17 +163,6 @@ public class OperazioniFile {
 			if(nome_file.compareToIgnoreCase(".Thumbs.db")==0)
 				continue;
 			
-			/*
-			if(nome_file.substring(nome_file.lastIndexOf(".")).compareToIgnoreCase(".srt")!=0)
-				continue;
-			else if(nome_file.substring(nome_file.lastIndexOf(".")).compareToIgnoreCase(".ass")!=0)
-				continue;
-			else if(nome_file.substring(nome_file.lastIndexOf(".")).compareToIgnoreCase(".ub")!=0)
-				continue;
-			*/
-			
-			//FIXME remove this
-			//System.out.println("Estraendo: "+nome_file);
 			File dir_extr=new File(cartella_output);
 			if(!dir_extr.exists())
 				dir_extr.mkdir();
@@ -224,8 +183,6 @@ public class OperazioniFile {
 			}
 		}
 		input.close();
-		for(int i=0;i<estratti.size();i++)
-			System.out.println("ESTRATTI: "+estratti.get(i));
 		return estratti;
 	}
 }

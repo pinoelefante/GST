@@ -34,7 +34,6 @@ public class Renamer {
 			}
 		} 
 		catch (FileNotFoundException e) {
-			//TODO testare
 			System.out.println("rinominaSottotitolo(Torrent t): "+e.getMessage()+".\nSi tenterà di rinominare il sottotitolo con il nome del torrent");
 			try {
 				String zip_file=Settings.getDirectoryDownload()+t.getNomeSerieFolder()+File.separator+generaNomeDownload(t);

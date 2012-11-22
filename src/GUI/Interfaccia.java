@@ -502,7 +502,7 @@ public class Interfaccia {
 							//TODO verificare il funzionamento
 							if(!GestioneSerieTV.getSubManager().associaSerie(st)){
 								if(Settings.isRicercaSottotitoli()){
-									int scelta=(JOptionPane.showConfirmDialog(frame, "Non ï¿½ stato possibile associare la serie a ItaSA.\nVuoi associarla manualmente?", "Associa ItaSA", JOptionPane.YES_NO_OPTION));
+									int scelta=(JOptionPane.showConfirmDialog(frame, "Non è stato possibile associare la serie a ItaSA.\nVuoi associarla manualmente?", "Associa ItaSA", JOptionPane.YES_NO_OPTION));
 									if(scelta==JOptionPane.YES_OPTION){
 										associaFrame();
 										associa_serie.setSelectedItem((SerieTV)download_combo_eztv.getSelectedItem());
@@ -539,7 +539,6 @@ public class Interfaccia {
 							int scelta = JOptionPane.showConfirmDialog(Interfaccia.frame, Language.INSERIMENTO_DIALOGUE_CONFERMA_RIMOZIONE + serie.getNomeSerie().trim() + "\n", Language.INSERIMENTO_DIALOGUE_CONFERMA_RIMOZIONE_TITLE, 0);
 							if (scelta == JOptionPane.YES_OPTION) {
 								String folder = serie.getNomeSerieFolder();
-								//TODO rimuovere questo tipo di gestione dei sottotitoli
 								if (GestioneSerieTV.rimuoviSerie(serie)) {
 									libreria_box_serie.removeItem(serie);
 									File cartella = new File(Settings.getDirectoryDownload() + File.separator + folder);
@@ -1263,42 +1262,13 @@ public class Interfaccia {
 						catch (FileNotFoundException e1) {
 							JOptionPane.showMessageDialog(frame, "File video non trovato");
 							return; 
-						}
-												
-						/*
-						if(Settings.isRicercaSottotitoli()){
-							if(!OperazioniFile.fileexistspartialfilename(nomepuntata, ".srt", st.getNomeSerieFolder())){
-								try {
-									int id_sub=Itasa.getSubID(st.getItasaID(), torrent.getSerie(), torrent.getPuntata(), torrent.is720p()?ITASA_Sub.HD720p:ITASA_Sub.HDTV);
-									ITASA_Sub sub_down=new ITASA_Sub();
-									sub_down.setEpisodio(torrent.getPuntata());
-									sub_down.setStagione(torrent.getSerie());
-									sub_down.setId(id_sub);
-									sub_down.setNome(st.getNomeSerie());
-									Itasa.scaricaSub(sub_down, st.getNomeSerieFolder(), true, nomepuntata);
-								}
-								catch (ItasaSubNotFound e1) {
-									JOptionPane.showMessageDialog(frame, e1.getMessage());
-									e1.printStackTrace();
-								}
-								catch (FailingHttpStatusCodeException e1) {
-									e1.printStackTrace();
-								}
-								catch (MalformedURLException e1) {
-									e1.printStackTrace();
-								}
-								catch (IOException e1) {
-									e1.printStackTrace();
-								}
-							}
-						}
-						*/
+						}					
 						//TODO verifica presenza sottotitolo
-						
 						//else if TODO download del sottotitolo
 						//TODO mostra warning se non si ï¿½ potuto scaricare
 						
 						Player.play(st.getNomeSerieFolder()+File.separator+nomepuntata);
+						torrent.setScaricato(Torrent.VISTO, true);
 					}
 				});
 				sottotitolo.addActionListener(new ActionListener() {
@@ -1313,8 +1283,28 @@ public class Interfaccia {
 				});
 				cancella.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						//TODO completare rimuovi libreria
-						JOptionPane.showMessageDialog(frame, "Funzione non disponibile");
+						try {
+							String nome=OperazioniFile.cercavideofile(torrent);
+							String nome_files=nome.substring(0,nome.lastIndexOf("."));
+							File dir=new File(Settings.getDirectoryDownload()+torrent.getNomeSerieFolder());
+							if(dir.exists()){
+								if(dir.isDirectory()){
+									String[] files=dir.list();
+									//System.out.println("Nome file da cancellare: "+nome_files);
+									for(int i=0;i<files.length;i++){
+										//System.out.println("Cancellando: "+files[i]);
+										if(files[i].startsWith(nome_files)){
+											if(OperazioniFile.deleteFile(Settings.getDirectoryDownload()+torrent.getNomeSerieFolder()+File.separator+files[i]))
+												torrent.setScaricato(Torrent.RIMOSSO, true);
+										}
+									}
+								}
+							}
+						}
+						catch (FileNotFoundException e1) {
+							JOptionPane.showMessageDialog(frame, "Il file non era presente.\nSi imposterà lo stato di RIMOSSO.");
+							torrent.setScaricato(Torrent.RIMOSSO, true);
+						}
 					}
 				});
 			}
@@ -1340,7 +1330,7 @@ public class Interfaccia {
 		nord.add(nord_s, BorderLayout.SOUTH);
 		
 		JPanel sud=new JPanel(new BorderLayout());
-		sud.add(new JLabel("ATTENZIONE! Alcune funzioni, come il tasto Play potrebbero essere ancora incomplete"), BorderLayout.WEST);
+		//sud.add(new JLabel("ATTENZIONE! Alcune funzioni, come il tasto Play potrebbero essere ancora incomplete"), BorderLayout.WEST);
 		panel_refactor.add(sud, BorderLayout.SOUTH);
 		
 		panel_refactor.add(nord, BorderLayout.NORTH);

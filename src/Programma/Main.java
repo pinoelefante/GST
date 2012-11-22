@@ -86,15 +86,6 @@ public class Main {
 			panel_adv.start();
 			fl.setprog(++i);
 			
-			//TODO fix me
-			/*
-			if(Settings.isRicercaSottotitoli()){
-				fl.settext("Modulo ItaSA");
-				fl.setprog(++i);
-				Itasa.instance();
-			}
-			*/
-			
 			fl.settext("Scaricando lista serie");
 			GestioneSerieTV.Showlist();
 			fl.setprog(++i);
@@ -105,19 +96,13 @@ public class Main {
 			}
 			fl.chiudi();
 			
-			//TODO fix me
-			/*
-			if(Settings.isRicercaSottotitoli()){
-				Itasa.avvioThreadAuto();
-			}
-			*/
-			
 			Interfaccia.createPanel();
 			if(Settings.getNumeroAvvii()>0 && (Settings.getNumeroAvvii()%30)==0)
 				Interfaccia.donazione_visualizza_frame();
 			
-			if(Settings.isItasaThreadAutoDownload())
+			if(Settings.isItasaThreadAutoDownload()){
 				GestioneSerieTV.getSubManager().avviaRicercaAutomatica();
+			}
 		}
 		catch(Exception e){
 			JOptionPane.showMessageDialog(null, e.getMessage());

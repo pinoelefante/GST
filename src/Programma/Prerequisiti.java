@@ -4,12 +4,35 @@ import java.io.File;
 import java.io.IOException;
 
 public class Prerequisiti {
+	class Dipendenza{
+		private String nome;
+		private String url;
+		private long size;
+		public String getNome() {
+			return nome;
+		}
+		public void setNome(String nome) {
+			this.nome = nome;
+		}
+		public String getUrl() {
+			return url;
+		}
+		public void setUrl(String url) {
+			this.url = url;
+		}
+		public long getSize() {
+			return size;
+		}
+		public void setSize(long size) {
+			this.size = size;
+		}
+	}
 	public static void checkDipendenze() {
 		try {
+			//TODO modificare in modo da controllare anche il file size
 			File dir_lib = new File(Settings.getCurrentDir() + "lib");
 			String arch_vm = System.getProperty("os.arch");
-			//FIXME remove this
-			System.out.println("Architettura: "+arch_vm);
+			//System.out.println("Architettura: "+arch_vm);
 			boolean x86 = arch_vm.contains("x86")||arch_vm.contains("i386");
 			
 			if(!dir_lib.isDirectory() || !dir_lib.exists())
@@ -51,10 +74,10 @@ public class Prerequisiti {
 					"xercesImpl.jar"
 			};
 			for(int i=0;i<file.length;i++){
-				//FIXME remove this
-				System.out.println("Scaricando: "+file[i]);
-				if(!OperazioniFile.fileExists("lib"+File.separator+file[i]))
+				if(!OperazioniFile.fileExists("lib"+File.separator+file[i])){
+					System.out.println("Scaricando: "+file[i]);
 					Download.downloadFromUrl("http://pinoelefante.altervista.org/software/GST/"+file[i], "lib"+File.separator+file[i]);
+				}
 			}
 		}
 		catch (IOException e1) {
