@@ -1269,6 +1269,7 @@ public class Interfaccia {
 						
 						Player.play(st.getNomeSerieFolder()+File.separator+nomepuntata);
 						torrent.setScaricato(Torrent.VISTO, true);
+						setLabelStato(torrent.getScaricato());
 					}
 				});
 				sottotitolo.addActionListener(new ActionListener() {
@@ -1305,6 +1306,7 @@ public class Interfaccia {
 							JOptionPane.showMessageDialog(frame, "Il file non era presente.\nSi imposterà lo stato di RIMOSSO.");
 							torrent.setScaricato(Torrent.RIMOSSO, true);
 						}
+						setLabelStato(torrent.getScaricato());
 					}
 				});
 			}
