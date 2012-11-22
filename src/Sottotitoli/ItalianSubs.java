@@ -90,12 +90,8 @@ public class ItalianSubs implements ProviderSottotitoli{
 		catch (ItasaSubNotFound e) {
 			System.out.println("Catch");
 			int id_s=cercaFeed(id_itasa, t);
-			if(id_s<=0){
-				aggiornaFeedRSS();
-				id_s=cercaFeed(id_itasa, t);
-				if(id_s<=0)
-					return false;
-			}
+			if(id_s<=0)
+				return false;
 			try {
 				scaricaSub(id_s, Renamer.generaNomeDownload(t), t.getNomeSerieFolder());
 				t.setSottotitolo(false, true);
