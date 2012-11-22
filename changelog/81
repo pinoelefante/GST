@@ -1,0 +1,40 @@
+//rev 81
+- frame che indichi lo stato del caricamento del programma
+- richiesta donazione dopo 30 giorni
+- unificare la creazione dell'interfaccia grafica in un unico file
+- pulizia dump files
+- modo per scaricare librerie con interfaccia grafica attiva
+- dopo l'installazione dell'aggiornamento 81, chiedere se associare le serie a itasa
+- bottone rimuovere associazione serie tv e itasa.
+- modificare tab opzioni in modo che abbia una tab per ogni tipo di opzioni
+- tasto opzioni predefinite
+- opzioni aspetto finestra 
+- explorer cartella in opzioni
+- selettore vlc in opzioni
+- rimuovere opzione parse nome torrent
+- tab About
+- Frame associazione serie tv e itasa
+- download sottotitoli da itasa
+- controllo dipendenza webclient
+- rinominare sottotitoli come il nome della puntata
+- ricerca automatica sottotitoli
+- Rivedere thread ricerca automatica sottotitoli
+- bottone per aprire associatore serie tv
+- tag PROPER
+- download sottotitolo preair solo se preair 
+- apertura finestre associazione itasa
+- opzioni itasa: nome utente, password
+- login itasa
+- aumentare dimensioni font label sotto sponsor
+- action listener bottone cerca sottotitoli in un thread
+- label login GST oppure utente
+- opzioni itasa: {(ricerca automatica, notifica) in button group}
+- textarea log sottotitoli scaricati
+- bottone esplora in lettore
+- icona
+- logo
+- rivedere action listener bottone salvataggio opzioni
+- bottone esplora in download
+
+PROBABILMENTE FIXATO
+- parse torrent per ricerca num serie e episodio. cercare se il nome della puntata contiene parentesi () contenenti anno oppure nazione US / UK

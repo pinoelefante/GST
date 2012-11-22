@@ -1,0 +1,4 @@
+//rev 85
+- risolto problema delle finestre multiple durante gli aggiornamenti (da applicare a futuri aggiornamenti)
+- velocizzato l'aggiornamento nel sorting in lettore
+- se l'altezza dello schermo è minore o uguale a 600, l'altezza del programma sarà settata a 500
