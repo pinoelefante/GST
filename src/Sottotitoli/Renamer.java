@@ -34,22 +34,47 @@ public class Renamer {
 			}
 		} 
 		catch (FileNotFoundException e) {
-			//TODO modificare comportamento quando non viene trovato il file
-			System.out.println(e.getMessage());
-			e.printStackTrace();
-			return false;
+			//TODO testare
+			System.out.println("rinominaSottotitolo(Torrent t): "+e.getMessage()+".\nSi tenterà di rinominare il sottotitolo con il nome del torrent");
+			try {
+				String zip_file=Settings.getDirectoryDownload()+t.getNomeSerieFolder()+File.separator+generaNomeDownload(t);
+				String dir_dest=Settings.getDirectoryDownload()+t.getNomeSerieFolder()+File.separator;
+				
+				ArrayList<String> files=OperazioniFile.ZipDecompress(zip_file, dir_dest);
+				if(files.size()>0){
+					OperazioniFile.deleteFile(zip_file);
+					for(int i=0;i<files.size();i++){
+						File f=new File(files.get(i));
+						String estensione="";
+						if(files.get(i).contains("."))
+							estensione=files.get(i).substring(files.get(i).lastIndexOf("."));
+						if(OperazioniFile.copyfile(f.getAbsolutePath(), dir_dest+t.getName()+"."+(i+1)+estensione))
+							OperazioniFile.deleteFile(files.get(i));
+					}
+				}
+			}
+			catch (IOException e1) {
+				e1.printStackTrace();
+				System.out.println("rinominaSottotitolo(Torrent t): "+e.getMessage()+".\n");
+				return false;
+			}
+			return true;
 		}
 		
 		try {
-			ArrayList<String> files=OperazioniFile.ZipDecompress(t.getNomeSerieFolder()+File.separator+generaNomeDownload(t), t.getNomeSerieFolder());
+			String zip_file=Settings.getDirectoryDownload()+t.getNomeSerieFolder()+File.separator+generaNomeDownload(t);
+			String dir_dest=Settings.getDirectoryDownload()+t.getNomeSerieFolder();
+			
+			ArrayList<String> files=OperazioniFile.ZipDecompress(zip_file, dir_dest);
 			if(files.size()>0){
-				String dir_dest=Settings.getDirectoryDownload()+(Settings.getDirectoryDownload().endsWith(File.separator)?"":File.separator)+t.getNomeSerieFolder();
+				OperazioniFile.deleteFile(zip_file);
 				for(int i=0;i<files.size();i++){
-					File f=new File(dir_dest+File.separator+files.get(i));
+					File f=new File(files.get(i));
 					String estensione="";
 					if(files.get(i).contains("."))
 						estensione=files.get(i).substring(files.get(i).lastIndexOf("."));
-					f.renameTo(new File(nome_file+"."+(i+1)+estensione));
+					if(OperazioniFile.copyfile(f.getAbsolutePath(), dir_dest+nome_file+"."+(i+1)+estensione))
+						OperazioniFile.deleteFile(files.get(i));
 				}
 			}
 		} 

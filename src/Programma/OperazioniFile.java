@@ -46,7 +46,7 @@ public class OperazioniFile {
 		(new File(nomefile)).delete();
 	}
 
-	public static void copyfile(String srFile, String dtFile) {
+	public static boolean copyfile(String srFile, String dtFile) {
 		try {
 			File f1 = new File(srFile);
 			File f2 = new File(dtFile);
@@ -62,13 +62,16 @@ public class OperazioniFile {
 			out.close();
 			System.out.println(f2.getAbsolutePath());
 			System.out.println("File copied.");
+			return true;
 		}
 		catch (FileNotFoundException ex) {
 			System.out.println(ex.getMessage() + " in the specified directory.");
 		}
 		catch (IOException e) {
 			System.out.println(e.getMessage());
+			e.printStackTrace();
 		}
+		return false;
 	}
 	public static void dumpfileclean(){
 		File directory=new File(Settings.getCurrentDir());
@@ -157,7 +160,6 @@ public class OperazioniFile {
 			}
 		}
 		//
-		
 		throw new FileNotFoundException("File non trovato");
 	}
 	public static boolean fileexistspartialfilename(String inizio, String fine, String folder){
@@ -205,14 +207,17 @@ public class OperazioniFile {
 			File dir_extr=new File(cartella_output);
 			if(!dir_extr.exists())
 				dir_extr.mkdir();
-			FileOutputStream fos = new FileOutputStream(cartella_output+(cartella_output.endsWith(File.separator)?"":File.separator)+nome_file);
+			
+			String dir=cartella_output+(cartella_output.endsWith(File.separator)?"":File.separator);
+			FileOutputStream fos = new FileOutputStream(dir+nome_file);
 
 			try {
+				
 				byte[] readBuffer = new byte[4096];
 				int bytesIn = 0;
 				while ((bytesIn = input.read(readBuffer)) != -1)
 					fos.write(readBuffer, 0, bytesIn);
-				estratti.add(nome_file);
+				estratti.add(dir+nome_file);
 			}
 			finally {
 				fos.close();
@@ -220,7 +225,7 @@ public class OperazioniFile {
 		}
 		input.close();
 		for(int i=0;i<estratti.size();i++)
-			System.out.println(estratti.get(i));
+			System.out.println("ESTRATTI: "+estratti.get(i));
 		return estratti;
 	}
 }

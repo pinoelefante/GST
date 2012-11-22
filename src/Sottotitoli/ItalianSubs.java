@@ -71,7 +71,6 @@ public class ItalianSubs implements ProviderSottotitoli{
 			LoggerItasa.join();
 		}
 		catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		System.out.println("Itasa login: "+isLogged());

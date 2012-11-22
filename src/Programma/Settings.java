@@ -320,8 +320,11 @@ public class Settings {
 							case "dir_download" :
 								if(s.isEmpty())
 									setDirectoryDownload(getCurrentDir()+"Download"+File.separator);
-								else
-									setDirectoryDownload(s); 
+								else{
+									if(!s.endsWith(File.separator))
+										s+=File.separator;
+									setDirectoryDownload(s);
+								}
 								break;
 							case "dir_client" : setClientPath(s); break;
 							case "dir_vlc" : setVLCPath(s); break;

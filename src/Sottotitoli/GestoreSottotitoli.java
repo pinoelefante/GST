@@ -10,6 +10,24 @@ import SerieTV.Torrent;
 import Database.Database;
 
 public class GestoreSottotitoli {
+	class RicercaSottotitoliAutomatica extends Thread{
+		public void run(){
+			long sleep_time=/*un minuto*/(60*1000)*10/*10 minuti*/;
+			do{
+				for(int i=0;i<sottotitoli_da_scaricare.size();){
+					Torrent t=sottotitoli_da_scaricare.get(i);
+					if(!scaricaSottotitolo(t))
+						i++;
+				}
+				try {
+					sleep(sleep_time);
+				}
+				catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}while(true);
+		}
+	}
 	public final static int ITASA=1, SUBSFACTORY=2, SUBSPEDIA=3; 
 	private ProviderSottotitoli itasa;
 	private ProviderSottotitoli subsfactory;
@@ -120,5 +138,6 @@ public class GestoreSottotitoli {
 		}
 		return null;
 	}
+	
 }
 
