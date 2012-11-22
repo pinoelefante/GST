@@ -115,6 +115,9 @@ public class Main {
 			Interfaccia.createPanel();
 			if(Settings.getNumeroAvvii()>0 && (Settings.getNumeroAvvii()%30)==0)
 				Interfaccia.donazione_visualizza_frame();
+			
+			if(Settings.isItasaThreadAutoDownload())
+				GestioneSerieTV.getSubManager().avviaRicercaAutomatica();
 		}
 		catch(Exception e){
 			JOptionPane.showMessageDialog(null, e.getMessage());

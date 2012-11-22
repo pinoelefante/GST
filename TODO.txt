@@ -8,17 +8,14 @@ FARE
 - non ricercare ulteriori puntate se la serie è conclusa (checkbox cerca per questa serie in libreria)
 - ricerca puntata in libreria
 - scaricato, da scaricare, visualizzabile
-- altri sub con priorità
 - click aggiorna torrent ogni 8-12 ore
 - download automatico utorrent
 - trovare informazioni sugli episodi
 - trovare informazioni sulle serie
 - controllo dimensione file in controllo dipendenze
 // - decommentare rimozione sub zip
-- salvataggio cronologia sottotitoli scaricati
 - spostare sottotitoli da scaricare nella classe Torrent 
 - opzioni se mostrare preair, 720p
-- durante la ricerca dei sottotitoli, cercare anche nel feed RSS
 - rifare tab Sottotitoli
 - inserire opzioni per abilitare itasa, subsfactory
 - controlli libreria (check_scaricato)
@@ -33,6 +30,8 @@ FATTO
 - non ricercare ulteriori puntate se la serie è conclusa
 - rifare tasto "Già viste"
 - convertire tutto in sqllite
+- durante la ricerca dei sottotitoli, cercare anche nel feed RSS
+- salvataggio cronologia sottotitoli scaricati
 
 
 PROBABILMENTE FIXATO

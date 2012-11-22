@@ -954,6 +954,10 @@ public class Interfaccia {
 		opzioni_box_itasa.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Settings.setRicercaSottotitoli(opzioni_box_itasa.isSelected());
+				if(Settings.isItasaThreadAutoDownload())
+					GestioneSerieTV.getSubManager().avviaRicercaAutomatica();
+				else
+					GestioneSerieTV.getSubManager().stopRicercaAutomatica();
 			}
 		});
 		opzioni_bottone_ripristina.addActionListener(new ActionListener() {
@@ -1299,8 +1303,10 @@ public class Interfaccia {
 				});
 				sottotitolo.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						if(!GestioneSerieTV.getSubManager().scaricaSottotitolo(torrent))
+						if(!GestioneSerieTV.getSubManager().scaricaSottotitolo(torrent)){
 							torrent.setSottotitolo(true, true);
+							JOptionPane.showMessageDialog(frame, "Sottotitolo aggiunto in coda");
+						}
 						else
 							JOptionPane.showMessageDialog(frame, "Sottotitolo scaricato");
 					}

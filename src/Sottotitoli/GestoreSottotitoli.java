@@ -13,22 +13,34 @@ public class GestoreSottotitoli {
 	class RicercaSottotitoliAutomatica extends Thread{
 		public void run(){
 			long sleep_time=/*un minuto*/(60*1000)*10/*10 minuti*/;
+			
+			if(((ItalianSubs)itasa).isLocked())
+				((ItalianSubs)itasa).attendiUnlock();
+				
+			System.out.println("Avvio thread ricerca automatica");
+			if(sottotitoli_da_scaricare.size()==0)
+				System.out.println("Coda vuota");
+			
 			do{
 				for(int i=0;i<sottotitoli_da_scaricare.size();){
 					Torrent t=sottotitoli_da_scaricare.get(i);
+					System.out.println("Thread sottotitolo - Cercando "+t);
 					if(!scaricaSottotitolo(t))
 						i++;
 				}
 				try {
+					System.out.println("Thread ricerca sottotitoli - pausa");
 					sleep(sleep_time);
 				}
 				catch (InterruptedException e) {
 					e.printStackTrace();
+					break;
 				}
 			}while(true);
 		}
 	}
 	public final static int ITASA=1, SUBSFACTORY=2, SUBSPEDIA=3; 
+	private Thread ricerca_automatica;
 	private ProviderSottotitoli itasa;
 	private ProviderSottotitoli subsfactory;
 	//TODO classe per subspedia
@@ -41,8 +53,22 @@ public class GestoreSottotitoli {
 		sottotitoli_da_scaricare=new ArrayList<Torrent>();
 		itasa=new ItalianSubs();
 		subsfactory=new Subsfactory();
+		ricerca_automatica=new RicercaSottotitoliAutomatica();
 	}
-	
+	public void avviaRicercaAutomatica(){
+		if(ricerca_automatica==null)
+			ricerca_automatica=new RicercaSottotitoliAutomatica();
+		else if(!ricerca_automatica.isAlive())
+			ricerca_automatica=new RicercaSottotitoliAutomatica();
+		
+		ricerca_automatica.start();
+	}
+	public void stopRicercaAutomatica(){
+		if(ricerca_automatica!=null){
+			ricerca_automatica.interrupt();
+			ricerca_automatica=null;
+		}
+	}
 	public ArrayList<Torrent> getSottotitoliDaScaricare(){
 		return sottotitoli_da_scaricare;
 	}

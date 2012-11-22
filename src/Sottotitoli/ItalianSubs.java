@@ -56,24 +56,27 @@ public class ItalianSubs implements ProviderSottotitoli{
 	
 	private WebClient webClient;
 	private boolean login_itasa=false;
+	private boolean locked=true;
 	Thread LoggerItasa;
 	
 	public ItalianSubs(){
 		feed_rss=new ArrayList<RSSItem>();
 		elenco_serie=new ArrayList<SerieSub>();
-		
-		//Download lista serie
-		//Login itasa
+	
 		caricaElencoSerie();
 		loggaItasa();
-		//FIXME rimuovere
+	}
+	public boolean isLocked(){
+		return locked;
+	}
+	public void attendiUnlock(){
 		try {
 			LoggerItasa.join();
+			locked=false;
 		}
 		catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		System.out.println("Itasa login: "+isLogged());
 	}
 	
 	public boolean scaricaSottotitolo(Torrent t) {
@@ -87,7 +90,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 			return true;
 		}
 		catch (ItasaSubNotFound e) {
-			System.out.println("Catch");
+			//System.out.println("Catch");
 			int id_s=cercaFeed(id_itasa, t);
 			if(id_s<=0)
 				return false;
@@ -122,7 +125,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 		aggiornaFeedRSS();
 		for(int i=0;i<feed_rss.size();i++){
 			RSSItem rss=feed_rss.get(i);
-			System.out.println("Cercando in: "+rss);
+			//System.out.println("Cercando in: "+rss);
 			if(rss.getIDSerie()==iditasa){
 				if(rss.is720p()==t.is720p()){
 					if(rss.isNormale()==!t.is720p()){
@@ -337,6 +340,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 					webClient.closeAllWindows();
 					webClient.getCache().clear();
 					login_itasa=true;
+					locked=false;
 				}
 				catch (FailingHttpStatusCodeException | IOException e) {
 					e.printStackTrace();
