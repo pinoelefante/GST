@@ -7,8 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Scanner;
 
-import javax.swing.JOptionPane;
-
 import GUI.Interfaccia;
 import SerieTV.GestioneSerieTV;
 
@@ -18,10 +16,12 @@ public class Update {
 			switch(Settings.getLastVersion()){
 				case 0: { //versione < 81 - prima release con questo metodo
 					Interfaccia.ShowFrameOpzioni();
+					
 					while(Interfaccia.getFrameOpzioni()!=null && Interfaccia.getFrameOpzioni().isVisible()){
 						try {Thread.sleep(1000);}
 						catch (InterruptedException e) {}
 					}
+					/*
 					if(Settings.isRicercaSottotitoli()){
 						int scelta=JOptionPane.showConfirmDialog(Main.fl.getFrame(), "Vuoi associare con il modulo ItaSA per il download dei sottotitoli?", "Associazione sottotitoli", JOptionPane.YES_NO_OPTION);
 						if(scelta==JOptionPane.YES_OPTION){
@@ -32,6 +32,7 @@ public class Update {
 							}
 						}
 					}
+					*/
 					Settings.setLastVersion(81);
 				}
 				case 85:{
@@ -43,7 +44,6 @@ public class Update {
 						System.out.println(e.getMessage());
 						e.printStackTrace();
 					}
-					
 					Settings.setLastVersion(86);
 				}
 				default:

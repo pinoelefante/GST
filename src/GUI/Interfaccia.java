@@ -21,6 +21,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Stack;
@@ -93,7 +94,7 @@ public class Interfaccia {
 		frame.setLayout(new BorderLayout());
 		
 		frame.setBounds(0, 0, 750, dim_screen.height<=600?500:600);
-		frame.setIconImage(Resource.getIcona("res"+File.separator+"icona32.png").getImage());
+		frame.setIconImage(Resource.getIcona("res/icona32.png").getImage());
 		frame.setTitle(Language.TITLE);
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(3);
@@ -111,10 +112,10 @@ public class Interfaccia {
 		creaTabItasa();
 		creaTabAbout();
 
-		TabbedPane.addTab(Language.TAB_DOWNLOAD_TITLE, Resource.getIcona("res"+File.separator+"download.png"), TabbedDownload, Language.TAB_DOWNLOAD_TOOLTIP);
-		TabbedPane.addTab(Language.TAB_REFACTOR_LABEL, Resource.getIcona("res"+File.separator+"player.png"), panel_refactor, Language.TAB_REFACTOR_TOOLTIP);
-		TabbedPane.addTab(Language.TAB_OPZIONI_LABEL, Resource.getIcona("res"+File.separator+"opzioni.png"), panel_opzioni, Language.TAB_OPZIONI_TOOLTIP);
-		TabbedPane.addTab(Language.TAB_ABOUT, Resource.getIcona("res"+File.separator+"info.png"), panel_about, "");
+		TabbedPane.addTab(Language.TAB_DOWNLOAD_TITLE, Resource.getIcona("res/download.png"), TabbedDownload, Language.TAB_DOWNLOAD_TOOLTIP);
+		TabbedPane.addTab(Language.TAB_REFACTOR_LABEL, Resource.getIcona("res/player.png"), panel_refactor, Language.TAB_REFACTOR_TOOLTIP);
+		TabbedPane.addTab(Language.TAB_OPZIONI_LABEL, Resource.getIcona("res/opzioni.png"), panel_opzioni, Language.TAB_OPZIONI_TOOLTIP);
+		TabbedPane.addTab(Language.TAB_ABOUT, Resource.getIcona("res/info.png"), panel_about, "");
 
 		TabbedPane.setSelectedIndex(0);
 		setTray();
@@ -273,7 +274,7 @@ public class Interfaccia {
 			public void commandReceived(WebBrowserCommandEvent e) {}
 		});
 		download_bottone_esplora.setFont(new Font("Tahoma", Font.BOLD, 14));
-		download_bottone_esplora.setIcon(Resource.getIcona("res"+File.separator+"folder_24.png"));
+		download_bottone_esplora.setIcon(Resource.getIcona("res/folder_24.png"));
 		download_bottone_esplora.setText(Language.OPZIONI_ESPLORA);
 		download_bottone_esplora.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -285,7 +286,7 @@ public class Interfaccia {
 				}
 			}
 		});
-		download_bottone_aggiorna_torrent.setIcon(Resource.getIcona("res"+File.separator+"aggiorna.png"));
+		download_bottone_aggiorna_torrent.setIcon(Resource.getIcona("res/aggiorna.png"));
 		download_bottone_aggiorna_torrent.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				download_label_stato.setText(Language.DOWNLOAD_ATTENDERE);
@@ -307,7 +308,7 @@ public class Interfaccia {
 				t1.start();
 			}
 		});
-		download_bottone_download.setIcon(Resource.getIcona("res"+File.separator+"scarica.png"));
+		download_bottone_download.setIcon(Resource.getIcona("res/scarica.png"));
 		download_bottone_download.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				class BottoneDownload extends Thread {
@@ -341,13 +342,13 @@ public class Interfaccia {
 				t.start();
 			}
 		});
-		download_bottone_torrent_offline.setIcon(Resource.getIcona("res"+File.separator+"offline.png"));
+		download_bottone_torrent_offline.setIcon(Resource.getIcona("res/offline.png"));
 		download_bottone_torrent_offline.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				RidisegnaScrollPanel();
 			}
 		});
-		download_bottone_already_seen.setIcon(Resource.getIcona("res"+File.separator+"remove_1.png"));
+		download_bottone_already_seen.setIcon(Resource.getIcona("res/remove_1.png"));
 		download_bottone_already_seen.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				class BottoneGiaViste extends Thread {
@@ -386,7 +387,7 @@ public class Interfaccia {
 				t.start();
 			}
 		});
-		download_bottone_selectAll.setIcon(Resource.getIcona("res"+File.separator+"selectall.png"));
+		download_bottone_selectAll.setIcon(Resource.getIcona("res/selectall.png"));
 		download_bottone_selectAll.addActionListener(new ActionListener(){
 			private int current_status=0;
 			private final static int SELECT_ALL=0;
@@ -398,19 +399,19 @@ public class Interfaccia {
 				}
 				switch(current_status){
 					case SELECT_ALL:
-						download_bottone_selectAll.setIcon(Resource.getIcona("res"+File.separator+"deselectall.png"));
+						download_bottone_selectAll.setIcon(Resource.getIcona("res/deselectall.png"));
 						download_bottone_selectAll.setText(Language.DOWNLOAD_BOTTONE_DESELEZIONA_TUTTO);
 						current_status=DESELECT_ALL;
 						break;
 					case DESELECT_ALL:
-						download_bottone_selectAll.setIcon(Resource.getIcona("res"+File.separator+"selectall.png"));
+						download_bottone_selectAll.setIcon(Resource.getIcona("res/selectall.png"));
 						download_bottone_selectAll.setText(Language.DOWNLOAD_BOTTONE_SELEZIONA_TUTTO);
 						current_status=SELECT_ALL;
 						break;
 				}
 			}
 		});
-		download_bottone_720p.setIcon(Resource.getIcona("res"+File.separator+"720.png"));
+		download_bottone_720p.setIcon(Resource.getIcona("res/720.png"));
 		download_bottone_720p.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				for(int i=0;i<download_panel_scroll.getComponentCount();i++){
@@ -419,7 +420,7 @@ public class Interfaccia {
 				}
 			}
 		});
-		download_bottone_inverti_selezione.setIcon(Resource.getIcona("res"+File.separator+"inverti.png"));
+		download_bottone_inverti_selezione.setIcon(Resource.getIcona("res/inverti.png"));
 		download_bottone_inverti_selezione.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				for(int i=0;i<download_panel_scroll.getComponentCount();i++){
@@ -467,7 +468,7 @@ public class Interfaccia {
 		label_top_left.setFont(new Font("Tahoma", 3, 14));
 		top_sinistra.add(label_top_left, BorderLayout.WEST);
 		top_sinistra.add(download_text_top_left, BorderLayout.CENTER);
-		download_bottone_reload.setIcon(Resource.getIcona("res"+File.separator+"aggiorna.png"));
+		download_bottone_reload.setIcon(Resource.getIcona("res/aggiorna.png"));
 		top_sinistra.add(download_bottone_reload, BorderLayout.EAST);
 		sinistra.setLayout(new BorderLayout());
 		sinistra.add(top_sinistra, BorderLayout.NORTH);
@@ -489,7 +490,7 @@ public class Interfaccia {
 		aggiornaComboEZTV();
 		AggiornaComboBoxProprie();
 
-		download_bottone_aggiungi.setIcon(Resource.getIcona("res"+File.separator+"add.png"));
+		download_bottone_aggiungi.setIcon(Resource.getIcona("res/add.png"));
 		download_bottone_aggiungi.setEnabled(GestioneSerieTV.getElencoSerieCompleto().size() > 0);
 		download_bottone_aggiungi.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
@@ -527,7 +528,7 @@ public class Interfaccia {
 				t.start();
 			}
 		});
-		download_bottone_rimuovi.setIcon(Resource.getIcona("res"+File.separator+"remove.png"));
+		download_bottone_rimuovi.setIcon(Resource.getIcona("res/remove.png"));
 		download_bottone_rimuovi.setEnabled(GestioneSerieTV.getElencoSerieInserite().size() > 0);
 		download_bottone_rimuovi.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
@@ -541,7 +542,7 @@ public class Interfaccia {
 								//TODO rimuovere questo tipo di gestione dei sottotitoli
 								if (GestioneSerieTV.rimuoviSerie(serie)) {
 									libreria_box_serie.removeItem(serie);
-									File cartella = new File(Settings.getDirectoryDownload() + "\\" + folder);
+									File cartella = new File(Settings.getDirectoryDownload() + File.separator + folder);
 									if (cartella.isDirectory()) {
 										int dir_del = JOptionPane.showConfirmDialog(Interfaccia.frame, Language.INSERIMENTO_DIALOGUE_CANCELLA_CARTELLA, Language.INSERIMENTO_DIALOGUE_CANCELLA_CARTELLA_TITLE, 0);
 										if (dir_del == JOptionPane.YES_OPTION)
@@ -564,7 +565,7 @@ public class Interfaccia {
 				t.start();
 			}
 		});
-		download_bottone_reload.setIcon(Resource.getIcona("res"+File.separator+"aggiorna.png"));
+		download_bottone_reload.setIcon(Resource.getIcona("res/aggiorna.png"));
 		download_bottone_reload.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				class BottoneReload extends Thread{
@@ -820,7 +821,7 @@ public class Interfaccia {
 		for(int i=0;i<Language.lingue.length;i++)
 			opzioni_combo_lingua.addItem(Language.lingue[i]);
 
-		opzioni_bottone_seleziona_client.setIcon(Resource.getIcona("res"+File.separator+"utorrent.png"));
+		opzioni_bottone_seleziona_client.setIcon(Resource.getIcona("res/utorrent.png"));
 		
 		opzioni_itasa_download.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -858,7 +859,7 @@ public class Interfaccia {
 				}
 			}
 		});
-		opzioni_button_vlc.setIcon(Resource.getIcona("res"+File.separator+"vlc.png"));
+		opzioni_button_vlc.setIcon(Resource.getIcona("res/vlc.png"));
 		opzioni_button_vlc.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				JFileChooser filechooser = new JFileChooser();
@@ -874,7 +875,7 @@ public class Interfaccia {
 				}
 			}
 		});
-		opzioni_bottone_directory_download.setIcon(Resource.getIcona("res"+File.separator+"cartella.png"));
+		opzioni_bottone_directory_download.setIcon(Resource.getIcona("res/cartella.png"));
 		opzioni_bottone_directory_download.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent e) {
 				JFileChooser dir_choose = new JFileChooser();
@@ -924,7 +925,7 @@ public class Interfaccia {
 					Main.thread_autosearch.interrupt();
 			}
 		});
-		opzioni_bottone_salva.setIcon(Resource.getIcona("res"+File.separator+"salva.png"));
+		opzioni_bottone_salva.setIcon(Resource.getIcona("res/salva.png"));
 		opzioni_bottone_salva.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				try {
@@ -1188,13 +1189,13 @@ public class Interfaccia {
 				check_scaricato.setSelected(torrent.isScaricato());
 				nome_torrent.setText(Language.REFACTOR_LABEL_NOMETORRENT+torrent.getName());
 				scarica.setText("Scarica");
-				scarica.setIcon(Resource.getIcona("res"+File.separator+"salva.png"));
+				scarica.setIcon(Resource.getIcona("res/salva.png"));
 				play.setText("Play");
-				play.setIcon(Resource.getIcona("res"+File.separator+"vlc.png"));
+				play.setIcon(Resource.getIcona("res/vlc.png"));
 				sottotitolo.setText("Sottotitolo");
-				sottotitolo.setIcon(Resource.getIcona("res"+File.separator+"sub16.png"));
+				sottotitolo.setIcon(Resource.getIcona("res/sub16.png"));
 				cancella.setText("Rimuovi");
-				cancella.setIcon(Resource.getIcona("res"+File.separator+"remove.png"));
+				cancella.setIcon(Resource.getIcona("res/remove.png"));
 				String lista_tag="";
 				if(torrent.isPreAir())
 					lista_tag+="PREAIR ";
@@ -1251,12 +1252,15 @@ public class Interfaccia {
 				play.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						SerieTV st=((SerieTV)libreria_box_serie.getSelectedItem());
-						String nomepuntata=OperazioniFile.cercavideofile(torrent.getSerie(), torrent.getPuntata(), torrent.getName(), st.getNomeSerieFolder(), torrent.is720p(), torrent.isRepack());
-						System.out.println(nomepuntata);
-						if(nomepuntata==null){
+						String nomepuntata;
+						try {
+							nomepuntata = OperazioniFile.cercavideofile(torrent);
+						}
+						catch (FileNotFoundException e1) {
 							JOptionPane.showMessageDialog(frame, "File video non trovato");
 							return; 
 						}
+												
 						/*
 						if(Settings.isRicercaSottotitoli()){
 							if(!OperazioniFile.fileexistspartialfilename(nomepuntata, ".srt", st.getNomeSerieFolder())){
@@ -1286,16 +1290,19 @@ public class Interfaccia {
 						}
 						*/
 						//TODO verifica presenza sottotitolo
+						
 						//else if TODO download del sottotitolo
 						//TODO mostra warning se non si � potuto scaricare
 						
-						Player.play(st.getNomeSerieFolder()+"\\"+nomepuntata);
+						Player.play(st.getNomeSerieFolder()+File.separator+nomepuntata);
 					}
 				});
 				sottotitolo.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						//TODO completare sottotitolo libreria
-						JOptionPane.showMessageDialog(frame, "Funzione non disponibile");
+						if(!GestioneSerieTV.getSubManager().scaricaSottotitolo(torrent))
+							torrent.setSottotitolo(true, true);
+						else
+							JOptionPane.showMessageDialog(frame, "Sottotitolo scaricato");
 					}
 				});
 				cancella.addActionListener(new ActionListener() {
@@ -1394,10 +1401,10 @@ public class Interfaccia {
 				frame.repaint();
 			}
 		});
-		libreria_esplora_cartella.setIcon(Resource.getIcona("res"+File.separator+"cartella.png"));
+		libreria_esplora_cartella.setIcon(Resource.getIcona("res/cartella.png"));
 		libreria_esplora_cartella.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				String folder=Settings.getDirectoryDownload()+"\\"+((SerieTV)libreria_box_serie.getSelectedItem()).getNomeSerieFolder();
+				String folder=Settings.getDirectoryDownload()+File.separator+((SerieTV)libreria_box_serie.getSelectedItem()).getNomeSerieFolder();
 				try {
 					OperazioniFile.esploraCartella(folder);
 				}
@@ -1437,7 +1444,7 @@ public class Interfaccia {
 			return;
 		}
 		PopupMenu popup = new PopupMenu();
-		final TrayIcon trayIcon = new TrayIcon(Resource.createImage("res"+File.separator+"icona16x16.png", Language.TITLE), Language.TITLE);
+		final TrayIcon trayIcon = new TrayIcon(Resource.createImage("res/icona16x16.png", Language.TITLE), Language.TITLE);
 
 		tray = SystemTray.getSystemTray();
 		MenuItem restoreWin = new MenuItem(Language.TRAYICON_RIPRISTINA);
@@ -1733,7 +1740,7 @@ public class Interfaccia {
 		
 		JPanel nord=new JPanel(new BorderLayout());
 		JLabel image=new JLabel();
-		image.setIcon(Resource.getIcona("res"+File.separator+"logo.png"));
+		image.setIcon(Resource.getIcona("res/logo.png"));
 		JPanel imgp=new JPanel();
 		imgp.add(image);
 		nord.add(imgp, BorderLayout.NORTH);
@@ -1786,7 +1793,7 @@ public class Interfaccia {
 			public void mouseEntered(MouseEvent arg0) {}
 			public void mouseClicked(MouseEvent arg0) {}
 		});
-		about_bottone_update.setIcon(Resource.getIcona("res"+File.separator+"update.png"));
+		about_bottone_update.setIcon(Resource.getIcona("res/update.png"));
 		about_bottone_update.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				ThreadControlloAggiornamento t1 = new ThreadControlloAggiornamento(true);

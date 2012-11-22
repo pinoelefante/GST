@@ -14,47 +14,9 @@ import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.apache.commons.io.FileExistsException;
-
 import SerieTV.Torrent;
 
 public class OperazioniFile {
-	public static void ZipDecompress(File input_zip, File output) throws IOException {
-		ZipInputStream input = new ZipInputStream(new FileInputStream(input_zip));
-		ZipEntry zipEntry;
-		while ((zipEntry = input.getNextEntry()) != null) {
-			boolean directory = zipEntry.isDirectory();
-			if (directory) {
-				File dir = new File(output, zipEntry.getName());
-				if (!dir.exists())
-					dir.mkdir();
-				/*else if (dir.isDirectory()){
-					input.close();
-					throw new IOException("Output directory \"" + dir.getAbsolutePath() + "\" is a file");
-				}*/
-			}
-			else {
-				File decompressFile = new File(output, zipEntry.getName());
-				/*if (decompressFile.exists()){
-					input.close();
-					throw new IOException("Output file \"" + decompressFile.getAbsolutePath() + "\" already exists");
-				}
-				*/
-				FileOutputStream fos = new FileOutputStream(decompressFile);
-				try {
-					byte[] readBuffer = new byte[4096];
-					int bytesIn = 0;
-					while ((bytesIn = input.read(readBuffer)) != -1)
-						fos.write(readBuffer, 0, bytesIn);
-				}
-				finally {
-					fos.close();
-				}
-			}
-		}
-		input.close();
-	}
-	
 	public static ArrayList<String> zipList(File zip) throws IOException {
 		ArrayList<String> nomi=new ArrayList<String>();
 		ZipInputStream input=new ZipInputStream(new FileInputStream(zip));
@@ -89,10 +51,9 @@ public class OperazioniFile {
 			File f1 = new File(srFile);
 			File f2 = new File(dtFile);
 			InputStream in = new FileInputStream(f1);
-
 			OutputStream out = new FileOutputStream(f2);
 
-			byte[] buf = new byte[1024];
+			byte[] buf = new byte[4096];
 			int len;
 			while ((len = in.read(buf)) > 0) {
 				out.write(buf, 0, len);
@@ -127,7 +88,7 @@ public class OperazioniFile {
 			d.open(dir);
 		}
 		else
-			throw new Exception("Il percorso non Ã¨ una cartella");
+			throw new Exception("Il percorso non è una cartella");
 	}
 	public static void esploraWeb(String url){
 		Desktop d=Desktop.getDesktop();
@@ -135,7 +96,6 @@ public class OperazioniFile {
 			d.browse(new URI(url));
 		}
 		catch (IOException | URISyntaxException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -161,51 +121,13 @@ public class OperazioniFile {
 		else
 			return false;
 	}
-	public static String cercavideofile(int serie, int puntata, String nome, String folder, boolean is720p, boolean isRepack){
-		String folder_c=Settings.getDirectoryDownload()+File.separator+folder;
-		File cartella=new File(folder_c);
-		if(cartella.exists()){
-			if(cartella.isDirectory()){
-				String[] lista=cartella.list();
-				String puntata_s=puntata<10?"0"+puntata:puntata+"";
-				String serie_s=serie<10?"0"+serie:serie+"";
-				//System.out.println(puntata_s+" "+serie_s);
-				for(int i=0;i<lista.length;i++){
-					//
-					if(lista[i].endsWith(".srt"))
-						continue;
-					
-					if(lista[i].contains("720p")!=is720p)
-						continue;
-					if(lista[i].contains("REPACK")!=isRepack)
-						continue;
-					
-					if(lista[i].contains(nome))
-						return lista[i];
-					
-					int index_serie=lista[i].indexOf(serie_s);
-					if(index_serie<0 && serie_s.startsWith("0")){
-						serie_s=serie+"";
-						index_serie=lista[i].indexOf(serie_s);
-					}
-					String linea;
-					linea=lista[i].substring(index_serie>0?index_serie+serie_s.length():0);
-					int index_ep=linea.indexOf(puntata_s);
-					if(index_serie>=0 && index_ep>=0){
-						return lista[i];	
-					}
-				}
-			}
-		}
-		return null;
-	}
-	public static String cercavideofile(Torrent t) throws FileNotFoundException, FileExistsException{
+	public static String cercavideofile(Torrent t) throws FileNotFoundException{
 		String path_download=Settings.getDirectoryDownload()+(Settings.getDirectoryDownload().endsWith(File.separator)?"":File.separator)+t.getNomeSerieFolder();
 		File cartella_download=new File(path_download);
 		if(!cartella_download.exists())
 			throw new FileNotFoundException("La cartella "+path_download+" non esiste");
 		if(!cartella_download.isDirectory())
-			throw new FileExistsException("Il percorso "+path_download+" non Ã¨ una directory");
+			throw new FileNotFoundException("Il percorso "+path_download+" non è una directory");
 		//
 		String[] lista=cartella_download.list();
 		String puntata_s=t.getPuntata()<10?"0"+t.getPuntata():t.getPuntata()+"";

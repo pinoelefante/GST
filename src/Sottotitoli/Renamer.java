@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
-import org.apache.commons.io.FileExistsException;
-
 import Programma.OperazioniFile;
 import Programma.Settings;
 import SerieTV.Torrent;
@@ -35,7 +33,7 @@ public class Renamer {
 				nome_file=nome_file.substring(0, nome_file.lastIndexOf(".")-1);
 			}
 		} 
-		catch (FileNotFoundException | FileExistsException e) {
+		catch (FileNotFoundException e) {
 			//TODO modificare comportamento quando non viene trovato il file
 			System.out.println(e.getMessage());
 			e.printStackTrace();
@@ -59,7 +57,6 @@ public class Renamer {
 			e.printStackTrace();
 			return false;
 		}
-		
 		return true;
 	}
 	

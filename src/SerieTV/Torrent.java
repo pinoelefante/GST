@@ -313,7 +313,7 @@ public class Torrent implements Indexable{
 		Database.update(Database.TABLE_TORRENT, par, con, "AND", "=");
 	}
 	public String toString(){
-		return getNomeSerie()+"S"+(getSerie()<10?"0":"")+getSerie()+"E"+(getPuntata()<10?"0":"")+getPuntata();
+		return getNomeSerie()+" "+getSerie()+"x"+getPuntata();
 	}
 	public int getScaricato(){
 		return scaricato;
