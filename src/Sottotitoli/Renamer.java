@@ -62,7 +62,7 @@ public class Renamer {
 		
 		try {
 			String zip_file=Settings.getDirectoryDownload()+t.getNomeSerieFolder()+File.separator+generaNomeDownload(t);
-			String dir_dest=Settings.getDirectoryDownload()+t.getNomeSerieFolder();
+			String dir_dest=Settings.getDirectoryDownload()+t.getNomeSerieFolder()+File.separator;
 			
 			ArrayList<String> files=OperazioniFile.ZipDecompress(zip_file, dir_dest);
 			if(files.size()>0){
