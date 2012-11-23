@@ -20,7 +20,7 @@ public class GestioneSerieTV {
 		ArrayList<SQLParameter[]>res=Database.select(Database.TABLE_SERIETV, null, "AND", "=", (" ORDER BY "+"nome"+" ASC"));
 		for(int i=0;i<res.size();i++){
 			String nome ="", url="", id_subsfactory="";
-			int id=0, stato=0, end=0, inserita=0, id_itasa=0;
+			int id=0, stato=0, end=0, inserita=0, id_itasa=0, tvrage=0;
 			for(int j=0;j<res.get(i).length;j++){
 				SQLParameter p=res.get(i)[j];
 				switch(p.ptype()){
@@ -41,6 +41,9 @@ public class GestioneSerieTV {
 							break;
 							case "id_itasa":
 								id_itasa=val;
+							break;
+							case "tvrage":
+								tvrage = val;
 							break;
 						}
 						break;
@@ -69,6 +72,7 @@ public class GestioneSerieTV {
 			st.setEnd(end);
 			st.setInserita(inserita);
 			st.setStato(stato);
+			st.setTVRage(tvrage);
 			serietv.add(st);
 			if(inserita>0){
 				if(!isSeriePresente(getElencoSerieInserite(), st.getUrl())){
@@ -305,9 +309,10 @@ public class GestioneSerieTV {
 		if(st==null)
 			return false;
 		st.setInserita(0);
+		st.resetSerie();
 		st.UpdateDB();
+		st.resetEpisodi();
 		getElencoSerieInserite().remove(st);
-		//TODO reset stato torrent
 		return true;
 	}
 	public static GestoreSottotitoli getSubManager(){

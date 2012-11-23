@@ -69,6 +69,7 @@ public class Database {
 					"end INTEGER DEFAULT 0," +
 					"inserita INTEGER DEFAULT 0," +
 					"id_itasa INTEGER DEFAULT 0," +
+					"tv_rage INTEGER DEFAULT 0,"+
 					"directory_subsfactory TEXT DEFAULT 0)");
 			/**
 			 *  Tabella Torrent
@@ -153,21 +154,15 @@ public class Database {
 					"itasa_pass TEXT DEFAULT ''," +
 					"client_id TEXT DEFAULT ''," +
 					"mostra_preair INTEGER DEFAULT 1," +
-					"mostra_720p INTEGER DEFAULT 1" +
+					"mostra_720p INTEGER DEFAULT 1," +
+					"download_preair INTEGER DEFAULT 1," +
+					"download_720p INTEGER DEFAULT 1"+
 					")");
 			if(isEmptyTable(TABLE_SETTINGS)){
 				SQLParameter[] parametri=new SQLParameter[1];
 				parametri[0]=new SQLParameter(SQLParameter.INTEGER, 1, "tray_on_icon");
 				insert(TABLE_SETTINGS, parametri);
 			}
-			
-			/* TEST UPDATE
-			SQLParameter[] parametri=new SQLParameter[1];
-			parametri[0]=new SQLParameter(SQLParameter.INTEGER, 1, "tray_on_icon");
-			SQLParameter[] condizioni=new SQLParameter[1];
-			condizioni[0]=new SQLParameter(SQLParameter.INTEGER, 2, "tray_on_icon");
-			update(TABLE_SETTINGS, parametri, condizioni, "", "=");
-			*/
 			stat.close();
 		}
 		catch (SQLException e) {

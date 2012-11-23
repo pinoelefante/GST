@@ -331,6 +331,7 @@ public class Interfaccia {
 									i++;
 							}
 							download_label_stato.setText((initial_count-removed) + Language.DOWNLOAD_PUNTATE);
+							//TODO bug#1
 							Interfaccia.libreria_addItemBoxSerie();
 						}
 						catch (InterruptedException e) {
@@ -1332,7 +1333,6 @@ public class Interfaccia {
 		nord.add(nord_s, BorderLayout.SOUTH);
 		
 		JPanel sud=new JPanel(new BorderLayout());
-		//sud.add(new JLabel("ATTENZIONE! Alcune funzioni, come il tasto Play potrebbero essere ancora incomplete"), BorderLayout.WEST);
 		panel_refactor.add(sud, BorderLayout.SOUTH);
 		
 		panel_refactor.add(nord, BorderLayout.NORTH);

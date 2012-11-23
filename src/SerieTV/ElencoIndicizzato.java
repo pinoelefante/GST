@@ -14,5 +14,5 @@ public interface ElencoIndicizzato {
 	public Indexable get(int index, String offkey);
 	public Indexable get(String offkey);
 	public void reset();
-	
+	public ArrayList<Indexable> getLinear();
 }

@@ -38,6 +38,8 @@ public class Settings {
 	private static boolean		mostraPreair						= true;
 	private static boolean		mostra720p							= true;
 	private static String		ClientID = "";
+	private static boolean		downloadPreair						= false;
+	private static boolean		download720p						= false;
 	
 	public static int getVersioneSoftware() {
 		return VersioneSoftware;
@@ -312,6 +314,8 @@ public class Settings {
 							case "ricerca_sub" : setRicercaSottotitoli(p==0?false:true); break;
 							case "mostra_preair" : setMostraPreair(p==0?false:true); break;
 							case "mostra_720p" : setMostra720p(p==0?false:true); break;
+							case "download_preair": setDownloadPreair(p==0?false:true); break;
+							case "download_720p": setDownload720p(p==0?false:true); break;
 						}
 						break;
 					case SQLParameter.TEXT:
@@ -608,5 +612,19 @@ public class Settings {
 	}
 	public static boolean isMacOS(){
 		return getSistemaOperativo().contains("Mac");
+	}
+	public static boolean isDownloadPreair() {
+		return downloadPreair;
+	}
+	public static void setDownloadPreair(boolean downloadPreair) {
+		Settings.downloadPreair = downloadPreair;
+		AggiornaDB();
+	}
+	public static boolean isDownload720p() {
+		return download720p;
+	}
+	public static void setDownload720p(boolean download720p) {
+		Settings.download720p = download720p;
+		AggiornaDB();
 	}
 }

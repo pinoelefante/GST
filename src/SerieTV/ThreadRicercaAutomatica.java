@@ -35,6 +35,14 @@ public class ThreadRicercaAutomatica extends Thread {
 			for (int i = 0; i < torrent_download.size(); i++) {
 				try {
 					Torrent t=torrent_download.get(i);
+					
+					if(t.is720p())
+						if(!Settings.isDownload720p())
+							continue;
+					if(t.isPreAir())
+						if(!Settings.isDownloadPreair())
+							continue;
+					
 					Download.downloadMagnet(t.getUrl(), t.getNomeSerieFolder());
 					t.setScaricato(Torrent.SCARICATO);
 					t.setSottotitolo(true, false);

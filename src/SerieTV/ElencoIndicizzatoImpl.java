@@ -161,4 +161,15 @@ public class ElencoIndicizzatoImpl implements ElencoIndicizzato {
 		}
 		return null;
 	}
+
+	@Override
+	public ArrayList<Indexable> getLinear() {
+		ArrayList<Indexable> iterable=new ArrayList<Indexable>();
+		for(int i=0;i<elenco.size();i++){
+			ArrayList<Indexable> el=elenco.get(i);
+			for(int j=0;j<el.size();j++)
+				iterable.add(el.get(j));
+		}
+		return iterable;
+	}
 }

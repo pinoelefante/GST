@@ -133,7 +133,7 @@ public class Language {
 		DOWNLOAD_BOTTONE_DESELEZIONA_TUTTO = "Deseleziona tutto";
 		DOWNLOAD_BOTTONE_INVERTI = "Inverti selezione";
 		DOWNLOAD_BOTTONE_720P = "720p";
-		DOWNLOAD_BOTTONE_VISTE = "Gi√† viste";
+		DOWNLOAD_BOTTONE_VISTE = "Gi‡† viste";
 		DOWNLOAD_BOTTONE_DOWNLOAD = "Scarica";
 		TAB_OPZIONI_LABEL = "Opzioni";
 		TAB_OPZIONI_TOOLTIP = "";
@@ -163,13 +163,13 @@ public class Language {
 		INSERIMENTO_LABEL_INSERITO = " aggiunta";
 		INSERIMENTO_DIALOGUE_CONFERMA_RIMOZIONE = "Vuoi davvero cancellare:\n";
 		INSERIMENTO_DIALOGUE_CONFERMA_RIMOZIONE_TITLE = "Rimozione";
-		INSERIMENTO_DIALOGUE_CANCELLA_CARTELLA = "Vuoi cancellare la cartella contenente le puntate gi√† scaricate?";
+		INSERIMENTO_DIALOGUE_CANCELLA_CARTELLA = "Vuoi cancellare la cartella contenente le puntate gi‡† scaricate?";
 		INSERIMENTO_DIALOGUE_CANCELLA_CARTELLA_TITLE = "Cancella cartella";
 		INSERIMENTO_LABEL_RIMOSSA = " rimossa";
 		INSERIMENTO_DIALOGUE_ERRORE_RIMOZIONE = "Errore nell'eliminazione";
 		DOWNLOAD_DIALOGUE_ERRORE_CLIENT = "Percorso client invalido\nSettare il percorso del client nella tab \"Opzioni\"";
 		DOWNLOAD_PUNTATE = " puntate";
-		DOWNLOAD_DIALOGUE_GIA_VISTE = "Vuoi impostare come gi√† viste le puntate selezionate?";
+		DOWNLOAD_DIALOGUE_GIA_VISTE = "Vuoi impostare come gi‡† viste le puntate selezionate?";
 		DOWNLOAD_DIALOGUE_GIA_VISTE_TITLE = "Conferma visione";
 		OPZIONI_MINUTI_RICERCA_TOOLTIP = "Clicca \"" + OPZIONI_SALVAOPZIONI + "\" per rendere l'opzione effettiva. Se il formato dei minuti √® sbagliato, default: 480 minuti";
 		TRAYICON_RIPRISTINA = "Ripristina";

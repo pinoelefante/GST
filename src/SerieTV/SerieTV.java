@@ -21,6 +21,7 @@ public class SerieTV {
 	private int		stato; //1 se la serie è Ended altrimenti 0
 	private int 	inserita;
 	private int		end; //1 se sono stati scaricati tutti gli episodi e la serie è ended. Setta da non cercare altri episodi
+	private int		tvrage;
 
 	public SerieTV(String nome, String url) {
 		setNomeSerie(nome);
@@ -259,5 +260,19 @@ public class SerieTV {
 			dim++;
 		}
 		return true;
+	}
+	public int getTVRage() {
+		return tvrage;
+	}
+	public void setTVRage(int tvrage) {
+		this.tvrage = tvrage;
+	}
+	public void resetSerie(){
+		ArrayList<Indexable> ep=episodi.getLinear();
+		for(int i=0;i<ep.size();i++){
+			Torrent t=(Torrent)ep.get(i);
+			t.setSottotitolo(false, false);
+			t.setScaricato(Torrent.SCARICARE);
+		}
 	}
 }

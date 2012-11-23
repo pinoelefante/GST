@@ -24,13 +24,13 @@ public class Renamer {
 		try {
 			nome_file=OperazioniFile.cercavideofile(t);
 			if(nome_file.substring(nome_file.lastIndexOf(".")).compareToIgnoreCase(".avi")==0){
-				nome_file=nome_file.substring(0, nome_file.lastIndexOf(".")-1);
+				nome_file=nome_file.substring(0, nome_file.lastIndexOf("."));
 			}
 			else if(nome_file.substring(nome_file.lastIndexOf(".")).compareToIgnoreCase(".mp4")==0){
-				nome_file=nome_file.substring(0, nome_file.lastIndexOf(".")-1);
+				nome_file=nome_file.substring(0, nome_file.lastIndexOf("."));
 			}
 			else if(nome_file.substring(nome_file.lastIndexOf(".")).compareToIgnoreCase(".mkv")==0){
-				nome_file=nome_file.substring(0, nome_file.lastIndexOf(".")-1);
+				nome_file=nome_file.substring(0, nome_file.lastIndexOf("."));
 			}
 		} 
 		catch (FileNotFoundException e) {

@@ -19,6 +19,8 @@ FARE
 - inserire opzioni per abilitare itasa, subsfactory
 - controlli libreria (check_scaricato)
 
+
+
 DA ULTIMARE
 
 FATTO
@@ -32,5 +34,7 @@ FATTO
 - salvataggio cronologia sottotitoli scaricati
 - tab libreria con tasto play, delete, download sub, cancella episodio
 - spostare sottotitoli da scaricare nella classe Torrent 
+- modificare thread ricerca automatica con download 720p e download preair
+- caricamento opzioni download 720p e download preair
 
 PROBABILMENTE FIXATO
