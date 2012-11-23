@@ -185,4 +185,34 @@ public class OperazioniFile {
 		input.close();
 		return estratti;
 	}
+	public static boolean partialfile_exists(String folder, String path){
+		File dir=new File(folder);
+		if(dir.exists()){
+			if(dir.isDirectory()){
+				String[] files=dir.list();
+				for(int i=0;i<files.length;i++){
+					String ext=files[i].substring(files[i].lastIndexOf("."));
+					if(ext.compareToIgnoreCase(".avi")==0 || ext.compareToIgnoreCase(".mp4")==0 || ext.compareToIgnoreCase(".mkv")==0)
+						continue;
+					String match=files[i].substring(0, path.length());
+					
+					if(match.compareToIgnoreCase(path)==0){
+						if(files[i].contains(".")){
+							String ext_sub=files[i].substring(files[i].lastIndexOf("."));
+							if(ext_sub.compareToIgnoreCase(".srt")==0)
+								return true;
+							if(ext_sub.compareToIgnoreCase(".ass")==0)
+								return true;
+							if(ext_sub.compareToIgnoreCase(".sub")==0)
+								return true;
+							if(ext_sub.compareToIgnoreCase(".ssa")==0)
+								return true;
+						}
+						return false;
+					}	
+				}
+			}
+		}
+		return false;
+	}
 }

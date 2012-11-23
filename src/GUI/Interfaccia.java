@@ -1263,10 +1263,14 @@ public class Interfaccia {
 						catch (FileNotFoundException e1) {
 							JOptionPane.showMessageDialog(frame, "File video non trovato");
 							return; 
-						}					
-						//TODO verifica presenza sottotitolo
-						//else if TODO download del sottotitolo
-						//TODO mostra warning se non si ï¿½ potuto scaricare
+						}
+						String nome_no_ext=nomepuntata.substring(0, nomepuntata.lastIndexOf("."));
+						if(!OperazioniFile.partialfile_exists(Settings.getDirectoryDownload()+torrent.getNomeSerieFolder(), nome_no_ext)){
+							//TODO non mostrare o scaricare sottotitolo se non è nelle impostazioni
+							if(!GestioneSerieTV.getSubManager().scaricaSottotitolo(torrent)){
+								JOptionPane.showMessageDialog(frame, "Non è associato alcun sottotitolo");
+							}
+						}
 						
 						Player.play(st.getNomeSerieFolder()+File.separator+nomepuntata);
 						torrent.setScaricato(Torrent.VISTO, true);

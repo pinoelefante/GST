@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Scanner;
@@ -57,7 +58,9 @@ public class ItalianSubs implements ProviderSottotitoli{
 	private WebClient webClient;
 	private boolean login_itasa=false;
 	private boolean locked=true;
-	Thread LoggerItasa;
+	private Thread LoggerItasa;
+	private GregorianCalendar RSS_UltimoAggiornamento;
+	private final long update_time_rss=900000L;
 	
 	public ItalianSubs(){
 		feed_rss=new ArrayList<RSSItem>();
@@ -90,7 +93,6 @@ public class ItalianSubs implements ProviderSottotitoli{
 			return true;
 		}
 		catch (ItasaSubNotFound e) {
-			//System.out.println("Catch");
 			int id_s=cercaFeed(id_itasa, t);
 			if(id_s<=0)
 				return false;
@@ -122,10 +124,12 @@ public class ItalianSubs implements ProviderSottotitoli{
 		
 	}
 	private int cercaFeed(int iditasa, Torrent t){
-		aggiornaFeedRSS();
+		if(verificaTempo(update_time_rss, RSS_UltimoAggiornamento)){
+			System.out.println("Aggiornando il feed RSS");
+			aggiornaFeedRSS();
+		}
 		for(int i=0;i<feed_rss.size();i++){
 			RSSItem rss=feed_rss.get(i);
-			//System.out.println("Cercando in: "+rss);
 			if(rss.getIDSerie()==iditasa){
 				if(rss.is720p()==t.is720p()){
 					if(rss.isNormale()==!t.is720p()){
@@ -141,6 +145,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 		return -1;
 	}
 	private void aggiornaFeedRSS(){
+		RSS_UltimoAggiornamento=new GregorianCalendar();
 		feed_rss.clear();
 		try {
 			Download.downloadFromUrl("http://feeds.feedburner.com/ITASA-Ultimi-Sottotitoli", "feed_itasa");
@@ -613,6 +618,17 @@ public class ItalianSubs implements ProviderSottotitoli{
 	@Override
 	public String getProviderName() {
 		return "ItalianSubs.net";
+	}
+	private boolean verificaTempo(long maxdif, GregorianCalendar last){
+		if(last==null)
+			return true;
+		GregorianCalendar adesso=new GregorianCalendar();
+		long time_now=adesso.getTimeInMillis();
+		adesso=null;
+		long time_last=last.getTimeInMillis();
+		if((time_now-time_last)>maxdif)
+			return true;
+		return false;
 	}
 }
 
