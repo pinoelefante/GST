@@ -9,6 +9,7 @@ import Database.*;
 import GUI.Interfaccia;
 import Programma.Download;
 import Programma.OperazioniFile;
+import Programma.Settings;
 
 public class SerieTV {
 	public final static int STATO_CONCLUSA=1;
@@ -26,12 +27,12 @@ public class SerieTV {
 	public SerieTV(String nome, String url) {
 		setNomeSerie(nome);
 		this.url_eztv = url;
-		episodi=new ElencoIndicizzatoImpl();
+		episodi=new ElencoIndicizzatoImpl2();
 	}
 	public SerieTV(String nome, String url, boolean insert_db) {
 		setNomeSerie(nome);
 		this.url_eztv = url;
-		episodi=new ElencoIndicizzatoImpl();
+		episodi=new ElencoIndicizzatoImpl2();
 		InsertInDB();
 	}
 	public void setIDDB(int id){
@@ -79,7 +80,7 @@ public class SerieTV {
 	}
 	public boolean addEpisodio(Torrent t){
 		if(episodi.get(t.getOffKey())==null){
-			t.parseMagnet();
+			//t.parseMagnet();
 			episodi.add(t);
 			t.insert();
 			return true;
@@ -90,7 +91,7 @@ public class SerieTV {
 		episodi.add(t);
 	}
 	public void resetEpisodi(){
-		episodi.reset();
+		episodi.removeAll();
 	}
 	
 	public String getNomeSerieFile() {
@@ -98,15 +99,11 @@ public class SerieTV {
 	}
 	public ArrayList<Torrent> daScaricare() {
 		ArrayList<Torrent> scaricare=new ArrayList<Torrent>();
-		int dim=0;
-		while(dim<episodi.n_index()){
-			ArrayList<Indexable> ind=episodi.get(dim);
-			for(int i=0;i<ind.size();i++){
-				Torrent t=(Torrent) ind.get(i);
-				if(!t.isScaricato())
-					scaricare.add(t);
-			}
-			dim++;
+		ArrayList<Indexable> ind=episodi.getLinear();
+		for(int i=0;i<ind.size();i++){
+			Torrent t=(Torrent) ind.get(i);
+			if(!t.isScaricato())
+				scaricare.add(t);
 		}
 		return scaricare;
 	}
@@ -147,6 +144,13 @@ public class SerieTV {
 						int fine = linea.indexOf("\" class=\"magnet\"");
 						String url_magnet = linea.substring(inizio, fine);
 						Torrent t=new Torrent(url_magnet, Torrent.SCARICARE, getNomeSerie(), getIDDB());
+						t.parseMagnet();
+						if(t.is720p() && !Settings.isMostra720p()){
+							t.setScaricato(Torrent.IGNORATO, true);
+						}
+						if(t.isPreAir() && !Settings.isMostraPreair()){
+							t.setScaricato(Torrent.IGNORATO, true);
+						}
 						if(!addEpisodio(t))
 							t=null;
 					}
@@ -182,14 +186,11 @@ public class SerieTV {
 	}
 	
 	public Torrent getTorrentBySeasonAndEpisode(int season, int ep, boolean is720p){
-		ArrayList<Indexable> found=episodi.get(season, ep);
-		
-		int i=0;
-		while(i<found.size()){
-			Torrent t=(Torrent) found.get(i);
-			if(t.is720p()==is720p)
+		ArrayList<Indexable> el=episodi.getLinear();
+		for(int i=0;i<el.size();i++){
+			Torrent t=(Torrent)el.get(i);
+			if(t.getSerie()==season && t.getPuntata()==ep && t.is720p()==is720p)
 				return t;
-			i++;
 		}
 		return null;
 	}
@@ -249,15 +250,11 @@ public class SerieTV {
 		return getEnd()==1;
 	}
 	private boolean verificaVisualizzazioneTutte(){
-		int dim=0;
-		while(dim<episodi.n_index()){
-			ArrayList<Indexable> ind=episodi.get(dim);
-			for(int i=0;i<ind.size();i++){
-				Torrent t=(Torrent) ind.get(i);
-				if(!t.isScaricato())
-					return false;
-			}
-			dim++;
+		ArrayList<Indexable> ind=episodi.getLinear();
+		for(int i=0;i<ind.size();i++){
+			Torrent t=(Torrent) ind.get(i);
+			if(!t.isScaricato())
+				return false;
 		}
 		return true;
 	}
@@ -274,5 +271,26 @@ public class SerieTV {
 			t.setSottotitolo(false, false);
 			t.setScaricato(Torrent.SCARICARE);
 		}
+	}
+	public void cleanup(){
+		ArrayList<Torrent> marked=new ArrayList<Torrent>();
+		ArrayList<Indexable> el=episodi.getLinear();
+		for(int i=0;i<el.size();i++){
+			Torrent t=(Torrent) el.get(i);
+			for(int j=i+1;j<el.size();j++){
+				Torrent c=(Torrent) el.get(j);
+				if(c.getUrl().toLowerCase().contains(t.getUrl().toLowerCase())){
+					if(c.getUrl().length()>t.getUrl().length()){
+						c.setScaricato(t.getScaricato(), false);
+						c.setSottotitolo(t.isSottotitolo(), true);
+						marked.add(t);
+					}
+					else {
+						marked.add(c);
+					}
+				}
+			}
+		}
+		//TODO rimozione marked
 	}
 }

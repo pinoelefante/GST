@@ -7,7 +7,6 @@ FARE
 - premium
 - non ricercare ulteriori puntate se la serie è conclusa (checkbox cerca per questa serie in libreria)
 - ricerca puntata in libreria
-- scaricato, da scaricare, visualizzabile
 - click aggiorna torrent ogni 8-12 ore
 - download automatico utorrent
 - trovare informazioni sugli episodi
@@ -17,7 +16,7 @@ FARE
 - opzioni se scaricare preair, 720p //in download automatico
 - rifare tab Sottotitoli
 - inserire opzioni per abilitare itasa, subsfactory
-- controlli libreria (check_scaricato)
+
 
 DA ULTIMARE
 
@@ -34,5 +33,7 @@ FATTO
 - spostare sottotitoli da scaricare nella classe Torrent 
 - modificare thread ricerca automatica con download 720p e download preair
 - caricamento opzioni download 720p e download preair
+- controlli libreria (check_scaricato)
+- scaricato, da scaricare, visualizzabile
 
 PROBABILMENTE FIXATO

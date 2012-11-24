@@ -311,7 +311,6 @@ public class GestioneSerieTV {
 		st.setInserita(0);
 		st.resetSerie();
 		st.UpdateDB();
-		st.resetEpisodi();
 		getElencoSerieInserite().remove(st);
 		return true;
 	}

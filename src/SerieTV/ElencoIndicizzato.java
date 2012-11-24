@@ -3,16 +3,12 @@ package SerieTV;
 import java.util.ArrayList;
 
 public interface ElencoIndicizzato {
-	public void add(Indexable e);
+	public boolean add(Indexable e);
 	public boolean remove(Indexable e);
-	public boolean remove(int index);
-	public boolean remove(int index, int key);
-	public ArrayList<Indexable> get(int index, int key);
-	public ArrayList<Indexable> get(int i);
-	public int size();
-	public int n_index();
-	public Indexable get(int index, String offkey);
+	public void removeAll();
+	public Indexable get(Indexable e);
+	public ArrayList<Indexable> get(int index);
 	public Indexable get(String offkey);
-	public void reset();
+	public Integer[] getIndexes();
 	public ArrayList<Indexable> getLinear();
 }

@@ -125,19 +125,16 @@ public class Update {
 						int tipo=file.nextInt();
 						if(serie!=null){
 							Torrent t_s=serie.getTorrentBySeasonAndEpisode(seas, ep, tipo==1?true:false);
-							if(t_s!=null){
-								t_s.setSottotitolo(true, false);
-								t_s.update();
-							}
+							if(t_s!=null)
+								t_s.setSottotitolo(true, true);
 						}
 						break;
 					case 't':
 						boolean visto = file.nextBoolean();
-						String url_torrent = file.next();
+						String url_torrent = file.next().trim();
 						if(serie!=null){
 							Torrent t=(Torrent)serie.getEpisodi().get(url_torrent);
-							t.setScaricato(visto==true?Torrent.SCARICATO:Torrent.SCARICARE, false);
-							t.update();
+							t.setScaricato(visto==true?Torrent.SCARICATO:Torrent.SCARICARE, true);
 						}
 						break;
 					case 'e':

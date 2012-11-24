@@ -70,6 +70,7 @@ public class Database {
 					"inserita INTEGER DEFAULT 0," +
 					"id_itasa INTEGER DEFAULT 0," +
 					"tv_rage INTEGER DEFAULT 0,"+
+					"cleanup INTEGER DEFAULT 0,"+
 					"directory_subsfactory TEXT DEFAULT 0)");
 			/**
 			 *  Tabella Torrent

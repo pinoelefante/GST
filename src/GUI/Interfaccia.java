@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Stack;
 
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
@@ -106,7 +105,7 @@ public class Interfaccia {
 		frame.add(TabbedPane);
 
 		creaTabDownload();
-		creaTabRefactor();
+		creaTabLibreria();
 		creaTabOpzioni();
 		OpzioniInizializzaCampi();
 		creaTabItasa();
@@ -331,7 +330,6 @@ public class Interfaccia {
 									i++;
 							}
 							download_label_stato.setText((initial_count-removed) + Language.DOWNLOAD_PUNTATE);
-							//TODO bug#1
 							Interfaccia.libreria_addItemBoxSerie();
 						}
 						catch (InterruptedException e) {
@@ -363,24 +361,6 @@ public class Interfaccia {
 								}
 							}
 							RidisegnaScrollPanel();
-							/*
-							ArrayList<Torrent> rimuovere=new ArrayList<Torrent>();
-							for(int i=0;i<download_panel_scroll.getComponentCount();i++){
-								CasellaDownload casella=(CasellaDownload) download_panel_scroll.getComponent(i);
-								if(casella.getCheckBox().isSelected()){
-									Torrent t=casella.getTorrent();
-									rimuovere.add(t);
-								}
-							}
-							for(int i=0;i<rimuovere.size();i++)
-								rimuovere.get(i).setScaricato(Torrent.IGNORATO, false);
-							RidisegnaScrollPanel();
-							for(int i=0;i<rimuovere.size();i++)
-								rimuovere.get(i).update();
-							Interfaccia.libreria_addItemBoxSerie();
-							rimuovere.clear();
-							rimuovere=null;
-							*/
 						}
 					}
 				}
@@ -444,18 +424,6 @@ public class Interfaccia {
 				
 				for (int i = 0; i < download_torrent_download.size(); i++) {
 					Torrent tor = (Torrent) download_torrent_download.get(i);
-					if(tor.is720p()){
-						if(!Settings.isMostra720p()){
-							tor.setScaricato(Torrent.IGNORATO, true);
-							continue;
-						}
-					}
-					if(tor.isPreAir()){
-						if(!Settings.isMostraPreair()){
-							tor.setScaricato(Torrent.IGNORATO, true);
-							continue;
-						}
-					}
 					CasellaDownload panel_t=new CasellaDownload(tor, download_panel_scroll);
 					download_panel_scroll.add(panel_t);
 				}
@@ -512,7 +480,7 @@ public class Interfaccia {
 						SerieTV st=(SerieTV) download_combo_eztv.getSelectedItem();
 						if(GestioneSerieTV.aggiungiSerie(st)){
 							new ThreadModificaLabel(download_label_notifiche, "  " + st.getNomeSerie() + " " + Language.INSERIMENTO_LABEL_INSERITO + "  ", 1500);
-							//TODO verificare il funzionamento
+							//TODO verificare il funzionamento con subsfactory
 							if(!GestioneSerieTV.getSubManager().associaSerie(st)){
 								if(Settings.isRicercaSottotitoli()){
 									int scelta=(JOptionPane.showConfirmDialog(frame, "Non è stato possibile associare la serie a ItaSA.\nVuoi associarla manualmente?", "Associa ItaSA", JOptionPane.YES_NO_OPTION));
@@ -553,7 +521,7 @@ public class Interfaccia {
 							if (scelta == JOptionPane.YES_OPTION) {
 								String folder = serie.getNomeSerieFolder();
 								if (GestioneSerieTV.rimuoviSerie(serie)) {
-									libreria_box_serie.removeItem(serie);
+									libreria_addItemBoxSerie();
 									File cartella = new File(Settings.getDirectoryDownload() + File.separator + folder);
 									if (cartella.isDirectory()) {
 										int dir_del = JOptionPane.showConfirmDialog(Interfaccia.frame, Language.INSERIMENTO_DIALOGUE_CANCELLA_CARTELLA, Language.INSERIMENTO_DIALOGUE_CANCELLA_CARTELLA_TITLE, 0);
@@ -1152,8 +1120,9 @@ public class Interfaccia {
 	private static JComboBox<String>  libreria_box_ordine=new JComboBox<String>();	
 	protected static JButton libreria_esplora_cartella=new JButton("Apri cartella");
 	protected static JLabel libreria_label_stagioni=new JLabel("Stagione: ");
+	protected static JPanel libreria_panel_scrollable=new JPanel(new GridLayout(8,1));
 	
-	private static void creaTabRefactor() {
+	private static void creaTabLibreria() {
 		@SuppressWarnings("serial")
 		class PanelEpisodio extends JPanel{
 			private Torrent torrent;
@@ -1294,7 +1263,6 @@ public class Interfaccia {
 						}
 						String nome_no_ext=nomepuntata.substring(0, nomepuntata.lastIndexOf("."));
 						if(!OperazioniFile.subExistsFromPartialFilename(Settings.getDirectoryDownload()+torrent.getNomeSerieFolder(), nome_no_ext)){
-							//TODO non mostrare o scaricare sottotitolo se non è nelle impostazioni
 							if(!GestioneSerieTV.getSubManager().scaricaSottotitolo(torrent)){
 								JOptionPane.showMessageDialog(frame, "Non è associato alcun sottotitolo");
 							}
@@ -1330,7 +1298,10 @@ public class Interfaccia {
 										if(files[i].startsWith(nome_files)){
 											if(OperazioniFile.deleteFile(Settings.getDirectoryDownload()+torrent.getNomeSerieFolder()+File.separator+files[i])){
 												torrent.setScaricato(Torrent.RIMOSSO, true);
-												JOptionPane.showMessageDialog(frame, "Episodio cancellato");
+												String file=Settings.getDirectoryDownload()+torrent.getNomeSerieFolder()+File.separator+files[i];
+												String ext=file.substring(file.lastIndexOf("."));
+												if(ext.compareToIgnoreCase(".avi")==0 || ext.compareToIgnoreCase(".mp4")==0 || ext.compareToIgnoreCase(".mkv")==0 )
+													JOptionPane.showMessageDialog(frame, "Episodio cancellato");
 											}
 										}
 									}
@@ -1346,13 +1317,16 @@ public class Interfaccia {
 				});
 			}
 		}
-		final JPanel libreria_panel_scrollable=new JPanel(new GridLayout(8,1));
+		
 		JPanel nord=new JPanel(new BorderLayout());
 		JScrollPane panel_scroll=new JScrollPane(libreria_panel_scrollable);
 		panel_scroll.getVerticalScrollBar().setUnitIncrement(15);
 		
 		libreria_box_ordine.addItem("1-x");
 		libreria_box_ordine.addItem("x-1");
+		libreria_box_serie.setEnabled(false);
+		libreria_box_ordine.setEnabled(false);
+		libreria_box_stagioni.setEnabled(false);
 		
 		nord.add(libreria_box_serie, BorderLayout.NORTH);
 		JPanel nord_s=new JPanel(new BorderLayout());
@@ -1374,37 +1348,33 @@ public class Interfaccia {
 		
 		libreria_box_serie.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if(libreria_box_serie.getSelectedItem()==null)
-					return;
-				
-				SerieTV st = (SerieTV) libreria_box_serie.getSelectedItem();
-				ElencoIndicizzato scaricati=st.getEpisodi();
-				int dim=0;
-				int last_item_count=libreria_box_stagioni.getItemCount();
-				Stack<Integer> serie_sel=new Stack<Integer>();
-				while(dim<scaricati.n_index()){
-					ArrayList<Indexable> list=scaricati.get(dim);
-					if(list.size()>0)
-						serie_sel.push(dim);
-					dim++;
+				SerieTV st=(SerieTV) libreria_box_serie.getSelectedItem();
+				if(st!=null){
+					libreria_box_stagioni.removeAllItems();
+					Integer[] stagioni=st.getEpisodi().getIndexes();
+					for(int i=stagioni.length-1;i>=0;i--)
+						libreria_box_stagioni.addItem(stagioni[i]);
+					if(stagioni.length>0){
+						libreria_box_stagioni.setEnabled(true);
+						libreria_box_ordine.setEnabled(true);
+					}
 				}
-				while(!serie_sel.isEmpty())
-					libreria_box_stagioni.addItem(serie_sel.pop());
-				while(last_item_count>0){
-					libreria_box_stagioni.removeItemAt(0);
-					last_item_count--;
+				else{
+					libreria_box_serie.setEnabled(false);
+					libreria_box_stagioni.setEnabled(false);
+					libreria_box_ordine.setEnabled(false);
 				}
-				frame.revalidate();
-				frame.repaint();
 			}
 		});
 		libreria_box_stagioni.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				libreria_box_ordine.getActionListeners()[0].actionPerformed(new ActionEvent(libreria_box_ordine, 0, ""));
+				if(libreria_box_stagioni.getItemCount()>0)
+					libreria_box_ordine.getActionListeners()[0].actionPerformed(new ActionEvent(libreria_box_ordine, 0, ""));
 			}
 		});
 		libreria_box_ordine.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				
 				int stagione=(Integer)libreria_box_stagioni.getSelectedItem();
 				
 				SerieTV st = (SerieTV) libreria_box_serie.getSelectedItem();
@@ -1431,11 +1401,15 @@ public class Interfaccia {
 				}
 				frame.revalidate();
 				frame.repaint();
+				
 			}
 		});
 		libreria_esplora_cartella.setIcon(Resource.getIcona("res/cartella.png"));
 		libreria_esplora_cartella.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				if(libreria_box_serie.getSelectedItem()==null)
+					return;
+				
 				String folder=Settings.getDirectoryDownload()+File.separator+((SerieTV)libreria_box_serie.getSelectedItem()).getNomeSerieFolder();
 				try {
 					OperazioniFile.esploraCartella(folder);
@@ -1456,6 +1430,11 @@ public class Interfaccia {
 			libreria_box_serie.addItem(GestioneSerieTV.getElencoSerieInserite().get(i));
 		}
 		libreria_box_serie.setEnabled(libreria_box_serie.getItemCount() > 0);
+		libreria_box_ordine.setEnabled(libreria_box_serie.getItemCount() > 0);
+		libreria_box_stagioni.setEnabled(libreria_box_serie.getItemCount() > 0);
+		if(libreria_box_serie.getItemCount() == 0)
+			libreria_panel_scrollable.removeAll();
+		
 		panel_refactor.revalidate();
 		panel_refactor.repaint();
 	}
@@ -1840,7 +1819,7 @@ public class Interfaccia {
 			Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 			frame_wizard_opzioni.setBounds(screen.width / 2 - 300 / 2, screen.height / 2 - 80, 300, 300);
 			frame_wizard_opzioni.setResizable(false);
-			frame_wizard_opzioni.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE );
+			//frame_wizard_opzioni.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE );
 			frame_wizard_opzioni.setVisible(true);
 			frame_wizard_opzioni.setAlwaysOnTop(false);
 		}
@@ -1848,8 +1827,7 @@ public class Interfaccia {
 	}
 
 	public static JFrame getFrameOpzioni() {
-		// TODO get frame opzioni
-		return null;
+		return frame_wizard_opzioni;
 	}
 	
 }

@@ -233,17 +233,7 @@ public class Torrent implements Indexable{
 	public String getNomeSerieFolder() {
 		return nomeserie.replace(":", "-").replace("?", "").replace("/", "-").replace("\\", "-").replace("*", "").replace("<", "").replace(">", "").replace("|", "").replace("\"", "");
 	}
-	@Override
-	public int getIndex() {
-		return serie;
-	}
-	@Override
-	public int getKey() {
-		return puntata;
-	}
-	public String getOffKey(){
-		return url;
-	}
+	
 	public int getIdSerie() {
 		return id_serie;
 	}
@@ -298,7 +288,7 @@ public class Torrent implements Indexable{
 		int i=0;
 		SQLParameter[] par=new SQLParameter[9];
 		par[i++]=new SQLParameter(SQLParameter.INTEGER, getIdSerie(), "id_serie");
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, scaricato, "vista");
+		par[i++]=new SQLParameter(SQLParameter.INTEGER, getScaricato(), "vista");
 		par[i++]=new SQLParameter(SQLParameter.INTEGER, getSerie(), "serie");
 		par[i++]=new SQLParameter(SQLParameter.INTEGER, getPuntata(), "episodio");
 		par[i++]=new SQLParameter(SQLParameter.INTEGER, is720p()?1:0, "HD720p");
@@ -317,5 +307,25 @@ public class Torrent implements Indexable{
 	}
 	public int getScaricato(){
 		return scaricato;
+	}
+	
+	public void setOffKey(String key) {
+		setUrl(key);
+	}
+	public int getIndex() {
+		return serie;
+	}
+	public int getKey() {
+		return puntata;
+	}
+	public String getOffKey(){
+		return url;
+	}
+	@Override
+	public String getOffKeyTrim() {
+		if(getUrl().contains("&dn"))
+			return getUrl().substring(0, getUrl().indexOf("&dn")).toLowerCase();
+		else
+			return getUrl();
 	}
 }

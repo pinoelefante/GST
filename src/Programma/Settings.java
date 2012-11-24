@@ -69,7 +69,7 @@ public class Settings {
 		AggiornaDB();
 	}
 	public static String getDirectoryDownload() {
-		return DirectoryDownload;
+		return DirectoryDownload+(DirectoryDownload.endsWith(File.separator)?"":File.separator);
 	}
 	public static void setDirectoryDownload(String directoryDownload) {
 		DirectoryDownload = directoryDownload;
