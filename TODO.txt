@@ -19,8 +19,6 @@ FARE
 - inserire opzioni per abilitare itasa, subsfactory
 - controlli libreria (check_scaricato)
 
-
-
 DA ULTIMARE
 
 FATTO

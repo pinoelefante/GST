@@ -185,7 +185,7 @@ public class OperazioniFile {
 		input.close();
 		return estratti;
 	}
-	public static boolean partialfile_exists(String folder, String path){
+	public static boolean subExistsFromPartialFilename(String folder, String path){
 		File dir=new File(folder);
 		if(dir.exists()){
 			if(dir.isDirectory()){

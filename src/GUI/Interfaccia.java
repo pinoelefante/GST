@@ -444,6 +444,18 @@ public class Interfaccia {
 				
 				for (int i = 0; i < download_torrent_download.size(); i++) {
 					Torrent tor = (Torrent) download_torrent_download.get(i);
+					if(tor.is720p()){
+						if(!Settings.isMostra720p()){
+							tor.setScaricato(Torrent.IGNORATO, true);
+							continue;
+						}
+					}
+					if(tor.isPreAir()){
+						if(!Settings.isMostraPreair()){
+							tor.setScaricato(Torrent.IGNORATO, true);
+							continue;
+						}
+					}
 					CasellaDownload panel_t=new CasellaDownload(tor, download_panel_scroll);
 					download_panel_scroll.add(panel_t);
 				}
@@ -1216,27 +1228,42 @@ public class Interfaccia {
 				switch(stato){
 					case Torrent.SCARICARE:
 						this.stato.setText(Language.REFACTOR_LABEL_TODOWNLOAD);
+						check_scaricato.setSelected(false);
 						break;
 					case Torrent.SCARICATO:
 						this.stato.setText(Language.REFACTOR_LABEL_DOWNLOADED);
+						check_scaricato.setSelected(true);
 						break;
 					case Torrent.IGNORATO:
-						this.stato.setText("Ignorato");
+						this.stato.setText("IGNORATO");
+						check_scaricato.setSelected(true);
 						break;
 					case Torrent.RIMOSSO:
-						this.stato.setText("Rimosso");
+						this.stato.setText("RIMOSSO");
+						check_scaricato.setSelected(true);
 						break;
 					case Torrent.VISTO:
-						this.stato.setText("Visto");
+						this.stato.setText("VISTO");
 						break;
 				}
 			}
 			private void addListener(){
 				check_scaricato.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
-						torrent.setScaricato(check_scaricato.isSelected()?Torrent.SCARICATO:Torrent.SCARICARE, true);
+						if(check_scaricato.isSelected()){
+							try {
+								OperazioniFile.cercavideofile(torrent);
+								torrent.setScaricato(Torrent.SCARICATO, true);
+							}
+							catch (FileNotFoundException e) {
+								torrent.setScaricato(Torrent.RIMOSSO, true);
+							}
+						}
+						else{
+							torrent.setScaricato(Torrent.SCARICARE, true);
+							RidisegnaScrollPanel();
+						}
 						setLabelStato(torrent.getScaricato());
-						RidisegnaScrollPanel();
 					}
 				});
 				scarica.addActionListener(new ActionListener() {
@@ -1262,10 +1289,11 @@ public class Interfaccia {
 						}
 						catch (FileNotFoundException e1) {
 							JOptionPane.showMessageDialog(frame, "File video non trovato");
+							setLabelStato(Torrent.RIMOSSO);
 							return; 
 						}
 						String nome_no_ext=nomepuntata.substring(0, nomepuntata.lastIndexOf("."));
-						if(!OperazioniFile.partialfile_exists(Settings.getDirectoryDownload()+torrent.getNomeSerieFolder(), nome_no_ext)){
+						if(!OperazioniFile.subExistsFromPartialFilename(Settings.getDirectoryDownload()+torrent.getNomeSerieFolder(), nome_no_ext)){
 							//TODO non mostrare o scaricare sottotitolo se non è nelle impostazioni
 							if(!GestioneSerieTV.getSubManager().scaricaSottotitolo(torrent)){
 								JOptionPane.showMessageDialog(frame, "Non è associato alcun sottotitolo");
@@ -1300,8 +1328,10 @@ public class Interfaccia {
 									for(int i=0;i<files.length;i++){
 										//System.out.println("Cancellando: "+files[i]);
 										if(files[i].startsWith(nome_files)){
-											if(OperazioniFile.deleteFile(Settings.getDirectoryDownload()+torrent.getNomeSerieFolder()+File.separator+files[i]))
+											if(OperazioniFile.deleteFile(Settings.getDirectoryDownload()+torrent.getNomeSerieFolder()+File.separator+files[i])){
 												torrent.setScaricato(Torrent.RIMOSSO, true);
+												JOptionPane.showMessageDialog(frame, "Episodio cancellato");
+											}
 										}
 									}
 								}
@@ -1803,9 +1833,17 @@ public class Interfaccia {
 			}
 		});
 	}
-
+	private static JFrame frame_wizard_opzioni;
 	public static void ShowFrameOpzioni() {
-		//TODO creare Wizard opzioni
+		if(frame_wizard_opzioni==null){
+			frame_wizard_opzioni=new JFrame("Wizard");
+			Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+			frame_wizard_opzioni.setBounds(screen.width / 2 - 300 / 2, screen.height / 2 - 80, 300, 300);
+			frame_wizard_opzioni.setResizable(false);
+			frame_wizard_opzioni.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE );
+			frame_wizard_opzioni.setVisible(true);
+			frame_wizard_opzioni.setAlwaysOnTop(false);
+		}
 		
 	}
 

@@ -60,7 +60,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 	private boolean locked=true;
 	private Thread LoggerItasa;
 	private GregorianCalendar RSS_UltimoAggiornamento;
-	private final long update_time_rss=900000L;
+	private final long update_time_rss=900000L;  //15 minuti
 	
 	public ItalianSubs(){
 		feed_rss=new ArrayList<RSSItem>();
@@ -603,17 +603,6 @@ public class ItalianSubs implements ProviderSottotitoli{
 	public ArrayList<SerieSub> getElencoSerie() {
 		return elenco_serie;
 	}
-	/* TEST del 20/11/2012 per ricerca nel feed rss - risultato positivo
-	public static void main(String[] args){
-		ItalianSubs it=new ItalianSubs();
-		Torrent t=new Torrent("", Torrent.SCARICARE, "Revolution", 0);
-		t.setEpisodio(9);
-		t.setStagione(1);
-		t.set720p(true);
-		int id=it.cercaFeed(3566, t);
-		System.out.println("Id: "+id);
-	}
-	*/
 
 	@Override
 	public String getProviderName() {

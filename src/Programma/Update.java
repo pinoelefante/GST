@@ -13,30 +13,20 @@ import SerieTV.GestioneSerieTV;
 public class Update {
 	public static void start() {
 		if(Settings.isNewUpdate()){
+			boolean option_set=false;
 			switch(Settings.getLastVersion()){
 				case 0: { //versione < 81 - prima release con questo metodo
-					Interfaccia.ShowFrameOpzioni();
-					
-					while(Interfaccia.getFrameOpzioni()!=null && Interfaccia.getFrameOpzioni().isVisible()){
-						try {Thread.sleep(1000);}
-						catch (InterruptedException e) {}
+					if(!OperazioniFile.fileExists("settings.dat")){
+						option_set=true;
+						Interfaccia.ShowFrameOpzioni();	
+						if(Interfaccia.getFrameOpzioni()!=null)
+							while(Interfaccia.getFrameOpzioni().isVisible())
+								try {Thread.sleep(1000);} catch (InterruptedException e) {}
 					}
-					/*
-					if(Settings.isRicercaSottotitoli()){
-						int scelta=JOptionPane.showConfirmDialog(Main.fl.getFrame(), "Vuoi associare con il modulo ItaSA per il download dei sottotitoli?", "Associazione sottotitoli", JOptionPane.YES_NO_OPTION);
-						if(scelta==JOptionPane.YES_OPTION){
-							Interfaccia.associaFrame();
-							while(Interfaccia.frame_associa_itasa!=null && Interfaccia.frame_associa_itasa.isVisible()){
-								try {Thread.sleep(1000);}
-								catch (InterruptedException e) {}
-							}
-						}
-					}
-					*/
-					Settings.setLastVersion(81);
 				}
 				case 85:{
-					update_85_to_86_settings();
+					if(!option_set)
+						update_85_to_86_settings();
 					try{
 						update_85_to_86_db();
 					}
@@ -88,7 +78,9 @@ public class Update {
 			}
 			file.close();
 			OperazioniFile.deleteFile("settings.dat");
-		} catch (FileNotFoundException e) {}
+		} catch (FileNotFoundException e) {
+			//TODO mostrare frame per inserire le opzioni
+		}
 	}
 	private static void update_85_to_86_db(){
 		if(GestioneSerieTV.Showlist()){
@@ -155,7 +147,6 @@ public class Update {
 				}
 			}
 			file.close();
-			OperazioniFile.deleteFile("st.dat");
 		}
 	}
 }
