@@ -37,7 +37,7 @@ public class Main {
 			catch (InstantiationException localInstantiationException) {}
 			catch (IllegalAccessException localIllegalAccessException) {}
 			catch (UnsupportedLookAndFeelException localUnsupportedLookAndFeelException) {}
-			
+			/*
 			fl=new FrameLoading();
 			fl.start();
 			try {
@@ -103,7 +103,7 @@ public class Main {
 			if(Settings.isItasaThreadAutoDownload()){
 				GestioneSerieTV.getSubManager().avviaRicercaAutomatica();
 			}
-			
+			*/
 			//TODO rimuovere
 			GUI.Interfaccia.ShowFrameOpzioni();
 		}

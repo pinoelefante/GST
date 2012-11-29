@@ -485,7 +485,7 @@ public class Interfaccia {
 							//TODO verificare il funzionamento con subsfactory
 							if(!GestioneSerieTV.getSubManager().associaSerie(st)){
 								if(Settings.isRicercaSottotitoli()){
-									int scelta=(JOptionPane.showConfirmDialog(frame, "Non è stato possibile associare la serie a ItaSA.\nVuoi associarla manualmente?", "Associa ItaSA", JOptionPane.YES_NO_OPTION));
+									int scelta=(JOptionPane.showConfirmDialog(frame, "Non ï¿½ stato possibile associare la serie a ItaSA.\nVuoi associarla manualmente?", "Associa ItaSA", JOptionPane.YES_NO_OPTION));
 									if(scelta==JOptionPane.YES_OPTION){
 										associaFrame();
 										associa_serie.setSelectedItem((SerieTV)download_combo_eztv.getSelectedItem());
@@ -1022,7 +1022,7 @@ public class Interfaccia {
 								bot_scarica.setEnabled(down_en);
 								if(down_en){
 									lab_stat.setText("Sottotitolo trovato");
-									sottotitoli_textarea_log.append(puntata.toString()+" è disponibile"+"\n");
+									sottotitoli_textarea_log.append(puntata.toString()+" ï¿½ disponibile"+"\n");
 								}
 								else
 									lab_stat.setText("Sottotitolo non trovato");
@@ -1051,7 +1051,7 @@ public class Interfaccia {
 							public void run(){
 								boolean res=GestioneSerieTV.getSubManager().scaricaSottotitolo(puntata);
 								if(res){
-									sottotitoli_textarea_log.append(puntata.toString()+" è stato scaricato"+"\n");
+									sottotitoli_textarea_log.append(puntata.toString()+" ï¿½ stato scaricato"+"\n");
 									bot_rimuovi.doClick();
 								}
 							}
@@ -1270,7 +1270,7 @@ public class Interfaccia {
 						String nome_no_ext=nomepuntata.substring(0, nomepuntata.lastIndexOf("."));
 						if(!OperazioniFile.subExistsFromPartialFilename(Settings.getDirectoryDownload()+torrent.getNomeSerieFolder(), nome_no_ext)){
 							if(!GestioneSerieTV.getSubManager().scaricaSottotitolo(torrent)){
-								JOptionPane.showMessageDialog(frame, "Non è associato alcun sottotitolo");
+								JOptionPane.showMessageDialog(frame, "Non ï¿½ associato alcun sottotitolo");
 							}
 						}
 						
@@ -1318,7 +1318,7 @@ public class Interfaccia {
 							}
 						}
 						catch (FileNotFoundException e1) {
-							JOptionPane.showMessageDialog(frame, "Il file non era presente.\nSi imposterà lo stato di RIMOSSO.");
+							JOptionPane.showMessageDialog(frame, "Il file non era presente.\nSi imposterï¿½ lo stato di RIMOSSO.");
 							torrent.setScaricato(Torrent.RIMOSSO, true);
 						}
 						setLabelStato(torrent.getScaricato());
@@ -1827,7 +1827,7 @@ public class Interfaccia {
 		class FrameOpzioni {
 			private static final String	WIZARD_LABEL_LINGUA	= "Lingua";
 			private int current_view=1;
-			private JPanel view1, view2, view3, view4, view5, view6;
+			private JPanel view1, view2, view3, view4;
 			private JButton next, back;
 			
 			public FrameOpzioni(){
@@ -1899,8 +1899,20 @@ public class Interfaccia {
 						frame_wizard_opzioni.add(view2, BorderLayout.CENTER);
 						break;
 					case 3:
+						if(view3==null)
+							create_view3();
+						frame_wizard_opzioni.setSize(400, 200);
+						back.setEnabled(true);
+						next.setEnabled(true);
+						frame_wizard_opzioni.add(view3, BorderLayout.CENTER);
 						break;
 					case 4:
+						if(view4==null)
+							create_view4();
+						frame_wizard_opzioni.setSize(500, 300);
+						back.setEnabled(true);
+						next.setEnabled(true);
+						frame_wizard_opzioni.add(view4, BorderLayout.CENTER);
 						break;
 				}
 				frame_wizard_opzioni.revalidate();
@@ -1976,9 +1988,49 @@ public class Interfaccia {
 				view2.add(ask_onclose);
 			}
 			private void create_view3(){
-				view3=new JPanel();
+				view3=new JPanel(new GridLayout(4, 1));
+				frame_wizard_opzioni.setTitle("Opzioni - Download");
+				final JCheckBox mostra_preair=new JCheckBox("Mostra pre-air");
+				mostra_preair.setSelected(Settings.isMostraPreair());
+				final JCheckBox mostra_720p=new JCheckBox("Mostra 720p");
+				mostra_720p.setSelected(Settings.isMostra720p());
+				mostra_preair.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						Settings.setMostraPreair(mostra_preair.isSelected());
+					}
+				});
+				mostra_720p.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						Settings.setMostra720p(mostra_720p.isSelected());
+					}
+				});
+				view3.add(mostra_preair);
+				view3.add(mostra_720p);
+				
+				//TODO completare con i listener
+				JPanel p_cl_1=new JPanel();
+				JLabel label_path_client=new JLabel("Client");
+				JLabel label_path_download=new JLabel("Directory");
+				JTextField textfield_client=new JTextField(15);
+				JTextField textfield_directory_download=new JTextField(15);
+				JButton bottone_seleziona_client=new JButton("Seleziona");
+				JButton bottone_directory_download=new JButton("Seleziona");
+				p_cl_1.add(label_path_client);
+				p_cl_1.add(textfield_client);
+				p_cl_1.add(bottone_seleziona_client);
+				view3.add(p_cl_1);
+				JPanel p_dir=new JPanel();
+				p_dir.add(label_path_download);
+				p_dir.add(textfield_directory_download);
+				p_dir.add(bottone_directory_download);
+				view3.add(p_dir);
+				
+			}
+			private void create_view4(){
+				
 			}
 		}
+		
 		if(frame_wizard_opzioni==null){
 			frame_wizard_opzioni=new JFrame("Wizard");
 			Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
