@@ -1893,7 +1893,7 @@ public class Interfaccia {
 					case 2:
 						if(view2==null)
 							create_view2();
-						frame_wizard_opzioni.setSize(450, 300);
+						frame_wizard_opzioni.setSize(300, 150);
 						back.setEnabled(true);
 						next.setEnabled(true);
 						frame_wizard_opzioni.add(view2, BorderLayout.CENTER);
@@ -1939,7 +1939,6 @@ public class Interfaccia {
 				});
 			}
 			private void create_view2(){
-				view2=new JPanel(new BorderLayout());
 				frame_wizard_opzioni.setTitle("Opzioni - Aspetto");
 				final JCheckBox start_win=new JCheckBox("Avvia con il sistema operativo");
 				start_win.setSelected(Settings.isAutostart());
@@ -1975,6 +1974,9 @@ public class Interfaccia {
 				view2.add(start_hidden);
 				view2.add(always_top);
 				view2.add(ask_onclose);
+			}
+			private void create_view3(){
+				view3=new JPanel();
 			}
 		}
 		if(frame_wizard_opzioni==null){

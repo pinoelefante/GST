@@ -24,6 +24,8 @@ public class GestoreSottotitoli {
 			do{
 				for(int i=0;i<sottotitoli_da_scaricare.size();){
 					Torrent t=sottotitoli_da_scaricare.get(i);
+					if(t==null)
+						continue;
 					System.out.println("Thread sottotitolo - Cercando "+t);
 					if(!scaricaSottotitolo(t))
 						i++;
