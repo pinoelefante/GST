@@ -59,6 +59,8 @@ import chrriis.dj.nativeswing.swtimpl.components.WebBrowserNavigationEvent;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserWindowOpeningEvent;
 import chrriis.dj.nativeswing.swtimpl.components.WebBrowserWindowWillOpenEvent;
 
+import Database.Database;
+import Database.SQLParameter;
 import Programma.Download;
 import Programma.Main;
 import Programma.OperazioniFile;
@@ -127,7 +129,7 @@ public class Interfaccia {
 				if (Settings.isAskOnClose()) {
 					int scelta = JOptionPane.showConfirmDialog(frame, Language.DIALOGUE_EXIT_PROMPT, Language.DIALOGUE_EXIT_PROMPT_TITLE, 0);
 					if (scelta == JOptionPane.YES_OPTION) {
-						Database.Database.Disconnect();
+						Database.Disconnect();
 						frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 					}
 					else {
@@ -974,7 +976,7 @@ public class Interfaccia {
 	public	static JTextArea				sottotitoli_textarea_log				= new JTextArea(5, 90);
 	
 	private static void creaTabItasa() {
-		final JPanel scroll_sub = new JPanel(new GridLayout(5, 1));;
+		final JPanel scroll_sub = new JPanel(new GridLayout(5, 1));
 		
 		class PanelSub extends JPanel {
 			private static final long	serialVersionUID	= 1L;
@@ -989,7 +991,10 @@ public class Interfaccia {
 				this.puntata = sub;
 				crea();
 			}
-
+			//TODO completare aggiorna log
+			private void aggiornaLog(){
+				ArrayList<SQLParameter[]> res=Database.select(Database.TABLE_LOGSUB, null, "AND", "=");
+			}
 			private void crea() {
 				setLayout(new BorderLayout());
 				setBorder(new EtchedBorder());
@@ -1017,7 +1022,7 @@ public class Interfaccia {
 								bot_scarica.setEnabled(down_en);
 								if(down_en){
 									lab_stat.setText("Sottotitolo trovato");
-									sottotitoli_textarea_log.append(puntata.toString()+" ï¿½ disponibile"+"\n");
+									sottotitoli_textarea_log.append(puntata.toString()+" è disponibile"+"\n");
 								}
 								else
 									lab_stat.setText("Sottotitolo non trovato");
@@ -1046,7 +1051,7 @@ public class Interfaccia {
 							public void run(){
 								boolean res=GestioneSerieTV.getSubManager().scaricaSottotitolo(puntata);
 								if(res){
-									sottotitoli_textarea_log.append(puntata.toString()+" Ã¨ stato scaricato"+"\n");
+									sottotitoli_textarea_log.append(puntata.toString()+" è stato scaricato"+"\n");
 									bot_rimuovi.doClick();
 								}
 							}
@@ -1070,6 +1075,7 @@ public class Interfaccia {
 		sottotitoli_textarea_log.setEditable(false);
 		sottotitoli_textarea_log.setAutoscrolls(true);
 		sottotitoli_textarea_log.setWrapStyleWord(true);
+		
 		/*
 		scroll_log.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {  
 			public void adjustmentValueChanged(AdjustmentEvent e) {  
@@ -1286,6 +1292,8 @@ public class Interfaccia {
 				cancella.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						try {
+							if(JOptionPane.showConfirmDialog(frame, "Sei sicuro di voler eliminare l'episodio?", torrent.toString(), JOptionPane.YES_NO_OPTION)!=JOptionPane.YES_OPTION)
+								return;
 							String nome=OperazioniFile.cercavideofile(torrent);
 							String nome_files=nome.substring(0,nome.lastIndexOf("."));
 							File dir=new File(Settings.getDirectoryDownload()+torrent.getNomeSerieFolder());
@@ -1297,7 +1305,8 @@ public class Interfaccia {
 										//System.out.println("Cancellando: "+files[i]);
 										if(files[i].startsWith(nome_files)){
 											if(OperazioniFile.deleteFile(Settings.getDirectoryDownload()+torrent.getNomeSerieFolder()+File.separator+files[i])){
-												torrent.setScaricato(Torrent.RIMOSSO, true);
+												torrent.setScaricato(Torrent.RIMOSSO, false);
+												torrent.setSottotitolo(false, true);
 												String file=Settings.getDirectoryDownload()+torrent.getNomeSerieFolder()+File.separator+files[i];
 												String ext=file.substring(file.lastIndexOf("."));
 												if(ext.compareToIgnoreCase(".avi")==0 || ext.compareToIgnoreCase(".mp4")==0 || ext.compareToIgnoreCase(".mkv")==0 )
@@ -1813,15 +1822,170 @@ public class Interfaccia {
 		});
 	}
 	private static JFrame frame_wizard_opzioni;
+	//TODO Completare frame opzioni
 	public static void ShowFrameOpzioni() {
+		class FrameOpzioni {
+			private static final String	WIZARD_LABEL_LINGUA	= "Lingua";
+			private int current_view=1;
+			private JPanel view1, view2, view3, view4, view5, view6;
+			private JButton next, back;
+			
+			public FrameOpzioni(){
+				JPanel bottom=new JPanel();
+				next=new JButton("Avanti");
+				back=new JButton("Indietro");
+				bottom.add(back);
+				bottom.add(next);
+				
+				back.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						current_view--;
+						go_to();
+						remove_current_panel(current_view+1);
+					}
+				});
+				next.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						current_view++;
+						go_to();
+						remove_current_panel(current_view-1);
+					}
+				});
+				frame_wizard_opzioni.add(bottom, BorderLayout.SOUTH);
+				go_to();
+			}
+			private void remove_current_panel(int view){
+				switch(view){
+					case 1:
+						frame_wizard_opzioni.remove(view1);
+						view1.removeAll();
+						view1=null;
+						break;
+					case 2:
+						frame_wizard_opzioni.remove(view2);
+						view2.removeAll();
+						view2=null;
+						break;
+					case 3:
+						frame_wizard_opzioni.remove(view3);
+						view3.removeAll();
+						view3=null;
+						
+						break;
+					case 4:
+						frame_wizard_opzioni.remove(view4);
+						view4.removeAll();
+						view4=null;
+						break;
+				}
+			}
+			
+			private void go_to(){
+				switch(current_view){
+					case 1:
+						if(view1==null)
+							create_view1();
+						frame_wizard_opzioni.setSize(300, 150);
+						back.setEnabled(false);
+						next.setEnabled(true);
+						frame_wizard_opzioni.add(view1, BorderLayout.CENTER);
+						break;
+					case 2:
+						if(view2==null)
+							create_view2();
+						frame_wizard_opzioni.setSize(450, 300);
+						back.setEnabled(true);
+						next.setEnabled(true);
+						frame_wizard_opzioni.add(view2, BorderLayout.CENTER);
+						break;
+					case 3:
+						break;
+					case 4:
+						break;
+				}
+				frame_wizard_opzioni.revalidate();
+				frame_wizard_opzioni.repaint();
+			}
+			
+			private void create_view1(){
+				view1=new JPanel(new BorderLayout());
+				final JLabel lab_lingua=new JLabel(WIZARD_LABEL_LINGUA);
+				frame_wizard_opzioni.setTitle("Opzioni - Lingua");
+				final JComboBox<String> combo_lingua=new JComboBox<String>();
+				JPanel center= new JPanel();
+				center.add(lab_lingua);
+				center.add(combo_lingua);
+				combo_lingua.addItem("Italiano");
+				combo_lingua.addItem("English");
+				combo_lingua.setSelectedIndex(Settings.getLingua()-1);
+				view1.add(center, BorderLayout.CENTER);
+				combo_lingua.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						switch((String)combo_lingua.getSelectedItem()){
+							case "Italiano":
+								lab_lingua.setText(WIZARD_LABEL_LINGUA);
+								Settings.setLingua(1);
+								back.setText("Indietro");
+								next.setText("Avanti");
+								break;
+							case "English":
+								lab_lingua.setText("Language");
+								Settings.setLingua(2);
+								back.setText("Back");
+								next.setText("Next");
+								break;
+						}
+					}
+				});
+			}
+			private void create_view2(){
+				view2=new JPanel(new BorderLayout());
+				frame_wizard_opzioni.setTitle("Opzioni - Aspetto");
+				final JCheckBox start_win=new JCheckBox("Avvia con il sistema operativo");
+				start_win.setSelected(Settings.isAutostart());
+				final JCheckBox start_hidden=new JCheckBox("Avvia ridotto a icona");
+				start_hidden.setSelected(Settings.isStartHidden());
+				final JCheckBox always_top=new JCheckBox("Sempre in primo piano");
+				always_top.setSelected(Settings.isAlwaysOnTop());
+				final JCheckBox ask_onclose=new JCheckBox("Chiedi conferma prima di uscire");
+				ask_onclose.setSelected(Settings.isAskOnClose());
+				
+				start_win.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						Settings.setAutostart(start_win.isSelected());
+					}
+				});
+				start_hidden.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						Settings.setStartHidden(start_hidden.isSelected());
+					}
+				});
+				always_top.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						Settings.setAlwaysOnTop(always_top.isSelected());
+					}
+				});
+				ask_onclose.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						Settings.setAskOnClose(ask_onclose.isSelected());
+					}
+				});
+				view2=new JPanel(new GridLayout(4,1));
+				view2.add(start_win);
+				view2.add(start_hidden);
+				view2.add(always_top);
+				view2.add(ask_onclose);
+			}
+		}
 		if(frame_wizard_opzioni==null){
 			frame_wizard_opzioni=new JFrame("Wizard");
 			Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 			frame_wizard_opzioni.setBounds(screen.width / 2 - 300 / 2, screen.height / 2 - 80, 300, 300);
 			frame_wizard_opzioni.setResizable(false);
-			//frame_wizard_opzioni.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE );
+			frame_wizard_opzioni.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			frame_wizard_opzioni.setVisible(true);
 			frame_wizard_opzioni.setAlwaysOnTop(false);
+			new FrameOpzioni();
 		}
 		
 	}

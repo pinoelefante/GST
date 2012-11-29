@@ -103,6 +103,8 @@ public class Main {
 			if(Settings.isItasaThreadAutoDownload()){
 				GestioneSerieTV.getSubManager().avviaRicercaAutomatica();
 			}
+			//TODO rimuovere
+			GUI.Interfaccia.ShowFrameOpzioni();
 		}
 		catch(Exception e){
 			JOptionPane.showMessageDialog(null, e.getMessage());
