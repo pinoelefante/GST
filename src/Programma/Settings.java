@@ -8,7 +8,7 @@ import Database.Database;
 import Database.SQLParameter;
 
 public class Settings {
-	private static final int	VersioneSoftware				= 86;
+	private static final int	VersioneSoftware					= 86;
 	private static int			Client								= 1;
 	public static final String	IndirizzoDonazioni					= "http://pinoelefante.altervista.org/donazioni/donazione_gst.html";
 	private static final String	NomeEseguibile						= "GestioneSerieTV5.exe";
@@ -22,7 +22,7 @@ public class Settings {
 	private static boolean		DownloadAutomatico					= false;
 	private static int			MinRicerca							= 480;
 	private static int			MinRicercaMilli						= MinRicerca * 60 * 1000;
-	private static String		SistemaOperativo;
+	private static String		SistemaOperativo					= "";
 	private static int			Lingua								= 1;
 	private static boolean		canStartDownloadAutomatico			= false;
 	
@@ -34,7 +34,6 @@ public class Settings {
 	private static String		VLCPath								= "";
 	private static String		Itasa_Username						= "";
 	private static String		Itasa_Password						= "";
-//	private static boolean		ItasaThread_DownloadOrNotifica		= true;
 	private static boolean		mostraPreair						= true;
 	private static boolean		mostra720p							= true;
 	private static String		ClientID = "";
@@ -193,14 +192,6 @@ public class Settings {
 		Itasa_Password = itasa_Password;
 		AggiornaDB();
 	}
-/*	public static boolean isItasaThreadAutoDownload() {
-		return ItasaThread_DownloadOrNotifica;
-	}
-	public static void setItasaThreadAutoDownload(boolean itasa_ThreadAutoDownload) {
-		ItasaThread_DownloadOrNotifica = itasa_ThreadAutoDownload;
-		AggiornaDB();
-	}
-*/
 	public static boolean isMostraPreair() {
 		return mostraPreair;
 	}
@@ -353,28 +344,6 @@ public class Settings {
 		return true;
 	}
 	private static void AggiornaDB() {
-		/*
-		"dir_download TEXT DEFAULT ''," +
-		"dir_client TEXT DEFAULT ''," +
-		"dir_vlc TEXT DEFAULT ''," +
-		"tray_on_icon INTEGER DEFAULT 1," +
-		"start_hidden INTEGER DEFAULT 0," +
-		"ask_on_close INTEGER DEFAULT 1," +
-		"always_on_top INTEGER DEFAULT 0," +
-		"start_win INTEGER DEFAULT 1," +
-		"ricerca_auto INTEGER DEFAULT 0," +
-		"min_ricerca INTEGER DEFAULT 720," +
-		"lingua INTEGER DEFAULT 0," +
-		"new_update INTEGER DEFAULT 1," +
-		"last_version INTEGER DEFAULT 0," +
-		"numero_avvii INTEGER DEFAULT 1," +
-		"ricerca_sub INTEGER DEFAULT 1," +
-		"itasa_id TEXT DEFAULT ''," +
-		"itasa_pass TEXT DEFAULT ''," +
-		"client_id TEXT DEFAULT ''," +
-		"mostra_preair INTEGER DEFAULT 1," +
-		"mostra_720p INTEGER DEFAULT 1" +
-		*/
 		SQLParameter[] par=new SQLParameter[20];
 		int i=0;
 		par[i++]=new SQLParameter(SQLParameter.TEXT, getDirectoryDownload(), "dir_download");
