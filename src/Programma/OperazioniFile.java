@@ -191,6 +191,10 @@ public class OperazioniFile {
 			if(dir.isDirectory()){
 				String[] files=dir.list();
 				for(int i=0;i<files.length;i++){
+					//TODO rimuovere. è solo un test (FARE CONTROLLO SE IL FILE è UNA CARTELLA)
+					if(!files[i].contains("."))
+						continue;
+					
 					String ext=files[i].substring(files[i].lastIndexOf("."));
 					if(ext.compareToIgnoreCase(".avi")==0 || ext.compareToIgnoreCase(".mp4")==0 || ext.compareToIgnoreCase(".mkv")==0)
 						continue;

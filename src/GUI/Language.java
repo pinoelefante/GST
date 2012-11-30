@@ -343,7 +343,7 @@ public class Language {
 
 //		Interfaccia.libreria_bottone_modifica.setText(REFACTOR_BOTTONE_MODIFICA);
 //		Interfaccia.libreria_bottone_salva.setText(REFACTOR_BOTTONE_SALVA);
-		Interfaccia.opzioni_box_itasa.setText(OPZIONI_ITASA);
+		Interfaccia.opzioni_box_ricerca_sottotitoli.setText(OPZIONI_ITASA);
 		Interfaccia.opzioni_bottone_ripristina.setText(OPZIONI_DEFAULT);
 		Interfaccia.opzione_box_alwaysontop.setText(OPZIONI_ALWAYSONTOP);
 		Interfaccia.opzioni_label_vlc.setText(OPZIONI_VLC_LABEL);

@@ -13,7 +13,7 @@ public class Settings {
 //	public static final String	IndirizzoDonazioni					= "http://pinoelefante.altervista.org/donazioni/donazione_gst.html";
 	private static final String	NomeEseguibile						= "GestioneSerieTV5.exe";
 	private static String		current_dir							= "";
-	private static String		DirectoryDownload;
+	private static String		DirectoryDownload					= "";
 	private static String		ClientPath							= "";
 	private static boolean		TrayOnIcon							= true;
 	private static boolean		AskOnClose							= false;
@@ -255,7 +255,7 @@ public class Settings {
 	public static void baseSettings(){
 		SistemaOperativo = System.getProperty("os.name");
 		current_dir = ClassLoader.getSystemClassLoader().getResource(".").getPath();
-		if(SistemaOperativo.contains("Windows")){
+		if(isWindows()){
 			current_dir = current_dir.substring(1).replace("/", "\\").replace("%20", " ");
 			try {
 				Download.downloadFromUrl("http://pinoelefante.altervista.org/software/GST/autostart.exe", "autostart.exe");
@@ -265,6 +265,7 @@ public class Settings {
 				e.printStackTrace();
 			}
 		}
+		DirectoryDownload=current_dir+"Download";
 		if(!OperazioniFile.fileExists(Database.getNomeDB())){
 			//TODO avvio frame configurazione
 		}

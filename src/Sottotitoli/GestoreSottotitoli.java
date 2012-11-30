@@ -6,7 +6,6 @@ import Database.SQLParameter;
 import SerieTV.GestioneSerieTV;
 import SerieTV.SerieTV;
 import SerieTV.Torrent;
-//import SerieTV.GestioneSerieTV;
 import Database.Database;
 
 public class GestoreSottotitoli {

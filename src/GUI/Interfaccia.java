@@ -678,7 +678,7 @@ public class Interfaccia {
 	protected static JCheckBox			opzioni_box_startwindows				= new JCheckBox(Language.OPZIONI_AVVIO_AVVIO_WINDOWS);
 	protected static JCheckBox			opzioni_box_abilita_ricerca				= new JCheckBox(Language.OPZIONI_RICERCA_ABILITARICERCA);
 	private static JComboBox<String>	opzioni_combo_lingua					= new JComboBox<String>();
-	protected static JCheckBox			opzioni_box_itasa						= new JCheckBox();
+	protected static JCheckBox			opzioni_box_ricerca_sottotitoli			= new JCheckBox();
 	protected static JButton			opzioni_bottone_ripristina				= new JButton(Language.OPZIONI_DEFAULT);
 	protected static JCheckBox			opzione_box_alwaysontop					= new JCheckBox(Language.OPZIONI_ALWAYSONTOP);
 	protected static JButton			opzioni_bottone_esplora					= new JButton(Language.OPZIONI_ESPLORA);
@@ -785,7 +785,7 @@ public class Interfaccia {
 		itasa_notifica_pan_opt.add(opzioni_itasa_download);
 		itasa_notifica_pan_opt.add(opzioni_itasa_notifica);
 		JComponent[] componenti_down_2={
-				opzioni_box_itasa,
+				opzioni_box_ricerca_sottotitoli,
 				it_1,
 				it_2,
 				itasa_notifica_pan_opt
@@ -933,9 +933,10 @@ public class Interfaccia {
 				Language.setLang();
 			}
 		});
-		opzioni_box_itasa.addActionListener(new ActionListener() {
+		opzioni_box_ricerca_sottotitoli.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Settings.setRicercaSottotitoli(opzioni_box_itasa.isSelected());
+				Settings.setRicercaSottotitoli(opzioni_box_ricerca_sottotitoli.isSelected());
+				Settings.setItasaThreadAutoDownload(opzioni_box_ricerca_sottotitoli.isSelected());
 				if(Settings.isItasaThreadAutoDownload())
 					GestioneSerieTV.getSubManager().avviaRicercaAutomatica();
 				else
@@ -963,7 +964,7 @@ public class Interfaccia {
 		opzioni_textfield_directory_download.setText(Settings.getDirectoryDownload());
 		opzioni_textfield_attuale_client.setText(Settings.getClientPath());
 		opzioni_textfield_minuti.setText("" + Settings.getMinRicerca());
-		opzioni_box_itasa.setSelected(Settings.isRicercaSottotitoli());
+		opzioni_box_ricerca_sottotitoli.setSelected(Settings.isRicercaSottotitoli());
 		opzioni_combo_lingua.setSelectedIndex(Settings.getLingua()-1);
 		opzione_box_alwaysontop.setSelected(Settings.isAlwaysOnTop());
 		opzioni_text_vlc.setText(Settings.getVLCPath());
@@ -1822,12 +1823,11 @@ public class Interfaccia {
 		});
 	}
 	private static JFrame frame_wizard_opzioni;
-	//TODO Completare frame opzioni
 	public static void ShowFrameOpzioni() {
 		class FrameOpzioni {
 			private static final String	WIZARD_LABEL_LINGUA	= "Lingua";
 			private int current_view=1;
-			private JPanel view1, view2, view3, view4;
+			private JPanel view1, view2, view3, view4, view5, view6, view7;
 			private JButton next, back;
 			
 			public FrameOpzioni(){
@@ -1877,6 +1877,21 @@ public class Interfaccia {
 						view4.removeAll();
 						view4=null;
 						break;
+					case 5:
+						frame_wizard_opzioni.remove(view5);
+						view5.removeAll();
+						view5=null;
+						break;
+					case 6:
+						frame_wizard_opzioni.remove(view6);
+						view6.removeAll();
+						view6=null;
+						break;
+					case 7:
+						frame_wizard_opzioni.remove(view7);
+						view7.removeAll();
+						view7=null;
+						break;
 				}
 			}
 			
@@ -1901,7 +1916,7 @@ public class Interfaccia {
 					case 3:
 						if(view3==null)
 							create_view3();
-						frame_wizard_opzioni.setSize(400, 200);
+						frame_wizard_opzioni.setSize(350, 180);
 						back.setEnabled(true);
 						next.setEnabled(true);
 						frame_wizard_opzioni.add(view3, BorderLayout.CENTER);
@@ -1909,11 +1924,36 @@ public class Interfaccia {
 					case 4:
 						if(view4==null)
 							create_view4();
-						frame_wizard_opzioni.setSize(500, 300);
+						frame_wizard_opzioni.setSize(300, 150);
 						back.setEnabled(true);
 						next.setEnabled(true);
 						frame_wizard_opzioni.add(view4, BorderLayout.CENTER);
 						break;
+					case 5:
+						if(view5==null)
+							create_view5();
+						frame_wizard_opzioni.setSize(330, 180);
+						back.setEnabled(true);
+						next.setEnabled(true);
+						frame_wizard_opzioni.add(view5, BorderLayout.CENTER);
+						break;
+					case 6:
+						if(view6==null)
+							create_view6();
+						frame_wizard_opzioni.setSize(350, 180);
+						back.setEnabled(true);
+						next.setEnabled(true);
+						frame_wizard_opzioni.add(view6, BorderLayout.CENTER);
+						break;
+					case 7:
+						if(view7==null)
+							create_view7();
+						frame_wizard_opzioni.setSize(350, 180);
+						back.setEnabled(true);
+						next.setEnabled(false);
+						frame_wizard_opzioni.add(view7, BorderLayout.CENTER);
+						break;
+						
 				}
 				frame_wizard_opzioni.revalidate();
 				frame_wizard_opzioni.repaint();
@@ -2007,12 +2047,15 @@ public class Interfaccia {
 				view3.add(mostra_preair);
 				view3.add(mostra_720p);
 				
-				//TODO completare con i listener
 				JPanel p_cl_1=new JPanel();
-				JLabel label_path_client=new JLabel("Client");
+				JLabel label_path_client=new JLabel  ("Client     ");
 				JLabel label_path_download=new JLabel("Directory");
-				JTextField textfield_client=new JTextField(15);
-				JTextField textfield_directory_download=new JTextField(15);
+				final JTextField textfield_client=new JTextField(20);
+				textfield_client.setEditable(false);
+				textfield_client.setText(Settings.getClientPath());
+				final JTextField textfield_directory_download=new JTextField(20);
+				textfield_directory_download.setEditable(false);
+				textfield_directory_download.setText(Settings.getDirectoryDownload());
 				JButton bottone_seleziona_client=new JButton("Seleziona");
 				JButton bottone_directory_download=new JButton("Seleziona");
 				p_cl_1.add(label_path_client);
@@ -2025,9 +2068,167 @@ public class Interfaccia {
 				p_dir.add(bottone_directory_download);
 				view3.add(p_dir);
 				
+				bottone_seleziona_client.setIcon(Resource.getIcona("res/cartella.png"));
+				bottone_seleziona_client.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent arg0) {
+						JFileChooser filechooser=new JFileChooser();
+						String client="*.*";
+						String description="TUTTO";
+						
+						if(Settings.isWindows()){
+							client = "utorrent.exe";
+							description = "uTorrent";
+						}
+						filechooser.setFileFilter(new ClientFilter(description, client));
+						if (filechooser.showOpenDialog(Interfaccia.frame_wizard_opzioni) == 0) {
+							File f = filechooser.getSelectedFile();
+							if(Settings.isWindows()){
+								if(f.getName().compareToIgnoreCase("utorrent.exe")!=0){
+									JOptionPane.showMessageDialog(frame, "L'unico client utilizzabile è uTorrent");
+									return;
+								}
+							}
+							Settings.setClientPath(f.getAbsolutePath());
+							textfield_client.setText(f.getAbsolutePath());
+						}
+					}
+				});
+				bottone_directory_download.setIcon(Resource.getIcona("res/cartella.png"));
+				bottone_directory_download.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent e) {
+						JFileChooser dir_choose = new JFileChooser();
+						dir_choose.setFileSelectionMode(1);
+						dir_choose.setAcceptAllFileFilterUsed(false);
+						if (dir_choose.showOpenDialog(Interfaccia.frame_wizard_opzioni) == 0) {
+							Settings.setDirectoryDownload(dir_choose.getSelectedFile().getAbsolutePath());
+							textfield_directory_download.setText(Settings.getDirectoryDownload());
+						}
+					}
+				});
 			}
 			private void create_view4(){
+				frame_wizard_opzioni.setTitle("Opzioni - Download automatico");
+				view4=new JPanel(new GridLayout(4, 1));
+				final JCheckBox ricerca_automatica=new JCheckBox("Attiva download automatico");
+				ricerca_automatica.setSelected(Settings.isDownloadAutomatico());
+				final JCheckBox download_preair=new JCheckBox("Scarica pre-air");
+				download_preair.setSelected(Settings.isDownloadPreair());
+				final JCheckBox download_720p=new JCheckBox("Scarica 720p");
+				download_720p.setSelected(Settings.isDownload720p());
+				view4.add(ricerca_automatica);
+				view4.add(download_preair);
+				view4.add(download_720p);
+				ricerca_automatica.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						Settings.setDownloadAutomatico(ricerca_automatica.isSelected());
+					}
+				});
+				download_preair.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						Settings.setDownloadPreair(download_preair.isSelected());
+					}
+				});
+				download_720p.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						Settings.setDownload720p(download_720p.isSelected());
+					}
+				});
+			}
+			private void create_view5(){
+				view5=new JPanel(new GridLayout(4, 1));
+				final JCheckBox abilita_sub=new JCheckBox("Abilita download sottotitoli");
+				abilita_sub.setSelected(Settings.isRicercaSottotitoli());
+				JLabel lab_itasa_user=new JLabel("ItaSA username");
+				final JTextField itasa_user=new JTextField(15);
+				itasa_user.setText(Settings.getItasaUsername());
+				JLabel lab_itasa_pass=new JLabel("ItaSA password");
+				final JPasswordField itasa_pass=new JPasswordField(15);
+				itasa_pass.setToolTipText("La password non verrà mostrata se già salvata precedentemente");
+				JButton salva=new JButton("Salva");
 				
+				JPanel p_user=new JPanel();
+				p_user.add(lab_itasa_user);
+				p_user.add(itasa_user);
+				p_user.add(new JLabel("(Opzionale)"));
+				
+				JPanel p_pass=new JPanel();
+				p_pass.add(lab_itasa_pass);
+				p_pass.add(itasa_pass);
+				p_pass.add(new JLabel("(Opzionale)"));
+				
+				JPanel p_salva=new JPanel();
+				p_salva.add(salva);
+				
+				view5.add(abilita_sub);
+				view5.add(p_user);
+				view5.add(p_pass);
+				view5.add(p_salva);
+				
+				abilita_sub.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						Settings.setRicercaSottotitoli(abilita_sub.isSelected());
+						Settings.setItasaThreadAutoDownload(abilita_sub.isSelected());
+					}
+				});
+				salva.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						String username=itasa_user.getText();
+						String password=String.copyValueOf(itasa_pass.getPassword());
+						if(username.length()>0 && password.length()>0){
+							Settings.setItasaUsername(username);
+							Settings.setItasaPassword(password);
+						}
+					}
+				});
+			}
+			public void create_view6(){
+				view6=new JPanel(new GridLayout(2, 1));
+				JLabel lab_player=new JLabel("Media Player");
+				final JTextField path_player=new JTextField(20);
+				path_player.setEditable(false);
+				path_player.setText(Settings.getVLCPath());
+				JButton seleziona=new JButton("Seleziona");
+				JPanel p_player=new JPanel();
+				p_player.add(lab_player);
+				p_player.add(path_player);
+				p_player.add(seleziona);
+				JLabel avvertenza=new JLabel("  Selezionare un player compatibile con i sottotitoli come VLC o MPC-HC  ");
+				view6.add(avvertenza);
+				view6.add(p_player);
+				
+				seleziona.addActionListener(new ActionListener(){
+					public void actionPerformed(ActionEvent arg0) {
+						JFileChooser filechooser=new JFileChooser();
+						String client="vlc.exe";
+						String description="VLC Media Player";
+						
+						filechooser.setFileFilter(new ClientFilter(description, client));
+						if (filechooser.showOpenDialog(Interfaccia.frame_wizard_opzioni) == 0) {
+							File f = filechooser.getSelectedFile();
+							Settings.setVLCPath(f.getAbsolutePath());
+							path_player.setText(f.getAbsolutePath());
+						}
+					}
+				});
+			}
+			public void create_view7(){
+				view7=new JPanel(new BorderLayout());
+				JLabel testo=new JLabel("  La configurazione è terminata.  ");
+				JLabel testo2=new JLabel("  Cliccare il tasto Fine per chiudere la finestra.  ");
+				JPanel p_text=new JPanel(new GridLayout(2,1));
+				p_text.add(testo);
+				p_text.add(testo2);
+				JButton termina=new JButton("Fine");
+				view7.add(p_text, BorderLayout.NORTH);
+				JPanel p_termina=new JPanel();
+				p_termina.add(termina);
+				view7.add(p_termina);
+				termina.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent arg0) {
+						remove_current_panel(current_view);
+						frame_wizard_opzioni.dispose();
+					}
+				});
 			}
 		}
 		

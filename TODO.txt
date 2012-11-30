@@ -1,6 +1,5 @@
 FARE
 - rivedere operazioni avvio (vari doClick())
-- wizard impostazioni al primo avvio
 - feedback utenti
 - più social. pagina facebook. follow su twitter
 - file lingua esterno
@@ -16,6 +15,7 @@ FARE
 - opzioni se scaricare preair, 720p //in download automatico
 - rifare tab Sottotitoli
 - inserire opzioni per abilitare itasa, subsfactory
+- controllo associazione a manager di sottotitoli
 
 
 DA ULTIMARE
@@ -34,6 +34,7 @@ FATTO
 - modificare thread ricerca automatica con download 720p e download preair
 - caricamento opzioni download 720p e download preair
 - controlli libreria (check_scaricato)
-- scaricato, da scaricare, visualizzabile
+- scaricato, da scaricare, visualizzabile, ignorato
+- wizard impostazioni al primo avvio
 
 PROBABILMENTE FIXATO
