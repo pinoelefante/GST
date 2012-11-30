@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
+import GUI.Interfaccia;
 import Programma.Download;
 import Programma.Settings;
 
@@ -61,8 +62,7 @@ public class ThreadRicercaAutomatica extends Thread {
 				JOptionPane.showMessageDialog(null, "Errore durante il download automatico.\nControllare le impostazioni.");
 			}
 
-			//TODO aggiornamento interfaccia scrollpane
-			//Interfaccia.download_bottone_torrent_offline.doClick();
+			Interfaccia.RidisegnaScrollPanel();
 			try {
 				Runtime.getRuntime().gc();
 				System.out.println("Fine controllo...");

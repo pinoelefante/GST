@@ -156,8 +156,8 @@ public class Database {
 					"client_id TEXT DEFAULT ''," +
 					"mostra_preair INTEGER DEFAULT 1," +
 					"mostra_720p INTEGER DEFAULT 1," +
-					"download_preair INTEGER DEFAULT 1," +
-					"download_720p INTEGER DEFAULT 1"+
+					"download_preair INTEGER DEFAULT 0," +
+					"download_720p INTEGER DEFAULT 0"+
 					")");
 			if(isEmptyTable(TABLE_SETTINGS)){
 				SQLParameter[] parametri=new SQLParameter[1];

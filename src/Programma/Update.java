@@ -72,7 +72,7 @@ public class Update {
 						case "VLCPath": Settings.setVLCPath(opzione); break;
 						case "itasa_user": Settings.setItasaUsername(opzione); break;
 						case "itasa_psw": Settings.setItasaPassword(opzione); break;
-						case "itasa_auto": Settings.setItasaThreadAutoDownload(Boolean.parseBoolean(opzione)); break;
+//						case "itasa_auto": Settings.setItasaThreadAutoDownload(Boolean.parseBoolean(opzione)); break;
 					}
 				} catch (NumberFormatException e) {}
 			}

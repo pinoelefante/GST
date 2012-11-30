@@ -26,7 +26,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -37,7 +36,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
@@ -485,7 +483,7 @@ public class Interfaccia {
 							//TODO verificare il funzionamento con subsfactory
 							if(!GestioneSerieTV.getSubManager().associaSerie(st)){
 								if(Settings.isRicercaSottotitoli()){
-									int scelta=(JOptionPane.showConfirmDialog(frame, "Non ï¿½ stato possibile associare la serie a ItaSA.\nVuoi associarla manualmente?", "Associa ItaSA", JOptionPane.YES_NO_OPTION));
+									int scelta=(JOptionPane.showConfirmDialog(frame, "Non è stato possibile associare la serie a ItaSA.\nVuoi associarla manualmente?", "Associa ItaSA", JOptionPane.YES_NO_OPTION));
 									if(scelta==JOptionPane.YES_OPTION){
 										associaFrame();
 										associa_serie.setSelectedItem((SerieTV)download_combo_eztv.getSelectedItem());
@@ -609,7 +607,7 @@ public class Interfaccia {
 			public void actionPerformed(ActionEvent arg0) {
 				JOptionPane.showMessageDialog(Interfaccia.frame,
 						"English: \nJust wait a sodding minute! You want a question that goes with the answer for 42? Well, how about \"What's six times seven?\"\n\n"
-					  + "Italiano: \nLa domanda, l'unica della quale avrei voluto la risposta: ï¿½ la ragazza giusta? E la risposta non ï¿½ 42\n");
+					  + "Italiano: \nLa domanda, l'unica della quale avrei voluto la risposta: è la ragazza giusta? E la risposta non è 42\n");
 			}
 		});
 	}
@@ -671,12 +669,14 @@ public class Interfaccia {
 	protected static JButton			opzioni_bottone_salva					= new JButton(Language.OPZIONI_SALVAOPZIONI);
 	private static JTextField			opzioni_textfield_directory_download	= new JTextField(30);
 	private static JTextField			opzioni_textfield_attuale_client		= new JTextField(30);
-	protected static JTextField			opzioni_textfield_minuti				= new JTextField(2);
+	protected static JTextField			opzioni_textfield_minuti				= new JTextField(3);
 	
 	protected static JCheckBox			opzioni_box_askonclose					= new JCheckBox(Language.OPZIONI_AVVIO_CONFERMA_CHIUSURA);
 	protected static JCheckBox			opzioni_box_starthidden					= new JCheckBox(Language.OPZIONI_AVVIO_AVVIO_ICONA);
 	protected static JCheckBox			opzioni_box_startwindows				= new JCheckBox(Language.OPZIONI_AVVIO_AVVIO_WINDOWS);
 	protected static JCheckBox			opzioni_box_abilita_ricerca				= new JCheckBox(Language.OPZIONI_RICERCA_ABILITARICERCA);
+	protected static JCheckBox			opzioni_box_ricerca_automatica_preair	= new JCheckBox("Scarica pre-air");
+	protected static JCheckBox			opzioni_box_ricerca_automatica_720p		= new JCheckBox("Scarica 720p");
 	private static JComboBox<String>	opzioni_combo_lingua					= new JComboBox<String>();
 	protected static JCheckBox			opzioni_box_ricerca_sottotitoli			= new JCheckBox();
 	protected static JButton			opzioni_bottone_ripristina				= new JButton(Language.OPZIONI_DEFAULT);
@@ -691,8 +691,6 @@ public class Interfaccia {
 	private static JLabel				opzioni_lab_itasa_pass					= new JLabel("Password");
 	private static JTextField			opzioni_text_itasa_user					= new JTextField(25);
 	private static JPasswordField		opzioni_text_itasa_pass					= new JPasswordField(25);
-	private static JRadioButton			opzioni_itasa_notifica					= new JRadioButton("Notifica");
-	private static JRadioButton 		opzioni_itasa_download					= new JRadioButton("Download");
 	
 	private static void creaTabOpzioni() {
 		@SuppressWarnings("serial")
@@ -762,9 +760,13 @@ public class Interfaccia {
 		JPanel p_da1=new JPanel();
 		p_da1.add(opzioni_textfield_minuti);
 		p_da1.add(opzioni_label_cerca_min);
+		opzioni_box_ricerca_automatica_preair.setSelected(Settings.isDownloadPreair());
+		opzioni_box_ricerca_automatica_720p.setSelected(Settings.isDownload720p());
 		JComponent[] componenti_down1={
 				p_da,
-				p_da1
+				p_da1,
+				opzioni_box_ricerca_automatica_preair,
+				opzioni_box_ricerca_automatica_720p
 		};
 		PanelOpzione opzioni_download=new PanelOpzione(componenti_down1, 2);
 		opzioni_download.setBorder(new TitledBorder("Ricerca"));
@@ -774,21 +776,11 @@ public class Interfaccia {
 		it_1.add(opzioni_text_itasa_user);
 		it_2.add(opzioni_lab_itasa_pass);
 		it_2.add(opzioni_text_itasa_pass);
-		JPanel itasa_notifica_pan_opt=new JPanel();
-		ButtonGroup g_opt_itasa=new ButtonGroup();
-		if(Settings.isItasaThreadAutoDownload())
-			opzioni_itasa_download.setSelected(true);
-		else
-			opzioni_itasa_notifica.setSelected(true);
-		g_opt_itasa.add(opzioni_itasa_download);
-		g_opt_itasa.add(opzioni_itasa_notifica);
-		itasa_notifica_pan_opt.add(opzioni_itasa_download);
-		itasa_notifica_pan_opt.add(opzioni_itasa_notifica);
+		
 		JComponent[] componenti_down_2={
 				opzioni_box_ricerca_sottotitoli,
 				it_1,
 				it_2,
-				itasa_notifica_pan_opt
 		};
 		PanelOpzione opzioni_itasa=new PanelOpzione(componenti_down_2, 8);
 		opzioni_itasa.setBorder(new TitledBorder("ItaSA"));
@@ -805,16 +797,6 @@ public class Interfaccia {
 
 		opzioni_bottone_seleziona_client.setIcon(Resource.getIcona("res/utorrent.png"));
 		
-		opzioni_itasa_download.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				Settings.setItasaThreadAutoDownload(opzioni_itasa_download.isSelected());
-			}
-		});
-		opzioni_itasa_notifica.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				Settings.setItasaThreadAutoDownload(opzioni_itasa_notifica.isSelected());
-			}
-		});
 		//TODO modificare per linux e mac
 		opzioni_bottone_seleziona_client.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
@@ -831,7 +813,7 @@ public class Interfaccia {
 					File f = filechooser.getSelectedFile();
 					if(Settings.isWindows()){
 						if(f.getName().compareToIgnoreCase("utorrent.exe")!=0){
-							JOptionPane.showMessageDialog(frame, "L'unico client utilizzabile ï¿½ uTorrent");
+							JOptionPane.showMessageDialog(frame, "L'unico client utilizzabile è uTorrent");
 							return;
 						}
 					}
@@ -907,6 +889,16 @@ public class Interfaccia {
 					Main.thread_autosearch.interrupt();
 			}
 		});
+		opzioni_box_ricerca_automatica_preair.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Settings.setDownloadPreair(opzioni_box_ricerca_automatica_preair.isSelected());
+			}
+		});
+		opzioni_box_ricerca_automatica_720p.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Settings.setDownload720p(opzioni_box_ricerca_automatica_720p.isSelected());
+			}
+		});
 		opzioni_bottone_salva.setIcon(Resource.getIcona("res/salva.png"));
 		opzioni_bottone_salva.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
@@ -936,8 +928,7 @@ public class Interfaccia {
 		opzioni_box_ricerca_sottotitoli.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Settings.setRicercaSottotitoli(opzioni_box_ricerca_sottotitoli.isSelected());
-				Settings.setItasaThreadAutoDownload(opzioni_box_ricerca_sottotitoli.isSelected());
-				if(Settings.isItasaThreadAutoDownload())
+				if(Settings.isRicercaSottotitoli())
 					GestioneSerieTV.getSubManager().avviaRicercaAutomatica();
 				else
 					GestioneSerieTV.getSubManager().stopRicercaAutomatica();
@@ -973,10 +964,10 @@ public class Interfaccia {
 	public  static JButton					sottotitoli_bottone_list				= new JButton("Aggiorna");
 	private static JButton					sottotitoli_associatore					= new JButton("Associatore");
 	public 	static JLabel 					sottotitoli_itasa_loggedas	 			= new JLabel("Logged as: ");
-	//TODO inizializzare Textarea con log nel database
 	public	static JTextArea				sottotitoli_textarea_log				= new JTextArea(5, 90);
 	
 	private static void creaTabItasa() {
+		aggiornaLog();
 		final JPanel scroll_sub = new JPanel(new GridLayout(5, 1));
 		
 		class PanelSub extends JPanel {
@@ -991,10 +982,6 @@ public class Interfaccia {
 			public PanelSub(Torrent sub) {
 				this.puntata = sub;
 				crea();
-			}
-			//TODO completare aggiorna log
-			private void aggiornaLog(){
-				ArrayList<SQLParameter[]> res=Database.select(Database.TABLE_LOGSUB, null, "AND", "=");
 			}
 			private void crea() {
 				setLayout(new BorderLayout());
@@ -1023,7 +1010,7 @@ public class Interfaccia {
 								bot_scarica.setEnabled(down_en);
 								if(down_en){
 									lab_stat.setText("Sottotitolo trovato");
-									sottotitoli_textarea_log.append(puntata.toString()+" ï¿½ disponibile"+"\n");
+									sottotitoli_textarea_log.append(puntata.toString()+" è disponibile"+"\n");
 								}
 								else
 									lab_stat.setText("Sottotitolo non trovato");
@@ -1052,7 +1039,7 @@ public class Interfaccia {
 							public void run(){
 								boolean res=GestioneSerieTV.getSubManager().scaricaSottotitolo(puntata);
 								if(res){
-									sottotitoli_textarea_log.append(puntata.toString()+" ï¿½ stato scaricato"+"\n");
+									sottotitoli_textarea_log.append(puntata.toString()+" è stato scaricato"+"\n");
 									bot_rimuovi.doClick();
 								}
 							}
@@ -1077,13 +1064,6 @@ public class Interfaccia {
 		sottotitoli_textarea_log.setAutoscrolls(true);
 		sottotitoli_textarea_log.setWrapStyleWord(true);
 		
-		/*
-		scroll_log.getVerticalScrollBar().addAdjustmentListener(new AdjustmentListener() {  
-			public void adjustmentValueChanged(AdjustmentEvent e) {  
-				e.getAdjustable().setValue(e.getAdjustable().getMaximum());  
-			}
-		});
-		 */
 		JPanel sud = new JPanel(new BorderLayout());
 		sud.add(sottotitoli_itasa_loggedas, BorderLayout.WEST);
 		
@@ -1120,6 +1100,43 @@ public class Interfaccia {
 				associaFrame();
 			}
 		});
+	}
+	private static void aggiornaLog(){
+		ArrayList<SQLParameter[]> res=Database.select(Database.TABLE_LOGSUB, null, "AND", "=");
+		sottotitoli_textarea_log.setText("");
+		int i=0;
+		if(res.size()>10)
+			i=res.size()-10;
+		else
+			i=0;
+		
+		for(;i<res.size();i++){
+			SQLParameter[] p=res.get(i);
+			String log=" ";
+			for(int j=0;j<p.length;j++){
+				switch(p[j].getField()){
+					case "id":
+						break;
+					case "nome_serie":
+						log+=p[j].pvalueAsString()+" ";
+						break;
+					case "episodio":
+						log+=p[j].pvalueAsString()+" ";
+						break;
+					case "serie":
+						log+=p[j].pvalueAsString()+"x";
+						break;
+					case "provider":
+						log+="tramite "+p[j].pvalueAsString();
+						break;
+				}
+			}
+			sottotitoli_textarea_log.append(log+"\n");
+		}
+	}
+	public static void addEntryLogSottotitoli(Torrent t, String provider){
+		String log=" "+t.getNomeSerie()+" "+t.getSerie()+"x"+t.getPuntata()+" tramite "+provider;
+		sottotitoli_textarea_log.append(log+"\n");
 	}
 
 	private static JComboBox<SerieTV> libreria_box_serie= new JComboBox<SerieTV>();
@@ -1271,7 +1288,7 @@ public class Interfaccia {
 						String nome_no_ext=nomepuntata.substring(0, nomepuntata.lastIndexOf("."));
 						if(!OperazioniFile.subExistsFromPartialFilename(Settings.getDirectoryDownload()+torrent.getNomeSerieFolder(), nome_no_ext)){
 							if(!GestioneSerieTV.getSubManager().scaricaSottotitolo(torrent)){
-								JOptionPane.showMessageDialog(frame, "Non ï¿½ associato alcun sottotitolo");
+								JOptionPane.showMessageDialog(frame, "Non è associato alcun sottotitolo");
 							}
 						}
 						
@@ -1319,7 +1336,7 @@ public class Interfaccia {
 							}
 						}
 						catch (FileNotFoundException e1) {
-							JOptionPane.showMessageDialog(frame, "Il file non era presente.\nSi imposterï¿½ lo stato di RIMOSSO.");
+							JOptionPane.showMessageDialog(frame, "Il file non era presente.\nSi imposterà lo stato di RIMOSSO.");
 							torrent.setScaricato(Torrent.RIMOSSO, true);
 						}
 						setLabelStato(torrent.getScaricato());
@@ -1606,7 +1623,7 @@ public class Interfaccia {
 					frame_donazione.add(nord, BorderLayout.NORTH);
 					
 					JPanel west=new JPanel();
-					west.add(new JLabel("ï¿½"));
+					west.add(new JLabel("€"));
 					west.add(donazione_amount);
 					frame_donazione.add(west, BorderLayout.WEST);
 					
@@ -1626,7 +1643,7 @@ public class Interfaccia {
 		});
 	}
 	
-	//TODO modificare per piï¿½ gestori, come subsfactory
+	//TODO modificare per più gestori, come subsfactory
 	public static JFrame frame_associa_itasa;
 	private static JComboBox<SerieSub> associa_itasa; 
 	private static JComboBox<SerieTV> associa_serie;
@@ -1777,8 +1794,12 @@ public class Interfaccia {
 		about_label_donazione.setForeground(Color.BLUE);
 		about_label_donazione.addMouseListener(new MouseListener() {
 			public void mouseReleased(MouseEvent arg0) {}
+			//TODO modificare quando sarà presente browser per linux e mac
 			public void mousePressed(MouseEvent arg0) {
-				donazione_visualizza_frame();
+				if(Settings.isWindows())
+					donazione_visualizza_frame();
+				else
+					OperazioniFile.esploraWeb(Settings.IndirizzoDonazioni);
 			}
 			public void mouseExited(MouseEvent arg0) {
 				about_label_donazione.setText(Language.ABOUT_DONATION);
@@ -2068,6 +2089,7 @@ public class Interfaccia {
 				p_dir.add(bottone_directory_download);
 				view3.add(p_dir);
 				
+				//TODO modificare per linux
 				bottone_seleziona_client.setIcon(Resource.getIcona("res/cartella.png"));
 				bottone_seleziona_client.addActionListener(new ActionListener(){
 					public void actionPerformed(ActionEvent arg0) {
@@ -2167,7 +2189,6 @@ public class Interfaccia {
 				abilita_sub.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent arg0) {
 						Settings.setRicercaSottotitoli(abilita_sub.isSelected());
-						Settings.setItasaThreadAutoDownload(abilita_sub.isSelected());
 					}
 				});
 				salva.addActionListener(new ActionListener() {
@@ -2239,7 +2260,7 @@ public class Interfaccia {
 			frame_wizard_opzioni.setResizable(false);
 			frame_wizard_opzioni.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			frame_wizard_opzioni.setVisible(true);
-			frame_wizard_opzioni.setAlwaysOnTop(false);
+			frame_wizard_opzioni.setAlwaysOnTop(true);
 			new FrameOpzioni();
 		}
 		

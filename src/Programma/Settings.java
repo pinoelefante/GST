@@ -10,7 +10,7 @@ import Database.SQLParameter;
 public class Settings {
 	private static final int	VersioneSoftware				= 86;
 	private static int			Client								= 1;
-//	public static final String	IndirizzoDonazioni					= "http://pinoelefante.altervista.org/donazioni/donazione_gst.html";
+	public static final String	IndirizzoDonazioni					= "http://pinoelefante.altervista.org/donazioni/donazione_gst.html";
 	private static final String	NomeEseguibile						= "GestioneSerieTV5.exe";
 	private static String		current_dir							= "";
 	private static String		DirectoryDownload					= "";
@@ -34,7 +34,7 @@ public class Settings {
 	private static String		VLCPath								= "";
 	private static String		Itasa_Username						= "";
 	private static String		Itasa_Password						= "";
-	private static boolean		ItasaThread_DownloadOrNotifica		= true;
+//	private static boolean		ItasaThread_DownloadOrNotifica		= true;
 	private static boolean		mostraPreair						= true;
 	private static boolean		mostra720p							= true;
 	private static String		ClientID = "";
@@ -193,13 +193,14 @@ public class Settings {
 		Itasa_Password = itasa_Password;
 		AggiornaDB();
 	}
-	public static boolean isItasaThreadAutoDownload() {
+/*	public static boolean isItasaThreadAutoDownload() {
 		return ItasaThread_DownloadOrNotifica;
 	}
 	public static void setItasaThreadAutoDownload(boolean itasa_ThreadAutoDownload) {
 		ItasaThread_DownloadOrNotifica = itasa_ThreadAutoDownload;
 		AggiornaDB();
 	}
+*/
 	public static boolean isMostraPreair() {
 		return mostraPreair;
 	}
@@ -239,17 +240,20 @@ public class Settings {
 		MinRicercaMilli = minRicercaMilli;
 	}
 	
-	//TODO completare
 	public static void setDefault() {
-		TrayOnIcon				= true;
-		AskOnClose				= false;
-		StartHidden				= false;
-		Autostart				= true;
-		DownloadAutomatico		= false;
-		MinRicerca				= 480;
-		aggiornaMinRicercaMilli();
-		RicercaSottotitoli		= true;
-		alwaysontop				= true;
+		setTrayOnIcon(true);
+		setAskOnClose(false);
+		setStartHidden(false);
+		setAutostart(true);
+		setDownloadAutomatico(false);
+		setMinRicerca(480);
+		setRicercaSottotitoli(true);
+		setAlwaysOnTop(true);
+		setLingua(1);
+		setMostraPreair(true);
+		setMostra720p(true);
+		setDownloadPreair(false);
+		setDownload720p(false);
 	}
 
 	public static void baseSettings(){
@@ -266,33 +270,8 @@ public class Settings {
 			}
 		}
 		DirectoryDownload=current_dir+"Download";
-		if(!OperazioniFile.fileExists(Database.getNomeDB())){
-			//TODO avvio frame configurazione
-		}
 	}
 	public static void CaricaSetting(){
-		/*
-		"dir_download TEXT DEFAULT ''," +
-		"dir_client TEXT DEFAULT ''," +
-		"dir_vlc TEXT DEFAULT ''," +
-		"tray_on_icon INTEGER DEFAULT 1," +
-		"start_hidden INTEGER DEFAULT 0," +
-		"ask_on_close INTEGER DEFAULT 1," +
-		"always_on_top INTEGER DEFAULT 0," +
-		"start_win INTEGER DEFAULT 1," +
-		"ricerca_auto INTEGER DEFAULT 0," +
-		"min_ricerca INTEGER DEFAULT 720," +
-		"lingua INTEGER DEFAULT 0," +
-		"new_update INTEGER DEFAULT 1," +
-		"last_version INTEGER DEFAULT 0," +
-		"numero_avvii INTEGER DEFAULT 1," +
-		"ricerca_sub INTEGER DEFAULT 1," +
-		"itasa_id TEXT DEFAULT ''," +
-		"itasa_pass TEXT DEFAULT ''," +
-		"client_id TEXT DEFAULT ''," +
-		"mostra_preair INTEGER DEFAULT 1," +
-		"mostra_720p INTEGER DEFAULT 1" +
-		*/
 		ArrayList<SQLParameter[]> res=Database.select(Database.TABLE_SETTINGS, null, "AND", "==");
 		for (int i=0;i<res.size();i++){
 			SQLParameter[] par=res.get(i);
@@ -343,191 +322,6 @@ public class Settings {
 		}
 		AggiornaDB();
 	}
-	/*
-	public static void CaricaSetting() {
-		if (SistemaOperativo.contains("Windows")) {
-			try {
-				Download.downloadFromUrl("http://pinoelefante.altervista.org/software/GST/autostart.exe", "autostart.exe");
-				registraProgramma();
-				if (Autostart) {
-					removeAutostarterOLD();
-					createAutoStart();
-				}
-			}
-			catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		DirectoryDownload = current_dir + "Download\\";
-		FileReader file_r = null;
-		try {
-			file_r = new FileReader("settings.dat");
-			
-			Scanner file = new Scanner(file_r);
-			while(file.hasNextLine()){
-				String linea=file.nextLine().trim();
-				if(!linea.contains("="))
-					continue;
-				String tipo_opzione=linea.substring(0, linea.indexOf("=")).trim();
-				String opzione=linea.substring(linea.indexOf("=")+1).trim();
-				if(opzione==null || opzione.isEmpty())
-					continue;
-				
-				try{
-					switch(tipo_opzione){
-						case "client_path":
-							ClientPath=opzione;
-							break;
-						case "directory":
-							DirectoryDownload=opzione;
-							break;
-						case "tray_on_icon":
-							TrayOnIcon=Boolean.parseBoolean(opzione);
-							break;
-						case "ask_on_close":
-							AskOnClose=Boolean.parseBoolean(opzione);
-							break;
-						case "start_hidden":
-							StartHidden=Boolean.parseBoolean(opzione);
-							break;
-						case "auto_search":
-							DownloadAutomatico=Boolean.parseBoolean(opzione);
-							break;
-						case "auto_search_between":
-							MinRicerca=Integer.parseInt(opzione);
-							aggiornaMinRicercaMilli();
-							break;
-						case "autostart":
-							if((Autostart=Boolean.parseBoolean(opzione)))
-								createAutoStart();
-							else 
-								removeAutostart();
-							break;
-						case "language":
-							Lingua=Integer.parseInt(opzione);
-								break;
-						case "update":
-							NewUpdate=Boolean.parseBoolean(opzione);
-							break;
-						case "last_version":
-							LastVersion=Integer.parseInt(opzione);
-							break;
-						case "n_starts":
-							numero_avvii=Integer.parseInt(opzione)+1;
-							break;
-						case "itasa_active":
-							RicercaSottotitoli=Boolean.parseBoolean(opzione);
-							break;
-						case "always_on_top":
-							alwaysontop=Boolean.parseBoolean(opzione);
-							break;
-						case "VLCPath":
-							VLCPath=opzione;
-							break;
-						case "itasa_user":
-							Itasa_Username=opzione;
-							break;
-						case "itasa_psw":
-							Itasa_Password=opzione;
-							break;
-						case "itasa_auto":
-							Itasa_ThreadAutoDownload=Boolean.parseBoolean(opzione);
-							break;
-					}
-				}
-				catch(NumberFormatException e){
-				}
-			}
-			file.close();
-		}
-		catch (FileNotFoundException e) {
-			
-		}
-	}
-	*/
-	/*
-	@SuppressWarnings("unused")
-	public static void oldCaricaSetting() {
-		SistemaOperativo = System.getProperty("os.name");
-		current_dir = ClassLoader.getSystemClassLoader().getResource(".").getPath();
-		current_dir = current_dir.substring(1).replace("/", "\\").replace("%20", " ");
-		
-
-		if (SistemaOperativo.contains("Windows")) {
-			try {
-				Download.downloadFromUrl("http://pinoelefante.altervista.org/software/GST/autostart.exe", "autostart.exe");
-				registraProgramma();
-				if (Autostart) {
-					removeAutostarterOLD();
-					createAutoStart();
-				}
-			}
-			catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		DirectoryDownload = current_dir + "Download\\";
-		FileReader file_r = null;
-		try {
-			file_r = new FileReader("settings.dat");
-		}
-		catch (FileNotFoundException e) {
-			File f = new File("utorrent.exe");
-			if (f.isFile()) {
-				ClientPath = "utorrent.exe";
-				Client = 1;
-			}
-			else {
-				f = new File("Azureus.exe");
-				if (f.isFile()) {
-					ClientPath = "Azureus.exe";
-					Client = 2;
-				}
-			}
-			return;
-		}
-		Scanner file = new Scanner(file_r);
-		try {
-			Client = Integer.parseInt(file.nextLine().trim());
-			ClientPath = file.nextLine().trim();
-			DirectoryDownload = file.nextLine().trim();
-			TrayOnIcon = Boolean.parseBoolean(file.nextLine().trim());
-			TrayOnIcon = false;
-			AskOnClose = Boolean.parseBoolean(file.nextLine().trim());
-			StartHidden = Boolean.parseBoolean(file.nextLine().trim());
-			DownloadAutomatico = Boolean.parseBoolean(file.nextLine().trim());
-			MinRicerca = Integer.parseInt(file.nextLine().trim());
-			Autostart = Boolean.parseBoolean(file.nextLine().trim());
-			Lingua = Integer.parseInt(file.nextLine().trim());
-			boolean CercaAutomaticamentePanelDownload = Boolean.parseBoolean(file.nextLine().trim());
-			CercaAutomaticamentePanelDownload = true;
-			int LibraryVersion = Integer.parseInt(file.nextLine().trim());
-			LastIP_Alter=file.nextLine().trim();
-			LastClickTime_Alter=Long.parseLong(file.nextLine().trim());
-			String LastIP_Adsense=file.nextLine().trim();
-			long LastClickTime_Adsense=Long.parseLong(file.nextLine().trim());
-			boolean ParseNomeTorrent=Boolean.parseBoolean(file.nextLine().trim());
-		}
-		catch (NumberFormatException e) {
-			JOptionPane.showMessageDialog(null, "Si � verificato un errore nel caricamento delle impostazioni.\nQuesto pu� succedere dopo un aggiornamento.\nControllare la tab 'Opzioni'");
-			e.printStackTrace();
-			return;
-		}
-		catch (NoSuchElementException localNoSuchElementException) {
-		}
-		finally {
-			if (Autostart)
-				createAutoStart();
-			else {
-				removeAutostart();
-			}
-			aggiornaMinRicercaMilli();
-			file.close();
-		}
-	}
-	*/
 
 	public static void createAutoStart() {
 		try {

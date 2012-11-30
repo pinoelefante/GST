@@ -7,6 +7,7 @@ import SerieTV.GestioneSerieTV;
 import SerieTV.SerieTV;
 import SerieTV.Torrent;
 import Database.Database;
+import GUI.Interfaccia;
 
 public class GestoreSottotitoli {
 	class RicercaSottotitoliAutomatica extends Thread{
@@ -18,7 +19,7 @@ public class GestoreSottotitoli {
 				
 			System.out.println("Avvio thread ricerca automatica");
 			if(sottotitoli_da_scaricare.size()==0)
-				System.out.println("Coda vuota");
+				System.out.println("Ricerca sottotitoli - Coda vuota");
 			
 			do{
 				for(int i=0;i<sottotitoli_da_scaricare.size();){
@@ -90,6 +91,7 @@ public class GestoreSottotitoli {
 		p[2]=new SQLParameter(SQLParameter.INTEGER, t.getPuntata(), "episodio");
 		p[3]=new SQLParameter(SQLParameter.TEXT, provider.getProviderName(), "provider");
 		Database.insert(Database.TABLE_LOGSUB, p);
+		Interfaccia.addEntryLogSottotitoli(t, provider.getProviderName());
 	}
 	public void aggiungiEpisodio(Torrent t){
 		for(int i=0;i<sottotitoli_da_scaricare.size();i++){

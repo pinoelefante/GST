@@ -17,7 +17,6 @@ FARE
 - inserire opzioni per abilitare itasa, subsfactory
 - controllo associazione a manager di sottotitoli
 
-
 DA ULTIMARE
 
 FATTO

@@ -100,12 +100,9 @@ public class Main {
 			if(Settings.getNumeroAvvii()>0 && (Settings.getNumeroAvvii()%30)==0)
 				Interfaccia.donazione_visualizza_frame();
 			
-			if(Settings.isItasaThreadAutoDownload()){
+			if(Settings.isRicercaSottotitoli()){
 				GestioneSerieTV.getSubManager().avviaRicercaAutomatica();
 			}
-			
-			//TODO rimuovere
-			GUI.Interfaccia.ShowFrameOpzioni();
 		}
 		catch(Exception e){
 			JOptionPane.showMessageDialog(null, e.getMessage());
