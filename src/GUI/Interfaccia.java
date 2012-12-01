@@ -12,6 +12,7 @@ import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
+import java.awt.TrayIcon.MessageType;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -692,6 +693,9 @@ public class Interfaccia {
 	private static JTextField			opzioni_text_itasa_user					= new JTextField(25);
 	private static JPasswordField		opzioni_text_itasa_pass					= new JPasswordField(25);
 	
+	private static JCheckBox 			opzioni_box_download_mostra_preair		=new JCheckBox("Mostra pre-air");
+	private static JCheckBox 			opzioni_box_download_mostra_720p		=new JCheckBox("Mostra 720p");
+	
 	private static void creaTabOpzioni() {
 		@SuppressWarnings("serial")
 		class PanelOpzione extends JPanel{
@@ -724,7 +728,8 @@ public class Interfaccia {
 		pan_lingua.add(opzioni_label_lingua);
 		pan_lingua.add(opzioni_combo_lingua);
 		
-		JComponent[] componenti_aspetto={pan_lingua, 
+		JComponent[] componenti_aspetto={
+				pan_lingua, 
 				opzioni_box_startwindows, 
 				opzioni_box_starthidden, 
 				opzione_box_alwaysontop,
@@ -748,29 +753,36 @@ public class Interfaccia {
 		p_vlc.add(opzioni_text_vlc);
 		p_vlc.add(opzioni_button_vlc);
 		
-		JComponent[] componenti_prog={p_cl_1,
+		JComponent[] componenti_prog={
+				p_cl_1,
 				p_dir,
 				p_vlc,
 		};
 		PanelOpzione opzioni_programmi=new PanelOpzione(componenti_prog, 10);
 		tab_programmi.add(opzioni_programmi);
 		
+		JComponent[] componenti_download={
+			opzioni_box_download_mostra_preair,
+			opzioni_box_download_mostra_720p
+		};
+		PanelOpzione opzioni_down=new PanelOpzione(componenti_download, componenti_download.length);
+		opzioni_down.setBorder(new TitledBorder("Download"));
+		tab_download.add(opzioni_down, BorderLayout.NORTH);
+		
 		JPanel p_da=new JPanel();
 		p_da.add(opzioni_box_abilita_ricerca);
 		JPanel p_da1=new JPanel();
 		p_da1.add(opzioni_textfield_minuti);
 		p_da1.add(opzioni_label_cerca_min);
-		opzioni_box_ricerca_automatica_preair.setSelected(Settings.isDownloadPreair());
-		opzioni_box_ricerca_automatica_720p.setSelected(Settings.isDownload720p());
 		JComponent[] componenti_down1={
 				p_da,
 				p_da1,
 				opzioni_box_ricerca_automatica_preair,
 				opzioni_box_ricerca_automatica_720p
 		};
-		PanelOpzione opzioni_download=new PanelOpzione(componenti_down1, 2);
-		opzioni_download.setBorder(new TitledBorder("Ricerca"));
-		tab_download.add(opzioni_download, BorderLayout.NORTH);
+		PanelOpzione opzioni_download=new PanelOpzione(componenti_down1, 4);
+		opzioni_download.setBorder(new TitledBorder("Download automatico"));
+		tab_download.add(opzioni_download, BorderLayout.CENTER);
 		JPanel it_1=new JPanel(), it_2=new JPanel();
 		it_1.add(opzioni_lab_itasa_user);
 		it_1.add(opzioni_text_itasa_user);
@@ -782,10 +794,11 @@ public class Interfaccia {
 				it_1,
 				it_2,
 		};
-		PanelOpzione opzioni_itasa=new PanelOpzione(componenti_down_2, 8);
-		opzioni_itasa.setBorder(new TitledBorder("ItaSA"));
-		tab_download.add(opzioni_itasa);
+		PanelOpzione opzioni_itasa=new PanelOpzione(componenti_down_2, 4);
+		opzioni_itasa.setBorder(new TitledBorder("Sottotitoli"));
+		tab_download.add(opzioni_itasa, BorderLayout.SOUTH);
 
+		
 		opzioni_text_itasa_user.setText(Settings.getItasaUsername());
 		opzioni_textfield_directory_download.setEditable(false);
 		opzioni_textfield_attuale_client.setEditable(false);
@@ -934,6 +947,16 @@ public class Interfaccia {
 					GestioneSerieTV.getSubManager().stopRicercaAutomatica();
 			}
 		});
+		opzioni_box_download_mostra_preair.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Settings.setMostraPreair(opzioni_box_download_mostra_preair.isSelected());
+			}
+		});
+		opzioni_box_download_mostra_720p.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Settings.setMostra720p(opzioni_box_download_mostra_720p.isSelected());
+			}
+		});
 		opzioni_bottone_ripristina.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Settings.setDefault();
@@ -959,12 +982,17 @@ public class Interfaccia {
 		opzioni_combo_lingua.setSelectedIndex(Settings.getLingua()-1);
 		opzione_box_alwaysontop.setSelected(Settings.isAlwaysOnTop());
 		opzioni_text_vlc.setText(Settings.getVLCPath());
+		opzioni_box_download_mostra_preair.setSelected(Settings.isMostraPreair());
+		opzioni_box_download_mostra_720p.setSelected(Settings.isMostra720p());
+		opzioni_box_ricerca_automatica_preair.setSelected(Settings.isDownloadPreair());
+		opzioni_box_ricerca_automatica_720p.setSelected(Settings.isDownload720p());
 	}
 
 	public  static JButton					sottotitoli_bottone_list				= new JButton("Aggiorna");
 	private static JButton					sottotitoli_associatore					= new JButton("Associatore");
 	public 	static JLabel 					sottotitoli_itasa_loggedas	 			= new JLabel("Logged as: ");
 	public	static JTextArea				sottotitoli_textarea_log				= new JTextArea(5, 90);
+	public  static JScrollPane 				scroll_log								= new JScrollPane(sottotitoli_textarea_log);
 	
 	private static void creaTabItasa() {
 		aggiornaLog();
@@ -1057,7 +1085,6 @@ public class Interfaccia {
 		panel_sottotitoli.add(centro, BorderLayout.CENTER);
 		
 		JPanel centro_sud=new JPanel();
-		JScrollPane scroll_log=new JScrollPane(sottotitoli_textarea_log);
 		centro_sud.add(scroll_log);
 		centro.add(centro_sud, BorderLayout.SOUTH);
 		sottotitoli_textarea_log.setEditable(false);
@@ -1133,10 +1160,15 @@ public class Interfaccia {
 			}
 			sottotitoli_textarea_log.append(log+"\n");
 		}
+		scroll_log.getVerticalScrollBar().setValue(scroll_log.getVerticalScrollBar().getMaximum());
 	}
 	public static void addEntryLogSottotitoli(Torrent t, String provider){
 		String log=" "+t.getNomeSerie()+" "+t.getSerie()+"x"+t.getPuntata()+" tramite "+provider;
 		sottotitoli_textarea_log.append(log+"\n");
+		scroll_log.getVerticalScrollBar().setValue(scroll_log.getVerticalScrollBar().getMaximum());
+		if(tray!=null)
+			tray.getTrayIcons()[0].displayMessage("", log, MessageType.INFO);
+		
 	}
 
 	private static JComboBox<SerieTV> libreria_box_serie= new JComboBox<SerieTV>();

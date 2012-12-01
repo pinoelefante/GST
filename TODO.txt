@@ -11,11 +11,8 @@ FARE
 - trovare informazioni sugli episodi
 - trovare informazioni sulle serie
 - controllo dimensione file in controllo dipendenze
-- opzioni se mostrare preair, 720p  //in download
-- opzioni se scaricare preair, 720p //in download automatico
 - rifare tab Sottotitoli
-- inserire opzioni per abilitare itasa, subsfactory
-- controllo associazione a manager di sottotitoli
+- controllo automatico associazione a manager di sottotitoli
 
 DA ULTIMARE
 
@@ -35,5 +32,7 @@ FATTO
 - controlli libreria (check_scaricato)
 - scaricato, da scaricare, visualizzabile, ignorato
 - wizard impostazioni al primo avvio
+- opzioni se scaricare preair, 720p //in download automatico
+- opzioni se mostrare preair, 720p  //in download
 
 PROBABILMENTE FIXATO
