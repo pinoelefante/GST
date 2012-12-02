@@ -191,7 +191,8 @@ public class OperazioniFile {
 			if(dir.isDirectory()){
 				String[] files=dir.list();
 				for(int i=0;i<files.length;i++){
-					//TODO rimuovere. è solo un test (FARE CONTROLLO SE IL FILE è UNA CARTELLA)
+					if((new File(files[i]).isDirectory()))
+						continue;
 					if(!files[i].contains("."))
 						continue;
 					

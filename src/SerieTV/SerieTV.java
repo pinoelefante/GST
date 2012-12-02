@@ -272,25 +272,4 @@ public class SerieTV {
 			t.setScaricato(Torrent.SCARICARE);
 		}
 	}
-	public void cleanup(){
-		ArrayList<Torrent> marked=new ArrayList<Torrent>();
-		ArrayList<Indexable> el=episodi.getLinear();
-		for(int i=0;i<el.size();i++){
-			Torrent t=(Torrent) el.get(i);
-			for(int j=i+1;j<el.size();j++){
-				Torrent c=(Torrent) el.get(j);
-				if(c.getUrl().toLowerCase().contains(t.getUrl().toLowerCase())){
-					if(c.getUrl().length()>t.getUrl().length()){
-						c.setScaricato(t.getScaricato(), false);
-						c.setSottotitolo(t.isSottotitolo(), true);
-						marked.add(t);
-					}
-					else {
-						marked.add(c);
-					}
-				}
-			}
-		}
-		//TODO rimozione marked
-	}
 }

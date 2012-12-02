@@ -93,7 +93,7 @@ public class Interfaccia {
 		frame = new JFrame();
 		frame.setLayout(new BorderLayout());
 		
-		frame.setBounds(0, 0, 750, dim_screen.height<=600?500:600);
+		frame.setBounds(0, 0, 750, dim_screen.height<=600?550:600);
 		frame.setIconImage(Resource.getIcona("res/icona32.png").getImage());
 		frame.setTitle(Language.TITLE);
 		frame.setResizable(false);
@@ -761,11 +761,13 @@ public class Interfaccia {
 		PanelOpzione opzioni_programmi=new PanelOpzione(componenti_prog, 10);
 		tab_programmi.add(opzioni_programmi);
 		
+		JPanel p_download_opzioni=new JPanel();
+		p_download_opzioni.add(opzioni_box_download_mostra_preair);
+		p_download_opzioni.add(opzioni_box_download_mostra_720p);
 		JComponent[] componenti_download={
-			opzioni_box_download_mostra_preair,
-			opzioni_box_download_mostra_720p
+				p_download_opzioni
 		};
-		PanelOpzione opzioni_down=new PanelOpzione(componenti_download, componenti_download.length);
+		PanelOpzione opzioni_down=new PanelOpzione(componenti_download, 1);
 		opzioni_down.setBorder(new TitledBorder("Download"));
 		tab_download.add(opzioni_down, BorderLayout.NORTH);
 		
@@ -774,11 +776,13 @@ public class Interfaccia {
 		JPanel p_da1=new JPanel();
 		p_da1.add(opzioni_textfield_minuti);
 		p_da1.add(opzioni_label_cerca_min);
+		JPanel p_download_automatico=new JPanel();
+		p_download_automatico.add(opzioni_box_ricerca_automatica_preair);
+		p_download_automatico.add(opzioni_box_ricerca_automatica_720p);
 		JComponent[] componenti_down1={
 				p_da,
 				p_da1,
-				opzioni_box_ricerca_automatica_preair,
-				opzioni_box_ricerca_automatica_720p
+				p_download_automatico
 		};
 		PanelOpzione opzioni_download=new PanelOpzione(componenti_down1, 4);
 		opzioni_download.setBorder(new TitledBorder("Download automatico"));
@@ -1286,8 +1290,8 @@ public class Interfaccia {
 						}
 						else{
 							torrent.setScaricato(Torrent.SCARICARE, true);
-							RidisegnaScrollPanel();
 						}
+						RidisegnaScrollPanel();
 						setLabelStato(torrent.getScaricato());
 					}
 				});
@@ -1314,7 +1318,10 @@ public class Interfaccia {
 						}
 						catch (FileNotFoundException e1) {
 							JOptionPane.showMessageDialog(frame, "File video non trovato");
-							setLabelStato(Torrent.RIMOSSO);
+							if(torrent.getScaricato()==Torrent.SCARICATO || torrent.getScaricato()==Torrent.VISTO){
+								setLabelStato(Torrent.RIMOSSO);
+								torrent.setScaricato(Torrent.RIMOSSO);
+							}
 							return; 
 						}
 						String nome_no_ext=nomepuntata.substring(0, nomepuntata.lastIndexOf("."));

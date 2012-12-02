@@ -72,15 +72,13 @@ public class Update {
 						case "VLCPath": Settings.setVLCPath(opzione); break;
 						case "itasa_user": Settings.setItasaUsername(opzione); break;
 						case "itasa_psw": Settings.setItasaPassword(opzione); break;
-//						case "itasa_auto": Settings.setItasaThreadAutoDownload(Boolean.parseBoolean(opzione)); break;
 					}
 				} catch (NumberFormatException e) {}
 			}
 			file.close();
+			OperazioniFile.copyfile("settings.dat", "settings.dat.bak");
 			OperazioniFile.deleteFile("settings.dat");
-		} catch (FileNotFoundException e) {
-			//TODO mostrare frame per inserire le opzioni
-		}
+		} catch (FileNotFoundException e) {	}
 	}
 	private static void update_85_to_86_db(){
 		if(GestioneSerieTV.Showlist()){
@@ -144,6 +142,8 @@ public class Update {
 				}
 			}
 			file.close();
+			OperazioniFile.copyfile("st.dat", "st.dat.bak");
+			OperazioniFile.deleteFile("st.dat");
 		}
 	}
 }

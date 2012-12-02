@@ -70,7 +70,10 @@ public class Settings {
 	public static String getDirectoryDownload() {
 		return DirectoryDownload+(DirectoryDownload.endsWith(File.separator)?"":File.separator);
 	}
-	public static void setDirectoryDownload(String directoryDownload) {
+	public static void setDirectoryDownload(String directoryDownload) {	
+		File f=new File(directoryDownload);
+		if(!f.exists())
+			f.mkdirs();
 		DirectoryDownload = directoryDownload;
 		AggiornaDB();
 	}
@@ -293,8 +296,10 @@ public class Settings {
 						String s=(String)par[j].pvalue();
 						switch(par[j].getField()){
 							case "dir_download" :
-								if(s.isEmpty())
+								if(s.isEmpty()){
 									setDirectoryDownload(getCurrentDir()+"Download"+File.separator);
+									new File(getCurrentDir()+"Download"+File.separator).mkdir();
+								}
 								else{
 									if(!s.endsWith(File.separator))
 										s+=File.separator;
