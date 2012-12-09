@@ -10,4 +10,5 @@ public abstract interface ProviderSottotitoli {
 	public boolean cercaSottotitolo(Torrent t);
 	public ArrayList<SerieSub> getElencoSerie();
 	public String getProviderName();
+	public void caricaElencoSerie();
 }

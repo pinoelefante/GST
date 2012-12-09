@@ -5,6 +5,7 @@ import javax.swing.SwingUtilities;
 
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
+import chrriis.dj.nativeswing.swtimpl.components.MozillaXPCOM.Mozilla;
 
 public class ThreadPanelBrowser extends Thread {
 	private static JWebBrowser wb=null;
@@ -19,7 +20,6 @@ public class ThreadPanelBrowser extends Thread {
 				wb.setBarsVisible(false);
 				wb.setStatusBarVisible(false);
 				wb.setSize(700, 300);
-				//JWebBrowser.clearSessionCookies();
 				
 				String web_site=Advertising.url_ads_alter;
 				wb.navigate(web_site);
