@@ -27,7 +27,11 @@ public class Subsfactory implements ProviderSottotitoli {
 
 	@Override
 	public String getIDSerieAssociata(String nome_serie) {
-		// TODO Auto-generated method stub
+		for(int i=0;i<elenco_serie.size();i++)
+			if(elenco_serie.get(i).getNomeSerie().compareToIgnoreCase(nome_serie)==0){
+				System.out.println((String)elenco_serie.get(i).getID());
+				return ((String)elenco_serie.get(i).getID());
+			}
 		return null;
 	}
 
@@ -115,6 +119,6 @@ public class Subsfactory implements ProviderSottotitoli {
 	
 	public static void main(String[] args){
 		Subsfactory s=new Subsfactory();
-		s.stampa();
+		System.out.println(s.getIDSerieAssociata("american horror story"));
 	}
 }

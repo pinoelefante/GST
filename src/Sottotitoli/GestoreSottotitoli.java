@@ -2,21 +2,39 @@ package Sottotitoli;
 
 import java.util.ArrayList;
 
-import Database.SQLParameter;
 import SerieTV.GestioneSerieTV;
 import SerieTV.SerieTV;
 import SerieTV.Torrent;
 import Database.Database;
+import Database.SQLParameter;
 import GUI.Interfaccia;
 
 public class GestoreSottotitoli {
+	class AssociatoreAutomatico extends Thread {
+		public void run(){
+			System.out.println("Avvio associatore");
+			ArrayList<SerieTV> st=GestioneSerieTV.getElencoSerieInserite();
+			for(int i=0;i<st.size();i++){
+				SerieTV s=st.get(i);
+				associaSerie(s);
+			}
+		}
+	}
 	class RicercaSottotitoliAutomatica extends Thread{
 		public void run(){
 			long sleep_time=/*un minuto*/(60*1000)*10/*10 minuti*/;
 			
 			if(((ItalianSubs)itasa).isLocked())
 				((ItalianSubs)itasa).attendiUnlock();
-				
+			
+			try {
+				Thread t=new AssociatoreAutomatico();
+				t.start();
+				t.join();
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+			}
+			
 			System.out.println("Avvio thread ricerca automatica");
 			if(sottotitoli_da_scaricare.size()==0)
 				System.out.println("Ricerca sottotitoli - Coda vuota");
@@ -62,7 +80,6 @@ public class GestoreSottotitoli {
 			ricerca_automatica=new RicercaSottotitoliAutomatica();
 		else if(!ricerca_automatica.isAlive())
 			ricerca_automatica=new RicercaSottotitoliAutomatica();
-		
 		ricerca_automatica.start();
 	}
 	public void stopRicercaAutomatica(){
@@ -167,6 +184,4 @@ public class GestoreSottotitoli {
 		}
 		return null;
 	}
-	
 }
-
