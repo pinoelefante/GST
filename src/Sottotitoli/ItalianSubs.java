@@ -125,7 +125,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 	}
 	private int cercaFeed(int iditasa, Torrent t){
 		if(verificaTempo(update_time_rss, RSS_UltimoAggiornamento)){
-			System.out.println("Aggiornando il feed RSS");
+			System.out.println("Aggiornando il feed RSS - Italiansubs.net");
 			aggiornaFeedRSS();
 		}
 		for(int i=0;i<feed_rss.size();i++){

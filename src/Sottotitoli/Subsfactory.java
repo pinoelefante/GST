@@ -19,24 +19,59 @@ import org.xml.sax.SAXException;
 
 import Programma.Download;
 import Programma.OperazioniFile;
+import Programma.Settings;
+import SerieTV.GestioneSerieTV;
+import SerieTV.SerieTV;
 import SerieTV.Torrent;
 
 public class Subsfactory implements ProviderSottotitoli {
 	class RSSItem {
-		private String titolo, descrizione, url;
-		private String ID;
-		private int stagione, episodio;
-		private boolean HD720p, Normale;
+		private String titolo, descrizione, url, url_download;
+		private String ID="";
+		private int stagione=0, episodio=0;
+		private boolean HD720p=false, Normale=true;
 		public RSSItem(String t, String d, String u){
 			setTitolo(t);
 			setDescrizione(d);
 			setUrl(u);
+			parse();
+		}
+		private void parse(){
+			String id=getUrl().substring(getUrl().indexOf("directory=")+"directory=".length(), getUrl().indexOf("&filename")).replace("%2F", "/").replace("%20", " ");
+			String url_d=getUrl().replace("action=view", "action=downloadfile");
+			String filename=getUrl().substring(getUrl().indexOf("filename")+"filename=".length());
+			setID(id);
+			setUrlDownload(url_d);
+			String[] r=filename.split("[sS0-9]{3}[eE][0-9]{2}");
+			if(r.length==2){
+				String analyze=filename.substring(r[0].length(), filename.indexOf(r[1]));
+				String[] res=analyze.replace("s", "").replace("S", "").replace("e", " ").replace("E", " ").split(" ");
+				setStagione(Integer.parseInt(res[0]));
+				setEpisodio(Integer.parseInt(res[1]));
+			}
+			else
+				return;
+			if(descrizione.contains("normale") || descrizione.contains("Normale"))
+				setNormale(true);
+			if(descrizione.contains("720p"))
+				set720p(true);
+			if(descrizione.toLowerCase().contains("WEB-DL".toLowerCase()))
+				setNormale(false);
+		}
+		public boolean isValid(){
+			return (getStagione()!=0 && getEpisodio()!=0);
 		}
 		public String getTitolo() {
 			return titolo;
 		}
 		public void setTitolo(String titolo) {
 			this.titolo = titolo;
+		}
+		public void setUrlDownload(String url){
+			url_download=url;
+		}
+		public String getUrlDownload(){
+			return url_download;
 		}
 		public String getDescrizione() {
 			return descrizione;
@@ -81,7 +116,7 @@ public class Subsfactory implements ProviderSottotitoli {
 			Normale = normale;
 		}
 		public String toString(){
-			return getUrl();
+			return getStagione()+" "+getEpisodio()+" "+isNormale()+" "+is720p();
 		}
 	}
 	
@@ -100,10 +135,37 @@ public class Subsfactory implements ProviderSottotitoli {
 
 	@Override
 	public boolean scaricaSottotitolo(Torrent t) {
-		// TODO Auto-generated method stub
+		if(t==null)
+			return false;
+		SerieTV st=GestioneSerieTV.getSerieFromName(GestioneSerieTV.getElencoSerieInserite(), t.getNomeSerie());
+		if(st==null)
+			return false;
+		String id_subsfactory=st.getSubsfactoryDirectory();
+		System.out.println(t.getNomeSerie()+" - id_subsfactory: "+id_subsfactory);
+		if(id_subsfactory.isEmpty())
+			return false;
+		String path=cercaFeed(id_subsfactory, t);
+		System.out.println(t.getNomeSerie()+" - url: "+path);
+		if(path!=null){
+			if(scaricaSub(path, Renamer.generaNomeDownload(t), t.getNomeSerieFolder())){
+				t.setSottotitolo(false, true);
+				return true;
+			}
+		}
 		return false;
 	}
-
+	private boolean scaricaSub(String url, String nome, String folder){
+		String cartella_destinazione=Settings.getDirectoryDownload()+(Settings.getDirectoryDownload().endsWith(File.pathSeparator)?folder:(File.separator+folder));
+		String destinazione=cartella_destinazione+File.separator+nome;
+		try {
+			Download.downloadFromUrl(url, destinazione);
+			return true;
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
 	@Override
 	public String getIDSerieAssociata(String nome_serie) {
 		for(int i=0;i<elenco_serie.size();i++)
@@ -114,8 +176,10 @@ public class Subsfactory implements ProviderSottotitoli {
 
 	@Override
 	public boolean cercaSottotitolo(Torrent t) {
-		// TODO Auto-generated method stub
-		return false;
+		System.out.println("Subsfactory.it - "+t.getNomeSerie());
+		SerieTV st=GestioneSerieTV.getSerieFromName(GestioneSerieTV.getElencoSerieInserite(), t.getNomeSerie());
+		
+		return cercaFeed(st.getSubsfactoryDirectory(), t)==null?false:true;
 	}
 
 	@Override
@@ -189,19 +253,23 @@ public class Subsfactory implements ProviderSottotitoli {
 	}
 	private String cercaFeed(String id_subs, Torrent t){
 		if(verificaTempo(update_time_rss, RSS_UltimoAggiornamento)){
-			System.out.println("Aggiornando il feed RSS");
+			System.out.println("Aggiornando il feed RSS - Subsfactory.it");
 			aggiornaFeedRSS();
 		}
 		for(int i=0;i<feed_rss.size();i++){
 			RSSItem rss=feed_rss.get(i);
-			if(rss.getID().compareToIgnoreCase(id_subs)==0){
-				if(rss.is720p()==t.is720p()){
-					if(rss.isNormale()==!t.is720p()){
-						if(rss.getStagione()==t.getSerie()){
-							if(rss.getEpisodio()==t.getPuntata()){
-								return rss.getUrl();
-							}
-						}
+			System.out.println(rss.getStagione()+" "+rss.getEpisodio()+" "+ rss.getUrlDownload());
+			System.out.println("ID: "+rss.getID()+" - "+id_subs);
+			if(rss.getID().toLowerCase().startsWith(id_subs.toLowerCase())){
+				System.out.println("Stagione: "+rss.getStagione() + " - "+t.getSerie());
+				if(rss.getStagione()==t.getSerie()){
+					System.out.println("Puntata: "+rss.getEpisodio()+" - "+t.getPuntata());
+					if(rss.getEpisodio()==t.getPuntata()){
+						System.out.println("Risoluzione: Rss("+rss.is720p()+rss.isNormale()+")"+" - Torrent("+t.is720p()+!t.is720p()+")");
+						if(rss.isNormale()==!t.is720p())
+							return rss.getUrlDownload();
+						else if(rss.is720p()==t.is720p())
+							return rss.getUrlDownload();
 					}
 				}
 			}
@@ -214,7 +282,6 @@ public class Subsfactory implements ProviderSottotitoli {
 		try {
 			Download.downloadFromUrl(URL_FEED_RSS, "feed_subs");
 			
-			//TODO XML
 			DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder domparser = dbfactory.newDocumentBuilder();
 			Document doc = domparser.parse(new File("feed_subs"));
@@ -241,7 +308,9 @@ public class Subsfactory implements ProviderSottotitoli {
 						}
 					}
 				}
-				feed_rss.add(new RSSItem(titolo, descrizione, link));
+				RSSItem rss=new RSSItem(titolo, descrizione, link);
+				if(rss.isValid())
+					feed_rss.add(rss);
 			}
 			OperazioniFile.deleteFile("feed_subs");
 		} 
@@ -269,10 +338,5 @@ public class Subsfactory implements ProviderSottotitoli {
 	public void stampa_feed(){
 		for(int i=0;i<feed_rss.size();i++)
 			System.out.println(feed_rss.get(i));
-	}
-	public static void main(String[] args){
-		Subsfactory s=new Subsfactory();
-		s.aggiornaFeedRSS();
-		s.stampa_feed();
 	}
 }
