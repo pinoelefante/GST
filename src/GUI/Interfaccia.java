@@ -487,7 +487,7 @@ public class Interfaccia {
 									int scelta=(JOptionPane.showConfirmDialog(frame, "Non è stato possibile associare la serie a ItaSA.\nVuoi associarla manualmente?", "Associa ItaSA", JOptionPane.YES_NO_OPTION));
 									if(scelta==JOptionPane.YES_OPTION){
 										associaFrame();
-										associa_serie.setSelectedItem((SerieTV)download_combo_eztv.getSelectedItem());
+										associa_elenco_serie.setSelectedItem((SerieTV)download_combo_eztv.getSelectedItem());
 									}
 								}
 							}
@@ -1684,10 +1684,15 @@ public class Interfaccia {
 	
 	//TODO modificare per più gestori, come subsfactory
 	public static JFrame frame_associa_itasa;
-	private static JComboBox<SerieSub> associa_itasa; 
-	private static JComboBox<SerieTV> associa_serie;
-	private static JLabel associa_testo, associa_stato;
-	private static JButton associa_aggiorna, associa_associa, associa_rimuovi;
+	private static JComboBox<SerieSub> associa_elenco_itasa, 
+									   associa_elenco_subsfactory;
+	private static JComboBox<SerieTV> associa_elenco_serie;
+	private static JLabel associa_label_ass_itasa, associa_label_img_itasa, 
+					associa_label_ass_subsfactory, associa_label_img_subsfactory,
+					associa_label_serietv;
+	private static JButton associa_aggiorna_elenchi, 
+					associa_bottone_ass_itasa, associa_bottone_rimuovi_itasa, 
+					associa_bottone_ass_subsfactory, associa_bottone_rimuovi_subsfactory;
 	public static void associaFrame(){
 		if(frame_associa_itasa==null){
 			frame_associa_itasa=new JFrame();
@@ -1695,98 +1700,162 @@ public class Interfaccia {
 			frame_associa_itasa.setResizable(false);
 			frame_associa_itasa.setLayout(new BorderLayout());
 			frame_associa_itasa.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-			frame_associa_itasa.setSize(600, 200);
+			frame_associa_itasa.setSize(700, 250);
 			
-			associa_itasa=new JComboBox<SerieSub>();
+			associa_elenco_itasa=new JComboBox<SerieSub>();
+			associa_elenco_subsfactory=new JComboBox<SerieSub>();
+			associa_elenco_serie=new JComboBox<SerieTV>();
+			associa_label_ass_itasa=new JLabel("Associata a: ");
+			associa_label_ass_subsfactory=new JLabel("Associata a: ");
+			associa_label_img_itasa=new JLabel(Resource.getIcona("res/itasa.png"));
+			associa_label_img_subsfactory=new JLabel(Resource.getIcona("res/subsfactory.jpg"));
+			associa_label_serietv=new JLabel("SerieTV: ");
 			
-			associa_serie=new JComboBox<SerieTV>();
-			
-			associa_testo=new JLabel("Associata a: ");
-			associa_stato=new JLabel("");
-			
-			associa_aggiorna=new JButton("Aggiorna elenchi");
-			associa_aggiorna.addActionListener(new ActionListener() {
+			associa_aggiorna_elenchi=new JButton("Aggiorna elenchi");
+			associa_aggiorna_elenchi.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
 					
 					ArrayList<SerieTV> serie=GestioneSerieTV.getElencoSerieInserite();
-					associa_serie.removeAllItems();
+					associa_elenco_serie.removeAllItems();
 					for(int i=0;i<serie.size();i++)
-						associa_serie.addItem(serie.get(i));
+						associa_elenco_serie.addItem(serie.get(i));
 					
-					GestioneSerieTV.getSubManager();
 					ArrayList<SerieSub> itasa=GestioneSerieTV.getSubManager().getElencoSerie(GestoreSottotitoli.ITASA);
-					associa_itasa.removeAllItems();
+					associa_elenco_itasa.removeAllItems();
 					for(int i=0;i<itasa.size();i++)
-						associa_itasa.addItem(itasa.get(i));
+						associa_elenco_itasa.addItem(itasa.get(i));
+					
+					associa_elenco_subsfactory.removeAllItems();
+					ArrayList<SerieSub> subsfactory=GestioneSerieTV.getSubManager().getElencoSerie(GestoreSottotitoli.SUBSFACTORY);
+					for(int i=0;i<subsfactory.size();i++)
+						associa_elenco_subsfactory.addItem(subsfactory.get(i));
 				}
 			});
-			associa_serie.addActionListener(new ActionListener() {
+			associa_elenco_serie.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					SerieTV st=(SerieTV)associa_serie.getSelectedItem();
-					if(st==null)
-						return;
-					int id=st.getItasaID();
-					if(id!=-1){
-						GestioneSerieTV.getSubManager();
-						ArrayList<SerieSub> itasa=GestioneSerieTV.getSubManager().getElencoSerie(GestoreSottotitoli.ITASA);
-						String nome="";
-						for(int i=0;i<itasa.size();i++)
-							if((int)itasa.get(i).getID()==id)
-								nome=itasa.get(i).getNomeSerie();
-						associa_stato.setText(nome+" ("+id+")");
+					SerieTV st=(SerieTV)associa_elenco_serie.getSelectedItem();
+					if(st!=null){
+						//ITASA
+						int id=st.getItasaID();
+						if(id!=-1){
+							boolean it_f=false;
+							for(int i=0;i<associa_elenco_itasa.getItemCount();i++)
+								if(((int)associa_elenco_itasa.getItemAt(i).getID())==id){
+									it_f=true;
+									associa_elenco_itasa.setSelectedItem(associa_elenco_itasa.getItemAt(i));
+									break;
+								}
+							if(it_f){
+								SerieSub s=(SerieSub)associa_elenco_itasa.getSelectedItem();
+								associa_label_ass_itasa.setText("Associata a: "+s.getNomeSerie()+" ("+(int)s.getID()+")");
+							}
+							else
+								associa_label_ass_itasa.setText("Associata a: non associata");
+						}
+						else
+							associa_label_ass_itasa.setText("Associata a: non associata");
+						//SUBSFACTORY
+						String id_subs=st.getSubsfactoryDirectory();
+						if(!id_subs.isEmpty()){
+							boolean subs_f=false;
+							for(int i=0;i<associa_elenco_subsfactory.getItemCount();i++){
+								if(((String)associa_elenco_subsfactory.getItemAt(i).getID()).compareToIgnoreCase(id_subs)==0){
+									subs_f=true;
+									associa_elenco_subsfactory.setSelectedItem(associa_elenco_subsfactory.getItemAt(i));
+									break;
+								}
+							}
+							if(subs_f){
+								SerieSub s=(SerieSub)associa_elenco_subsfactory.getSelectedItem();
+								associa_label_ass_subsfactory.setText("Associata a: "+s.getNomeSerie()+" ("+(String)s.getID()+")");
+							}
+							else
+								associa_label_ass_subsfactory.setText("Associata a: non associata");
+						}
+						else
+							associa_label_ass_subsfactory.setText("Associata a: non associata");
 					}
-					else
-						associa_stato.setText(" non associato.");
 				}
 			});
 			
-			associa_associa=new JButton("Associa");
-			associa_associa.addActionListener(new ActionListener() {
+			associa_bottone_ass_itasa=new JButton("Associa");
+			associa_bottone_ass_itasa.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					SerieTV st=(SerieTV)associa_serie.getSelectedItem();
+					SerieTV st=(SerieTV)associa_elenco_serie.getSelectedItem();
 					if(st==null)
 						return;
-					SerieSub itasa=(SerieSub)associa_itasa.getSelectedItem();
+					SerieSub itasa=(SerieSub)associa_elenco_itasa.getSelectedItem();
 					if(itasa==null)
 						return;
 					st.setItasaID((int)itasa.getID());
 					st.UpdateDB();
-					associa_stato.setText(itasa.getNomeSerie()+" ("+st.getItasaID()+")");
+					associa_label_ass_itasa.setText("Associata a: "+itasa.getNomeSerie()+" ("+(int)itasa.getID()+")");
 				}
 			});
-			associa_rimuovi=new JButton("Rimuovi");
-			associa_rimuovi.addActionListener(new ActionListener() {
+			associa_bottone_rimuovi_itasa=new JButton("Rimuovi");
+			associa_bottone_rimuovi_itasa.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					SerieTV st=(SerieTV)associa_serie.getSelectedItem();
+					SerieTV st=(SerieTV)associa_elenco_serie.getSelectedItem();
 					if(st==null)
 						return;
 					st.setItasaID(-1);
-					associa_stato.setText(" non associato.");
+					st.UpdateDB();
+					associa_label_ass_itasa.setText("Associata a: non associata");
 				}
 			});
-			
-			JPanel nord=new JPanel();
-			nord.add(associa_aggiorna);
-			
-			JPanel centro=new JPanel(new BorderLayout());
-			JPanel centro_w=new JPanel();
-			JPanel centro_e=new JPanel();
-			JPanel centro_s=new JPanel();
-			centro_w.add(associa_serie);
-			centro_e.add(associa_itasa);
-			centro_s.add(associa_associa);
-			centro_s.add(associa_rimuovi);
-			centro.add(centro_s, BorderLayout.SOUTH);
-			centro.add(centro_e, BorderLayout.EAST);
-			centro.add(centro_w, BorderLayout.WEST);
-			
-			JPanel sud=new JPanel();
-			sud.add(associa_testo);
-			sud.add(associa_stato);
-			
-			frame_associa_itasa.add(nord, BorderLayout.NORTH);
-			frame_associa_itasa.add(sud, BorderLayout.SOUTH);
-			frame_associa_itasa.add(centro, BorderLayout.CENTER);
+			associa_bottone_rimuovi_subsfactory=new JButton("Rimuovi");
+			associa_bottone_rimuovi_subsfactory.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					SerieTV st=(SerieTV)associa_elenco_serie.getSelectedItem();
+					if(st!=null){
+						st.setSubsfactoryID("");
+						st.UpdateDB();
+						associa_label_ass_subsfactory.setText("Associata a: non associata");
+					}
+				}
+			});
+			associa_bottone_ass_subsfactory=new JButton("Associa");
+			associa_bottone_ass_subsfactory.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					SerieTV st=(SerieTV)associa_elenco_serie.getSelectedItem();
+					if(st!=null){
+						if(associa_elenco_subsfactory.getSelectedItem()!=null){
+							SerieSub s=(SerieSub)associa_elenco_subsfactory.getSelectedItem();
+							st.setSubsfactoryID((String)s.getID());
+							st.UpdateDB();
+							associa_label_ass_subsfactory.setText("Associata a: "+s.getNomeSerie()+" ("+(String)s.getID()+")");
+						}
+					}
+				}
+			});
+			JPanel container=new JPanel(new GridLayout(5,1));
+			JPanel panel_1=new JPanel();
+			panel_1.add(associa_aggiorna_elenchi);
+			JPanel panel_2=new JPanel();
+			panel_2.add(associa_label_serietv);
+			panel_2.add(associa_elenco_serie);
+			JPanel panel_3=new JPanel(new BorderLayout());
+			panel_3.add(associa_label_img_itasa, BorderLayout.WEST);
+			JPanel panel_3_center=new JPanel();
+			panel_3_center.add(associa_elenco_itasa);
+			panel_3_center.add(associa_bottone_ass_itasa);
+			panel_3_center.add(associa_bottone_rimuovi_itasa);
+			panel_3.add(panel_3_center, BorderLayout.CENTER);
+			panel_3.add(associa_label_ass_itasa, BorderLayout.SOUTH);
+			JPanel panel_4=new JPanel(new BorderLayout());
+			panel_4.add(associa_label_img_subsfactory, BorderLayout.WEST);
+			JPanel panel_4_center=new JPanel();
+			panel_4_center.add(associa_elenco_subsfactory);
+			panel_4_center.add(associa_bottone_ass_subsfactory);
+			panel_4_center.add(associa_bottone_rimuovi_subsfactory);
+			panel_4.add(panel_4_center, BorderLayout.CENTER);
+			panel_4.add(associa_label_ass_subsfactory, BorderLayout.SOUTH);
+			container.add(panel_1);
+			container.add(panel_2);
+			container.add(panel_3);
+			container.add(new JPanel());
+			container.add(panel_4);
+			frame_associa_itasa.add(container);
 		}
 		frame_associa_itasa.setVisible(true);
 		Point p;
@@ -1796,7 +1865,7 @@ public class Interfaccia {
 			p=Programma.Main.fl.getFrame().getLocation();
 		frame_associa_itasa.setLocation((int)p.getX(), (int)p.getY());
 		
-		associa_aggiorna.doClick();
+		associa_aggiorna_elenchi.doClick();
 	}
 	
 	protected static JLabel		about_label_donazione		= new JLabel(Language.ABOUT_DONATION);

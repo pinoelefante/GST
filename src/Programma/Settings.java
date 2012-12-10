@@ -8,7 +8,7 @@ import Database.Database;
 import Database.SQLParameter;
 
 public class Settings {
-	private static final int	VersioneSoftware					= 86;
+	private static final int	VersioneSoftware					= 87;
 	private static int			Client								= 1;
 	public static final String	IndirizzoDonazioni					= "http://pinoelefante.altervista.org/donazioni/donazione_gst.html";
 	private static final String	NomeEseguibile						= "GestioneSerieTV5.exe";

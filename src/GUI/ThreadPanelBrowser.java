@@ -2,10 +2,8 @@ package GUI;
 
 import javax.swing.SwingUtilities;
 
-
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
-import chrriis.dj.nativeswing.swtimpl.components.MozillaXPCOM.Mozilla;
 
 public class ThreadPanelBrowser extends Thread {
 	private static JWebBrowser wb=null;
