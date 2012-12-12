@@ -1338,12 +1338,18 @@ public class Interfaccia {
 				});
 				sottotitolo.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-						if(!GestioneSerieTV.getSubManager().scaricaSottotitolo(torrent)){
-							torrent.setSottotitolo(true, true);
-							JOptionPane.showMessageDialog(frame, "Sottotitolo aggiunto in coda");
+						class cercaSub extends Thread {
+							public void run(){
+								if(!GestioneSerieTV.getSubManager().scaricaSottotitolo(torrent)){
+									torrent.setSottotitolo(true, true);
+									JOptionPane.showMessageDialog(frame, "Sottotitolo aggiunto in coda:\n"+torrent);
+								}
+								else
+									JOptionPane.showMessageDialog(frame, "Sottotitolo scaricato");
+							}
 						}
-						else
-							JOptionPane.showMessageDialog(frame, "Sottotitolo scaricato");
+						Thread t=new cercaSub();
+						t.start();
 					}
 				});
 				cancella.addActionListener(new ActionListener() {

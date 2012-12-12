@@ -9,7 +9,7 @@ import Database.SQLParameter;
 
 public class Settings {
 	private static final int	VersioneSoftware					= 87;
-	private static final boolean beta								= true;
+	private static final boolean beta								= false;
 	private static final int	beta_versione						= 1;
 	private static int			Client								= 1;
 	public static final String	IndirizzoDonazioni					= "http://pinoelefante.altervista.org/donazioni/donazione_gst.html";
