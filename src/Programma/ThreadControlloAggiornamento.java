@@ -32,8 +32,9 @@ public class ThreadControlloAggiornamento extends Thread {
 
 		File file_v = new File("version.dat");
 		file_v.delete();
+		//TODO aggiungere aggiornamento versione beta
 		//TODO Modificare per versione Linux e Mac
-		if (versione > Settings.getVersioneSoftware()) {
+		if (versione > Settings.getVersioneSoftware() || (Settings.isBeta() && versione==Settings.getVersioneSoftware())) {
 			OperazioniFile.copyfile("GestioneSerieTV5.exe", "GestioneSerieTV5.exe_back");
 			try {
 				Download.downloadFromUrl("http://pinoelefante.altervista.org/software/GST/GestioneSerieTV5.exe", "GestioneSerieTV5.exe");

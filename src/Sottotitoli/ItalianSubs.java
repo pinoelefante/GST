@@ -186,6 +186,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 		}
 	}
 	
+	@SuppressWarnings("resource")
 	private int cercaIDSottotitoloFromAPI(int show_id, int serie, int episodio, int tipo) throws ItasaSubNotFound {
 		String query = serie + "x"	+ (episodio < 10 ? "0" + episodio : episodio); 
 		String tipo_sub = "Normale";
@@ -220,17 +221,12 @@ public class ItalianSubs implements ProviderSottotitoli{
 					}
 				}
 			}
+			file.close();
+			f_r.close();
+			OperazioniFile.deleteFile("response_sub");
 		}
 		catch (IOException e) {
-		}
-		finally {
-			file.close();
-			try {
-				f_r.close();
-			}
-			catch (IOException e) {
-			}
-			OperazioniFile.deleteFile("response_sub");
+			throw new ItasaSubNotFound("Itasa exception - probabile errore di connessione");
 		}
 		return id;
 	}
