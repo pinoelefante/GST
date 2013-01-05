@@ -12,7 +12,13 @@ FARE
 - trovare informazioni sulle serie
 - controllo dimensione file in controllo dipendenze
 - rifare tab Sottotitoli
-- controllo automatico associazione a manager di sottotitoli
+- informazioni sull'episodio
+- download dei trailer da primetvseries
+- possibilità di non vedere gli episodi scaricati nel lettore
+- quando una puntata viene scaricata, viene messa in un elenco delle puntate da vedere
+- in lettore, c'è una tab in cui elencare le puntate da vedere (oppure un'opzione)
+- bottoni aggiornare liste serie sottotitoli
+- mostrare le nuove serie di eztv
 
 DA ULTIMARE
 
@@ -34,5 +40,11 @@ FATTO
 - wizard impostazioni al primo avvio
 - opzioni se scaricare preair, 720p //in download automatico
 - opzioni se mostrare preair, 720p  //in download
+
+//rev 87
+- controllo automatico associazione a manager di sottotitoli
+
+//rev 88
+- nullpointer quando la serie non contiene episodi
 
 PROBABILMENTE FIXATO

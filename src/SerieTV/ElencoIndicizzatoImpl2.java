@@ -128,8 +128,7 @@ public class ElencoIndicizzatoImpl2 implements ElencoIndicizzato {
 	@Override
 	public Integer[] getIndexes() {
 		Integer[] indici=new Integer[elenco.size()];
-		if(elenco.size()==0)
-			return null;
+		
 		for(int i=0;i<elenco.size();i++)
 			indici[i]=elenco.get(i).getIndex();
 		return indici;

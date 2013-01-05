@@ -1430,6 +1430,13 @@ public class Interfaccia {
 						libreria_box_stagioni.setEnabled(true);
 						libreria_box_ordine.setEnabled(true);
 					}
+					else {
+						libreria_box_stagioni.setEnabled(false);
+						libreria_box_ordine.setEnabled(false);
+						libreria_panel_scrollable.removeAll();
+						libreria_panel_scrollable.revalidate();
+						libreria_panel_scrollable.repaint();
+					}
 				}
 				else{
 					libreria_box_serie.setEnabled(false);
@@ -1446,11 +1453,17 @@ public class Interfaccia {
 		});
 		libreria_box_ordine.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
-				int stagione=(Integer)libreria_box_stagioni.getSelectedItem();
-				
 				SerieTV st = (SerieTV) libreria_box_serie.getSelectedItem();
+				if(st==null)
+					return;
 				ElencoIndicizzato scaricati=st.getEpisodi();
+				if(scaricati.getIndexes().length<=0){
+					libreria_panel_scrollable.removeAll();
+					libreria_panel_scrollable.revalidate();
+					libreria_panel_scrollable.repaint();
+					return;
+				}
+				int stagione=(Integer)libreria_box_stagioni.getSelectedItem();
 				ArrayList<Indexable> l_torrent=scaricati.get(stagione);
 				
 				libreria_panel_scrollable.removeAll();
