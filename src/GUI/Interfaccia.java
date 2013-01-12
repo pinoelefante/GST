@@ -1300,8 +1300,14 @@ public class Interfaccia {
 						try {
 							Download.downloadMagnet(torrent.getUrl(), torrent.getNomeSerieFolder());
 							check_scaricato.setSelected(true);
-							torrent.setScaricato(Torrent.SCARICATO);
-							check_scaricato.getActionListeners()[0].actionPerformed(new ActionEvent(check_scaricato, 0, "", 0));
+							torrent.setScaricato(Torrent.SCARICATO, true);
+							if(Settings.isRicercaSottotitoli()){
+								int scelta=JOptionPane.showConfirmDialog(frame, "Vuoi scaricare anche il sottotitolo?", "Download sottotitolo", JOptionPane.YES_NO_OPTION);
+								if(scelta==JOptionPane.YES_OPTION)
+									sottotitolo.doClick();
+							}
+							RidisegnaScrollPanel();
+							setLabelStato(torrent.getScaricato());
 						}
 						catch (IOException e) {
 							e.printStackTrace();

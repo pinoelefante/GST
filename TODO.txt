@@ -19,32 +19,19 @@ FARE
 - in lettore, c'è una tab in cui elencare le puntate da vedere (oppure un'opzione)
 - bottoni aggiornare liste serie sottotitoli
 - mostrare le nuove serie di eztv
+- calendario serie tv
 
 DA ULTIMARE
 
 FATTO
-// rev 86
-- dopo aggiornamento liste, aggiornare lo scrollpane
-- client torrent (per windows, solo utorrent)
-- non ricercare ulteriori puntate se la serie è conclusa
-- rifare tasto "Già viste"
-- convertire tutto in sqllite
-- durante la ricerca dei sottotitoli, cercare anche nel feed RSS
-- salvataggio cronologia sottotitoli scaricati
-- tab libreria con tasto play, delete, download sub, cancella episodio
-- spostare sottotitoli da scaricare nella classe Torrent 
-- modificare thread ricerca automatica con download 720p e download preair
-- caricamento opzioni download 720p e download preair
-- controlli libreria (check_scaricato)
-- scaricato, da scaricare, visualizzabile, ignorato
-- wizard impostazioni al primo avvio
-- opzioni se scaricare preair, 720p //in download automatico
-- opzioni se mostrare preair, 720p  //in download
-
 //rev 87
 - controllo automatico associazione a manager di sottotitoli
 
 //rev 88
 - nullpointer quando la serie non contiene episodi
+
+//rev 89
+- cliccando il tasto scarica in lettore lo stato della puntata passa a scaricata
+- scaricando da lettore, viene chiesto se si vuole scaricare il sottotitolo
 
 PROBABILMENTE FIXATO
