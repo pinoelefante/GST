@@ -230,49 +230,53 @@ public class Interfaccia {
 		catch (InterruptedException e2) {e2.printStackTrace();}
 		
 		JPanel panel_bottom_sud=new JPanel(new BorderLayout());
-		panel_bottom_sud.add(download_browser_adv=ThreadPanelBrowser.getBrowser(), BorderLayout.CENTER);
-		panel_bottom_sud.add(download_label_adv=new JLabel("Clicca gli sponsor per aiutare lo sviluppo del software"), BorderLayout.SOUTH);
-		download_label_adv.setFont(new Font("Tahoma", Font.BOLD, 12));
-		frame.add(panel_bottom_sud, BorderLayout.SOUTH);
-		download_panel_download.add(panel_bottom, BorderLayout.SOUTH);
-
-		download_browser_adv.addWebBrowserListener(new WebBrowserListener(){
-			public void windowWillOpen(WebBrowserWindowWillOpenEvent e) {}
-			public void windowOpening(WebBrowserWindowOpeningEvent e) {}
-			public void windowClosing(WebBrowserEvent e) {}
-			public void titleChanged(final WebBrowserEvent e) {
-				if(e.getWebBrowser().getPageTitle().compareToIgnoreCase("about:blank")==0 || e.getWebBrowser().getPageTitle().isEmpty() || e.getWebBrowser().getPageTitle()==null)
-					return;
-				if(e.getWebBrowser().getPageTitle().compareToIgnoreCase(Advertising.url_ads_alter)!=0){
-					if(download_advertising_window==null){
-						download_advertising_window=new JFrame();
-						download_advertising_window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-						download_advertising_window.setLayout(new BorderLayout());
-						download_advertising_window.add(e.getWebBrowser());
-						download_advertising_window.setVisible(true);
-						download_advertising_window.setAlwaysOnTop(Settings.isAlwaysOnTop());
-						download_advertising_window.addWindowListener(new WindowListener() {
-							public void windowOpened(WindowEvent arg0) {}
-							public void windowIconified(WindowEvent arg0) {	}
-							public void windowDeiconified(WindowEvent arg0) {}
-							public void windowDeactivated(WindowEvent arg0) {}
-							public void windowClosing(WindowEvent arg0) {}
-							public void windowClosed(WindowEvent arg0) {
-								download_advertising_window=null;
-							}
-							public void windowActivated(WindowEvent arg0) {}
-						});
+		download_browser_adv=ThreadPanelBrowser.getBrowser();
+		if(download_browser_adv!=null){
+			panel_bottom_sud.add(download_browser_adv, BorderLayout.CENTER);
+			panel_bottom_sud.add(download_label_adv=new JLabel("Clicca gli sponsor per aiutare lo sviluppo del software"), BorderLayout.SOUTH);
+			download_label_adv.setFont(new Font("Tahoma", Font.BOLD, 12));
+			frame.add(panel_bottom_sud, BorderLayout.SOUTH);
+			download_panel_download.add(panel_bottom, BorderLayout.SOUTH);
+	
+			download_browser_adv.addWebBrowserListener(new WebBrowserListener(){
+				public void windowWillOpen(WebBrowserWindowWillOpenEvent e) {}
+				public void windowOpening(WebBrowserWindowOpeningEvent e) {}
+				public void windowClosing(WebBrowserEvent e) {}
+				public void titleChanged(final WebBrowserEvent e) {
+					if(e.getWebBrowser().getPageTitle().compareToIgnoreCase("about:blank")==0 || e.getWebBrowser().getPageTitle().isEmpty() || e.getWebBrowser().getPageTitle()==null)
+						return;
+					if(e.getWebBrowser().getPageTitle().compareToIgnoreCase(Advertising.url_ads_alter)!=0){
+						if(download_advertising_window==null){
+							download_advertising_window=new JFrame();
+							download_advertising_window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+							download_advertising_window.setLayout(new BorderLayout());
+							download_advertising_window.add(e.getWebBrowser());
+							download_advertising_window.setVisible(true);
+							download_advertising_window.setAlwaysOnTop(Settings.isAlwaysOnTop());
+							download_advertising_window.addWindowListener(new WindowListener() {
+								public void windowOpened(WindowEvent arg0) {}
+								public void windowIconified(WindowEvent arg0) {	}
+								public void windowDeiconified(WindowEvent arg0) {}
+								public void windowDeactivated(WindowEvent arg0) {}
+								public void windowClosing(WindowEvent arg0) {}
+								public void windowClosed(WindowEvent arg0) {
+									download_advertising_window=null;
+								}
+								public void windowActivated(WindowEvent arg0) {}
+							});
+						}
+						download_advertising_window.setSize(1024, 600);
 					}
-					download_advertising_window.setSize(1024, 600);
 				}
-			}
-			public void statusChanged(WebBrowserEvent e) {}
-			public void locationChanging(WebBrowserNavigationEvent e) {	}
-			public void locationChanged(WebBrowserNavigationEvent e) {}
-			public void locationChangeCanceled(WebBrowserNavigationEvent e) {}
-			public void loadingProgressChanged(WebBrowserEvent e) {}
-			public void commandReceived(WebBrowserCommandEvent e) {}
-		});
+				public void statusChanged(WebBrowserEvent e) {}
+				public void locationChanging(WebBrowserNavigationEvent e) {	}
+				public void locationChanged(WebBrowserNavigationEvent e) {}
+				public void locationChangeCanceled(WebBrowserNavigationEvent e) {}
+				public void loadingProgressChanged(WebBrowserEvent e) {}
+				public void commandReceived(WebBrowserCommandEvent e) {}
+			});
+		}
+		
 		download_bottone_esplora.setFont(new Font("Tahoma", Font.BOLD, 14));
 		download_bottone_esplora.setIcon(Resource.getIcona("res/folder_24.png"));
 		download_bottone_esplora.setText(Language.OPZIONI_ESPLORA);

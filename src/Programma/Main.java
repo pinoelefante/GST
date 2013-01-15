@@ -1,6 +1,9 @@
 package Programma;
 
 
+import java.io.FileWriter;
+import java.util.GregorianCalendar;
+
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -80,7 +83,7 @@ public class Main {
 			thread_update.start();
 			fl.setprog(++i);
 			thread_update.join();
-			
+			 
 			fl.settext("Thread browser");
 			panel_adv = new ThreadPanelBrowser();
 			panel_adv.start();
@@ -107,6 +110,21 @@ public class Main {
 		catch(Exception e){
 			JOptionPane.showMessageDialog(null, e.getMessage());
 			e.printStackTrace();
+			try{
+				StackTraceElement[] stack=e.getStackTrace();
+				FileWriter file=new FileWriter("eccezioni.txt", true);
+				GregorianCalendar date=new GregorianCalendar();
+				file.append(date.getTime().toString()+"\n");
+				file.append(e.getMessage()+"\n");
+				for(int i=stack.length-1;i>=0;i--){
+					file.append(""+stack[i].toString()+"\n");
+				}
+				file.append("\n\n");
+				file.close();
+			}
+			catch(Exception e1){
+				
+			}
 		}
 	}
 }

@@ -20,6 +20,7 @@ FARE
 - bottoni aggiornare liste serie sottotitoli
 - mostrare le nuove serie di eztv
 - calendario serie tv
+- funzione salvataggio eccezioni in un file
 
 DA ULTIMARE
 
