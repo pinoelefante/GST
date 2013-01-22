@@ -53,10 +53,12 @@ public class OperazioniFile {
 		}
 		catch (FileNotFoundException ex) {
 			System.out.println(ex.getMessage() + " in the specified directory.");
+			ManagerException.registraEccezione(ex);
 		}
 		catch (IOException e) {
 			System.out.println(e.getMessage());
 			e.printStackTrace();
+			ManagerException.registraEccezione(e);
 		}
 		return false;
 	}
@@ -87,6 +89,7 @@ public class OperazioniFile {
 		}
 		catch (IOException | URISyntaxException e) {
 			e.printStackTrace();
+			ManagerException.registraEccezione(e);
 		}
 	}
 	public static void email(String uri){
@@ -96,6 +99,7 @@ public class OperazioniFile {
 		}
 		catch (IOException | URISyntaxException e) {
 			e.printStackTrace();
+			ManagerException.registraEccezione(e);
 		}
 	}
 	public static boolean fileExists(String path){

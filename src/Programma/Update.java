@@ -21,7 +21,12 @@ public class Update {
 						Interfaccia.ShowFrameOpzioni();	
 						if(Interfaccia.getFrameOpzioni()!=null)
 							while(Interfaccia.getFrameOpzioni().isVisible())
-								try {Thread.sleep(1000);} catch (InterruptedException e) {}
+								try {
+									Thread.sleep(1000);
+								} 
+								catch (InterruptedException e) {
+									ManagerException.registraEccezione(e);
+								}
 					}
 				}
 				case 85:{
@@ -33,6 +38,7 @@ public class Update {
 					catch(Exception e){
 						System.out.println(e.getMessage());
 						e.printStackTrace();
+						ManagerException.registraEccezione(e);
 					}
 					Settings.setLastVersion(86);
 				}
@@ -73,12 +79,18 @@ public class Update {
 						case "itasa_user": Settings.setItasaUsername(opzione); break;
 						case "itasa_psw": Settings.setItasaPassword(opzione); break;
 					}
-				} catch (NumberFormatException e) {}
+				} 
+				catch (NumberFormatException e) {
+					ManagerException.registraEccezione(e);
+				}
 			}
 			file.close();
 			OperazioniFile.copyfile("settings.dat", "settings.dat.bak");
 			OperazioniFile.deleteFile("settings.dat");
-		} catch (FileNotFoundException e) {	}
+		} 
+		catch (FileNotFoundException e) {	
+			ManagerException.registraEccezione(e);
+		}
 	}
 	private static void update_85_to_86_db(){
 		if(GestioneSerieTV.Showlist()){
@@ -88,6 +100,7 @@ public class Update {
 				file_reader = new FileReader("st.dat");
 			}
 			catch (FileNotFoundException e) {
+				ManagerException.registraEccezione(e);
 				return;
 			}
 			
@@ -109,6 +122,7 @@ public class Update {
 							}
 							catch (InterruptedException e) {
 								e.printStackTrace();
+								ManagerException.registraEccezione(e);
 							}
 						}
 						break;

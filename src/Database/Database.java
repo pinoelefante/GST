@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteConfig.SynchronousMode;
 
+import Programma.ManagerException;
+
 public class Database {
 	private static Connection con;
 	
@@ -40,6 +42,7 @@ public class Database {
 		catch (Exception e) {
 			System.out.println("Connessione Fallita");
 			System.out.println(e.getMessage());
+			ManagerException.registraEccezione(e);
 		}
 	}
 	public static void Disconnect(){
@@ -48,6 +51,7 @@ public class Database {
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
+			ManagerException.registraEccezione(e);
 		}
 	}
 	public static void creaDB(){
@@ -168,6 +172,7 @@ public class Database {
 		}
 		catch (SQLException e) {
 			e.printStackTrace();
+			ManagerException.registraEccezione(e);
 		}
 	}
 	public static boolean isEmptyTable(String tableName){
@@ -189,6 +194,7 @@ public class Database {
 		catch (SQLException e) {
 			System.out.println(e.getMessage());
 			//e.printStackTrace();
+			ManagerException.registraEccezione(e);
 		}
 		return -1;
 	}
@@ -219,6 +225,7 @@ public class Database {
 		catch (SQLException e) {
 			System.out.println("INSERT "+e.getMessage());
 			e.printStackTrace();
+			ManagerException.registraEccezione(e);
 		}
 		return (ins_ok==0?false:true);
 	}
@@ -269,6 +276,7 @@ public class Database {
 		}
 		catch (SQLException e) {
 			System.out.println("UPDATE "+e.getMessage());
+			ManagerException.registraEccezione(e);
 			return false;
 		}
 		return row_affected>0;
@@ -329,6 +337,7 @@ public class Database {
 		}
 		catch (SQLException e) {
 			System.out.println("SELECT "+e.getMessage());
+			ManagerException.registraEccezione(e);
 			//e.printStackTrace();
 		}
 		return selezione;
@@ -388,6 +397,7 @@ public class Database {
 		}
 		catch (SQLException e) {
 			System.out.println("SELECT "+e.getMessage());
+			ManagerException.registraEccezione(e);
 			//e.printStackTrace();
 		}
 		return selezione;
@@ -449,6 +459,7 @@ public class Database {
 				}
 				catch (SQLException e) { 
 					System.out.println(e.getMessage());
+					ManagerException.registraEccezione(e);
 				}
 			}
 			else

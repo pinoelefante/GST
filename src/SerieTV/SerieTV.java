@@ -8,6 +8,7 @@ import java.util.Scanner;
 import Database.*;
 import GUI.Interfaccia;
 import Programma.Download;
+import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
 
@@ -116,6 +117,7 @@ public class SerieTV {
 				}
 				catch (IOException e) {
 					Interfaccia.download_label_notifiche.setText("  ERROR: Update later");
+					ManagerException.registraEccezione(e);
 					return;
 				}
 				parse();
@@ -134,6 +136,7 @@ public class SerieTV {
 					reader = new FileReader(SerieTV.this.getNomeSerieFile());
 				}
 				catch (FileNotFoundException e) {
+					ManagerException.registraEccezione(e);
 					return;
 				}
 				Scanner file_read = new Scanner(reader);

@@ -20,7 +20,6 @@ FARE
 - bottoni aggiornare liste serie sottotitoli
 - mostrare le nuove serie di eztv
 - calendario serie tv
-- funzione salvataggio eccezioni in un file
 
 DA ULTIMARE
 
@@ -34,5 +33,8 @@ FATTO
 //rev 89
 - cliccando il tasto scarica in lettore lo stato della puntata passa a scaricata
 - scaricando da lettore, viene chiesto se si vuole scaricare il sottotitolo
+
+//rev 90
+- funzione salvataggio eccezioni in un file
 
 PROBABILMENTE FIXATO

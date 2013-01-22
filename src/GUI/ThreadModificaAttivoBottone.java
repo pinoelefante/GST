@@ -2,6 +2,8 @@ package GUI;
 
 import javax.swing.JButton;
 
+import Programma.ManagerException;
+
 public class ThreadModificaAttivoBottone extends Thread {
 	private JButton			bottone;
 	private int				tempo;
@@ -24,6 +26,7 @@ public class ThreadModificaAttivoBottone extends Thread {
 			}
 			catch (InterruptedException e) {
 				e.printStackTrace();
+				ManagerException.registraEccezione(e);
 			}
 		}
 		this.bottone.setText(Language.DOWNLOAD_BOTTONE_DOWNLOAD);

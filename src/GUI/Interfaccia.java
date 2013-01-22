@@ -62,6 +62,7 @@ import Database.Database;
 import Database.SQLParameter;
 import Programma.Download;
 import Programma.Main;
+import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
 import Programma.ThreadControlloAggiornamento;
@@ -227,7 +228,10 @@ public class Interfaccia {
 		try {
 			Main.panel_adv.join();
 		}
-		catch (InterruptedException e2) {e2.printStackTrace();}
+		catch (InterruptedException e2) {
+			e2.printStackTrace();
+			ManagerException.registraEccezione(e2);
+		}
 		
 		JPanel panel_bottom_sud=new JPanel(new BorderLayout());
 		download_browser_adv=ThreadPanelBrowser.getBrowser();
@@ -287,6 +291,7 @@ public class Interfaccia {
 				}
 				catch (Exception e1) {
 					JOptionPane.showMessageDialog(frame, "Imposta una cartella dove scaricare gli episodi");
+					ManagerException.registraEccezione(e1);
 				}
 			}
 		});
@@ -339,6 +344,7 @@ public class Interfaccia {
 						}
 						catch (InterruptedException e) {
 							e.printStackTrace();
+							ManagerException.registraEccezione(e);
 						}
 					}
 				}
@@ -505,6 +511,7 @@ public class Interfaccia {
 							}
 							catch (InterruptedException e) {
 								e.printStackTrace();
+								ManagerException.registraEccezione(e);
 							}
 							Interfaccia.libreria_addItemBoxSerie();
 						}
@@ -879,6 +886,7 @@ public class Interfaccia {
 				}
 				catch (Exception e1) {
 					JOptionPane.showMessageDialog(frame, e1.getMessage());
+					ManagerException.registraEccezione(e1);
 				}
 			}
 		});
@@ -929,6 +937,7 @@ public class Interfaccia {
 				catch (NumberFormatException e) {
 					Settings.setMinRicerca(480);
 					opzioni_textfield_minuti.setText("480");
+					ManagerException.registraEccezione(e);
 				}
 				Settings.setClientPath(opzioni_textfield_attuale_client.getText().trim());
 				Settings.setDirectoryDownload(opzioni_textfield_directory_download.getText().trim());
@@ -1290,6 +1299,7 @@ public class Interfaccia {
 							}
 							catch (FileNotFoundException e) {
 								torrent.setScaricato(Torrent.RIMOSSO, true);
+								ManagerException.registraEccezione(e);
 							}
 						}
 						else{
@@ -1315,6 +1325,7 @@ public class Interfaccia {
 						}
 						catch (IOException e) {
 							e.printStackTrace();
+							ManagerException.registraEccezione(e);
 						}
 						
 					}
@@ -1332,6 +1343,7 @@ public class Interfaccia {
 								setLabelStato(Torrent.RIMOSSO);
 								torrent.setScaricato(Torrent.RIMOSSO);
 							}
+							ManagerException.registraEccezione(e1);
 							return; 
 						}
 						String nome_no_ext=nomepuntata.substring(0, nomepuntata.lastIndexOf("."));
@@ -1393,6 +1405,7 @@ public class Interfaccia {
 						catch (FileNotFoundException e1) {
 							JOptionPane.showMessageDialog(frame, "Il file non era presente.\nSi imposterà lo stato di RIMOSSO.");
 							torrent.setScaricato(Torrent.RIMOSSO, true);
+							ManagerException.registraEccezione(e1);
 						}
 						setLabelStato(torrent.getScaricato());
 					}
@@ -1511,6 +1524,7 @@ public class Interfaccia {
 				}
 				catch (Exception e) {
 					JOptionPane.showMessageDialog(frame, e.getMessage());
+					ManagerException.registraEccezione(e);
 				}
 			}
 		});
@@ -1568,6 +1582,7 @@ public class Interfaccia {
 		}
 		catch (AWTException e) {
 			System.out.println("TrayIcon could not be added.");
+			ManagerException.registraEccezione(e);
 			return;
 		}
 

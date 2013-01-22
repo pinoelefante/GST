@@ -8,7 +8,7 @@ import Database.Database;
 import Database.SQLParameter;
 
 public class Settings {
-	private static final int	VersioneSoftware					= 88;
+	private static final int	VersioneSoftware					= 89;
 	private static final boolean beta								= false;
 	private static final int	beta_versione						= 1;
 	private static int			Client								= 1;
@@ -263,6 +263,7 @@ public class Settings {
 			}
 			catch (IOException e) {
 				e.printStackTrace();
+				ManagerException.registraEccezione(e);
 			}
 		}
 		DirectoryDownload=current_dir+"Download";
@@ -325,14 +326,16 @@ public class Settings {
 		try {
 			Runtime.getRuntime().exec("autostart.exe 1 \"" + current_dir.substring(0, current_dir.length() - 1) + "\"");
 		}
-		catch (IOException localIOException) {
+		catch (IOException e) {
+			ManagerException.registraEccezione(e);
 		}
 	}
 	public static void removeAutostart() {
 		try {
 			Runtime.getRuntime().exec("autostart.exe 2");
 		}
-		catch (IOException localIOException) {
+		catch (IOException e) {
+			ManagerException.registraEccezione(e);
 		}
 	}
 
@@ -342,6 +345,7 @@ public class Settings {
 		}
 		catch (IOException e) {
 			e.printStackTrace();
+			ManagerException.registraEccezione(e);
 		}
 	}
 	public static boolean verificaUtorrent(){

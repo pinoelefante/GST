@@ -30,6 +30,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 
 import Programma.Download;
+import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
 import SerieTV.GestioneSerieTV;
@@ -79,6 +80,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 		}
 		catch (InterruptedException e) {
 			e.printStackTrace();
+			ManagerException.registraEccezione(e);
 		}
 	}
 	
@@ -93,6 +95,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 			return true;
 		}
 		catch (ItasaSubNotFound e) {
+			ManagerException.registraEccezione(e);
 			int id_s=cercaFeed(id_itasa, t);
 			if(id_s<=0)
 				return false;
@@ -102,23 +105,28 @@ public class ItalianSubs implements ProviderSottotitoli{
 			}
 			catch (FailedLoginException | FailingHttpStatusCodeException | IOException e1) {
 				e1.printStackTrace();
+				ManagerException.registraEccezione(e);
 				return false;
 			}
 			return true;
 		}
 		catch (FailedLoginException e) {
+			ManagerException.registraEccezione(e);
 			return false;
 		}
 		catch (FailingHttpStatusCodeException e) {
 			e.printStackTrace();
+			ManagerException.registraEccezione(e);
 			return false;
 		}
 		catch (MalformedURLException e) {
 			e.printStackTrace();
+			ManagerException.registraEccezione(e);
 			return false;
 		}
 		catch (IOException e) {
 			e.printStackTrace();
+			ManagerException.registraEccezione(e);
 			return false;
 		}
 		
@@ -183,6 +191,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 			OperazioniFile.deleteFile("feed_itasa");
 		} 
 		catch (IOException e) {
+			ManagerException.registraEccezione(e);
 		}
 	}
 	
@@ -226,6 +235,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 			OperazioniFile.deleteFile("response_sub");
 		}
 		catch (IOException e) {
+			ManagerException.registraEccezione(e);
 			throw new ItasaSubNotFound("Itasa exception - probabile errore di connessione");
 		}
 		return id;
@@ -258,6 +268,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 		}
 		catch (IOException e) {
 			e.printStackTrace();
+			ManagerException.registraEccezione(e);
 		}
 	}
 	public boolean VerificaLogin(String username, String password){
@@ -286,13 +297,17 @@ public class ItalianSubs implements ProviderSottotitoli{
 				}
 			}
 		}
-		catch (IOException e) {	}
+		catch (IOException e) {	
+			ManagerException.registraEccezione(e);
+		}
 		finally{
 			file.close();
 			try {
 				f_r.close();
 			}
-			catch (IOException e) {	}
+			catch (IOException e) {	
+				ManagerException.registraEccezione(e);
+			}
 			OperazioniFile.deleteFile("response_login");
 		}
 		return stato;
@@ -346,6 +361,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 				catch (FailingHttpStatusCodeException | IOException e) {
 					e.printStackTrace();
 					login_itasa=false;
+					ManagerException.registraEccezione(e);
 				}
 			}
 		}
@@ -359,6 +375,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 		}
 		catch (InterruptedException e) {
 			e.printStackTrace();
+			ManagerException.registraEccezione(e);
 			return false;
 		}
 		
@@ -388,6 +405,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 		}
 		catch (FailingHttpStatusCodeException | IOException e1) {
 			e1.printStackTrace();
+			ManagerException.registraEccezione(e1);
 		}
 
 		@SuppressWarnings("rawtypes")
@@ -491,6 +509,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 				}
 			}
 			catch (NumberFormatException e) {
+				ManagerException.registraEccezione(e);
 				return;
 			}
 			setNomeSerie(nome.substring(0, nome.indexOf(str_index)).trim().replace("&amp;", "&"));
@@ -579,6 +598,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 			}
 			catch (ItasaSubNotFound e) {
 				System.out.println("ITASA - Sottotitolo non trovato");
+				ManagerException.registraEccezione(e);
 			}
 			feed_search=cercaFeed(id_itasa, t);
 			if(feed_search>0){

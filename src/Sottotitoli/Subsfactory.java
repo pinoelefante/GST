@@ -18,6 +18,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import Programma.Download;
+import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
 import SerieTV.GestioneSerieTV;
@@ -163,6 +164,7 @@ public class Subsfactory implements ProviderSottotitoli {
 		}
 		catch (IOException e) {
 			e.printStackTrace();
+			ManagerException.registraEccezione(e);
 			return false;
 		}
 	}
@@ -201,6 +203,7 @@ public class Subsfactory implements ProviderSottotitoli {
 		}
 		catch (IOException e) {
 			OperazioniFile.deleteFile("response_subs");
+			ManagerException.registraEccezione(e);
 			return;
 		}
 		elenco_serie.clear();
@@ -229,7 +232,9 @@ public class Subsfactory implements ProviderSottotitoli {
 			f_r.close();
 			OperazioniFile.deleteFile("response_subs");
 		}
-		catch (IOException e) {}
+		catch (IOException e) {
+			ManagerException.registraEccezione(e);
+		}
 	}
 	private void addSerie(SerieSub s){
 		if(elenco_serie==null){
@@ -316,12 +321,15 @@ public class Subsfactory implements ProviderSottotitoli {
 		} 
 		catch (IOException e) {	
 			e.printStackTrace();
+			ManagerException.registraEccezione(e);
 		}
 		catch (ParserConfigurationException e) {
 			e.printStackTrace();
+			ManagerException.registraEccezione(e);
 		}
 		catch (SAXException e) {
 			e.printStackTrace();
+			ManagerException.registraEccezione(e);
 		}
 	}
 	private boolean verificaTempo(long maxdif, GregorianCalendar last){

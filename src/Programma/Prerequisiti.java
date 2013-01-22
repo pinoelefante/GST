@@ -82,6 +82,7 @@ public class Prerequisiti {
 		}
 		catch (IOException e1) {
 			e1.printStackTrace();
+			ManagerException.registraEccezione(e1);
 		}
 	}
 }

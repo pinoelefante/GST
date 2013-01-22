@@ -3,6 +3,7 @@ package GUI;
 import java.io.File;
 import java.io.IOException;
 
+import Programma.ManagerException;
 import Programma.Settings;
 
 public class Player {
@@ -20,6 +21,7 @@ public class Player {
 				}
 				catch (IOException e) {
 					e.printStackTrace();
+					ManagerException.registraEccezione(e);
 				}
 			}
 		}

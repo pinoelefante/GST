@@ -2,6 +2,7 @@ package Sottotitoli;
 
 import java.util.ArrayList;
 
+import Programma.ManagerException;
 import SerieTV.GestioneSerieTV;
 import SerieTV.SerieTV;
 import SerieTV.Torrent;
@@ -31,8 +32,10 @@ public class GestoreSottotitoli {
 				Thread t=new AssociatoreAutomatico();
 				t.start();
 				t.join();
-			} catch (InterruptedException e1) {
+			} 
+			catch (InterruptedException e1) {
 				e1.printStackTrace();
+				ManagerException.registraEccezione(e1);
 			}
 			
 			System.out.println("Avvio thread ricerca automatica");
@@ -54,6 +57,7 @@ public class GestoreSottotitoli {
 				}
 				catch (InterruptedException e) {
 					e.printStackTrace();
+					ManagerException.registraEccezione(e);
 					break;
 				}
 			}while(true);

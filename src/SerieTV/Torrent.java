@@ -1,6 +1,7 @@
 package SerieTV;
 
 import Database.*;
+import Programma.ManagerException;
 
 public class Torrent implements Indexable{
 	public final static int SCARICARE=0, SCARICATO=1, VISTO=2, RIMOSSO=3, IGNORATO=4; 
@@ -165,6 +166,7 @@ public class Torrent implements Indexable{
 		}
 		catch (NumberFormatException e) {
 			this.serie = 0;
+			ManagerException.registraEccezione(e);
 		}
 		String Puntata = String.copyValueOf(puntata, 0, z);
 		try {
@@ -172,6 +174,7 @@ public class Torrent implements Indexable{
 		}
 		catch (NumberFormatException e) {
 			this.puntata = 0;
+			ManagerException.registraEccezione(e);
 		}
 		//FINE PARSE NUMERI
 	}

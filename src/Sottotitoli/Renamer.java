@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
+import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
 import SerieTV.Torrent;
@@ -34,6 +35,7 @@ public class Renamer {
 			}
 		} 
 		catch (FileNotFoundException e) {
+			ManagerException.registraEccezione(e);
 			System.out.println("rinominaSottotitolo(Torrent t): "+e.getMessage()+".\nSi tenterà di rinominare il sottotitolo con il nome del torrent");
 			try {
 				String zip_file=Settings.getDirectoryDownload()+t.getNomeSerieFolder()+File.separator+generaNomeDownload(t);
@@ -55,6 +57,7 @@ public class Renamer {
 			catch (IOException e1) {
 				e1.printStackTrace();
 				System.out.println("rinominaSottotitolo(Torrent t): "+e.getMessage()+".\n");
+				ManagerException.registraEccezione(e);
 				return false;
 			}
 			return true;
@@ -79,6 +82,7 @@ public class Renamer {
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
+			ManagerException.registraEccezione(e);
 			return false;
 		}
 		return true;

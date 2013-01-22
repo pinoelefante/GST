@@ -3,6 +3,8 @@ package GUI;
 import java.awt.Font;
 import javax.swing.JLabel;
 
+import Programma.ManagerException;
+
 public class ThreadModificaLabel extends Thread {
 	private JLabel		label;
 	private String		testo;
@@ -26,6 +28,7 @@ public class ThreadModificaLabel extends Thread {
 		}
 		catch (InterruptedException e) {
 			e.printStackTrace();
+			ManagerException.registraEccezione(e);
 		}
 	}
 }

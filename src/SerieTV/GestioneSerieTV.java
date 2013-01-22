@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 import Database.*;
 import Programma.Download;
+import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Sottotitoli.GestoreSottotitoli;
 
@@ -191,6 +192,7 @@ public class GestioneSerieTV {
 			Download.downloadFromUrl("http://eztv.it/showlist/", "file.html");
 		}
 		catch (IOException e1) {
+			ManagerException.registraEccezione(e1);
 			return false;
 		}
 		FileReader f_r=null;
@@ -229,6 +231,7 @@ public class GestioneSerieTV {
 			}
 		}
 		catch (FileNotFoundException e) {
+			ManagerException.registraEccezione(e);
 			return false;
 		}
 		finally{
@@ -236,7 +239,10 @@ public class GestioneSerieTV {
 			try {
 				f_r.close();
 			}
-			catch (IOException e) {	e.printStackTrace(); }
+			catch (IOException e) {	
+				e.printStackTrace();
+				ManagerException.registraEccezione(e);
+			}
 		}
 		OperazioniFile.deleteFile("file.html");
 		return true;
@@ -266,6 +272,7 @@ public class GestioneSerieTV {
 				}
 				catch (InterruptedException e) {
 					e.printStackTrace();
+					ManagerException.registraEccezione(e);
 				}
 			}
 		}
@@ -277,6 +284,7 @@ public class GestioneSerieTV {
 		}
 		catch (InterruptedException e) {
 			e.printStackTrace();
+			ManagerException.registraEccezione(e);
 		}
 	}
 	public static ArrayList<Torrent> getTorrentDownload(){

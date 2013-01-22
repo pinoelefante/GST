@@ -6,6 +6,7 @@ import javax.swing.JOptionPane;
 
 import GUI.Interfaccia;
 import Programma.Download;
+import Programma.ManagerException;
 import Programma.Settings;
 
 public class ThreadRicercaAutomatica extends Thread {
@@ -17,6 +18,7 @@ public class ThreadRicercaAutomatica extends Thread {
 				}
 				catch (InterruptedException e1) {
 					e1.printStackTrace();
+					ManagerException.registraEccezione(e1);
 				}
 			}
 		}
@@ -27,6 +29,7 @@ public class ThreadRicercaAutomatica extends Thread {
 		}
 		catch (InterruptedException e1) {
 			e1.printStackTrace();
+			ManagerException.registraEccezione(e1);
 		}
 		boolean error_e = false;
 		while (true) {
@@ -50,12 +53,14 @@ public class ThreadRicercaAutomatica extends Thread {
 				}
 				catch (IOException e) {
 					error_e = true;
+					ManagerException.registraEccezione(e);
 					break;
 				}
 				try {
 					Thread.sleep(333L);
 				}
-				catch (InterruptedException localInterruptedException1) {
+				catch (InterruptedException e) {
+					ManagerException.registraEccezione(e);
 				}
 			}
 			if (error_e) {
@@ -70,6 +75,7 @@ public class ThreadRicercaAutomatica extends Thread {
 			}
 			catch (InterruptedException e) {
 				System.out.println("Interrotto");
+				ManagerException.registraEccezione(e);
 			}
 		}
 	}
