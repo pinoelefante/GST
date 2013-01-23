@@ -12,7 +12,7 @@ public class Download {
 	public static boolean downloadFromUrl(String url_download, String localFilename) throws IOException {
 		InputStream is = null;
 		FileOutputStream fos = null;
-		String userAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
+		String userAgent = "GestioneSerieTV_"+Settings.getVersioneSoftware()+" ("+System.getProperty("os.name")+")";
 		URL url = new URL(url_download);
 		try {
 			URLConnection urlConn = url.openConnection();

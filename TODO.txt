@@ -38,5 +38,7 @@ FATTO
 //rev 90
 - funzione salvataggio eccezioni in un file
 - associazione a tvrage quando si aggiunge una serie
+- cambiato user agent
+- risolto possibile problema con il frame delle donazioni
 
 PROBABILMENTE FIXATO

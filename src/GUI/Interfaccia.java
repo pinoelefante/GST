@@ -66,13 +66,13 @@ import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
 import Programma.ThreadControlloAggiornamento;
-import SerieTV.ElencoIndicizzato;
 import SerieTV.GestioneSerieTV;
-import SerieTV.Indexable;
 import SerieTV.SerieTV;
 import SerieTV.Torrent;
 import Sottotitoli.GestoreSottotitoli;
 import Sottotitoli.SerieSub;
+import StruttureDati.ElencoIndicizzato;
+import StruttureDati.Indexable;
 
 public class Interfaccia {
 	public static JTabbedPane	TabbedPane;
@@ -1634,6 +1634,10 @@ public class Interfaccia {
 				if(frame_donazione==null){
 					NativeInterface.open();
 					browser_donazione=new JWebBrowser(JWebBrowser.destroyOnFinalization());
+					if(browser_donazione==null){
+						OperazioniFile.esploraWeb(Settings.IndirizzoDonazioni);
+						return;
+					}
 					browser_donazione.setBarsVisible(false);
 					browser_donazione.setStatusBarVisible(false);
 					browser_donazione.setHTMLContent(html_donazione);

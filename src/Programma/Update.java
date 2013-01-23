@@ -5,8 +5,10 @@ import SerieTV.Torrent;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.Scanner;
 
+import Database.SQLColumn;
 import GUI.Interfaccia;
 import SerieTV.GestioneSerieTV;
 
@@ -41,6 +43,22 @@ public class Update {
 						ManagerException.registraEccezione(e);
 					}
 					Settings.setLastVersion(86);
+				}
+				case 89: {
+					ArrayList<SQLColumn> colonne=new ArrayList<SQLColumn>();
+					colonne.add(new SQLColumn("nomeserie", "TEXT", "", "", "NOT NULL"));
+					colonne.add(new SQLColumn("id", "INTEGER", "0", "UNIQUE", ""));
+					colonne.add(new SQLColumn("generi", "TEXT", "", "", ""));
+					colonne.add(new SQLColumn("episodi", "TEXT", "", "", ""));
+					colonne.add(new SQLColumn("attori", "TEXT", "", "", ""));
+					try {
+						Database.Database.createTable(Database.Database.TABLE_TVRAGE, colonne);
+					}
+					catch (Exception e) {
+						ManagerException.registraEccezione(e);
+						e.printStackTrace();
+					}
+					Settings.setLastVersion(90);
 				}
 				default:
 					Settings.setLastVersion(Settings.getVersioneSoftware());

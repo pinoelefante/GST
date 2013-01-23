@@ -1,4 +1,4 @@
-package SerieTV;
+package StruttureDati;
 
 import java.util.ArrayList;
 

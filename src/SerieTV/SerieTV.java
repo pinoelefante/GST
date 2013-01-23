@@ -11,6 +11,9 @@ import Programma.Download;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
+import StruttureDati.ElencoIndicizzato;
+import StruttureDati.ElencoIndicizzatoImpl2;
+import StruttureDati.Indexable;
 
 public class SerieTV {
 	public final static int STATO_CONCLUSA=1;

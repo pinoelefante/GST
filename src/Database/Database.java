@@ -24,6 +24,7 @@ public class Database {
 	public final static String TABLE_LINGUE="lingue";
 	public final static String TABLE_TRADUZIONI="traduzioni";
 	public final static String TABLE_SETTINGS="settings";
+	public final static String TABLE_TVRAGE="tvrage";
 	private final static String NOMEDB="database.db";
 	
 	public static void Connect() {
@@ -53,6 +54,19 @@ public class Database {
 			e.printStackTrace();
 			ManagerException.registraEccezione(e);
 		}
+	}
+	public static void createTable(String nome_tabella, ArrayList<SQLColumn> colonne) throws Exception{
+		if(nome_tabella.trim().isEmpty() || colonne.isEmpty())
+			throw new Exception("Specificare il nome della tabella e/o le colonne");
+		
+		String query="CREATE TABLE IF NOT EXISTS "+nome_tabella+" (";
+		for(int i=0;i<colonne.size()-1;i++)
+			query+=colonne.get(i)+", ";
+		query+=colonne.get(colonne.size()-1)+" )";
+		
+		Statement st=con.createStatement();
+		st.executeUpdate(query);
+		st.close();
 	}
 	public static void creaDB(){
 		try {
@@ -406,18 +420,6 @@ public class Database {
 		return NOMEDB;
 	}
 	public static boolean insertMulti(String table, ArrayList<SQLParameter[]> parametri){
-		/*
-		INSERT INTO MyTable (FirstCol, SecondCol)
-		SELECT 'First' ,1
-		UNION ALL
-		SELECT 'Second' ,2
-		UNION ALL
-		SELECT 'Third' ,3
-		UNION ALL
-		SELECT 'Fourth' ,4
-		UNION ALL
-		SELECT 'Fifth' ,5
-		*/
 		String query="";
 		if(parametri!=null){
 			if(parametri.size()>0){

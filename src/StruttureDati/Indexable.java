@@ -1,4 +1,4 @@
-package SerieTV;
+package StruttureDati;
 
 public interface Indexable {
 	public int getIndex();
