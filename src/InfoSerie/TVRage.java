@@ -36,9 +36,9 @@ public class TVRage implements ProviderInfo {
 		return null;
 	}
 	public Object cercaSerie(String nome) throws SerieNotFound{
-		for(int i=0;i<elenco_serie.size();i++)
-			if(elenco_serie.get(i).getTitolo().compareToIgnoreCase(nome)==0)
-				return elenco_serie.get(i).getIDSerie();
+		SerieTVRage st=cercaSerieLocale(nome);
+		if(st!=null)
+			return st.getIDSerie(); 
 		
 		synchronized(this){
 			try {
@@ -136,5 +136,16 @@ public class TVRage implements ProviderInfo {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	private SerieTVRage cercaSerieLocale(String nome){
+		for(int i=0;i<elenco_serie.size();i++)
+			if(elenco_serie.get(i).getTitolo().compareToIgnoreCase(nome)==0)
+				return elenco_serie.get(i);
+		return null;
+	}
+	private SerieTVRage cercaSerieLocale(Object id){
+		for(int i=0;i<elenco_serie.size();i++)
+			if(elenco_serie.get(i).getIDSerie()==(Integer)id)
+				return elenco_serie.get(i);
+		return null;
+	}
 }
