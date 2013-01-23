@@ -20,6 +20,7 @@ FARE
 - bottoni aggiornare liste serie sottotitoli
 - mostrare le nuove serie di eztv
 - calendario serie tv
+- selezione puntata di partenza della serie
 
 DA ULTIMARE
 
@@ -36,5 +37,6 @@ FATTO
 
 //rev 90
 - funzione salvataggio eccezioni in un file
+- associazione a tvrage quando si aggiunge una serie
 
 PROBABILMENTE FIXATO

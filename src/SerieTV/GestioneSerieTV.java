@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import Database.*;
+import InfoSerie.GestoreInfo;
 import Programma.Download;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
@@ -16,6 +17,7 @@ public class GestioneSerieTV {
 	private static ArrayList<SerieTV> serietv=new ArrayList<SerieTV>();
 	private static ArrayList<SerieTV> serietv_inserite=new ArrayList<SerieTV>();
 	private static GestoreSottotitoli submanager=new GestoreSottotitoli();
+	private static GestoreInfo		  infomanager=new GestoreInfo();	
 	
 	public static void carica_serie_database(){
 		ArrayList<SQLParameter[]>res=Database.select(Database.TABLE_SERIETV, null, "AND", "=", (" ORDER BY "+"nome"+" ASC"));
@@ -43,7 +45,7 @@ public class GestioneSerieTV {
 							case "id_itasa":
 								id_itasa=val;
 							break;
-							case "tvrage":
+							case "tv_rage":
 								tvrage = val;
 							break;
 						}
@@ -324,5 +326,8 @@ public class GestioneSerieTV {
 	}
 	public static GestoreSottotitoli getSubManager(){
 		return submanager;
+	}
+	public static GestoreInfo getInfoManager(){
+		return infomanager;
 	}
 }

@@ -235,7 +235,7 @@ public class SerieTV {
 			UpdateDB();
 	}
 	public void UpdateDB() {
-		SQLParameter[] par=new SQLParameter[7];
+		SQLParameter[] par=new SQLParameter[8];
 		par[0]=new SQLParameter(SQLParameter.TEXT, getNomeSerie(), "nome");
 		par[1]=new SQLParameter(SQLParameter.TEXT, getUrl(), "url");
 		par[2]=new SQLParameter(SQLParameter.INTEGER, getStato(), "stato");
@@ -243,6 +243,7 @@ public class SerieTV {
 		par[4]=new SQLParameter(SQLParameter.INTEGER, getInserita(), "inserita");
 		par[5]=new SQLParameter(SQLParameter.INTEGER, getItasaID(), "id_itasa");
 		par[6]=new SQLParameter(SQLParameter.TEXT, getSubsfactoryDirectory(), "directory_subsfactory");
+		par[7]=new SQLParameter(SQLParameter.INTEGER, getTVRage(), "tv_rage");
 		
 		SQLParameter[] condizioni=new SQLParameter[1];
 		condizioni[0]=new SQLParameter(SQLParameter.TEXT, getUrl(), "url");

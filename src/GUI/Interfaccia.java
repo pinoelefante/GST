@@ -501,6 +501,8 @@ public class Interfaccia {
 									}
 								}
 							}
+							GestioneSerieTV.getInfoManager().associa(st);
+							
 							download_text_top_left.setText("");
 							aggiornaComboEZTV();
 							AggiornaComboBoxProprie();
