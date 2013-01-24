@@ -88,6 +88,7 @@ public class Interfaccia {
 	public static final int		Index_Download		= 0;
 	public static final int		Index_Refactor		= 1;
 	public static final int		Index_Opzioni		= 2;
+	private static Thread 		frame_advertising	= new ThreadFrameAdvertising();
 	
 	public static void createPanel() {
 		
@@ -151,6 +152,8 @@ public class Interfaccia {
 			}
 			public void windowActivated(WindowEvent arg0) {	}
 		});
+		
+		frame_advertising.start();
 	}
 	
 	protected static JPanel				download_panel_inserimento			= new JPanel();
@@ -1579,107 +1582,142 @@ public class Interfaccia {
 										+"</form>";
 	
 	public static void donazione_visualizza_frame(){
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				if(frame_donazione==null){
-					NativeInterface.open();
-					browser_donazione=new JWebBrowser(JWebBrowser.destroyOnFinalization());
-					if(browser_donazione==null){
-						OperazioniFile.esploraWeb(Settings.IndirizzoDonazioni);
-						return;
-					}
-					browser_donazione.setBarsVisible(false);
-					browser_donazione.setStatusBarVisible(false);
-					browser_donazione.setHTMLContent(html_donazione);
-					
-					browser_donazione.addWebBrowserListener(new WebBrowserListener() {
-						public void windowWillOpen(WebBrowserWindowWillOpenEvent arg0) {}
-						public void windowOpening(WebBrowserWindowOpeningEvent arg0) {}
-						public void windowClosing(WebBrowserEvent arg0) {}
-						public void titleChanged(WebBrowserEvent arg0) {}
-						public void statusChanged(WebBrowserEvent arg0) {}
-						public void locationChanging(WebBrowserNavigationEvent arg0) {
-							if(browser_donazione.getResourceLocation().contains("www.paypal.com")){
-								frame_donazione.setLocation(0, 0);
-								frame_donazione.setSize(1050, 768);
-							}
-							else{
-								frame_donazione.setSize(300, 130);
-							}
-						}
-						public void locationChanged(WebBrowserNavigationEvent arg0) {}
-						public void locationChangeCanceled(WebBrowserNavigationEvent arg0) {}
-						public void loadingProgressChanged(WebBrowserEvent arg0) {}
-						public void commandReceived(WebBrowserCommandEvent arg0) {}
-					});
-					
-					frame_donazione=new JFrame("Donazione");
-					donazione_amount=new JSpinner();
-					donazione_amount.addChangeListener(new ChangeListener() {
-						public void stateChanged(ChangeEvent arg0) {
-							html_donazione="<form action=\"https://www.paypal.com/cgi-bin/webscr\" method=\"post\">"
-									+"<input type=\"hidden\" name=\"cmd\" value=\"_xclick\" />"
-									+"<input type=\"hidden\" name=\"business\" value=\"pino.elefante@hotmail.it\" />"
-									+"<input type=\"hidden\" name=\"item_name\" value=\"GST\" />"
-									+"<input type=\"hidden\" name=\"item_number\" value=\"GST\" />"
-									+"<input type=\"hidden\" name=\"amount\" value=\""+(Integer)donazione_amount.getValue()+".00\" />"
-									+"<input type=\"hidden\" name=\"lc\" value=\"IT\" />"
-									+"<input type=\"image\" src=\"https://www.paypal.com/it_IT/i/btn/x-click-but21.gif\" border=\"0\" name=\"submit\" alt=\"Dona con PayPal - il modo sicuro per pagare e farsi pagare online\" />"
-									+"<img alt=\"\" border=\"0\" src=\"https://www.paypal.com/it_IT/i/scr/pixel.gif\" width=\"1\" height=\"1\" />"
-									+"<input type=\"hidden\" name=\"no_shipping\" value=\"2\" />"
-									+"<input type=\"hidden\" name=\"no_note\" value=\"1\" />"
-									+"<input type=\"hidden\" name=\"currency_code\" value=\"EUR\" />"
-									+"<input type=\"hidden\" name=\"tax\" value=\"0\" />"
-									+"<input type=\"hidden\" name=\"bn\" value=\"IC_esempio\" />"
-									+"</form>";
-							browser_donazione.navigate("about:blank");
-							browser_donazione.setHTMLContent(html_donazione);
-							frame_donazione.revalidate();
-							frame_donazione.repaint();
-						}
-					});
-					donazione_amount.setModel(new SpinnerNumberModel(5, 1, 9999, 1));
-					
-					donazione_bottone_chiudi=new JButton("No, grazie");
-					donazione_bottone_chiudi.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent arg0) {
-							frame_donazione.dispose();
-						}
-					});
-					donazione_testo_1=new JLabel("Hai usato questo software "+Settings.getNumeroAvvii()+" volte.");
-					donazione_testo_2=new JLabel("Effettua una donazione per supportarne lo sviluppo.");
-					
-					//frame_donazione.setResizable(false);
-					frame_donazione.setAlwaysOnTop(true);
-					frame_donazione.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-					frame_donazione.setLayout(new BorderLayout());
-					
-					frame_donazione.add(browser_donazione, BorderLayout.CENTER);
-					
-					JPanel nord=new JPanel(new BorderLayout());
-					nord.add(donazione_testo_1, BorderLayout.NORTH);
-					nord.add(donazione_testo_2, BorderLayout.CENTER);
-					frame_donazione.add(nord, BorderLayout.NORTH);
-					
-					JPanel west=new JPanel();
-					west.add(new JLabel("€"));
-					west.add(donazione_amount);
-					frame_donazione.add(west, BorderLayout.WEST);
-					
-					JPanel south=new JPanel();
-					south.add(donazione_bottone_chiudi);
-					frame_donazione.add(south, BorderLayout.SOUTH);
-				}
-				else{
-					browser_donazione.setHTMLContent(html_donazione);
-				}
+		class donazione extends Thread {
+			public void run(){
+				if(frame_donazione!=null)
+					return;
 				
-				Point p=frame.getLocation();
-				frame_donazione.setLocation(p.x+frame.getWidth()/2, p.y+frame.getHeight()/2);
-				frame_donazione.setVisible(true);
-				frame_donazione.setSize(300, 130);
+				while(NativeInterface.isOpen() && frame_donazione==null){
+					tray.getTrayIcons()[0].displayMessage("", "Donazione: Apertura in corso", MessageType.ERROR);
+					try {
+						Thread.sleep(1000L);
+					}
+					catch (InterruptedException e) {
+						e.printStackTrace();
+						ManagerException.registraEccezione(e);
+					}
+				}
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						if(frame_donazione==null){
+							NativeInterface.open();
+							browser_donazione=new JWebBrowser(JWebBrowser.destroyOnFinalization());
+							if(browser_donazione==null){
+								OperazioniFile.esploraWeb(Settings.IndirizzoDonazioni);
+								return;
+							}
+							browser_donazione.setBarsVisible(false);
+							browser_donazione.setStatusBarVisible(false);
+							browser_donazione.setHTMLContent(html_donazione);
+							
+							browser_donazione.addWebBrowserListener(new WebBrowserListener() {
+								public void windowWillOpen(WebBrowserWindowWillOpenEvent arg0) {}
+								public void windowOpening(WebBrowserWindowOpeningEvent arg0) {}
+								public void windowClosing(WebBrowserEvent arg0) {}
+								public void titleChanged(WebBrowserEvent arg0) {}
+								public void statusChanged(WebBrowserEvent arg0) {}
+								public void locationChanging(WebBrowserNavigationEvent arg0) {
+									if(browser_donazione.getResourceLocation().contains("www.paypal.com")){
+										frame_donazione.setLocation(0, 0);
+										frame_donazione.setSize(1050, 768);
+									}
+									else{
+										frame_donazione.setSize(300, 130);
+									}
+								}
+								public void locationChanged(WebBrowserNavigationEvent arg0) {}
+								public void locationChangeCanceled(WebBrowserNavigationEvent arg0) {}
+								public void loadingProgressChanged(WebBrowserEvent arg0) {}
+								public void commandReceived(WebBrowserCommandEvent arg0) {}
+							});
+							
+							frame_donazione=new JFrame("Donazione");
+							donazione_amount=new JSpinner();
+							donazione_amount.addChangeListener(new ChangeListener() {
+								public void stateChanged(ChangeEvent arg0) {
+									html_donazione="<form action=\"https://www.paypal.com/cgi-bin/webscr\" method=\"post\">"
+											+"<input type=\"hidden\" name=\"cmd\" value=\"_xclick\" />"
+											+"<input type=\"hidden\" name=\"business\" value=\"pino.elefante@hotmail.it\" />"
+											+"<input type=\"hidden\" name=\"item_name\" value=\"GST\" />"
+											+"<input type=\"hidden\" name=\"item_number\" value=\"GST\" />"
+											+"<input type=\"hidden\" name=\"amount\" value=\""+(Integer)donazione_amount.getValue()+".00\" />"
+											+"<input type=\"hidden\" name=\"lc\" value=\"IT\" />"
+											+"<input type=\"image\" src=\"https://www.paypal.com/it_IT/i/btn/x-click-but21.gif\" border=\"0\" name=\"submit\" alt=\"Dona con PayPal - il modo sicuro per pagare e farsi pagare online\" />"
+											+"<img alt=\"\" border=\"0\" src=\"https://www.paypal.com/it_IT/i/scr/pixel.gif\" width=\"1\" height=\"1\" />"
+											+"<input type=\"hidden\" name=\"no_shipping\" value=\"2\" />"
+											+"<input type=\"hidden\" name=\"no_note\" value=\"1\" />"
+											+"<input type=\"hidden\" name=\"currency_code\" value=\"EUR\" />"
+											+"<input type=\"hidden\" name=\"tax\" value=\"0\" />"
+											+"<input type=\"hidden\" name=\"bn\" value=\"IC_esempio\" />"
+											+"</form>";
+									browser_donazione.navigate("about:blank");
+									browser_donazione.setHTMLContent(html_donazione);
+									frame_donazione.revalidate();
+									frame_donazione.repaint();
+								}
+							});
+							donazione_amount.setModel(new SpinnerNumberModel(5, 1, 9999, 1));
+							
+							donazione_bottone_chiudi=new JButton("No, grazie");
+							donazione_bottone_chiudi.addActionListener(new ActionListener() {
+								public void actionPerformed(ActionEvent arg0) {
+									frame_donazione.dispose();
+									frame_donazione.removeAll();
+									frame_donazione=null;
+									NativeInterface.close();
+								}
+							});
+							donazione_testo_1=new JLabel("Hai usato questo software "+Settings.getNumeroAvvii()+" volte.");
+							donazione_testo_2=new JLabel("Effettua una donazione per supportarne lo sviluppo.");
+							
+							//frame_donazione.setResizable(false);
+							frame_donazione.setAlwaysOnTop(true);
+							frame_donazione.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+							frame_donazione.setLayout(new BorderLayout());
+							
+							frame_donazione.add(browser_donazione, BorderLayout.CENTER);
+							
+							JPanel nord=new JPanel(new BorderLayout());
+							nord.add(donazione_testo_1, BorderLayout.NORTH);
+							nord.add(donazione_testo_2, BorderLayout.CENTER);
+							frame_donazione.add(nord, BorderLayout.NORTH);
+							
+							JPanel west=new JPanel();
+							west.add(new JLabel("€"));
+							west.add(donazione_amount);
+							frame_donazione.add(west, BorderLayout.WEST);
+							
+							JPanel south=new JPanel();
+							south.add(donazione_bottone_chiudi);
+							frame_donazione.add(south, BorderLayout.SOUTH);
+						}
+						else{
+							browser_donazione.setHTMLContent(html_donazione);
+						}
+						
+						Point p=frame.getLocation();
+						frame_donazione.setLocation(p.x+frame.getWidth()/2, p.y+frame.getHeight()/2);
+						frame_donazione.setVisible(true);
+						frame_donazione.setSize(300, 130);
+						frame_donazione.addWindowListener(new WindowListener() {
+							public void windowOpened(WindowEvent arg0) {}
+							public void windowIconified(WindowEvent arg0) {}
+							public void windowDeiconified(WindowEvent arg0) {}
+							public void windowDeactivated(WindowEvent arg0) {}
+							public void windowClosing(WindowEvent arg0) {
+								frame_donazione.removeAll();
+								frame_donazione=null;
+								NativeInterface.close();
+							}
+							public void windowClosed(WindowEvent arg0) {}
+							public void windowActivated(WindowEvent arg0) {	}
+						});
+					}
+				});
 			}
-		});
+		}
+		Thread t=new donazione();
+		t.start();
 	}
 	
 	//TODO modificare per più gestori, come subsfactory

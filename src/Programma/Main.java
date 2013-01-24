@@ -10,7 +10,6 @@ import Database.Database;
 import GUI.FrameLoading;
 import GUI.Interfaccia;
 import GUI.Language;
-import GUI.ThreadPanelBrowser;
 
 public class Main {
 	public static Interfaccia					frame;
@@ -78,7 +77,6 @@ public class Main {
 			GestioneSerieTV.Showlist();
 			fl.setprog(++i);
 			
-			
 			if (Settings.isDownloadAutomatico()) {
 				avviaThreadRicercaAutomatica();
 			}
@@ -91,7 +89,6 @@ public class Main {
 			if(Settings.isRicercaSottotitoli()){
 				GestioneSerieTV.getSubManager().avviaRicercaAutomatica();
 			}
-			(new ThreadPanelBrowser()).start();
 		}
 		catch(Exception e){
 			JOptionPane.showMessageDialog(null, e.getMessage());

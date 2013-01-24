@@ -13,8 +13,9 @@ import Programma.ManagerException;
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
 
-public class ThreadPanelBrowser extends Thread {
+public class ThreadFrameAdvertising extends Thread {
 	private static JWebBrowser wb=null;
+	private static JFrame frame;
 	
 	public void run() {
 		SwingUtilities.invokeLater(new Runnable(){
@@ -31,7 +32,7 @@ public class ThreadPanelBrowser extends Thread {
 				String web_site=Advertising.url_ads_alter;
 				wb.navigate(web_site);
 				Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-				final JFrame frame=new JFrame();
+				frame=new JFrame();
 				
 				frame.setLayout(new BorderLayout());
 				frame.setLocation(screen.width-300, -260);
@@ -43,24 +44,46 @@ public class ThreadPanelBrowser extends Thread {
 				frame.add(count_down, BorderLayout.SOUTH);
 				frame.add(wb, BorderLayout.CENTER);
 				
-				class timer extends Thread {
+				class time_thread extends Thread {
 					public void run(){
-						try {
-							int sleep_time=30;
-							while(sleep_time>0){
-								count_down.setText("  "+sleep_time+" secondi alla chiusura automatica");
-								Thread.sleep(1000);
-								sleep_time--;
+						class thread_t extends Thread {
+							public void run(){
+								try {
+									int sleep_time=10;
+									while(sleep_time>0){
+										count_down.setText("  "+sleep_time+" secondi alla chiusura automatica");
+										Thread.sleep(1000);
+										sleep_time--;
+									}
+									frame.removeAll();
+									frame.setVisible(false);
+									frame=null;
+									wb.setEnabled(false);
+									wb=null;
+									Runtime.getRuntime().gc();
+								}
+								catch (InterruptedException e) {
+									ManagerException.registraEccezione(e);
+								}
 							}
-							
-							frame.setVisible(false);
+						}
+						Thread t=new thread_t();
+						t.start();
+						try {
+							t.join();
+							SwingUtilities.invokeLater(new Runnable() {
+								public void run() {
+									NativeInterface.close();	
+								}
+							});
 						}
 						catch (InterruptedException e) {
 							ManagerException.registraEccezione(e);
+							e.printStackTrace();
 						}
 					}
 				}
-				Thread t=new timer();
+				Thread t=new time_thread();
 				t.start();
 				
 			}
@@ -69,5 +92,4 @@ public class ThreadPanelBrowser extends Thread {
 	public static JWebBrowser getBrowser(){
 		return wb;
 	}
-	
 }

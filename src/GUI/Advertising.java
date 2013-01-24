@@ -18,6 +18,7 @@ import javax.swing.SwingUtilities;
 */
 public class Advertising {
 	public static final String	url_ads_alter	= "http://pinoelefante.altervista.org/ads.html";
+	//public static final String	url_ads_alter	= "http://pinoelefante.altervista.org/prova/prova.html";
 /*
 	private static Robot		mouse;
 	private static final int	X_OFF			= 350;
