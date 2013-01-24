@@ -24,6 +24,10 @@ public class ThreadFrameAdvertising extends Thread {
 			public void run() {
 				NativeInterface.open();
 				wb=new JWebBrowser(JWebBrowser.destroyOnFinalization());
+				if(wb==null){
+					NativeInterface.close();
+					return;
+				}
 				wb.setBarsVisible(false);
 				wb.setStatusBarVisible(false);
 				
@@ -88,8 +92,5 @@ public class ThreadFrameAdvertising extends Thread {
 				
 			}
 		});
-	}
-	public static JWebBrowser getBrowser(){
-		return wb;
 	}
 }
