@@ -10,7 +10,6 @@ import GUI.Interfaccia;
 import Programma.Download;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
-import Programma.Settings;
 import StruttureDati.ElencoIndicizzato;
 import StruttureDati.ElencoIndicizzatoImpl2;
 import StruttureDati.Indexable;
@@ -151,12 +150,14 @@ public class SerieTV {
 						String url_magnet = linea.substring(inizio, fine);
 						Torrent t=new Torrent(url_magnet, Torrent.SCARICARE, getNomeSerie(), getIDDB());
 						t.parseMagnet();
+						/*
 						if(t.is720p() && !Settings.isMostra720p()){
 							t.setScaricato(Torrent.IGNORATO, true);
 						}
 						if(t.isPreAir() && !Settings.isMostraPreair()){
 							t.setScaricato(Torrent.IGNORATO, true);
 						}
+						*/
 						if(!addEpisodio(t))
 							t=null;
 					}

@@ -5,7 +5,7 @@ import Programma.ManagerException;
 import StruttureDati.Indexable;
 
 public class Torrent implements Indexable{
-	public final static int SCARICARE=0, SCARICATO=1, VISTO=2, RIMOSSO=3, IGNORATO=4; 
+	public final static int SCARICARE=0, SCARICATO=1, VISTO=2, RIMOSSO=3, IGNORATO=4, NASCOSTO=5; 
 	private int 	id_serie;
 	private String	url;
 	private String	nomeserie;

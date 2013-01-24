@@ -90,11 +90,11 @@ public class Interfaccia {
 	public static final int		Index_Opzioni		= 2;
 	
 	public static void createPanel() {
-		Dimension dim_screen=Toolkit.getDefaultToolkit().getScreenSize();
+		
 		frame = new JFrame();
 		frame.setLayout(new BorderLayout());
 		
-		frame.setBounds(0, 0, 750, dim_screen.height<=600?550:600);
+		frame.setBounds(0, 0, 750, 550);
 		frame.setIconImage(Resource.getIcona("res/icona32.png").getImage());
 		frame.setTitle(Language.TITLE);
 		frame.setResizable(false);
@@ -131,6 +131,7 @@ public class Interfaccia {
 					if (scelta == JOptionPane.YES_OPTION) {
 						Database.Disconnect();
 						frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+						System.exit(0);
 					}
 					else {
 						frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -173,9 +174,6 @@ public class Interfaccia {
 	protected static JButton			download_bottone_esplora			= new JButton();
 	private static JPanel				download_panel_scroll				= new JPanel();
 	private static JButton				download_bottone_test				= new JButton("42");
-	private static JWebBrowser			download_browser_adv;
-	private static JFrame				download_advertising_window			= null;
-	private static JLabel 				download_label_adv					= new JLabel();
 	
 	private static void creaTabDownload() {
 		TabbedDownload.addTab(Language.TAB_DOWNLOAD_EPISODI, panel_download);
@@ -225,62 +223,6 @@ public class Interfaccia {
 		panel_bottom_center.add(download_bottone_esplora);
 		panel_bottom.add(panel_bottom_center, BorderLayout.CENTER);
 
-		try {
-			Main.panel_adv.join();
-		}
-		catch (InterruptedException e2) {
-			e2.printStackTrace();
-			ManagerException.registraEccezione(e2);
-		}
-		
-		JPanel panel_bottom_sud=new JPanel(new BorderLayout());
-		download_browser_adv=ThreadPanelBrowser.getBrowser();
-		if(download_browser_adv!=null){
-			panel_bottom_sud.add(download_browser_adv, BorderLayout.CENTER);
-			panel_bottom_sud.add(download_label_adv=new JLabel("Clicca gli sponsor per aiutare lo sviluppo del software"), BorderLayout.SOUTH);
-			download_label_adv.setFont(new Font("Tahoma", Font.BOLD, 12));
-			frame.add(panel_bottom_sud, BorderLayout.SOUTH);
-			download_panel_download.add(panel_bottom, BorderLayout.SOUTH);
-	
-			download_browser_adv.addWebBrowserListener(new WebBrowserListener(){
-				public void windowWillOpen(WebBrowserWindowWillOpenEvent e) {}
-				public void windowOpening(WebBrowserWindowOpeningEvent e) {}
-				public void windowClosing(WebBrowserEvent e) {}
-				public void titleChanged(final WebBrowserEvent e) {
-					if(e.getWebBrowser().getPageTitle().compareToIgnoreCase("about:blank")==0 || e.getWebBrowser().getPageTitle().isEmpty() || e.getWebBrowser().getPageTitle()==null)
-						return;
-					if(e.getWebBrowser().getPageTitle().compareToIgnoreCase(Advertising.url_ads_alter)!=0){
-						if(download_advertising_window==null){
-							download_advertising_window=new JFrame();
-							download_advertising_window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-							download_advertising_window.setLayout(new BorderLayout());
-							download_advertising_window.add(e.getWebBrowser());
-							download_advertising_window.setVisible(true);
-							download_advertising_window.setAlwaysOnTop(Settings.isAlwaysOnTop());
-							download_advertising_window.addWindowListener(new WindowListener() {
-								public void windowOpened(WindowEvent arg0) {}
-								public void windowIconified(WindowEvent arg0) {	}
-								public void windowDeiconified(WindowEvent arg0) {}
-								public void windowDeactivated(WindowEvent arg0) {}
-								public void windowClosing(WindowEvent arg0) {}
-								public void windowClosed(WindowEvent arg0) {
-									download_advertising_window=null;
-								}
-								public void windowActivated(WindowEvent arg0) {}
-							});
-						}
-						download_advertising_window.setSize(1024, 600);
-					}
-				}
-				public void statusChanged(WebBrowserEvent e) {}
-				public void locationChanging(WebBrowserNavigationEvent e) {	}
-				public void locationChanged(WebBrowserNavigationEvent e) {}
-				public void locationChangeCanceled(WebBrowserNavigationEvent e) {}
-				public void loadingProgressChanged(WebBrowserEvent e) {}
-				public void commandReceived(WebBrowserCommandEvent e) {}
-			});
-		}
-		
 		download_bottone_esplora.setFont(new Font("Tahoma", Font.BOLD, 14));
 		download_bottone_esplora.setIcon(Resource.getIcona("res/folder_24.png"));
 		download_bottone_esplora.setText(Language.OPZIONI_ESPLORA);
@@ -431,14 +373,22 @@ public class Interfaccia {
 				ArrayList<Torrent> download_torrent_download = GestioneSerieTV.getTorrentDownload();
 				GridLayout lay = (GridLayout) download_panel_scroll.getLayout();
 				lay.setColumns(1);
-				lay.setRows(download_torrent_download.size() > 4 ? download_torrent_download.size() : 4);
-				
+				lay.setRows(download_torrent_download.size() > 5 ? download_torrent_download.size() : 5);
+				int removed=0;
 				for (int i = 0; i < download_torrent_download.size(); i++) {
 					Torrent tor = (Torrent) download_torrent_download.get(i);
+					if(tor.is720p() && !Settings.isMostra720p()){
+						removed++;
+						continue;
+					}
+					if(tor.isPreAir() && !Settings.isMostraPreair()){
+						removed++;
+						continue;
+					}
 					CasellaDownload panel_t=new CasellaDownload(tor, download_panel_scroll);
 					download_panel_scroll.add(panel_t);
 				}
-				lay.setRows(download_torrent_download.size() > 4 ? download_torrent_download.size() : 4);
+				lay.setRows(download_torrent_download.size() > 5 ? download_torrent_download.size()-removed : 5);
 				download_label_stato.setText(download_panel_scroll.getComponentCount() + Language.DOWNLOAD_PUNTATE);
 				download_panel_scroll.revalidate();
 				download_panel_scroll.repaint();

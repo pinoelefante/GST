@@ -17,7 +17,6 @@ public class Main {
 	public static ThreadControlloAggiornamento	thread_update		= new ThreadControlloAggiornamento(false);
 	public static ThreadRicercaAutomatica		thread_autosearch	= new ThreadRicercaAutomatica();
 	public static FrameLoading 					fl;
-	public static Thread						panel_adv;
 	
 	public static void avviaThreadRicercaAutomatica() {
 		if (!thread_autosearch.isAlive()) {
@@ -74,11 +73,6 @@ public class Main {
 			thread_update.start();
 			fl.setprog(++i);
 			thread_update.join();
-			 
-			fl.settext("Thread browser");
-			panel_adv = new ThreadPanelBrowser();
-			panel_adv.start();
-			fl.setprog(++i);
 			
 			fl.settext("Scaricando lista serie");
 			GestioneSerieTV.Showlist();
@@ -97,6 +91,7 @@ public class Main {
 			if(Settings.isRicercaSottotitoli()){
 				GestioneSerieTV.getSubManager().avviaRicercaAutomatica();
 			}
+			(new ThreadPanelBrowser()).start();
 		}
 		catch(Exception e){
 			JOptionPane.showMessageDialog(null, e.getMessage());

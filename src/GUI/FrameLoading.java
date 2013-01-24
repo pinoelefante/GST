@@ -8,7 +8,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 
-
 public class FrameLoading extends Thread{
 	private JLabel label_caricamento;
 	private JProgressBar progress;
@@ -26,7 +25,7 @@ public class FrameLoading extends Thread{
 		frame.setAlwaysOnTop(false);
 		
 		label_caricamento=new JLabel("");
-		progress=new JProgressBar(0, 11);
+		progress=new JProgressBar(0, 9);
 		
 		frame.setLayout(new BorderLayout());
 		frame.add(label_caricamento, BorderLayout.SOUTH);
