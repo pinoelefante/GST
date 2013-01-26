@@ -225,6 +225,8 @@ public class Interfaccia {
 		panel_bottom_center.add(download_bottone_already_seen);
 		panel_bottom_center.add(download_bottone_esplora);
 		panel_bottom.add(panel_bottom_center, BorderLayout.CENTER);
+		download_panel_download.add(panel_bottom, BorderLayout.SOUTH);
+		
 
 		download_bottone_esplora.setFont(new Font("Tahoma", Font.BOLD, 14));
 		download_bottone_esplora.setIcon(Resource.getIcona("res/folder_24.png"));
@@ -267,30 +269,46 @@ public class Interfaccia {
 			public void actionPerformed(ActionEvent arg0) {
 				class BottoneDownload extends Thread {
 					public void run(){
-						try {
-							int initial_count=download_panel_scroll.getComponentCount();
-							int removed=0;
-							if(!Settings.verificaUtorrent()){
-								JOptionPane.showMessageDialog(frame, "Configurare il percorso di uTorrent correttamente");
-								return;
+						class Downloader extends Thread {
+							private ArrayList<Torrent> torrents;
+							public Downloader(ArrayList<Torrent> t){
+								torrents=t;
 							}
-							for (int i = 0; i < download_panel_scroll.getComponentCount();) {
-								CasellaDownload casella=(CasellaDownload) download_panel_scroll.getComponent(i);
-								if(casella.getCheckBox().isSelected()){
-									casella.scarica.doClick();
-									removed++;
-									Thread.sleep(200);
+							public void run(){
+								try {
+									for(int i=0;i<torrents.size();i++){
+										Torrent torrent=torrents.get(i);	
+										Download.downloadMagnet(torrent.getUrl(), torrent.getNomeSerieFolder());
+										torrent.setScaricato(Torrent.SCARICATO);
+										torrent.setSottotitolo(true, true);
+										sleep(75);
+									}
 								}
-								else
-									i++;
+								catch (IOException | InterruptedException e) {
+									e.printStackTrace();
+									ManagerException.registraEccezione(e);
+								}
+								download_label_stato.setText(download_panel_scroll.getComponentCount() + Language.DOWNLOAD_PUNTATE);
+								Interfaccia.libreria_addItemBoxSerie();
 							}
-							download_label_stato.setText((initial_count-removed) + Language.DOWNLOAD_PUNTATE);
-							Interfaccia.libreria_addItemBoxSerie();
 						}
-						catch (InterruptedException e) {
-							e.printStackTrace();
-							ManagerException.registraEccezione(e);
+						if(!Settings.verificaUtorrent()){
+							JOptionPane.showMessageDialog(frame, "Configurare il percorso di uTorrent correttamente");
+							return;
 						}
+						ArrayList<Torrent> t_download=new ArrayList<Torrent>();
+						for (int i = 0; i < download_panel_scroll.getComponentCount();) {
+							CasellaDownload casella=(CasellaDownload) download_panel_scroll.getComponent(i);
+							if(casella.getCheckBox().isSelected()){
+								t_download.add(casella.getTorrent());
+								download_panel_scroll.remove(casella);
+							}
+							else
+								i++;
+						}
+						((GridLayout)download_panel_scroll.getLayout()).setRows(download_panel_scroll.getComponentCount());
+						Thread t=new Downloader(t_download);
+						t.start();
 					}
 				}
 				Thread t=new BottoneDownload();

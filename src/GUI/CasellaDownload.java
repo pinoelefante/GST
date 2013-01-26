@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
 import Programma.Download;
+import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
 import SerieTV.Torrent;
@@ -100,6 +101,7 @@ public class CasellaDownload extends JPanel{
 					rimuovi_panel();
 				}
 				catch (IOException e) {
+					ManagerException.registraEccezione(e);
 				}
 			}
 		});
