@@ -467,7 +467,7 @@ public class Interfaccia {
 							//TODO verificare il funzionamento con subsfactory
 							if(!GestioneSerieTV.getSubManager().associaSerie(st)){
 								if(Settings.isRicercaSottotitoli()){
-									int scelta=(JOptionPane.showConfirmDialog(frame, "Non è stato possibile associare la serie a ItaSA.\nVuoi associarla manualmente?", "Associa ItaSA", JOptionPane.YES_NO_OPTION));
+									int scelta=(JOptionPane.showConfirmDialog(frame, "Non ï¿½ stato possibile associare la serie a ItaSA.\nVuoi associarla manualmente?", "Associa ItaSA", JOptionPane.YES_NO_OPTION));
 									if(scelta==JOptionPane.YES_OPTION){
 										associaFrame();
 										associa_elenco_serie.setSelectedItem((SerieTV)download_combo_eztv.getSelectedItem());
@@ -594,7 +594,7 @@ public class Interfaccia {
 			public void actionPerformed(ActionEvent arg0) {
 				JOptionPane.showMessageDialog(Interfaccia.frame,
 						"English: \nJust wait a sodding minute! You want a question that goes with the answer for 42? Well, how about \"What's six times seven?\"\n\n"
-					  + "Italiano: \nLa domanda, l'unica della quale avrei voluto la risposta: è la ragazza giusta? E la risposta non è 42\n");
+					  + "Italiano: \nLa domanda, l'unica della quale avrei voluto la risposta: ï¿½ la ragazza giusta? E la risposta non ï¿½ 42\n");
 			}
 		});
 	}
@@ -816,7 +816,7 @@ public class Interfaccia {
 					File f = filechooser.getSelectedFile();
 					if(Settings.isWindows()){
 						if(f.getName().compareToIgnoreCase("utorrent.exe")!=0){
-							JOptionPane.showMessageDialog(frame, "L'unico client utilizzabile è uTorrent");
+							JOptionPane.showMessageDialog(frame, "L'unico client utilizzabile ï¿½ uTorrent");
 							return;
 						}
 					}
@@ -1030,7 +1030,7 @@ public class Interfaccia {
 								bot_scarica.setEnabled(down_en);
 								if(down_en){
 									lab_stat.setText("Sottotitolo trovato");
-									sottotitoli_textarea_log.append(puntata.toString()+" è disponibile"+"\n");
+									sottotitoli_textarea_log.append(puntata.toString()+" ï¿½ disponibile"+"\n");
 								}
 								else
 									lab_stat.setText("Sottotitolo non trovato");
@@ -1059,7 +1059,7 @@ public class Interfaccia {
 							public void run(){
 								boolean res=GestioneSerieTV.getSubManager().scaricaSottotitolo(puntata);
 								if(res){
-									sottotitoli_textarea_log.append(puntata.toString()+" è stato scaricato"+"\n");
+									sottotitoli_textarea_log.append(puntata.toString()+" ï¿½ stato scaricato"+"\n");
 									bot_rimuovi.doClick();
 								}
 							}
@@ -1324,7 +1324,7 @@ public class Interfaccia {
 						String nome_no_ext=nomepuntata.substring(0, nomepuntata.lastIndexOf("."));
 						if(!OperazioniFile.subExistsFromPartialFilename(Settings.getDirectoryDownload()+torrent.getNomeSerieFolder(), nome_no_ext)){
 							if(!GestioneSerieTV.getSubManager().scaricaSottotitolo(torrent)){
-								JOptionPane.showMessageDialog(frame, "Non è associato alcun sottotitolo");
+								JOptionPane.showMessageDialog(frame, "Non ï¿½ associato alcun sottotitolo");
 							}
 						}
 						
@@ -1378,7 +1378,7 @@ public class Interfaccia {
 							}
 						}
 						catch (FileNotFoundException e1) {
-							JOptionPane.showMessageDialog(frame, "Il file non era presente.\nSi imposterà lo stato di RIMOSSO.");
+							JOptionPane.showMessageDialog(frame, "Il file non era presente.\nSi imposterï¿½ lo stato di RIMOSSO.");
 							torrent.setScaricato(Torrent.RIMOSSO, true);
 							ManagerException.registraEccezione(e1);
 						}
@@ -1703,7 +1703,7 @@ public class Interfaccia {
 							frame_donazione.add(nord, BorderLayout.NORTH);
 							
 							JPanel west=new JPanel();
-							west.add(new JLabel("€"));
+							west.add(new JLabel("ï¿½"));
 							west.add(donazione_amount);
 							frame_donazione.add(west, BorderLayout.WEST);
 							
@@ -1740,7 +1740,7 @@ public class Interfaccia {
 		t.start();
 	}
 	
-	//TODO modificare per più gestori, come subsfactory
+	//TODO modificare per piï¿½ gestori, come subsfactory
 	public static JFrame frame_associa_itasa;
 	private static JComboBox<SerieSub> associa_elenco_itasa, 
 									   associa_elenco_subsfactory;
@@ -1758,7 +1758,7 @@ public class Interfaccia {
 			frame_associa_itasa.setResizable(false);
 			frame_associa_itasa.setLayout(new BorderLayout());
 			frame_associa_itasa.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-			frame_associa_itasa.setSize(700, 250);
+			frame_associa_itasa.setSize(700, 300);
 			
 			associa_elenco_itasa=new JComboBox<SerieSub>();
 			associa_elenco_subsfactory=new JComboBox<SerieSub>();
@@ -1960,7 +1960,7 @@ public class Interfaccia {
 		about_label_donazione.setForeground(Color.BLUE);
 		about_label_donazione.addMouseListener(new MouseListener() {
 			public void mouseReleased(MouseEvent arg0) {}
-			//TODO modificare quando sarà presente browser per linux e mac
+			//TODO modificare quando sarï¿½ presente browser per linux e mac
 			public void mousePressed(MouseEvent arg0) {
 				if(Settings.isWindows())
 					donazione_visualizza_frame();
@@ -2272,7 +2272,7 @@ public class Interfaccia {
 							File f = filechooser.getSelectedFile();
 							if(Settings.isWindows()){
 								if(f.getName().compareToIgnoreCase("utorrent.exe")!=0){
-									JOptionPane.showMessageDialog(frame, "L'unico client utilizzabile è uTorrent");
+									JOptionPane.showMessageDialog(frame, "L'unico client utilizzabile ï¿½ uTorrent");
 									return;
 								}
 							}
@@ -2331,7 +2331,7 @@ public class Interfaccia {
 				itasa_user.setText(Settings.getItasaUsername());
 				JLabel lab_itasa_pass=new JLabel("ItaSA password");
 				final JPasswordField itasa_pass=new JPasswordField(15);
-				itasa_pass.setToolTipText("La password non verrà mostrata se già salvata precedentemente");
+				itasa_pass.setToolTipText("La password non verrï¿½ mostrata se giï¿½ salvata precedentemente");
 				JButton salva=new JButton("Salva");
 				
 				JPanel p_user=new JPanel();
@@ -2400,7 +2400,7 @@ public class Interfaccia {
 			}
 			public void create_view7(){
 				view7=new JPanel(new BorderLayout());
-				JLabel testo=new JLabel("  La configurazione è terminata.  ");
+				JLabel testo=new JLabel("  La configurazione ï¿½ terminata.  ");
 				JLabel testo2=new JLabel("  Cliccare il tasto Fine per chiudere la finestra.  ");
 				JPanel p_text=new JPanel(new GridLayout(2,1));
 				p_text.add(testo);

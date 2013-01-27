@@ -1,10 +1,10 @@
 FARE
 - rivedere operazioni avvio (vari doClick())
 - feedback utenti
-- più social. pagina facebook. follow su twitter
+- piï¿½ social. pagina facebook. follow su twitter
 - file lingua esterno
 - premium
-- non ricercare ulteriori puntate se la serie è conclusa (checkbox cerca per questa serie in libreria)
+- non ricercare ulteriori puntate se la serie ï¿½ conclusa (checkbox cerca per questa serie in libreria)
 - ricerca puntata in libreria
 - click aggiorna torrent ogni 8-12 ore
 - download automatico utorrent
@@ -14,13 +14,14 @@ FARE
 - rifare tab Sottotitoli
 - informazioni sull'episodio
 - download dei trailer da primetvseries
-- possibilità di non vedere gli episodi scaricati nel lettore
+- possibilitï¿½ di non vedere gli episodi scaricati nel lettore
 - quando una puntata viene scaricata, viene messa in un elenco delle puntate da vedere
-- in lettore, c'è una tab in cui elencare le puntate da vedere (oppure un'opzione)
+- in lettore, c'ï¿½ una tab in cui elencare le puntate da vedere (oppure un'opzione)
 - bottoni aggiornare liste serie sottotitoli
 - mostrare le nuove serie di eztv
 - calendario serie tv
 - selezione puntata di partenza della serie
+- ricerca vlc automatica
 
 DA ULTIMARE
 

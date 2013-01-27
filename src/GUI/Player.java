@@ -1,5 +1,6 @@
 package GUI;
 
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 
@@ -17,9 +18,21 @@ public class Player {
 			public void run(){
 				String file_r=Settings.getDirectoryDownload()+File.separator+stringa;
 				try {
-					Runtime.getRuntime().exec("\""+Settings.getVLCPath()+"\""+" "+"\""+file_r+"\"");
+					if(Settings.isWindows())
+						Runtime.getRuntime().exec("\""+Settings.getVLCPath()+"\""+" "+"\""+file_r+"\"");
+					else{
+						Runtime.getRuntime().exec(Settings.getVLCPath()+" file://"+file_r);
+					}
 				}
 				catch (IOException e) {
+					Desktop d=Desktop.getDesktop();
+					try {
+						d.open(new File(file_r));
+					} 
+					catch (IOException e1) {
+						ManagerException.registraEccezione(e);
+						e1.printStackTrace();
+					}
 					e.printStackTrace();
 					ManagerException.registraEccezione(e);
 				}
