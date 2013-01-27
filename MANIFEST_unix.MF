@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Class-Path: . lib/swt.jar lib/DJNativeSwing.jar lib/DJNativeSwing-SWT.jar lib/commons-codec.jar lib/commons-collections.jar lib/commons-io.jar lib/commons-lang3.jar lib/commons-logging.jar lib/cssparser.jar lib/htmlunit-core-js.jar lib/htmlunit.jar lib/httpclient.jar lib/httpcore.jar lib/httpmime.jar lib/nekohtml.jar lib/sac.jar lib/xalan.jar lib/xercesImpl.jar lib/sqlite-jdbc.jar lib/jna-3.2.4.jar 
+Main-Class: Programma.Main
