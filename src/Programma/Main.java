@@ -77,6 +77,9 @@ public class Main {
 			GestioneSerieTV.Showlist();
 			fl.setprog(++i);
 			
+			fl.settext("Avvio interfaccia grafica");
+			fl.setprog(++i);
+			
 			if (Settings.isDownloadAutomatico()) {
 				avviaThreadRicercaAutomatica();
 			}

@@ -25,7 +25,7 @@ public class FrameLoading extends Thread{
 		frame.setAlwaysOnTop(false);
 		
 		label_caricamento=new JLabel("");
-		progress=new JProgressBar(0, 9);
+		progress=new JProgressBar(0, 10);
 		
 		frame.setLayout(new BorderLayout());
 		frame.add(label_caricamento, BorderLayout.SOUTH);
