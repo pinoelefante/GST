@@ -299,7 +299,7 @@ public class Settings {
 						String s=(String)par[j].pvalue();
 						switch(par[j].getField()){
 							case "dir_download" :
-								if(s.isEmpty()){
+								if(s.isEmpty() || !(new File(s)).exists()){
 									setDirectoryDownload(getCurrentDir()+"Download"+File.separator);
 									new File(getCurrentDir()+"Download"+File.separator).mkdir();
 								}
@@ -309,8 +309,17 @@ public class Settings {
 									setDirectoryDownload(s);
 								}
 								break;
-							case "dir_client" : setClientPath(s); break;
-							case "dir_vlc" : setVLCPath(s); break;
+							case "dir_client" :
+								if (!OperazioniFile.fileExists(s))
+									s="";
+								setClientPath(s); 
+								break;
+							case "dir_vlc" : 
+								if(s.trim().isEmpty() || !OperazioniFile.fileExists(s)){
+									s=rilevaVLC();
+								}
+								setVLCPath(s); 
+								break;
 							case "itasa_id" : setItasaUsername(s); break;
 							case "itasa_pass" : setItasaPassword(s); break;
 							case "client_id" : setClientID(s); break;
@@ -407,5 +416,13 @@ public class Settings {
 	}
 	public static int getBetaVersione() {
 		return beta_versione;
+	}
+	public static String rilevaVLC(){
+		if(isLinux()){
+			if(OperazioniFile.fileExists("/usr/bin/vlc"))
+				return "/usr/lib/vlc";
+		}
+		//TODO versione per windows e mac
+		return "";
 	}
 }
