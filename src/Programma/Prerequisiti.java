@@ -7,9 +7,10 @@ import java.util.ArrayList;
 public class Prerequisiti {
 	private static ArrayList<Dipendenza> list_dipendenze=new ArrayList<Dipendenza>();
 	public static void checkDipendenze() {
-		try {
+		try {/*
 			if(list_dipendenze.isEmpty())
 				popola_dipendenze();
+			*/	
 			//TODO modificare in modo da controllare anche il file size
 			File dir_lib = new File(Settings.getCurrentDir() + "lib");
 			String arch_vm = System.getProperty("os.arch");

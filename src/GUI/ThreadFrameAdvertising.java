@@ -59,7 +59,6 @@ public class ThreadFrameAdvertising extends Thread {
 										Thread.sleep(1000);
 										sleep_time--;
 									}
-									frame.removeAll();
 									frame.setVisible(false);
 									frame=null;
 									wb.setEnabled(false);
