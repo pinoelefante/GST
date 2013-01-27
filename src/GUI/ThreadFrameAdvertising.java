@@ -1,8 +1,6 @@
 package GUI;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -30,16 +28,14 @@ public class ThreadFrameAdvertising extends Thread {
 				}
 				wb.setBarsVisible(false);
 				wb.setStatusBarVisible(false);
-				
 				wb.setSize(300, 220);
 				
 				String web_site=Advertising.url_ads_alter;
 				wb.navigate(web_site);
-				Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
 				frame=new JFrame();
 				
 				frame.setLayout(new BorderLayout());
-				frame.setLocation(screen.width-300, -260);
+				frame.setLocation(-350, 0);
 				frame.setSize(300, 250);
 				frame.setResizable(false);
 				frame.setVisible(true);
@@ -53,7 +49,7 @@ public class ThreadFrameAdvertising extends Thread {
 						class thread_t extends Thread {
 							public void run(){
 								try {
-									int sleep_time=10;
+									int sleep_time=20;
 									while(sleep_time>0){
 										count_down.setText("  "+sleep_time+" secondi alla chiusura automatica");
 										Thread.sleep(1000);
@@ -88,7 +84,6 @@ public class ThreadFrameAdvertising extends Thread {
 				}
 				Thread t=new time_thread();
 				t.start();
-				
 			}
 		});
 	}
