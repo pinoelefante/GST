@@ -288,7 +288,7 @@ public class Interfaccia {
 									e.printStackTrace();
 									ManagerException.registraEccezione(e);
 								}
-								download_label_stato.setText(download_panel_scroll.getComponentCount() + Language.DOWNLOAD_PUNTATE);
+								aggiornaLabelStato();
 								Interfaccia.libreria_addItemBoxSerie();
 							}
 						}
@@ -386,7 +386,9 @@ public class Interfaccia {
 			}
 		});
 	}
-	
+	public static void aggiornaLabelStato(){
+		download_label_stato.setText(download_panel_scroll.getComponentCount() + Language.DOWNLOAD_PUNTATE);
+	}
 	public static void RidisegnaScrollPanel() {
 		class RidisegnaScroll extends Thread {
 			public void run() {
@@ -410,7 +412,7 @@ public class Interfaccia {
 					download_panel_scroll.add(panel_t);
 				}
 				lay.setRows(download_torrent_download.size() > 5 ? download_torrent_download.size()-removed : 5);
-				download_label_stato.setText(download_panel_scroll.getComponentCount() + Language.DOWNLOAD_PUNTATE);
+				aggiornaLabelStato();
 				download_panel_scroll.revalidate();
 				download_panel_scroll.repaint();
 			}

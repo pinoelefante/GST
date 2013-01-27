@@ -120,7 +120,7 @@ public class CasellaDownload extends JPanel{
 			lay.setRows(num_panel-1);
 		download_panel_scroll.revalidate();
 		download_panel_scroll.repaint();
-		
+		Interfaccia.aggiornaLabelStato();
 	}
 	public JCheckBox getCheckBox(){
 		return box;
