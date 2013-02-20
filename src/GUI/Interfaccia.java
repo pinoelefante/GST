@@ -1411,11 +1411,18 @@ public class Interfaccia {
 		nord.add(nord_s, BorderLayout.SOUTH);
 		
 		JPanel sud=new JPanel(new BorderLayout());
+		final JCheckBox check_ignore=new JCheckBox("Nascondi ignorate");
+		sud.add(check_ignore);
 		panel_refactor.add(sud, BorderLayout.SOUTH);
 		
 		panel_refactor.add(nord, BorderLayout.NORTH);
 		panel_refactor.add(panel_scroll, BorderLayout.CENTER);
 		
+		check_ignore.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				libreria_box_ordine.getActionListeners()[0].actionPerformed(new ActionEvent(libreria_box_ordine, 0, ""));
+			}
+		});
 		libreria_box_serie.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				SerieTV st=(SerieTV) libreria_box_serie.getSelectedItem();
@@ -1470,18 +1477,32 @@ public class Interfaccia {
 				lay.setRows(l_torrent.size() > 4 ? l_torrent.size()	: 4);
 				
 				int ordine=libreria_box_ordine.getSelectedIndex();
+				int tor_rem=0;
 				if(ordine==0){
 					for(int i=0;i<l_torrent.size();i++){
 						Torrent t=(Torrent) l_torrent.get(i);
+						if(check_ignore.isSelected()){
+							if(t.getScaricato()==Torrent.IGNORATO){
+								tor_rem++;
+								continue;
+							}
+						}
 						libreria_panel_scrollable.add(new PanelEpisodio(t));
 					}
 				}
 				else{
 					for(int i=l_torrent.size()-1;i>=0;i--){
 						Torrent t=(Torrent) l_torrent.get(i);
+						if(check_ignore.isSelected()){
+							if(t.getScaricato()==Torrent.IGNORATO){
+								tor_rem++;
+								continue;
+							}
+						}
 						libreria_panel_scrollable.add(new PanelEpisodio(t));
 					}
 				}
+				lay.setRows(l_torrent.size()-tor_rem > 4 ? l_torrent.size()-tor_rem	: 4);
 				frame.revalidate();
 				frame.repaint();
 				

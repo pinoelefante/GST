@@ -159,6 +159,7 @@ public class OperazioniFile {
 				continue;
 			
 			String nome_file=zipEntry.getName();
+			//System.out.println(nome_file);
 			if(zipEntry.getName().contains(File.separator)){
 				nome_file=nome_file.substring(nome_file.lastIndexOf(File.separator)+1);
 			}
@@ -189,6 +190,17 @@ public class OperazioniFile {
 		input.close();
 		return estratti;
 	}
+	/*
+	public static void main(String[] args){
+		try {
+			ZipDecompress("D:\\SerieTV\\Flashpoint\\Flashpoint_S3_E11_sub.zip", "D:\\SerieTV\\Flashpoint");
+		}
+		catch(IOException e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	*/
 	public static boolean subExistsFromPartialFilename(String folder, String path){
 		File dir=new File(folder);
 		if(dir.exists()){
