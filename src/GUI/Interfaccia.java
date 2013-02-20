@@ -1337,12 +1337,14 @@ public class Interfaccia {
 					public void actionPerformed(ActionEvent e) {
 						class cercaSub extends Thread {
 							public void run(){
+								sottotitolo.setEnabled(false);
 								if(!GestioneSerieTV.getSubManager().scaricaSottotitolo(torrent)){
 									torrent.setSottotitolo(true, true);
 									JOptionPane.showMessageDialog(frame, "Sottotitolo aggiunto in coda:\n"+torrent);
 								}
 								else
 									JOptionPane.showMessageDialog(frame, "Sottotitolo scaricato");
+								sottotitolo.setEnabled(true);
 							}
 						}
 						Thread t=new cercaSub();
@@ -1412,13 +1414,20 @@ public class Interfaccia {
 		
 		JPanel sud=new JPanel(new BorderLayout());
 		final JCheckBox check_ignore=new JCheckBox("Nascondi ignorate");
+		final JCheckBox check_rimosse=new JCheckBox("Nascondi rimosse");
 		sud.add(check_ignore);
+		sud.add(check_rimosse);
 		panel_refactor.add(sud, BorderLayout.SOUTH);
 		
 		panel_refactor.add(nord, BorderLayout.NORTH);
 		panel_refactor.add(panel_scroll, BorderLayout.CENTER);
 		
 		check_ignore.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				libreria_box_ordine.getActionListeners()[0].actionPerformed(new ActionEvent(libreria_box_ordine, 0, ""));
+			}
+		});
+		check_rimosse.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				libreria_box_ordine.getActionListeners()[0].actionPerformed(new ActionEvent(libreria_box_ordine, 0, ""));
 			}
@@ -1487,6 +1496,12 @@ public class Interfaccia {
 								continue;
 							}
 						}
+						if(check_rimosse.isSelected()){
+							if(t.getScaricato()==Torrent.RIMOSSO){
+								tor_rem++;
+								continue;
+							}
+						}
 						libreria_panel_scrollable.add(new PanelEpisodio(t));
 					}
 				}
@@ -1495,6 +1510,12 @@ public class Interfaccia {
 						Torrent t=(Torrent) l_torrent.get(i);
 						if(check_ignore.isSelected()){
 							if(t.getScaricato()==Torrent.IGNORATO){
+								tor_rem++;
+								continue;
+							}
+						}
+						if(check_rimosse.isSelected()){
+							if(t.getScaricato()==Torrent.RIMOSSO){
 								tor_rem++;
 								continue;
 							}

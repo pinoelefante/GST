@@ -20,8 +20,12 @@ public class Player {
 				try {
 					if(Settings.isWindows())
 						Runtime.getRuntime().exec("\""+Settings.getVLCPath()+"\""+" "+"\""+file_r+"\"");
-					else{
-						Runtime.getRuntime().exec(Settings.getVLCPath()+" file://"+file_r);
+					else if(Settings.isLinux()){
+						if(Settings.getVLCPath().compareTo("/usr/bin/vlc")==0){
+							Runtime.getRuntime().exec("vlc "+"file://"+file_r);
+						}
+						else
+							Runtime.getRuntime().exec(Settings.getVLCPath()+" file://"+file_r);
 					}
 				}
 				catch (IOException e) {

@@ -25,7 +25,6 @@
 - tasto "copia" per le puntate per copiare su un altro dispositivo
 - riduci a icona quando viene cliccato play
 - modalità Remote
-- possibilità di non visualizzare gli episodi ignorati/rimossi nel lettore
 - disabilitare il tasto sottotitolo mentre sta scaricando
 - scaricare sottotitolo quando il file video è presente
 - libreria zip
@@ -52,5 +51,10 @@ FATTO
 - associazione a tvrage quando si aggiunge una serie
 - cambiato user agent
 - risolto possibile problema con il frame delle donazioni
+
+//rev 91
+- aggiornamenti per linux (non ancora supportato)
+- nascondi puntate rimosse/ignorate
+- disabilitare il tasto sottotitolo mentre sta scaricando
 
 PROBABILMENTE FIXATO
