@@ -41,6 +41,8 @@ public class Settings {
 	private static String		ClientID = "";
 	private static boolean		downloadPreair						= false;
 	private static boolean		download720p						= false;
+	private static boolean 		lettore_nascondi_ignore				= false;
+	private static boolean 		lettore_nascondi_rimosso			= false;
 	
 	public static int getVersioneSoftware() {
 		return VersioneSoftware;
@@ -424,5 +426,17 @@ public class Settings {
 		}
 		//TODO versione per windows e mac
 		return "";
+	}
+	public static boolean isLettoreNascondiIgnore() {
+		return lettore_nascondi_ignore;
+	}
+	public static void setLettoreNascondiIgnore(boolean lettore_nascondi_ignore) {
+		Settings.lettore_nascondi_ignore = lettore_nascondi_ignore;
+	}
+	public static boolean isLettoreNascondiRimosso() {
+		return lettore_nascondi_rimosso;
+	}
+	public static void setLettoreNascondiRimosso(boolean lettore_nascondi_rimosso) {
+		Settings.lettore_nascondi_rimosso = lettore_nascondi_rimosso;
 	}
 }

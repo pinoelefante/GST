@@ -1274,6 +1274,7 @@ public class Interfaccia {
 							}
 							catch (FileNotFoundException e) {
 								torrent.setScaricato(Torrent.RIMOSSO, true);
+								libreria_box_ordine.getActionListeners()[0].actionPerformed(new ActionEvent(libreria_box_ordine, 0, ""));
 								ManagerException.registraEccezione(e);
 							}
 						}
@@ -1317,6 +1318,7 @@ public class Interfaccia {
 							if(torrent.getScaricato()==Torrent.SCARICATO || torrent.getScaricato()==Torrent.VISTO){
 								setLabelStato(Torrent.RIMOSSO);
 								torrent.setScaricato(Torrent.RIMOSSO);
+								libreria_box_ordine.getActionListeners()[0].actionPerformed(new ActionEvent(libreria_box_ordine, 0, ""));
 							}
 							ManagerException.registraEccezione(e1);
 							return; 
@@ -1369,6 +1371,7 @@ public class Interfaccia {
 											if(OperazioniFile.deleteFile(Settings.getDirectoryDownload()+torrent.getNomeSerieFolder()+File.separator+files[i])){
 												torrent.setScaricato(Torrent.RIMOSSO, false);
 												torrent.setSottotitolo(false, true);
+												libreria_box_ordine.getActionListeners()[0].actionPerformed(new ActionEvent(libreria_box_ordine, 0, ""));
 												String file=Settings.getDirectoryDownload()+torrent.getNomeSerieFolder()+File.separator+files[i];
 												String ext=file.substring(file.lastIndexOf("."));
 												if(ext.compareToIgnoreCase(".avi")==0 || ext.compareToIgnoreCase(".mp4")==0 || ext.compareToIgnoreCase(".mkv")==0 )
@@ -1382,6 +1385,7 @@ public class Interfaccia {
 						catch (FileNotFoundException e1) {
 							JOptionPane.showMessageDialog(frame, "Il file non era presente.\nSi imposterà lo stato di RIMOSSO.");
 							torrent.setScaricato(Torrent.RIMOSSO, true);
+							libreria_box_ordine.getActionListeners()[0].actionPerformed(new ActionEvent(libreria_box_ordine, 0, ""));
 							ManagerException.registraEccezione(e1);
 						}
 						setLabelStato(torrent.getScaricato());
@@ -1424,11 +1428,13 @@ public class Interfaccia {
 		
 		check_ignore.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				Settings.setLettoreNascondiIgnore(check_ignore.isSelected());
 				libreria_box_ordine.getActionListeners()[0].actionPerformed(new ActionEvent(libreria_box_ordine, 0, ""));
 			}
 		});
 		check_rimosse.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				Settings.setLettoreNascondiRimosso(check_rimosse.isSelected());
 				libreria_box_ordine.getActionListeners()[0].actionPerformed(new ActionEvent(libreria_box_ordine, 0, ""));
 			}
 		});
