@@ -420,7 +420,7 @@ public class Settings {
 	public static String rilevaVLC(){
 		if(isLinux()){
 			if(OperazioniFile.fileExists("/usr/bin/vlc"))
-				return "/usr/lib/vlc";
+				return "/usr/bin/vlc";
 		}
 		//TODO versione per windows e mac
 		return "";

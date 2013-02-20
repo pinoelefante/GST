@@ -56,9 +56,15 @@ public class Download {
 			break;
 			case 1:
 				String directory_download = Settings.getDirectoryDownload();
-				Runtime.getRuntime().exec(Settings.getClientPath()
-						+ " /NOINSTALL /DIRECTORY " + "\"" + directory_download
-						+ File.separator + folder + "\"" + " " + url);
+				if(Settings.isWindows()){
+					Runtime.getRuntime().exec(Settings.getClientPath()
+							+ " /NOINSTALL /DIRECTORY " + "\"" + directory_download
+							+ File.separator + folder + "\"" + " " + url);
+				}
+				else if(Settings.isLinux()){
+					Runtime.getRuntime().exec("wine "+Settings.getClientPath()
+							+ " /NOINSTALL /DIRECTORY " + "'T:"+File.separator +  folder + "'" + " " + url);
+				}
 			break;
 		}
 	}
