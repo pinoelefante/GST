@@ -1412,7 +1412,7 @@ public class Interfaccia {
 		nord_s.add(n_w, BorderLayout.WEST);
 		nord.add(nord_s, BorderLayout.SOUTH);
 		
-		JPanel sud=new JPanel(new BorderLayout());
+		JPanel sud=new JPanel();
 		final JCheckBox check_ignore=new JCheckBox("Nascondi ignorate");
 		final JCheckBox check_rimosse=new JCheckBox("Nascondi rimosse");
 		sud.add(check_ignore);
