@@ -29,6 +29,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 
+import Naming.Renamer;
 import Programma.Download;
 import Programma.ManagerException;
 import Programma.OperazioniFile;

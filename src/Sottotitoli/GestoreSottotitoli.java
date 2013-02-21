@@ -2,6 +2,7 @@ package Sottotitoli;
 
 import java.util.ArrayList;
 
+import Naming.Renamer;
 import Programma.ManagerException;
 import SerieTV.GestioneSerieTV;
 import SerieTV.SerieTV;

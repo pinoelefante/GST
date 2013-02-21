@@ -33,8 +33,7 @@
 - quando si clicca play, se il sottotitolo non è presente si analizzano prima i file presenti nella cartella per cercarlo (se ha un nome diverso) e rinominarlo, altrimenti si scarica
 - i file zip non si devono considerare sottotitoli.
 - controllare lo stato degli episodi al prossimo aggiornamento
-- al cambiamento di stato di un episodio controllare se bisogna nasconderlo
-- scrivere un metodo per disegnare le puntate nel lettore e non utilizzare più l'actionlistener della combobox
+
 
 DA ULTIMARE
 
@@ -59,5 +58,7 @@ FATTO
 - aggiornamenti per linux (non ancora supportato)
 - nascondi puntate rimosse/ignorate
 - disabilitare il tasto sottotitolo mentre sta scaricando
+- al cambiamento di stato di un episodio controllare se bisogna nasconderlo
+- scrivere un metodo per disegnare le puntate nel lettore e non utilizzare più l'actionlistener della combobox
 
 PROBABILMENTE FIXATO
