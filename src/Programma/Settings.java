@@ -8,7 +8,7 @@ import Database.Database;
 import Database.SQLParameter;
 
 public class Settings {
-	private static final int	VersioneSoftware					= 90;
+	private static final int	VersioneSoftware					= 91;
 	private static final boolean beta								= false;
 	private static final int	beta_versione						= 1;
 	private static int			Client								= 1;

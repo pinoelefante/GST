@@ -1521,6 +1521,21 @@ public class Interfaccia {
 		if(ordine==ORDINE_CRESCENTE){
 			for(int i=0;i<l_torrent.size();i++){
 				Torrent t=(Torrent) l_torrent.get(i);
+				/*
+				try {
+					String path=OperazioniFile.cercavideofile(t);
+					if(path.length()>0){
+						if(t.getScaricato()==Torrent.RIMOSSO || t.getScaricato()==Torrent.IGNORATO)
+							t.setScaricato(Torrent.SCARICATO, true);
+					}
+				}
+				catch (FileNotFoundException e) {
+					if(t.getScaricato()==Torrent.SCARICATO || t.getScaricato()==Torrent.VISTO)
+						t.setScaricato(Torrent.RIMOSSO, true);
+					e.printStackTrace();
+					ManagerException.registraEccezione(e);
+				}
+				*/
 				if(Settings.isLettoreNascondiIgnore()){
 					if(t.getScaricato()==Torrent.IGNORATO){
 						tor_rem++;

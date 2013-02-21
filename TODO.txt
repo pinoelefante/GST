@@ -33,7 +33,7 @@
 - quando si clicca play, se il sottotitolo non è presente si analizzano prima i file presenti nella cartella per cercarlo (se ha un nome diverso) e rinominarlo, altrimenti si scarica
 - i file zip non si devono considerare sottotitoli.
 - controllare lo stato degli episodi al prossimo aggiornamento
-
+- controllo settimanale stato episodi
 
 DA ULTIMARE
 
