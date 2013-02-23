@@ -1160,6 +1160,7 @@ public class Interfaccia {
 		scroll_log.getVerticalScrollBar().setValue(scroll_log.getVerticalScrollBar().getMaximum());
 		if(tray!=null)
 			tray.getTrayIcons()[0].displayMessage("", log, MessageType.INFO);
+		sottotitoli_bottone_list.doClick();
 		
 	}
 

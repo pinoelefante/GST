@@ -3,6 +3,7 @@ package Naming;
 public class CaratteristicheFile {
 	private int stagione, episodio;
 	private boolean hd720, repack, proper;
+	
 	public CaratteristicheFile() {}
 	public int getStagione() {
 		return stagione;

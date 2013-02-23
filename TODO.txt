@@ -34,6 +34,10 @@
 - i file zip non si devono considerare sottotitoli.
 - controllare lo stato degli episodi al prossimo aggiornamento
 - controllo settimanale stato episodi
+- inserimento changelog
+- modificare la tabella itasa per la cache
+- database repair
+- inserimento sottotitolo in database
 
 DA ULTIMARE
 
@@ -60,5 +64,8 @@ FATTO
 - disabilitare il tasto sottotitolo mentre sta scaricando
 - al cambiamento di stato di un episodio controllare se bisogna nasconderlo
 - scrivere un metodo per disegnare le puntate nel lettore e non utilizzare più l'actionlistener della combobox
+
+//rev 92
+- modificare la tabella subsfactory
 
 PROBABILMENTE FIXATO
