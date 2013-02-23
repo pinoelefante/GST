@@ -8,14 +8,17 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.swing.JOptionPane;
+
 import Database.SQLColumn;
+import Database.Database;
 import GUI.Interfaccia;
 import SerieTV.GestioneSerieTV;
 import StruttureDati.Indexable;
 
 public class Update {
 	public static void start() {
-		if(Settings.isNewUpdate()){
+		if(Settings.isNewUpdate() || Settings.getVersioneSoftware()>Settings.getLastVersion()){
 			boolean option_set=false;
 			switch(Settings.getLastVersion()){
 				case 0: { //versione < 81 - prima release con questo metodo
@@ -53,7 +56,7 @@ public class Update {
 					colonne.add(new SQLColumn("episodi", "TEXT", "", "", ""));
 					colonne.add(new SQLColumn("attori", "TEXT", "", "", ""));
 					try {
-						Database.Database.createTable(Database.Database.TABLE_TVRAGE, colonne);
+						Database.createTable(Database.TABLE_TVRAGE, colonne);
 					}
 					catch (Exception e) {
 						ManagerException.registraEccezione(e);
@@ -88,6 +91,42 @@ public class Update {
 					GestioneSerieTV.getElencoSerieInserite().clear();
 					Settings.setLastVersion(91);
 				}
+				case 91:
+					if(Database.drop(Database.TABLE_SUBSFACTORY)){
+						ArrayList<SQLColumn> colonne_subs=new ArrayList<SQLColumn>();
+						colonne_subs.add(new SQLColumn("path", "TEXT", "", "UNIQUE", "NOT NULL"));
+						colonne_subs.add(new SQLColumn("id_serie", "TEXT", "", "", "NOT NULL"));
+						colonne_subs.add(new SQLColumn("stagione", "INTEGER", "0", "", "NOT NULL"));
+						colonne_subs.add(new SQLColumn("episodio", "INTEGER", "0", "", "NOT NULL"));
+						colonne_subs.add(new SQLColumn("tipo", "INTEGER", "0", "", "")); //0 normale, 1 720p, 2 entrambi
+						colonne_subs.add(new SQLColumn("is_completa", "INTEGER", "0", "", ""));
+						try {
+							Database.createTable(Database.TABLE_SUBSFACTORY, colonne_subs);
+						}
+						catch (Exception e) {
+							e.printStackTrace();
+							ManagerException.registraEccezione(e);
+							JOptionPane.showMessageDialog(null, "Si è verificato un errore grave.\n - Cancellare il vecchio database\n - Utilizzare il tool di recupero (non ancora disponibile)\n - Contatta gestioneserietv@gmail.com allegando il database.");
+						}
+					}
+					if(Database.drop(Database.TABLE_ITASA)){
+						ArrayList<SQLColumn> col_itasa=new ArrayList<SQLColumn>();
+						col_itasa.add(new SQLColumn("id", "INTEGER", "", "UNIQUE", ""));
+						col_itasa.add(new SQLColumn("id_serie", "INTEGER", "", "", "NOT NULL"));
+						col_itasa.add(new SQLColumn("stagione", "INTEGER", "0", "", "NOT NULL"));
+						col_itasa.add(new SQLColumn("episodio", "INTEGER", "0", "", "NOT NULL"));
+						col_itasa.add(new SQLColumn("tipo", "INTEGER", "0", "", ""));
+						col_itasa.add(new SQLColumn("is_completa", "INTEGER", "0", "", ""));
+						try {
+							Database.createTable(Database.TABLE_ITASA, col_itasa);
+						}
+						catch (Exception e) {
+							e.printStackTrace();
+							ManagerException.registraEccezione(e);
+							JOptionPane.showMessageDialog(null, "Si è verificato un errore grave.\n - Cancellare il vecchio database\n - Utilizzare il tool di recupero (non ancora disponibile)\n - Contatta gestioneserietv@gmail.com allegando il database.");
+						}
+					}
+					Settings.setLastVersion(Settings.getVersioneSoftware());
 				default:
 					Settings.setLastVersion(Settings.getVersioneSoftware());
 					Settings.setNewUpdate(false);

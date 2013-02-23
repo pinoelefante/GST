@@ -65,6 +65,7 @@ public class Database {
 		query+=colonne.get(colonne.size()-1)+" )";
 		
 		Statement st=con.createStatement();
+		//System.out.println(query);
 		st.executeUpdate(query);
 		st.close();
 	}
@@ -188,6 +189,151 @@ public class Database {
 			e.printStackTrace();
 			ManagerException.registraEccezione(e);
 		}
+	}
+	public static boolean alter_rimuovicampo(String tabella, String campo){return false;}
+	/** TODO completare
+	public static boolean alter_rimuovicampo(String tabella, String campo){
+		boolean is_in=false;
+		ArrayList<String> fields=getTableColumns(tabella);
+		for(int i=0;i<fields.size();i++){
+			if(fields.get(i).compareTo(campo)==0){
+				is_in=true;
+				fields.remove(i);
+				break;
+			}
+		}
+		if(!is_in){
+			ManagerException.registraEccezione(new Exception("La tabella '"+tabella+"' non esiste. Il campo '"+campo+"' non può essere rimosso"));
+			return false;
+		}
+		if(fields.size()==0){
+			return drop(tabella);
+		}
+		
+		String query="SELECT ";
+		for(int i=0;i<fields.size();i++){
+			query+=fields.get(i);
+			if(i<fields.size()-1);
+			query+=", ";
+		}
+		query+=" FROM "+tabella;
+		try {
+			Statement st=con.createStatement();
+			ResultSet res=st.executeQuery(query);
+			ResultSetMetaData meta=res.getMetaData();
+			ArrayList<SQLParameter[]> selezione = new ArrayList<SQLParameter[]>();
+			int j=0;
+			while(res.next()){
+				selezione.add(new SQLParameter[meta.getColumnCount()]);
+				for(int i=1;i<=meta.getColumnCount();i++){
+					int tipo=0;
+					switch(meta.getColumnTypeName(i)){
+						case "integer":
+							//System.out.print("Intero - ");
+							tipo=SQLParameter.INTEGER;
+							break;
+						case "text":
+							tipo=SQLParameter.TEXT;
+							break;
+						default:
+							System.out.println("SELECT " + meta.getColumnTypeName(i));
+					}
+					selezione.get(j)[i-1]=new SQLParameter(tipo, tipo==SQLParameter.INTEGER?res.getInt(i):res.getString(i), meta.getColumnName(i));
+				}
+				j++;
+			}
+			st.close();
+			drop(tabella);
+			
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			ManagerException.registraEccezione(e);
+		}
+		return false;
+	}
+	*/
+	/** TODO completare
+	private static ArrayList<SQLColumn> getColumnStats(ResultSetMetaData meta){
+		ArrayList<SQLColumn> fields=new ArrayList<SQLColumn>();
+		if(meta!=null){
+			try {
+				for(int i=1;i<=meta.getColumnCount();i++){
+					String nome=meta.getColumnLabel(i);
+					String type_s=meta.getColumnTypeName(i);
+					int tipo=0;
+					switch(type_s){
+						case "integer":
+							tipo=SQLParameter.INTEGER;
+							break;
+						case "text":
+							tipo=SQLParameter.TEXT;
+							break;
+					}
+				}
+			}
+			catch (SQLException e) {
+				e.printStackTrace();
+				ManagerException.registraEccezione(e);
+			}
+		}
+		return fields;
+	}
+	*/
+	public static boolean drop(String table){
+		String query="DROP TABLE IF EXISTS "+table;
+		try {
+			Statement st=con.createStatement();
+			st.executeUpdate(query);
+			st.close();
+			return true;
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			ManagerException.registraEccezione(e);
+		}
+		return false;
+	}
+	public static ArrayList<String> getTableColumns(String tableName) { 
+		ArrayList<String> columns = new ArrayList<String>();
+		try {
+			String cmd = "pragma table_info(" + tableName + ");"; 
+			Statement st=con.createStatement();
+			ResultSet cur=st.executeQuery(cmd);
+			
+			while (cur.next()) {
+				String nome=cur.getString(2);
+				columns.add(nome);
+			}
+			cur.close();
+		}
+		catch(SQLException e){
+			e.printStackTrace();
+			ManagerException.registraEccezione(e);
+		}
+		return columns;
+	}
+	public static boolean alter_aggiungicampo(String table, String campo, String tipo, String default_v){
+		ArrayList<String> columns=getTableColumns(table);
+		for(int i=0;i<columns.size();i++){
+			if(columns.get(i).compareTo(campo)==0){
+				ManagerException.registraEccezione(new Exception("Campo '"+campo+"' già presente nella tabella '"+table+"'"));
+				return false;
+			}
+		}
+		
+		String query="ALTER TABLE "+table+" ADD COLUMN "+campo+" "+tipo+(default_v.isEmpty()?"":(" "+default_v));
+		try {
+			Statement st=con.createStatement();
+			st.executeUpdate(query);
+			st.close();
+			return true;
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+			ManagerException.registraEccezione(e);
+		}
+		return false;
 	}
 	public static boolean isEmptyTable(String tableName){
 		return rowCount(tableName)==0;
@@ -468,5 +614,11 @@ public class Database {
 				return false;
 		}
 		return false;
+	}
+	public static void main(String[] args){
+		Connect();
+		ArrayList<String> col=getTableColumns(TABLE_SETTINGS);
+		for(int i=0;i<col.size();i++)
+			System.out.println(col.get(i));
 	}
 }
