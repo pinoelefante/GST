@@ -1,12 +1,16 @@
 package Naming;
 
+import Programma.ManagerException;
+
 public class Naming {
 	/*
-	 * S00E00 / s00e00
-	 * 0x00 / 00x00 y
+	 * S00E00 / s00e00 y
+	 * 0x00 / 00x00 y y
 	 * 0.0			y
-	 * Part 0 - singola serie
-	 * 0of0 -singola serie
+	 * Part 0 - singola serie y
+	 * Part_1 y
+	 * 0of0 -singola serie y
+	 * Series X YofZ
 	 * s00 / subsfactory - stagione completa
 	 * Stagione 0 Completa / itasa - stagione completa
 	 */
@@ -14,71 +18,97 @@ public class Naming {
 	public static CaratteristicheFile parseMagnetName(String nome){
 		return null;
 	}
-	private void retrieveSE(String url, int tri){
+	private static CaratteristicheFile retrieveSE(String url){
 		String[] regex_s_e={
-				"[0-9]{1,}x[0-9]{1,}",						// 1x02
-				"[0-9]{1,}.[0-9]{1,}",						// x.y
-				"[Ss][0-9]{1,}[Ee][0-9]{1,}",
-				"[0-9]{1,}of[0-3]{1,}",
-				"[^PpAaRrT][0-9]{1,}",	//trimmare prendere pure il numero
-				"[Ss]eason [0-9]{1,2} [Ee]pisode [0-9]{1,2}",	// Season x Episode y
+			"[Ss][0-9]{1,}[Ee][0-9]{1,}",
+			"[0-9]{1,}x[0-9]{1,}",						// 1x02
+			"[0-9]{1,}.[0-9]{1,}",						// x.y
+			"[Ss]eries\\S[0-9]{1,}\\S[0-9]{1,}of",
+			"[Ss][0-9]{1,}",
+			"[0-9]{1,}of[0-3]{1,}",
+			"[Pp][Aa][Rr][Tt]\\S[0-9]{1,}",	// Part_X
+			"[Pp][Aa][Rr][Tt]\\s[0-9]{1,}"  //PART X
+				/*
+				"[Ss]eason [0-9]{1,} [Ee]pisode [0-9]{1,}",	// Season x Episode y
 				"[Ss]eason [0-9]{1,2}"							// Season x Promo
+				*/
 		};
+		int num_prova=-1;
+		for(int i=0;i<regex_s_e.length;i++){
+			if(url.split(regex_s_e[i]).length>=2){
+				num_prova=i;
+				break;
+			}	
+		}
+		if(num_prova==-1)
+			return null;
 		
-		if(tri==regex_s_e.length){
-			setSerie(0);
-			setEpisodio(0);
-			return;
-		}
-		else {
-			String regex=regex_s_e[tri];
-			String[] s_e=null;
-			String[] splitted=null;
-			String result=null;
-			switch(tri){
-				case 0:
-					splitted=url.split(regex);
-					result=regex_splittered(url, splitted);
-					s_e=result.split("x");
-					break;
-				case 1:
-					splitted=getTitolo().split(regex);
-					result=regex_splittered(getTitolo(), splitted);
-					s_e=result.replace(".", "x").replace(" ", "x").split("x");
-					break;
-				case 2:
-					splitted=getTitolo().split(regex);
-					result=regex_splittered(getTitolo(), splitted);
-					result=result.replace("Season ","").replace("Episode ", "").replace("season ","").replace("episode ", "");
-					s_e=result.replace(" ", "x").split("x");
-					break;
-				case 3:
-					splitted=getTitolo().split(regex);
-					result=regex_splittered(getTitolo(), splitted);
-					result=result.replace("Season ", "").replace("season ", "").trim();
-					s_e=new String[2];
-					//TODO controllare se contiente premier, teaser o finale
-					s_e[0]=result;
-					s_e[1]="1";
-					break;
-			}
-			try{
-				setSerie(Integer.parseInt(s_e[0].trim()));
-				setEpisodio(Integer.parseInt(s_e[1].trim()));
-			}
-			catch(NumberFormatException | ArrayIndexOutOfBoundsException e){
-				setSerie(0);
-				setEpisodio(0);
-			}
-			if(getSerie()==0 && getEpisodio()==0)
-				retrieveSE(url, tri+1);
-		}
-	}
-	private String regex_splittered(String origine, String[] split){
-		String res=origine;
+		String regex=regex_s_e[num_prova];
+		
+		CaratteristicheFile cf=new CaratteristicheFile();
+		if(url.toLowerCase().contains("720p"))
+			cf.set720p(true);
+		if(url.toUpperCase().contains("PROPER"))
+			cf.setProper(true);
+		if(url.toUpperCase().contains("REPACK"))
+			cf.setRepack(true);
+		
+		String[] split=url.split(regex);
+		String splitted=url;
 		for(int i=0;i<split.length;i++){
-			res=res.replace(split[i], " ");
+			splitted=splitted.replace(split[i], " ");
 		}
-		return res.trim();
+		System.out.println(splitted);
+		String[] dati=null; 
+		switch(num_prova){
+			case 0:
+				splitted=splitted.replace("S", "").replace("s", "").replace("E", "_").replace("e", "_");
+				dati=splitted.split("_");
+				break;
+			case 1:
+				dati=splitted.split("x");
+				break;
+			case 2:
+				dati=splitted.split(".");
+				break;
+			case 3:
+				//[Ss]eries\\S[0-9]{1,}of[0-9]{1,}
+				splitted=splitted.toLowerCase();
+				break;
+			case 4:
+				break;
+			case 5:
+				break;
+			case 6:
+				break;
+			case 7:
+				break;
+			default:
+				cf.setStagione(0);
+				cf.setEpisodio(0);
+				return cf;
+		}
+		
+		try {
+			cf.setStagione(Integer.parseInt(dati[0]));
+		}
+		catch(NumberFormatException | NullPointerException e){
+			e.printStackTrace();
+			ManagerException.registraEccezione(e);
+			cf.setStagione(0);
+		}
+		try {
+			cf.setEpisodio(Integer.parseInt(dati[1]));
+		}
+		catch(NumberFormatException | NullPointerException e){
+			e.printStackTrace();
+			ManagerException.registraEccezione(e);
+			cf.setEpisodio(0);
+		}
+		return cf;
+	}
+	public static void main(String[] args){
+		
+		System.out.println(retrieveSE("Discovery.Ch.River.Monsters.Series.3.10of10.The.Lost.Reels.Part.2.DVDrip.x264.AACmp4-MVGroup"));
 	}
 }

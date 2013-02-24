@@ -35,5 +35,7 @@ public class CaratteristicheFile {
 	public void setProper(boolean proper) {
 		this.proper = proper;
 	}
-	
+	public String toString(){
+		return "Season: "+stagione+" Episode: "+episodio+"\n720p: "+hd720+"\nrepack: "+repack+"\nproper: "+proper;
+	}
 }
