@@ -1676,6 +1676,14 @@ public class Interfaccia {
 				if(frame_donazione!=null)
 					return;
 				
+				try {
+					frame_advertising.join();
+				}
+				catch (InterruptedException e1) {
+					e1.printStackTrace();
+					ManagerException.registraEccezione(e1);
+				}
+				
 				while(NativeInterface.isOpen() && frame_donazione==null){
 					tray.getTrayIcons()[0].displayMessage("", "Donazione: Apertura in corso", MessageType.ERROR);
 					try {

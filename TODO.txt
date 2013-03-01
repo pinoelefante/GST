@@ -40,6 +40,7 @@
 - inserimento sottotitolo in database
 - dopo un fallimento dell'aggiornamento delle serie, se un aggiornamento successivo ha successo si cancella la scritta di errore
 - stato aggiornamento nella parte inferiore del frame
+- tab con offerte zanox
 
 DA ULTIMARE
 
