@@ -16,7 +16,7 @@
 - download dei trailer da primetvseries
 - possibilit� di non vedere gli episodi scaricati nel lettore
 - quando una puntata viene scaricata, viene messa in un elenco delle puntate da vedere
-- in lettore, c'� una tab in cui elencare le puntate da vedere (oppure un'opzione)
+
 - bottoni aggiornare liste serie sottotitoli
 - mostrare le nuove serie di eztv
 - calendario serie tv
@@ -32,10 +32,7 @@
 - barra ricerca serie sottotitoli
 - quando si clicca play, se il sottotitolo non è presente si analizzano prima i file presenti nella cartella per cercarlo (se ha un nome diverso) e rinominarlo, altrimenti si scarica
 - i file zip non si devono considerare sottotitoli.
-- controllare lo stato degli episodi al prossimo aggiornamento
-- controllo settimanale stato episodi
 - inserimento changelog
-- modificare la tabella itasa per la cache
 - database repair
 - inserimento sottotitolo in database
 - dopo un fallimento dell'aggiornamento delle serie, se un aggiornamento successivo ha successo si cancella la scritta di errore
@@ -70,5 +67,9 @@ FATTO
 
 //rev 92
 - modificare la tabella subsfactory
+- modificare la tabella itasa
+- controllare lo stato degli episodi al prossimo aggiornamento
+- controllo settimanale stato episodi
+- in lettore, c'è una tab in cui elencare le puntate da vedere
 
 PROBABILMENTE FIXATO

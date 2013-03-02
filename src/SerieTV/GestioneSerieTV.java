@@ -12,6 +12,7 @@ import Programma.Download;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Sottotitoli.GestoreSottotitoli;
+import StruttureDati.Indexable;
 
 public class GestioneSerieTV {
 	private static ArrayList<SerieTV> serietv=new ArrayList<SerieTV>();
@@ -329,5 +330,32 @@ public class GestioneSerieTV {
 	}
 	public static GestoreInfo getInfoManager(){
 		return infomanager;
+	}
+	public static void controlloStatoEpisodi(){
+		System.out.println("Controllo episodi in corso");
+		carica_serie_database();
+		ArrayList<SerieTV> el_s=getElencoSerieInserite();
+		while(!el_s.isEmpty()){
+			SerieTV st=el_s.get(0);
+			ArrayList<Indexable> eps=st.getEpisodi().getLinear();
+			for(int i=0;i<eps.size();i++){
+				Torrent t=(Torrent)eps.get(i);
+				try {
+					String path=OperazioniFile.cercavideofile(t);
+					if(path.length()>0){
+						if(t.getScaricato()==Torrent.RIMOSSO || t.getScaricato()==Torrent.IGNORATO)
+							t.setScaricato(Torrent.SCARICATO, true);
+					}
+				}
+				catch (FileNotFoundException e) {
+					if(t.getScaricato()==Torrent.SCARICATO || t.getScaricato()==Torrent.VISTO)
+						t.setScaricato(Torrent.RIMOSSO, true);
+					//e.printStackTrace();
+					//ManagerException.registraEccezione(e);
+				}
+			}
+			el_s.remove(st);
+		}
+		getElencoSerieInserite().clear();
 	}
 }

@@ -322,7 +322,7 @@ public class Database {
 			}
 		}
 		
-		String query="ALTER TABLE "+table+" ADD COLUMN "+campo+" "+tipo+(default_v.isEmpty()?"":(" "+default_v));
+		String query="ALTER TABLE "+table+" ADD COLUMN "+campo+" "+tipo+(default_v.isEmpty()?"":(" DEFAULT "+default_v));
 		try {
 			Statement st=con.createStatement();
 			st.executeUpdate(query);

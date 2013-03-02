@@ -80,7 +80,7 @@ public class Interfaccia {
 	public static JPanel		panel_download		= new JPanel(new BorderLayout());
 	private static JPanel		panel_opzioni		= new JPanel(new BorderLayout());
 	private static JPanel		panel_sottotitoli	= new JPanel(new BorderLayout());
-	private static JPanel		panel_refactor		= new JPanel(new BorderLayout());
+	private static JTabbedPane	panel_lettore		= new JTabbedPane();
 	private static JPanel		panel_about			= new JPanel(new BorderLayout());
 	public static JFrame		frame;
 	public static SystemTray	tray;
@@ -115,7 +115,7 @@ public class Interfaccia {
 		creaTabAbout();
 
 		TabbedPane.addTab(Language.TAB_DOWNLOAD_TITLE, Resource.getIcona("res/download.png"), TabbedDownload, Language.TAB_DOWNLOAD_TOOLTIP);
-		TabbedPane.addTab(Language.TAB_REFACTOR_LABEL, Resource.getIcona("res/player.png"), panel_refactor, Language.TAB_REFACTOR_TOOLTIP);
+		TabbedPane.addTab(Language.TAB_REFACTOR_LABEL, Resource.getIcona("res/player.png"), panel_lettore, Language.TAB_REFACTOR_TOOLTIP);
 		TabbedPane.addTab(Language.TAB_OPZIONI_LABEL, Resource.getIcona("res/opzioni.png"), panel_opzioni, Language.TAB_OPZIONI_TOOLTIP);
 		TabbedPane.addTab(Language.TAB_ABOUT, Resource.getIcona("res/info.png"), panel_about, "");
 
@@ -1171,7 +1171,240 @@ public class Interfaccia {
 	protected static JLabel libreria_label_stagioni=new JLabel("Stagione: ");
 	protected static JPanel libreria_panel_scrollable=new JPanel(new GridLayout(8,1));
 	
+	static class PanelEpisodio extends JPanel{
+		private static final long	serialVersionUID	= 1L;
+		private Torrent torrent;
+		private JLabel stato=new JLabel();
+		private JLabel nome_torrent=new JLabel();
+		private JLabel tag_torrent=new JLabel();
+		private JCheckBox check_scaricato=new JCheckBox();
+		private JButton scarica=new JButton(),
+				play=new JButton(),
+				sottotitolo=new JButton(),
+				cancella=new JButton();
+		
+		public PanelEpisodio(Torrent t){
+			torrent=t;
+			assembla();
+			inizializza();
+		}
+		private void assembla(){
+			setLayout(new BorderLayout());
+			setBorder(new EtchedBorder(10));
+			JPanel nord=new JPanel(new BorderLayout());
+			JPanel centro=new JPanel();
+			JPanel sud=new JPanel();
+			
+			JPanel nord_n=new JPanel(new BorderLayout());
+			nord_n.add(check_scaricato, BorderLayout.WEST);
+			nord_n.add(stato, BorderLayout.EAST);
+			nord.add(nord_n, BorderLayout.NORTH);
+			JPanel nord_s=new JPanel(new BorderLayout());
+			nord_s.add(nome_torrent, BorderLayout.WEST);
+			nord_s.add(tag_torrent, BorderLayout.EAST);
+			nord.add(nord_s, BorderLayout.SOUTH);
+			
+			sud.add(scarica);
+			sud.add(play);
+			sud.add(sottotitolo);
+			sud.add(cancella);
+			sud.setBorder(BorderFactory.createLoweredBevelBorder());
+			sud.setBackground(Color.ORANGE);
+			
+			add(nord, BorderLayout.NORTH);
+			add(centro, BorderLayout.CENTER);
+			add(sud, BorderLayout.SOUTH);
+		}
+		private void inizializza(){
+			stato.setFont(new Font("Tahoma", Font.BOLD, 12));
+			setLabelStato(torrent.getScaricato());
+			check_scaricato.setText(torrent.getNomeSerie()+" "+torrent.getSerie()+"x"+torrent.getPuntata());
+			check_scaricato.setSelected(torrent.isScaricato());
+			nome_torrent.setText(Language.REFACTOR_LABEL_NOMETORRENT+torrent.getName());
+			scarica.setText("Scarica");
+			scarica.setIcon(Resource.getIcona("res/salva.png"));
+			play.setText("Play");
+			play.setIcon(Resource.getIcona("res/vlc.png"));
+			sottotitolo.setText("Sottotitolo");
+			sottotitolo.setIcon(Resource.getIcona("res/sub16.png"));
+			cancella.setText("Rimuovi");
+			cancella.setIcon(Resource.getIcona("res/remove.png"));
+			String lista_tag="";
+			if(torrent.isPreAir())
+				lista_tag+="PREAIR ";
+			if(torrent.is720p())
+				lista_tag+="720p ";
+			if(torrent.isRepack())
+				lista_tag+="REPACK ";
+			if(torrent.isPROPER())
+				lista_tag+="PROPER ";
+			tag_torrent.setText(lista_tag);
+			addListener();
+		}
+		private void setLabelStato(int stato){
+			switch(stato){
+				case Torrent.SCARICARE:
+					this.stato.setText(Language.REFACTOR_LABEL_TODOWNLOAD);
+					check_scaricato.setSelected(false);
+					break;
+				case Torrent.SCARICATO:
+					this.stato.setText(Language.REFACTOR_LABEL_DOWNLOADED);
+					check_scaricato.setSelected(true);
+					break;
+				case Torrent.IGNORATO:
+					this.stato.setText("IGNORATO");
+					check_scaricato.setSelected(true);
+					break;
+				case Torrent.RIMOSSO:
+					this.stato.setText("RIMOSSO");
+					check_scaricato.setSelected(true);
+					break;
+				case Torrent.VISTO:
+					this.stato.setText("VISTO");
+					break;
+			}
+		}
+		private void addListener(){
+			check_scaricato.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					if(check_scaricato.isSelected()){
+						try {
+							OperazioniFile.cercavideofile(torrent);
+							torrent.setScaricato(Torrent.SCARICATO, true);
+						}
+						catch (FileNotFoundException e) {
+							torrent.setScaricato(Torrent.RIMOSSO, true);
+							libreria_box_ordine.getActionListeners()[0].actionPerformed(new ActionEvent(libreria_box_ordine, 0, ""));
+							ManagerException.registraEccezione(e);
+						}
+					}
+					else{
+						torrent.setScaricato(Torrent.SCARICARE, true);
+					}
+					RidisegnaScrollPanel();
+					setLabelStato(torrent.getScaricato());
+				}
+			});
+			scarica.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					try {
+						if(Settings.getClientPath().isEmpty() || !OperazioniFile.fileExists(Settings.getClientPath())){
+							JOptionPane.showMessageDialog(frame, "Impostare il percorso del client torrent");
+							return;
+						}
+						Download.downloadMagnet(torrent.getUrl(), torrent.getNomeSerieFolder());
+						check_scaricato.setSelected(true);
+						torrent.setScaricato(Torrent.SCARICATO, true);
+						if(Settings.isRicercaSottotitoli()){
+							int scelta=JOptionPane.showConfirmDialog(frame, "Vuoi scaricare anche il sottotitolo?", "Download sottotitolo", JOptionPane.YES_NO_OPTION);
+							if(scelta==JOptionPane.YES_OPTION)
+								sottotitolo.doClick();
+						}
+						RidisegnaScrollPanel();
+						setLabelStato(torrent.getScaricato());
+					}
+					catch (IOException e) {
+						e.printStackTrace();
+						ManagerException.registraEccezione(e);
+					}
+					
+				}
+			});
+			play.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					SerieTV st=((SerieTV)libreria_box_serie.getSelectedItem());
+					String nomepuntata;
+					try {
+						nomepuntata = OperazioniFile.cercavideofile(torrent);
+					}
+					catch (FileNotFoundException e1) {
+						JOptionPane.showMessageDialog(frame, "File video non trovato");
+						if(torrent.getScaricato()==Torrent.SCARICATO || torrent.getScaricato()==Torrent.VISTO){
+							setLabelStato(Torrent.RIMOSSO);
+							torrent.setScaricato(Torrent.RIMOSSO);
+							libreria_box_ordine.getActionListeners()[0].actionPerformed(new ActionEvent(libreria_box_ordine, 0, ""));
+						}
+						ManagerException.registraEccezione(e1);
+						return; 
+					}
+					String nome_no_ext=nomepuntata.substring(0, nomepuntata.lastIndexOf("."));
+					if(!OperazioniFile.subExistsFromPartialFilename(Settings.getDirectoryDownload()+torrent.getNomeSerieFolder(), nome_no_ext)){
+						if(!GestioneSerieTV.getSubManager().scaricaSottotitolo(torrent)){
+							JOptionPane.showMessageDialog(frame, "Non è associato alcun sottotitolo");
+						}
+					}
+					
+					Player.play(st.getNomeSerieFolder()+File.separator+nomepuntata);
+					torrent.setScaricato(Torrent.VISTO, true);
+					setLabelStato(torrent.getScaricato());
+				}
+			});
+			sottotitolo.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					class cercaSub extends Thread {
+						public void run(){
+							sottotitolo.setEnabled(false);
+							if(!GestioneSerieTV.getSubManager().scaricaSottotitolo(torrent)){
+								torrent.setSottotitolo(true, true);
+								JOptionPane.showMessageDialog(frame, "Sottotitolo aggiunto in coda:\n"+torrent);
+							}
+							else
+								JOptionPane.showMessageDialog(frame, "Sottotitolo scaricato");
+							sottotitolo.setEnabled(true);
+						}
+					}
+					Thread t=new cercaSub();
+					t.start();
+				}
+			});
+			cancella.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					try {
+						if(JOptionPane.showConfirmDialog(frame, "Sei sicuro di voler eliminare l'episodio?", torrent.toString(), JOptionPane.YES_NO_OPTION)!=JOptionPane.YES_OPTION)
+							return;
+						String nome=OperazioniFile.cercavideofile(torrent);
+						String nome_files=nome.substring(0,nome.lastIndexOf("."));
+						File dir=new File(Settings.getDirectoryDownload()+torrent.getNomeSerieFolder());
+						if(dir.exists()){
+							if(dir.isDirectory()){
+								String[] files=dir.list();
+								//System.out.println("Nome file da cancellare: "+nome_files);
+								for(int i=0;i<files.length;i++){
+									//System.out.println("Cancellando: "+files[i]);
+									if(files[i].startsWith(nome_files)){
+										if(OperazioniFile.deleteFile(Settings.getDirectoryDownload()+torrent.getNomeSerieFolder()+File.separator+files[i])){
+											torrent.setScaricato(Torrent.RIMOSSO, false);
+											torrent.setSottotitolo(false, true);
+											libreria_box_ordine.getActionListeners()[0].actionPerformed(new ActionEvent(libreria_box_ordine, 0, ""));
+											String file=Settings.getDirectoryDownload()+torrent.getNomeSerieFolder()+File.separator+files[i];
+											String ext=file.substring(file.lastIndexOf("."));
+											if(ext.compareToIgnoreCase(".avi")==0 || ext.compareToIgnoreCase(".mp4")==0 || ext.compareToIgnoreCase(".mkv")==0 )
+												JOptionPane.showMessageDialog(frame, "Episodio cancellato");
+										}
+									}
+								}
+							}
+						}
+					}
+					catch (FileNotFoundException e1) {
+						JOptionPane.showMessageDialog(frame, "Il file non era presente.\nSi imposterà lo stato di RIMOSSO.");
+						torrent.setScaricato(Torrent.RIMOSSO, true);
+						libreria_box_ordine.getActionListeners()[0].actionPerformed(new ActionEvent(libreria_box_ordine, 0, ""));
+						ManagerException.registraEccezione(e1);
+					}
+					setLabelStato(torrent.getScaricato());
+				}
+			});
+		}
+	}
+	
 	private static void creaTabLibreria() {
+		JPanel tutte=new JPanel(new BorderLayout());
+		JPanel vedere=new JPanel(new BorderLayout());
+		panel_lettore.addTab("Tutte", tutte);
+		panel_lettore.addTab("Vedere", vedere);
+		
+		/*Tutte*/
 		JPanel nord=new JPanel(new BorderLayout());
 		JScrollPane panel_scroll=new JScrollPane(libreria_panel_scrollable);
 		panel_scroll.getVerticalScrollBar().setUnitIncrement(15);
@@ -1199,10 +1432,10 @@ public class Interfaccia {
 		final JCheckBox check_rimosse=new JCheckBox("Nascondi rimosse");
 		sud.add(check_ignore);
 		sud.add(check_rimosse);
-		panel_refactor.add(sud, BorderLayout.SOUTH);
 		
-		panel_refactor.add(nord, BorderLayout.NORTH);
-		panel_refactor.add(panel_scroll, BorderLayout.CENTER);
+		tutte.add(sud, BorderLayout.SOUTH);
+		tutte.add(nord, BorderLayout.NORTH);
+		tutte.add(panel_scroll, BorderLayout.CENTER);
 		
 		check_ignore.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -1274,231 +1507,47 @@ public class Interfaccia {
 			}
 		});
 		libreria_addItemBoxSerie();
+		/*Fine tutte*/
+		final JPanel vedere_c=new JPanel(new GridLayout(4, 1));
+		JScrollPane vedere_scroll=new JScrollPane(vedere_c);
+		vedere_scroll.getVerticalScrollBar().setUnitIncrement(15);
+		vedere.add(vedere_scroll, BorderLayout.CENTER);
+		final JButton aggiorna=new JButton("Aggiorna");
+		JPanel nord_v=new JPanel();
+		nord_v.add(aggiorna);
+		vedere.add(nord_v, BorderLayout.NORTH);
+		aggiorna.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("Bottone aggiorna");
+				vedere_c.removeAll();
+				ArrayList<SerieTV> serie=GestioneSerieTV.getElencoSerieInserite();
+				for(int i=0;i<serie.size();i++){
+					SerieTV s=serie.get(i);
+					System.out.println("Scorrendo la serie: "+s.getNomeSerie());
+					ArrayList<Indexable> eps=s.getEpisodi().getLinear();
+					for(int j=0;j<eps.size();j++){
+						Torrent t=(Torrent) eps.get(j);
+						System.out.println("Episodio: "+t.toString()+" "+t.getScaricato());
+						if(t.getScaricato()==Torrent.SCARICATO){
+							vedere_c.add(new PanelEpisodio(t));
+						}
+					}
+				}
+				((GridLayout)vedere_c.getLayout()).setRows(vedere_c.getComponentCount()<=4?4:vedere_c.getComponentCount());
+				vedere_c.revalidate();
+				vedere_c.repaint();
+			}
+		});
+		panel_lettore.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				if(panel_lettore.getSelectedIndex()==1)
+					aggiorna.doClick();
+			}
+		});
 	}
 	private final static int ORDINE_CRESCENTE=0, ORDINE_DECRESCENTE=1;
 	private static void libreria_disegna(SerieTV st, int stagione, int ordine){
-		class PanelEpisodio extends JPanel{
-			private static final long	serialVersionUID	= 1L;
-			private Torrent torrent;
-			private JLabel stato=new JLabel();
-			private JLabel nome_torrent=new JLabel();
-			private JLabel tag_torrent=new JLabel();
-			private JCheckBox check_scaricato=new JCheckBox();
-			private JButton scarica=new JButton(),
-					play=new JButton(),
-					sottotitolo=new JButton(),
-					cancella=new JButton();
-			
-			public PanelEpisodio(Torrent t){
-				torrent=t;
-				assembla();
-				inizializza();
-			}
-			private void assembla(){
-				setLayout(new BorderLayout());
-				setBorder(new EtchedBorder(10));
-				JPanel nord=new JPanel(new BorderLayout());
-				JPanel centro=new JPanel();
-				JPanel sud=new JPanel();
-				
-				JPanel nord_n=new JPanel(new BorderLayout());
-				nord_n.add(check_scaricato, BorderLayout.WEST);
-				nord_n.add(stato, BorderLayout.EAST);
-				nord.add(nord_n, BorderLayout.NORTH);
-				JPanel nord_s=new JPanel(new BorderLayout());
-				nord_s.add(nome_torrent, BorderLayout.WEST);
-				nord_s.add(tag_torrent, BorderLayout.EAST);
-				nord.add(nord_s, BorderLayout.SOUTH);
-				
-				sud.add(scarica);
-				sud.add(play);
-				sud.add(sottotitolo);
-				sud.add(cancella);
-				sud.setBorder(BorderFactory.createLoweredBevelBorder());
-				sud.setBackground(Color.ORANGE);
-				
-				add(nord, BorderLayout.NORTH);
-				add(centro, BorderLayout.CENTER);
-				add(sud, BorderLayout.SOUTH);
-			}
-			private void inizializza(){
-				stato.setFont(new Font("Tahoma", Font.BOLD, 12));
-				setLabelStato(torrent.getScaricato());
-				check_scaricato.setText(torrent.getNomeSerie()+" "+torrent.getSerie()+"x"+torrent.getPuntata());
-				check_scaricato.setSelected(torrent.isScaricato());
-				nome_torrent.setText(Language.REFACTOR_LABEL_NOMETORRENT+torrent.getName());
-				scarica.setText("Scarica");
-				scarica.setIcon(Resource.getIcona("res/salva.png"));
-				play.setText("Play");
-				play.setIcon(Resource.getIcona("res/vlc.png"));
-				sottotitolo.setText("Sottotitolo");
-				sottotitolo.setIcon(Resource.getIcona("res/sub16.png"));
-				cancella.setText("Rimuovi");
-				cancella.setIcon(Resource.getIcona("res/remove.png"));
-				String lista_tag="";
-				if(torrent.isPreAir())
-					lista_tag+="PREAIR ";
-				if(torrent.is720p())
-					lista_tag+="720p ";
-				if(torrent.isRepack())
-					lista_tag+="REPACK ";
-				if(torrent.isPROPER())
-					lista_tag+="PROPER ";
-				tag_torrent.setText(lista_tag);
-				addListener();
-			}
-			private void setLabelStato(int stato){
-				switch(stato){
-					case Torrent.SCARICARE:
-						this.stato.setText(Language.REFACTOR_LABEL_TODOWNLOAD);
-						check_scaricato.setSelected(false);
-						break;
-					case Torrent.SCARICATO:
-						this.stato.setText(Language.REFACTOR_LABEL_DOWNLOADED);
-						check_scaricato.setSelected(true);
-						break;
-					case Torrent.IGNORATO:
-						this.stato.setText("IGNORATO");
-						check_scaricato.setSelected(true);
-						break;
-					case Torrent.RIMOSSO:
-						this.stato.setText("RIMOSSO");
-						check_scaricato.setSelected(true);
-						break;
-					case Torrent.VISTO:
-						this.stato.setText("VISTO");
-						break;
-				}
-			}
-			private void addListener(){
-				check_scaricato.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						if(check_scaricato.isSelected()){
-							try {
-								OperazioniFile.cercavideofile(torrent);
-								torrent.setScaricato(Torrent.SCARICATO, true);
-							}
-							catch (FileNotFoundException e) {
-								torrent.setScaricato(Torrent.RIMOSSO, true);
-								libreria_box_ordine.getActionListeners()[0].actionPerformed(new ActionEvent(libreria_box_ordine, 0, ""));
-								ManagerException.registraEccezione(e);
-							}
-						}
-						else{
-							torrent.setScaricato(Torrent.SCARICARE, true);
-						}
-						RidisegnaScrollPanel();
-						setLabelStato(torrent.getScaricato());
-					}
-				});
-				scarica.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent arg0) {
-						try {
-							Download.downloadMagnet(torrent.getUrl(), torrent.getNomeSerieFolder());
-							check_scaricato.setSelected(true);
-							torrent.setScaricato(Torrent.SCARICATO, true);
-							if(Settings.isRicercaSottotitoli()){
-								int scelta=JOptionPane.showConfirmDialog(frame, "Vuoi scaricare anche il sottotitolo?", "Download sottotitolo", JOptionPane.YES_NO_OPTION);
-								if(scelta==JOptionPane.YES_OPTION)
-									sottotitolo.doClick();
-							}
-							RidisegnaScrollPanel();
-							setLabelStato(torrent.getScaricato());
-						}
-						catch (IOException e) {
-							e.printStackTrace();
-							ManagerException.registraEccezione(e);
-						}
-						
-					}
-				});
-				play.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						SerieTV st=((SerieTV)libreria_box_serie.getSelectedItem());
-						String nomepuntata;
-						try {
-							nomepuntata = OperazioniFile.cercavideofile(torrent);
-						}
-						catch (FileNotFoundException e1) {
-							JOptionPane.showMessageDialog(frame, "File video non trovato");
-							if(torrent.getScaricato()==Torrent.SCARICATO || torrent.getScaricato()==Torrent.VISTO){
-								setLabelStato(Torrent.RIMOSSO);
-								torrent.setScaricato(Torrent.RIMOSSO);
-								libreria_box_ordine.getActionListeners()[0].actionPerformed(new ActionEvent(libreria_box_ordine, 0, ""));
-							}
-							ManagerException.registraEccezione(e1);
-							return; 
-						}
-						String nome_no_ext=nomepuntata.substring(0, nomepuntata.lastIndexOf("."));
-						if(!OperazioniFile.subExistsFromPartialFilename(Settings.getDirectoryDownload()+torrent.getNomeSerieFolder(), nome_no_ext)){
-							if(!GestioneSerieTV.getSubManager().scaricaSottotitolo(torrent)){
-								JOptionPane.showMessageDialog(frame, "Non è associato alcun sottotitolo");
-							}
-						}
-						
-						Player.play(st.getNomeSerieFolder()+File.separator+nomepuntata);
-						torrent.setScaricato(Torrent.VISTO, true);
-						setLabelStato(torrent.getScaricato());
-					}
-				});
-				sottotitolo.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						class cercaSub extends Thread {
-							public void run(){
-								sottotitolo.setEnabled(false);
-								if(!GestioneSerieTV.getSubManager().scaricaSottotitolo(torrent)){
-									torrent.setSottotitolo(true, true);
-									JOptionPane.showMessageDialog(frame, "Sottotitolo aggiunto in coda:\n"+torrent);
-								}
-								else
-									JOptionPane.showMessageDialog(frame, "Sottotitolo scaricato");
-								sottotitolo.setEnabled(true);
-							}
-						}
-						Thread t=new cercaSub();
-						t.start();
-					}
-				});
-				cancella.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						try {
-							if(JOptionPane.showConfirmDialog(frame, "Sei sicuro di voler eliminare l'episodio?", torrent.toString(), JOptionPane.YES_NO_OPTION)!=JOptionPane.YES_OPTION)
-								return;
-							String nome=OperazioniFile.cercavideofile(torrent);
-							String nome_files=nome.substring(0,nome.lastIndexOf("."));
-							File dir=new File(Settings.getDirectoryDownload()+torrent.getNomeSerieFolder());
-							if(dir.exists()){
-								if(dir.isDirectory()){
-									String[] files=dir.list();
-									//System.out.println("Nome file da cancellare: "+nome_files);
-									for(int i=0;i<files.length;i++){
-										//System.out.println("Cancellando: "+files[i]);
-										if(files[i].startsWith(nome_files)){
-											if(OperazioniFile.deleteFile(Settings.getDirectoryDownload()+torrent.getNomeSerieFolder()+File.separator+files[i])){
-												torrent.setScaricato(Torrent.RIMOSSO, false);
-												torrent.setSottotitolo(false, true);
-												libreria_box_ordine.getActionListeners()[0].actionPerformed(new ActionEvent(libreria_box_ordine, 0, ""));
-												String file=Settings.getDirectoryDownload()+torrent.getNomeSerieFolder()+File.separator+files[i];
-												String ext=file.substring(file.lastIndexOf("."));
-												if(ext.compareToIgnoreCase(".avi")==0 || ext.compareToIgnoreCase(".mp4")==0 || ext.compareToIgnoreCase(".mkv")==0 )
-													JOptionPane.showMessageDialog(frame, "Episodio cancellato");
-											}
-										}
-									}
-								}
-							}
-						}
-						catch (FileNotFoundException e1) {
-							JOptionPane.showMessageDialog(frame, "Il file non era presente.\nSi imposterà lo stato di RIMOSSO.");
-							torrent.setScaricato(Torrent.RIMOSSO, true);
-							libreria_box_ordine.getActionListeners()[0].actionPerformed(new ActionEvent(libreria_box_ordine, 0, ""));
-							ManagerException.registraEccezione(e1);
-						}
-						setLabelStato(torrent.getScaricato());
-					}
-				});
-			}
-		}
+		
 		
 		if(st==null)
 			return;
@@ -1588,8 +1637,8 @@ public class Interfaccia {
 		if(libreria_box_serie.getItemCount() == 0)
 			libreria_panel_scrollable.removeAll();
 		
-		panel_refactor.revalidate();
-		panel_refactor.repaint();
+		panel_lettore.revalidate();
+		panel_lettore.repaint();
 	}
 	
 	public static void removeTray() {
@@ -2512,5 +2561,5 @@ public class Interfaccia {
 	public static JFrame getFrameOpzioni() {
 		return frame_wizard_opzioni;
 	}
-	
 }
+

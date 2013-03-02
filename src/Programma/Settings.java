@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import Database.Database;
 import Database.SQLParameter;
+import SerieTV.GestioneSerieTV;
 
 public class Settings {
 	private static final int	VersioneSoftware					= 92;
@@ -43,6 +44,7 @@ public class Settings {
 	private static boolean		download720p						= false;
 	private static boolean 		lettore_nascondi_ignore				= false;
 	private static boolean 		lettore_nascondi_rimosso			= false;
+	private static int			last_check							= 0; //ultimo controllo dei file
 	
 	public static int getVersioneSoftware() {
 		return VersioneSoftware;
@@ -295,6 +297,11 @@ public class Settings {
 							case "mostra_720p" : setMostra720p(p==0?false:true); break;
 							case "download_preair": setDownloadPreair(p==0?false:true); break;
 							case "download_720p": setDownload720p(p==0?false:true); break;
+							case "check_episodi": 
+								if(p==0)
+									GestioneSerieTV.controlloStatoEpisodi();
+								setLastCheckFiles(p+1); 
+								break;
 						}
 						break;
 					case SQLParameter.TEXT:
@@ -312,8 +319,9 @@ public class Settings {
 								}
 								break;
 							case "dir_client" :
-								if (!OperazioniFile.fileExists(s))
-									s="";
+								if (s.trim().isEmpty() || !OperazioniFile.fileExists(s)){
+									s=rilevaUtorrent();
+								}
 								setClientPath(s); 
 								break;
 							case "dir_vlc" : 
@@ -366,7 +374,7 @@ public class Settings {
 		return true;
 	}
 	private static void AggiornaDB() {
-		SQLParameter[] par=new SQLParameter[20];
+		SQLParameter[] par=new SQLParameter[21];
 		int i=0;
 		par[i++]=new SQLParameter(SQLParameter.TEXT, getDirectoryDownload(), "dir_download");
 		par[i++]=new SQLParameter(SQLParameter.TEXT, getClientPath(), "dir_client");
@@ -388,6 +396,7 @@ public class Settings {
 		par[i++]=new SQLParameter(SQLParameter.TEXT, getClientID(), "client_id");
 		par[i++]=new SQLParameter(SQLParameter.INTEGER, isMostraPreair()?1:0, "mostra_preair");
 		par[i++]=new SQLParameter(SQLParameter.INTEGER, isMostra720p()?1:0, "mostra_720p");
+		par[i++]=new SQLParameter(SQLParameter.INTEGER, getLastCheckFiles(), "check_episodi");
 		Database.update(Database.TABLE_SETTINGS, par, null, "AND", "=");
 	}
 	public static boolean isWindows(){
@@ -419,12 +428,18 @@ public class Settings {
 	public static int getBetaVersione() {
 		return beta_versione;
 	}
+	//TODO completare rilevamento vlc
 	public static String rilevaVLC(){
-		if(isLinux()){
+		if(isWindows()){
+			
+		}
+		else if(isLinux()){
 			if(OperazioniFile.fileExists("/usr/bin/vlc"))
 				return "/usr/bin/vlc";
 		}
-		//TODO versione per windows e mac
+		else if(isMacOS()){
+			
+		}
 		return "";
 	}
 	public static boolean isLettoreNascondiIgnore() {
@@ -438,5 +453,28 @@ public class Settings {
 	}
 	public static void setLettoreNascondiRimosso(boolean lettore_nascondi_rimosso) {
 		Settings.lettore_nascondi_rimosso = lettore_nascondi_rimosso;
+	}
+	//TODO completare rilevamento client utorrent
+	public static String rilevaUtorrent(){
+		if(isWindows()){
+			if(OperazioniFile.fileExists(getCurrentDir()+"utorrent.exe")){
+				return getCurrentDir()+"utorrent.exe";
+			}
+		}
+		else if(isMacOS()){
+			if(OperazioniFile.fileExists("/Applications/uTorrent.app/Contents/MacOS/uTorrent"))
+				return "/Applications/uTorrent.app/Contents/MacOS/uTorrent";
+		}
+		else if(isLinux()){
+			
+		}
+		return "";
+	}
+	public static int getLastCheckFiles() {
+		return last_check;
+	}
+	public static void setLastCheckFiles(int last_check) {
+		Settings.last_check = last_check==10?0:last_check;
+		AggiornaDB();
 	}
 }

@@ -14,7 +14,6 @@ import Database.SQLColumn;
 import Database.Database;
 import GUI.Interfaccia;
 import SerieTV.GestioneSerieTV;
-import StruttureDati.Indexable;
 
 public class Update {
 	public static void start() {
@@ -25,7 +24,7 @@ public class Update {
 					if(!OperazioniFile.fileExists("settings.dat")){
 						option_set=true;
 						Interfaccia.ShowFrameOpzioni();	
-						if(Interfaccia.getFrameOpzioni()!=null)
+						if(Interfaccia.getFrameOpzioni()!=null){
 							while(Interfaccia.getFrameOpzioni().isVisible())
 								try {
 									Thread.sleep(1000);
@@ -33,6 +32,7 @@ public class Update {
 								catch (InterruptedException e) {
 									ManagerException.registraEccezione(e);
 								}
+						}
 					}
 				}
 				case 85:{
@@ -65,30 +65,7 @@ public class Update {
 					Settings.setLastVersion(90);
 				}
 				case 90: {	//Controlla lo stato attuale delle puntate
-					GestioneSerieTV.carica_serie_database();
-					ArrayList<SerieTV> el_s=GestioneSerieTV.getElencoSerieInserite();
-					while(!el_s.isEmpty()){
-						SerieTV st=el_s.get(0);
-						ArrayList<Indexable> eps=st.getEpisodi().getLinear();
-						for(int i=0;i<eps.size();i++){
-							Torrent t=(Torrent)eps.get(i);
-							try {
-								String path=OperazioniFile.cercavideofile(t);
-								if(path.length()>0){
-									if(t.getScaricato()==Torrent.RIMOSSO || t.getScaricato()==Torrent.IGNORATO)
-										t.setScaricato(Torrent.SCARICATO, true);
-								}
-							}
-							catch (FileNotFoundException e) {
-								if(t.getScaricato()==Torrent.SCARICATO || t.getScaricato()==Torrent.VISTO)
-									t.setScaricato(Torrent.RIMOSSO, true);
-								//e.printStackTrace();
-								//ManagerException.registraEccezione(e);
-							}
-						}
-						el_s.remove(st);
-					}
-					GestioneSerieTV.getElencoSerieInserite().clear();
+					GestioneSerieTV.controlloStatoEpisodi();
 					Settings.setLastVersion(91);
 				}
 				case 91:
@@ -126,7 +103,8 @@ public class Update {
 							JOptionPane.showMessageDialog(null, "Si è verificato un errore grave.\n - Cancellare il vecchio database\n - Utilizzare il tool di recupero (non ancora disponibile)\n - Contatta gestioneserietv@gmail.com allegando il database.");
 						}
 					}
-					Settings.setLastVersion(Settings.getVersioneSoftware());
+					Database.alter_aggiungicampo(Database.TABLE_SETTINGS, "check_episodi", "INTEGER", "0");
+					Settings.setLastVersion(92);
 				default:
 					Settings.setLastVersion(Settings.getVersioneSoftware());
 					Settings.setNewUpdate(false);
@@ -179,7 +157,6 @@ public class Update {
 	}
 	private static void update_85_to_86_db(){
 		if(GestioneSerieTV.Showlist()){
-			
 			FileReader file_reader;
 			try {
 				file_reader = new FileReader("st.dat");
