@@ -1518,16 +1518,13 @@ public class Interfaccia {
 		vedere.add(nord_v, BorderLayout.NORTH);
 		aggiorna.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				System.out.println("Bottone aggiorna");
 				vedere_c.removeAll();
 				ArrayList<SerieTV> serie=GestioneSerieTV.getElencoSerieInserite();
 				for(int i=0;i<serie.size();i++){
 					SerieTV s=serie.get(i);
-					System.out.println("Scorrendo la serie: "+s.getNomeSerie());
 					ArrayList<Indexable> eps=s.getEpisodi().getLinear();
 					for(int j=0;j<eps.size();j++){
 						Torrent t=(Torrent) eps.get(j);
-						System.out.println("Episodio: "+t.toString()+" "+t.getScaricato());
 						if(t.getScaricato()==Torrent.SCARICATO){
 							vedere_c.add(new PanelEpisodio(t));
 						}
