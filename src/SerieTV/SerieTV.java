@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import Database.*;
 import GUI.Interfaccia;
+import GUI.ThreadModificaLabel;
 import Programma.Download;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
@@ -116,18 +117,17 @@ public class SerieTV {
 			public void run() {
 				try {
 					Download.downloadFromUrl("http://eztv.it" + getUrl(), getNomeSerieFile());
+					Interfaccia.download_label_notifiche.setText("");
 				}
 				catch (IOException e) {
-					Interfaccia.download_label_notifiche.setText("  ERROR: Update later");
+					new ThreadModificaLabel(Interfaccia.download_label_notifiche, "  ERROR: Update later", 1000);
 					ManagerException.registraEccezione(e);
 					return;
 				}
 				parse();
 				if(getStato()==STATO_CONCLUSA){
-					if(verificaVisualizzazioneTutte()){
-						setEnd(1);
-						UpdateDB();
-					}
+					setEnd(1);
+					UpdateDB();
 				}
 				Runtime.getRuntime().gc();
 			}
@@ -257,7 +257,7 @@ public class SerieTV {
 	public boolean isEnd(){
 		return getEnd()==1;
 	}
-	private boolean verificaVisualizzazioneTutte(){
+	protected boolean verificaVisualizzazioneTutte(){
 		ArrayList<Indexable> ind=episodi.getLinear();
 		for(int i=0;i<ind.size();i++){
 			Torrent t=(Torrent) ind.get(i);

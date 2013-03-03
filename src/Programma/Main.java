@@ -28,7 +28,6 @@ public class Main {
 		try{	
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			
-			
 			fl=new FrameLoading();
 			fl.start();
 			try {

@@ -242,6 +242,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 		return id;
 	}
 	public void caricaElencoSerie(){
+		ArrayList<SerieSub> elenco=new ArrayList<SerieSub>();
 		try {
 			Download.downloadFromUrl(API_SHOWLIST, "response_itasa");
 			FileReader f_r=new FileReader("response_itasa");
@@ -257,7 +258,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 					int id=Integer.parseInt(parse.substring(parse.indexOf("<id>")+"<id>".length(), parse.indexOf("</id>")));
 					String nome=parse.substring(parse.indexOf("<name>")+"<name>".length(), parse.indexOf("</name>"));
 					SerieSub s=new SerieSub(nome, id);
-					elenco_serie.add(s);
+					elenco.add(s);
 					linea=linea.substring(parse.length());
 					if(linea.startsWith("</shows>"))
 						break;
@@ -266,6 +267,10 @@ public class ItalianSubs implements ProviderSottotitoli{
 			file.close();
 			f_r.close();
 			OperazioniFile.deleteFile("response_itasa");
+			if(elenco.size()>0){
+				elenco_serie.clear();
+				elenco_serie.addAll(elenco);
+			}
 		}
 		catch (IOException e) {
 			e.printStackTrace();

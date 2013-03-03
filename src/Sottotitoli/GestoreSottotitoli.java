@@ -189,4 +189,15 @@ public class GestoreSottotitoli {
 		}
 		return null;
 	}
+	public ProviderSottotitoli getProvider(int provider){
+		switch(provider){
+			case ITASA:
+				return itasa;
+			case SUBSFACTORY:
+				return subsfactory;
+			case SUBSPEDIA:
+				System.out.println("Subspedia - Funzione non supportata");
+		}
+		return null;
+	}
 }

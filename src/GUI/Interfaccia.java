@@ -70,6 +70,7 @@ import SerieTV.GestioneSerieTV;
 import SerieTV.SerieTV;
 import SerieTV.Torrent;
 import Sottotitoli.GestoreSottotitoli;
+import Sottotitoli.ProviderSottotitoli;
 import Sottotitoli.SerieSub;
 import StruttureDati.ElencoIndicizzato;
 import StruttureDati.Indexable;
@@ -464,7 +465,6 @@ public class Interfaccia {
 						SerieTV st=(SerieTV) download_combo_eztv.getSelectedItem();
 						if(GestioneSerieTV.aggiungiSerie(st)){
 							new ThreadModificaLabel(download_label_notifiche, "  " + st.getNomeSerie() + " " + Language.INSERIMENTO_LABEL_INSERITO + "  ", 1500);
-							//TODO verificare il funzionamento con subsfactory
 							if(!GestioneSerieTV.getSubManager().associaSerie(st)){
 								if(Settings.isRicercaSottotitoli()){
 									int scelta=(JOptionPane.showConfirmDialog(frame, "Non è stato possibile associare la serie a ItaSA.\nVuoi associarla manualmente?", "Associa ItaSA", JOptionPane.YES_NO_OPTION));
@@ -1312,7 +1312,11 @@ public class Interfaccia {
 			});
 			play.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					SerieTV st=((SerieTV)libreria_box_serie.getSelectedItem());
+					SerieTV st=GestioneSerieTV.getSerieFromName(GestioneSerieTV.getElencoSerieInserite(), torrent.getNomeSerie());
+					if(st==null){
+						JOptionPane.showMessageDialog(frame, "Serie non trovata");
+						return;
+					}
 					String nomepuntata;
 					try {
 						nomepuntata = OperazioniFile.cercavideofile(torrent);
@@ -1863,8 +1867,7 @@ public class Interfaccia {
 		t.start();
 	}
 	
-	//TODO modificare per piï¿½ gestori, come subsfactory
-	public static JFrame frame_associa_itasa;
+	public static JFrame frame_associatore_sottotitoli;
 	private static JComboBox<SerieSub> associa_elenco_itasa, 
 									   associa_elenco_subsfactory;
 	private static JComboBox<SerieTV> associa_elenco_serie;
@@ -1872,16 +1875,18 @@ public class Interfaccia {
 					associa_label_ass_subsfactory, associa_label_img_subsfactory,
 					associa_label_serietv;
 	private static JButton associa_aggiorna_elenchi, 
-					associa_bottone_ass_itasa, associa_bottone_rimuovi_itasa, 
-					associa_bottone_ass_subsfactory, associa_bottone_rimuovi_subsfactory;
+					associa_bottone_ass_itasa, associa_bottone_rimuovi_itasa, associa_bottone_aggiorna_itasa, 
+					associa_bottone_ass_subsfactory, associa_bottone_rimuovi_subsfactory, associa_bottone_aggiorna_subsfactory;
+	private static JTextField associa_text_itasa, associa_text_subsfactory; 
 	public static void associaFrame(){
-		if(frame_associa_itasa==null){
-			frame_associa_itasa=new JFrame();
-			frame_associa_itasa.setAlwaysOnTop(true);
-			frame_associa_itasa.setResizable(false);
-			frame_associa_itasa.setLayout(new BorderLayout());
-			frame_associa_itasa.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-			frame_associa_itasa.setSize(700, 300);
+		if(frame_associatore_sottotitoli==null){
+			frame_associatore_sottotitoli=new JFrame();
+			frame_associatore_sottotitoli.setLayout(new BorderLayout());
+			frame_associatore_sottotitoli.setAlwaysOnTop(true);
+			frame_associatore_sottotitoli.setResizable(false);
+			frame_associatore_sottotitoli.setLayout(new BorderLayout());
+			frame_associatore_sottotitoli.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			frame_associatore_sottotitoli.setSize(600, 300);
 			
 			associa_elenco_itasa=new JComboBox<SerieSub>();
 			associa_elenco_subsfactory=new JComboBox<SerieSub>();
@@ -1892,10 +1897,9 @@ public class Interfaccia {
 			associa_label_img_subsfactory=new JLabel(Resource.getIcona("res/subsfactory.jpg"));
 			associa_label_serietv=new JLabel("SerieTV: ");
 			
-			associa_aggiorna_elenchi=new JButton("Aggiorna elenchi");
+			associa_aggiorna_elenchi=new JButton("Aggiorna elenco Serie TV");
 			associa_aggiorna_elenchi.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent arg0) {
-					
 					ArrayList<SerieTV> serie=GestioneSerieTV.getElencoSerieInserite();
 					associa_elenco_serie.removeAllItems();
 					for(int i=0;i<serie.size();i++)
@@ -1919,16 +1923,17 @@ public class Interfaccia {
 						//ITASA
 						int id=st.getItasaID();
 						if(id!=-1){
-							boolean it_f=false;
-							for(int i=0;i<associa_elenco_itasa.getItemCount();i++)
-								if(((int)associa_elenco_itasa.getItemAt(i).getID())==id){
-									it_f=true;
-									associa_elenco_itasa.setSelectedItem(associa_elenco_itasa.getItemAt(i));
+							SerieSub serie=null;
+							ArrayList<SerieSub> itasa_s=GestioneSerieTV.getSubManager().getElencoSerie(GestoreSottotitoli.ITASA);
+							for(int i=0;i<itasa_s.size();i++){
+								if((int)itasa_s.get(i).getID()==id){
+									serie=itasa_s.get(i);
 									break;
 								}
-							if(it_f){
-								SerieSub s=(SerieSub)associa_elenco_itasa.getSelectedItem();
-								associa_label_ass_itasa.setText("Associata a: "+s.getNomeSerie()+" ("+(int)s.getID()+")");
+							}
+							if(serie!=null){
+								associa_elenco_itasa.setSelectedItem(serie);
+								associa_label_ass_itasa.setText("Associata a: "+serie.getNomeSerie()+" ("+(int)serie.getID()+")");
 							}
 							else
 								associa_label_ass_itasa.setText("Associata a: non associata");
@@ -1938,17 +1943,17 @@ public class Interfaccia {
 						//SUBSFACTORY
 						String id_subs=st.getSubsfactoryDirectory();
 						if(!id_subs.isEmpty()){
-							boolean subs_f=false;
-							for(int i=0;i<associa_elenco_subsfactory.getItemCount();i++){
-								if(((String)associa_elenco_subsfactory.getItemAt(i).getID()).compareToIgnoreCase(id_subs)==0){
-									subs_f=true;
-									associa_elenco_subsfactory.setSelectedItem(associa_elenco_subsfactory.getItemAt(i));
+							SerieSub serie=null;
+							ArrayList<SerieSub> subsf_s=GestioneSerieTV.getSubManager().getElencoSerie(GestoreSottotitoli.SUBSFACTORY);
+							for(int i=0;i<subsf_s.size();i++){
+								if(((String)subsf_s.get(i).getID()).compareToIgnoreCase(id_subs)==0){
+									serie=subsf_s.get(i);
 									break;
 								}
 							}
-							if(subs_f){
-								SerieSub s=(SerieSub)associa_elenco_subsfactory.getSelectedItem();
-								associa_label_ass_subsfactory.setText("Associata a: "+s.getNomeSerie()+" ("+(String)s.getID()+")");
+							if(serie!=null){
+								associa_elenco_subsfactory.setSelectedItem(subsf_s);
+								associa_label_ass_subsfactory.setText("Associata a: "+serie.getNomeSerie()+" ("+(String)serie.getID()+")");
 							}
 							else
 								associa_label_ass_subsfactory.setText("Associata a: non associata");
@@ -1963,11 +1968,15 @@ public class Interfaccia {
 			associa_bottone_ass_itasa.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					SerieTV st=(SerieTV)associa_elenco_serie.getSelectedItem();
-					if(st==null)
+					if(st==null){
+						JOptionPane.showMessageDialog(frame_associatore_sottotitoli, "Selezionare una serie dall'elenco");
 						return;
+					}
 					SerieSub itasa=(SerieSub)associa_elenco_itasa.getSelectedItem();
-					if(itasa==null)
+					if(itasa==null){
+						JOptionPane.showMessageDialog(frame_associatore_sottotitoli, "Selezionare una serie dall'elenco");
 						return;
+					}
 					st.setItasaID((int)itasa.getID());
 					st.UpdateDB();
 					associa_label_ass_itasa.setText("Associata a: "+itasa.getNomeSerie()+" ("+(int)itasa.getID()+")");
@@ -2006,45 +2015,163 @@ public class Interfaccia {
 							st.UpdateDB();
 							associa_label_ass_subsfactory.setText("Associata a: "+s.getNomeSerie()+" ("+(String)s.getID()+")");
 						}
+						else
+							JOptionPane.showMessageDialog(frame_associatore_sottotitoli, "Selezionare una serie dall'elenco");
 					}
+					else
+						JOptionPane.showMessageDialog(frame_associatore_sottotitoli, "Selezionare una serie dall'elenco");
 				}
 			});
-			JPanel container=new JPanel(new GridLayout(5,1));
-			JPanel panel_1=new JPanel();
-			panel_1.add(associa_aggiorna_elenchi);
-			JPanel panel_2=new JPanel();
-			panel_2.add(associa_label_serietv);
-			panel_2.add(associa_elenco_serie);
-			JPanel panel_3=new JPanel(new BorderLayout());
-			panel_3.add(associa_label_img_itasa, BorderLayout.WEST);
-			JPanel panel_3_center=new JPanel();
-			panel_3_center.add(associa_elenco_itasa);
-			panel_3_center.add(associa_bottone_ass_itasa);
-			panel_3_center.add(associa_bottone_rimuovi_itasa);
-			panel_3.add(panel_3_center, BorderLayout.CENTER);
-			panel_3.add(associa_label_ass_itasa, BorderLayout.SOUTH);
-			JPanel panel_4=new JPanel(new BorderLayout());
-			panel_4.add(associa_label_img_subsfactory, BorderLayout.WEST);
-			JPanel panel_4_center=new JPanel();
-			panel_4_center.add(associa_elenco_subsfactory);
-			panel_4_center.add(associa_bottone_ass_subsfactory);
-			panel_4_center.add(associa_bottone_rimuovi_subsfactory);
-			panel_4.add(panel_4_center, BorderLayout.CENTER);
-			panel_4.add(associa_label_ass_subsfactory, BorderLayout.SOUTH);
-			container.add(panel_1);
-			container.add(panel_2);
-			container.add(panel_3);
-			container.add(new JPanel());
-			container.add(panel_4);
-			frame_associa_itasa.add(container);
+			associa_bottone_aggiorna_itasa=new JButton("Aggiorna");
+			associa_bottone_aggiorna_itasa.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					class AggiornaItasa extends Thread {
+						public void run(){
+							associa_bottone_aggiorna_itasa.setEnabled(false);
+							try {
+								ProviderSottotitoli itasa=GestioneSerieTV.getSubManager().getProvider(GestoreSottotitoli.ITASA);
+								itasa.caricaElencoSerie();
+								associa_elenco_itasa.removeAllItems();
+								ArrayList<SerieSub> serie=itasa.getElencoSerie();
+								for(int i=0;i<serie.size();i++)
+									associa_elenco_itasa.addItem(serie.get(i));
+							}
+							catch(Exception e){}
+							associa_bottone_aggiorna_itasa.setEnabled(true);
+						}
+					}
+					Thread t=new AggiornaItasa();
+					t.start();
+				}
+			});
+			associa_bottone_aggiorna_subsfactory=new JButton("Aggiorna");
+			associa_bottone_aggiorna_subsfactory.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					class AggiornaSubsf extends Thread {
+						public void run(){
+							associa_bottone_aggiorna_subsfactory.setEnabled(false);
+							try {
+								ProviderSottotitoli subsf=GestioneSerieTV.getSubManager().getProvider(GestoreSottotitoli.SUBSFACTORY);
+								subsf.caricaElencoSerie();
+								associa_elenco_subsfactory.removeAllItems();
+								ArrayList<SerieSub> serie=subsf.getElencoSerie();
+								for(int i=0;i<serie.size();i++)
+									associa_elenco_subsfactory.addItem(serie.get(i));
+							}
+							catch(Exception e){}
+							associa_bottone_aggiorna_subsfactory.setEnabled(true);
+						}
+					}
+					Thread t=new AggiornaSubsf();
+					t.start();
+				}
+			});
+			associa_text_itasa=new JTextField(30);
+			associa_text_itasa.addKeyListener(new KeyListener() {
+				public void keyTyped(KeyEvent arg0) {}
+				public void keyReleased(KeyEvent arg0) {
+					String text=associa_text_itasa.getText();
+					if(text.trim().isEmpty()){
+						ArrayList<SerieSub> serie=GestioneSerieTV.getSubManager().getElencoSerie(GestoreSottotitoli.ITASA);
+						associa_elenco_itasa.removeAllItems();
+						for(int i=0;i<serie.size();i++)
+							associa_elenco_itasa.addItem(serie.get(i));
+					}
+					else {
+						ArrayList<SerieSub> serie=GestioneSerieTV.getSubManager().getElencoSerie(GestoreSottotitoli.ITASA);
+						associa_elenco_itasa.removeAllItems();
+						for(int i=0;i<serie.size();i++){
+							SerieSub sb=serie.get(i);
+							if(sb.getNomeSerie().toLowerCase().contains(text.toLowerCase()))
+								associa_elenco_itasa.addItem(serie.get(i));
+						}
+					}
+				}
+				public void keyPressed(KeyEvent arg0) {}
+			});
+			associa_text_subsfactory=new JTextField(30);
+			associa_text_subsfactory.addKeyListener(new KeyListener() {
+				public void keyTyped(KeyEvent arg0) {}
+				public void keyReleased(KeyEvent arg0) {
+					String text=associa_text_subsfactory.getText();
+					if(text.trim().isEmpty()){
+						ArrayList<SerieSub> serie=GestioneSerieTV.getSubManager().getElencoSerie(GestoreSottotitoli.SUBSFACTORY);
+						associa_elenco_subsfactory.removeAllItems();
+						for(int i=0;i<serie.size();i++)
+							associa_elenco_subsfactory.addItem(serie.get(i));
+					}
+					else {
+						ArrayList<SerieSub> serie=GestioneSerieTV.getSubManager().getElencoSerie(GestoreSottotitoli.SUBSFACTORY);
+						associa_elenco_subsfactory.removeAllItems();
+						for(int i=0;i<serie.size();i++){
+							SerieSub sb=serie.get(i);
+							if(sb.getNomeSerie().toLowerCase().contains(text.toLowerCase()))
+								associa_elenco_subsfactory.addItem(serie.get(i));
+						}
+					}
+				}
+				public void keyPressed(KeyEvent arg0) {}
+			});
+			JPanel container_serietv=new JPanel();
+			container_serietv.add(associa_label_serietv);
+			container_serietv.add(associa_elenco_serie);
+			container_serietv.add(associa_aggiorna_elenchi);
+			frame_associatore_sottotitoli.add(container_serietv, BorderLayout.NORTH);
+			
+			JPanel container=new JPanel(new GridLayout(2, 1));
+			frame_associatore_sottotitoli.add(container, BorderLayout.CENTER);
+			
+			JPanel container_itasa=new JPanel(new BorderLayout());
+			container_itasa.setBorder(new TitledBorder("Italiansubs.net"));
+			container.add(container_itasa);
+			JPanel itasa_centro=new JPanel(new GridLayout(3,1));
+			JPanel itasa_centro_1=new JPanel();
+			itasa_centro_1.add(associa_text_itasa);
+			itasa_centro_1.add(associa_bottone_aggiorna_itasa);
+			itasa_centro.add(itasa_centro_1);
+			JPanel itasa_centro_2=new JPanel();
+			itasa_centro.add(itasa_centro_2);
+			itasa_centro_2.add(associa_elenco_itasa);
+			JPanel itasa_centro_3=new JPanel();
+			itasa_centro.add(itasa_centro_3);
+			itasa_centro_3.add(associa_bottone_ass_itasa);
+			itasa_centro_3.add(associa_bottone_rimuovi_itasa);
+			JPanel itasa_ovest=new JPanel(new BorderLayout());
+			itasa_ovest.add(associa_label_img_itasa);
+			
+			container_itasa.add(itasa_ovest, BorderLayout.WEST);
+			container_itasa.add(itasa_centro, BorderLayout.CENTER);
+			container_itasa.add(associa_label_ass_itasa, BorderLayout.SOUTH);
+			
+			JPanel container_subsf=new JPanel(new BorderLayout());
+			container_subsf.setBorder(new TitledBorder("Subsfactory.it"));
+			container.add(container_subsf);
+			JPanel subsf_centro=new JPanel(new GridLayout(3,1));
+			JPanel subsf_centro_1=new JPanel();
+			subsf_centro_1.add(associa_text_subsfactory);
+			subsf_centro_1.add(associa_bottone_aggiorna_subsfactory);
+			subsf_centro.add(subsf_centro_1);
+			JPanel subsf_centro_2=new JPanel();
+			subsf_centro.add(subsf_centro_2);
+			subsf_centro_2.add(associa_elenco_subsfactory);
+			JPanel subsf_centro_3=new JPanel();
+			subsf_centro.add(subsf_centro_3);
+			subsf_centro_3.add(associa_bottone_ass_subsfactory);
+			subsf_centro_3.add(associa_bottone_rimuovi_subsfactory);
+			JPanel subsf_ovest=new JPanel(new BorderLayout());
+			subsf_ovest.add(associa_label_img_subsfactory);
+			
+			container_subsf.add(subsf_ovest, BorderLayout.WEST);
+			container_subsf.add(subsf_centro, BorderLayout.CENTER);
+			container_subsf.add(associa_label_ass_subsfactory, BorderLayout.SOUTH);
 		}
-		frame_associa_itasa.setVisible(true);
+		frame_associatore_sottotitoli.setVisible(true);
 		Point p;
 		if(frame!=null)
 			p=frame.getLocation();
 		else
 			p=Programma.Main.fl.getFrame().getLocation();
-		frame_associa_itasa.setLocation((int)p.getX(), (int)p.getY());
+		frame_associatore_sottotitoli.setLocation((int)p.getX(), (int)p.getY());
 		
 		associa_aggiorna_elenchi.doClick();
 	}
@@ -2378,7 +2505,7 @@ public class Interfaccia {
 				p_dir.add(bottone_directory_download);
 				view3.add(p_dir);
 				
-				//TODO modificare per linux
+				//TODO verificare per linux
 				bottone_seleziona_client.setIcon(Resource.getIcona("res/cartella.png"));
 				bottone_seleziona_client.addActionListener(new ActionListener(){
 					public void actionPerformed(ActionEvent arg0) {
@@ -2390,14 +2517,16 @@ public class Interfaccia {
 							client = "utorrent.exe";
 							description = "uTorrent";
 						}
+						else if(Settings.isMacOS()){
+							client = "uTorrent";
+							description = "uTorrent";
+						}
 						filechooser.setFileFilter(new ClientFilter(description, client));
 						if (filechooser.showOpenDialog(Interfaccia.frame_wizard_opzioni) == 0) {
 							File f = filechooser.getSelectedFile();
-							if(Settings.isWindows()){
-								if(f.getName().compareToIgnoreCase("utorrent.exe")!=0){
+							if(f.getName().compareToIgnoreCase(client)!=0){
 									JOptionPane.showMessageDialog(frame, "L'unico client utilizzabile è uTorrent");
 									return;
-								}
 							}
 							Settings.setClientPath(f.getAbsolutePath());
 							textfield_client.setText(f.getAbsolutePath());
