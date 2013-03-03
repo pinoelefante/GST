@@ -1352,7 +1352,7 @@ public class Interfaccia {
 					torrent.setScaricato(Torrent.VISTO, true);
 					setLabelStato(torrent.getScaricato());
 					if(Settings.isHiddenOnPlay())
-						setTray();
+						frame.setExtendedState(JFrame.ICONIFIED);
 				}
 			});
 			sottotitolo.addActionListener(new ActionListener() {
