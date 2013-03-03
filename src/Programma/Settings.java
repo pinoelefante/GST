@@ -45,6 +45,7 @@ public class Settings {
 	private static boolean 		lettore_nascondi_ignore				= false;
 	private static boolean 		lettore_nascondi_rimosso			= false;
 	private static int			last_check							= 0; //ultimo controllo dei file
+	private static boolean		hidden_on_play						= true;
 	
 	public static int getVersioneSoftware() {
 		return VersioneSoftware;
@@ -254,6 +255,7 @@ public class Settings {
 		setMostra720p(true);
 		setDownloadPreair(false);
 		setDownload720p(false);
+		setHiddenOnPlay(true);
 	}
 
 	public static void baseSettings(){
@@ -302,6 +304,7 @@ public class Settings {
 									GestioneSerieTV.controlloStatoEpisodi();
 								setLastCheckFiles(p+1); 
 								break;
+							case "hidden_on_play": setHiddenOnPlay(p==0?false:true); break;
 						}
 						break;
 					case SQLParameter.TEXT:
@@ -374,7 +377,7 @@ public class Settings {
 		return true;
 	}
 	private static void AggiornaDB() {
-		SQLParameter[] par=new SQLParameter[21];
+		SQLParameter[] par=new SQLParameter[22];
 		int i=0;
 		par[i++]=new SQLParameter(SQLParameter.TEXT, getDirectoryDownload(), "dir_download");
 		par[i++]=new SQLParameter(SQLParameter.TEXT, getClientPath(), "dir_client");
@@ -396,7 +399,10 @@ public class Settings {
 		par[i++]=new SQLParameter(SQLParameter.TEXT, getClientID(), "client_id");
 		par[i++]=new SQLParameter(SQLParameter.INTEGER, isMostraPreair()?1:0, "mostra_preair");
 		par[i++]=new SQLParameter(SQLParameter.INTEGER, isMostra720p()?1:0, "mostra_720p");
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, getLastCheckFiles(), "check_episodi");
+		if(getVersioneSoftware()>=92){
+			par[i++]=new SQLParameter(SQLParameter.INTEGER, getLastCheckFiles(), "check_episodi");
+			par[i++]=new SQLParameter(SQLParameter.INTEGER, getLastCheckFiles(), "hidden_on_play");
+		}
 		Database.update(Database.TABLE_SETTINGS, par, null, "AND", "=");
 	}
 	public static boolean isWindows(){
@@ -475,6 +481,13 @@ public class Settings {
 	}
 	public static void setLastCheckFiles(int last_check) {
 		Settings.last_check = last_check==10?0:last_check;
+		AggiornaDB();
+	}
+	public static boolean isHiddenOnPlay() {
+		return hidden_on_play;
+	}
+	public static void setHiddenOnPlay(boolean hidden_on_play) {
+		Settings.hidden_on_play = hidden_on_play;
 		AggiornaDB();
 	}
 }

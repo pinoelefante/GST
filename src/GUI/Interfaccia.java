@@ -679,8 +679,9 @@ public class Interfaccia {
 	private static JTextField			opzioni_text_itasa_user					= new JTextField(25);
 	private static JPasswordField		opzioni_text_itasa_pass					= new JPasswordField(25);
 	
-	private static JCheckBox 			opzioni_box_download_mostra_preair		=new JCheckBox("Mostra pre-air");
-	private static JCheckBox 			opzioni_box_download_mostra_720p		=new JCheckBox("Mostra 720p");
+	private static JCheckBox 			opzioni_box_download_mostra_preair		= new JCheckBox("Mostra pre-air");
+	private static JCheckBox 			opzioni_box_download_mostra_720p		= new JCheckBox("Mostra 720p");
+	private static JCheckBox			opzioni_box_hide_on_play				= new JCheckBox("Nascondi durante la visualizzazione");
 	
 	private static void creaTabOpzioni() {
 		@SuppressWarnings("serial")
@@ -720,6 +721,7 @@ public class Interfaccia {
 				opzioni_box_starthidden, 
 				opzione_box_alwaysontop,
 				opzioni_box_askonclose,
+				opzioni_box_hide_on_play
 		}; 
 		PanelOpzione opzioni_aspetto=new PanelOpzione(componenti_aspetto, 10);
 		tab_aspetto.add(opzioni_aspetto);
@@ -963,6 +965,11 @@ public class Interfaccia {
 				frame.setAlwaysOnTop(Settings.isAlwaysOnTop());
 			}
 		});
+		opzioni_box_hide_on_play.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Settings.setHiddenOnPlay(opzioni_box_hide_on_play.isSelected());
+			}
+		});
 	}
 	private static void OpzioniInizializzaCampi(){
 		opzioni_box_startwindows.setSelected(Settings.isAutostart());
@@ -980,6 +987,7 @@ public class Interfaccia {
 		opzioni_box_download_mostra_720p.setSelected(Settings.isMostra720p());
 		opzioni_box_ricerca_automatica_preair.setSelected(Settings.isDownloadPreair());
 		opzioni_box_ricerca_automatica_720p.setSelected(Settings.isDownload720p());
+		opzioni_box_hide_on_play.setSelected(Settings.isHiddenOnPlay());
 	}
 
 	public  static JButton					sottotitoli_bottone_list				= new JButton("Aggiorna");
@@ -1343,6 +1351,8 @@ public class Interfaccia {
 					Player.play(st.getNomeSerieFolder()+File.separator+nomepuntata);
 					torrent.setScaricato(Torrent.VISTO, true);
 					setLabelStato(torrent.getScaricato());
+					if(Settings.isHiddenOnPlay())
+						setTray();
 				}
 			});
 			sottotitolo.addActionListener(new ActionListener() {

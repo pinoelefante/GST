@@ -32,38 +32,9 @@
 DA ULTIMARE
 
 FATTO
-//rev 87
-- controllo automatico associazione a manager di sottotitoli
+//rev 93
+- riduci a icona quando viene cliccato play
+- fix per opzioni non presenti
 
-//rev 88
-- nullpointer quando la serie non contiene episodi
-
-//rev 89
-- cliccando il tasto scarica in lettore lo stato della puntata passa a scaricata
-- scaricando da lettore, viene chiesto se si vuole scaricare il sottotitolo
-
-//rev 90
-- funzione salvataggio eccezioni in un file
-- associazione a tvrage quando si aggiunge una serie
-- cambiato user agent
-- risolto possibile problema con il frame delle donazioni
-
-//rev 91
-- aggiornamenti per linux (non ancora supportato)
-- nascondi puntate rimosse/ignorate
-- disabilitare il tasto sottotitolo mentre sta scaricando
-- al cambiamento di stato di un episodio controllare se bisogna nasconderlo
-- scrivere un metodo per disegnare le puntate nel lettore e non utilizzare più l'actionlistener della combobox
-
-//rev 92
-- modificare la tabella subsfactory
-- modificare la tabella itasa
-- controllare lo stato degli episodi al prossimo aggiornamento
-- controllo ogni 10 avvii dello stato degli episodi
-- in lettore, c'è una tab in cui elencare le puntate da vedere
-- dopo un fallimento dell'aggiornamento delle serie, se un aggiornamento successivo ha successo si cancella la scritta di errore
-- rifare tab Sottotitoli
-- bottoni aggiornare liste serie sottotitoli
-- barra ricerca serie sottotitoli
 
 PROBABILMENTE FIXATO

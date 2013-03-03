@@ -105,6 +105,9 @@ public class Update {
 					}
 					Database.alter_aggiungicampo(Database.TABLE_SETTINGS, "check_episodi", "INTEGER", "0");
 					Settings.setLastVersion(92);
+				case 92:
+					Database.alter_aggiungicampo(Database.TABLE_SETTINGS, "hidden_on_play", "INTEGER", "1");
+					Settings.setLastVersion(93);
 				default:
 					Settings.setLastVersion(Settings.getVersioneSoftware());
 					Settings.setNewUpdate(false);
