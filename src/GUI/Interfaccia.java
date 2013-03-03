@@ -800,7 +800,7 @@ public class Interfaccia {
 
 		opzioni_bottone_seleziona_client.setIcon(Resource.getIcona("res/utorrent.png"));
 		
-		//TODO modificare per linux e mac
+		//TODO modificare per linux
 		opzioni_bottone_seleziona_client.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				JFileChooser filechooser=new JFileChooser();
@@ -811,14 +811,16 @@ public class Interfaccia {
 					client = "utorrent.exe";
 					description = "uTorrent";
 				}
+				else if(Settings.isMacOS()){
+					client = "uTorrent";
+					description = "uTorrent";
+				}
 				filechooser.setFileFilter(new ClientFilter(description, client));
 				if (filechooser.showOpenDialog(Interfaccia.frame) == 0) {
 					File f = filechooser.getSelectedFile();
-					if(Settings.isWindows()){
-						if(f.getName().compareToIgnoreCase("utorrent.exe")!=0){
-							JOptionPane.showMessageDialog(frame, "L'unico client utilizzabile è uTorrent");
-							return;
-						}
+					if(f.getName().compareToIgnoreCase(client)!=0){
+						JOptionPane.showMessageDialog(frame, "L'unico client utilizzabile è uTorrent");
+						return;
 					}
 					Settings.setClientPath(f.getAbsolutePath());
 					opzioni_textfield_attuale_client.setText(f.getAbsolutePath());
@@ -1952,7 +1954,7 @@ public class Interfaccia {
 								}
 							}
 							if(serie!=null){
-								associa_elenco_subsfactory.setSelectedItem(subsf_s);
+								associa_elenco_subsfactory.setSelectedItem(serie);
 								associa_label_ass_subsfactory.setText("Associata a: "+serie.getNomeSerie()+" ("+(String)serie.getID()+")");
 							}
 							else
