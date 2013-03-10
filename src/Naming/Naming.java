@@ -13,6 +13,7 @@ public class Naming {
 	 * Series X YofZ
 	 * s00 / subsfactory - stagione completa
 	 * Stagione 0 Completa / itasa - stagione completa
+	 * SstagioneX
 	 */
 	
 	public static CaratteristicheFile parseString(String nome){
@@ -20,11 +21,12 @@ public class Naming {
 	}
 	private static CaratteristicheFile retrieveSE(String url){
 		String[] regex_s_e={
-			"[Ss][0-9]{1,}[Ee][0-9]{1,}",
+			"[Ss][0-9]{1,}[Ee][0-9]{1,}",				// S01e01
 			"[0-9]{1,}x[0-9]{1,}",						// 1x02
 			"[0-9]{1,}.[0-9]{1,}",						// x.y
+			"[Ss][0-9]{1,}",							// S01
+			/*TODO: testare*/
 			//"[Ss]eries\\S[0-9]{1,}\\S[0-9]{1,}of",
-			//"[Ss][0-9]{1,}",
 			//"[0-9]{1,}of[0-3]{1,}",
 			//"[Pp][Aa][Rr][Tt]\\S[0-9]{1,}",	// Part_X
 			//"[Pp][Aa][Rr][Tt]\\s[0-9]{1,}"  //PART X
@@ -62,20 +64,28 @@ public class Naming {
 		String[] dati=null; 
 		switch(num_prova){
 			case 0:
+				System.out.println("Caso 0 Naming");
 				splitted=splitted.replace("S", "").replace("s", "").replace("E", "_").replace("e", "_");
 				dati=splitted.split("_");
 				break;
 			case 1:
+				System.out.println("Caso 1 Naming");
 				dati=splitted.split("x");
 				break;
 			case 2:
+				System.out.println("Caso 2 Naming");
 				dati=splitted.split(".");
 				break;
 			case 3:
-				//[Ss]eries\\S[0-9]{1,}of[0-9]{1,}
-				splitted=splitted.toLowerCase();
+				System.out.println("Caso 3 Naming");
+				dati=new String[2];
+				splitted=splitted.replace("s", "").replace("S", "").trim();
+				dati[0]=splitted;
+				dati[1]="0";
 				break;
 			case 4:
+				//[Ss]eries\\S[0-9]{1,}of[0-9]{1,}
+				splitted=splitted.toLowerCase();
 				break;
 			case 5:
 				break;

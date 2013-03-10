@@ -17,6 +17,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import Database.SQLParameter;
+import Database.Database;
 import Naming.CaratteristicheFile;
 import Naming.Naming;
 import Naming.Renamer;
@@ -128,18 +130,21 @@ public class Subsfactory implements ProviderSottotitoli {
 		private int season, ep;
 		private boolean normale=true, hd720p;
 		
-		public SottotitoloSubsfactory(String id_serie) {
-			this.id_serie=id_serie;
-		}
 		public SottotitoloSubsfactory(String nome, String id) {
 			nomefile=nome;
 			this.id_serie=id;
 			parseNome();
 		}
 		private void parseNome(){
-			CaratteristicheFile stats=Naming.parseString(nomefile);
-			ep=stats.getEpisodio();
-			season=stats.getStagione();
+			try{
+				CaratteristicheFile stats=Naming.parseString(nomefile);
+				ep=stats.getEpisodio();
+				season=stats.getStagione();
+			}
+			catch(Exception e){
+				ep=0;
+				season=0;
+			}
 		}
 		public boolean isNormale(){
 			return normale;
@@ -233,12 +238,14 @@ public class Subsfactory implements ProviderSottotitoli {
 		return cercaFeed(st.getSubsfactoryDirectory(), t)==null?false:true;
 	}
 	//Verifica all'interno della pagina della serie
-	private void caricaCartella(String id){
+	private void caricaCartella(String id_serie, String id_cartella){
 		/*
 		 http://subsfactory.it/subtitle/index.php?&direction=0&order=nom&directory=Serie%20USA/Arrow 
 		*/
-		String url="http://subsfactory.it/subtitle/index.php?&direction=0&order=nom&directory="+id.replace(" ", "%20");
+		String url="http://subsfactory.it/subtitle/index.php?&direction=0&order=nom&directory="+id_serie.replace(" ", "%20")+"/"+id_cartella.replace(" ", "%20");
 		try {
+			//TODO caricamento dei sottotitoli della seguente serie
+			String path=url.substring(url.indexOf("directory=")+"directory=".length());
 			int id_download=download_corrente++;
 			Download.downloadFromUrl(url, "subsf_response_"+id_download);
 			FileReader f=new FileReader("subsf_response_"+id_download);
@@ -246,9 +253,9 @@ public class Subsfactory implements ProviderSottotitoli {
 			while(file.hasNextLine()){
 				String linea=file.nextLine().trim();
 				if(linea.contains(".zip") && linea.contains("title=")){
-					System.out.println(linea);
+					//System.out.println(linea);
 					String nome_file=linea.substring(linea.indexOf("title=\"")+"title=\"".length(), linea.indexOf(".zip")+".zip".length());
-					SottotitoloSubsfactory sub=new SottotitoloSubsfactory(nome_file);
+					SottotitoloSubsfactory sub=new SottotitoloSubsfactory(nome_file, id_serie);
 					if(linea.toLowerCase().contains("normale") && linea.toLowerCase().contains("normale")){
 						sub.setNormale(true);
 						sub.set720p(true);
@@ -261,9 +268,10 @@ public class Subsfactory implements ProviderSottotitoli {
 						sub.set720p(false);
 						sub.setNormale(true);
 					}
+					//TODO controllare che il sottotitolo non sia già presente
 					//TODO inserimento nel database
 					//System.out.println(nome_file);
-					//System.out.println(sub.getNomeFile()+"\n"+sub.getStagione()+"x"+sub.getEpisodio());
+					System.out.println(sub.getNomeFile()+"\n"+sub.getStagione()+"x"+sub.getEpisodio());
 				}
 			}
 			file.close();
@@ -275,9 +283,31 @@ public class Subsfactory implements ProviderSottotitoli {
 			ManagerException.registraEccezione(e);
 		}
 	}
+	private void inserisciSubInDB(String path, SottotitoloSubsfactory sub, boolean completa){
+		SQLParameter[] parametri=new SQLParameter[6];
+		int i=0;
+		parametri[i++]=new SQLParameter(SQLParameter.TEXT, path+"/"+sub.getNomeFile(), "path");
+		parametri[i++]=new SQLParameter(SQLParameter.TEXT, sub.getIDSerie(), "id_serie");
+		parametri[i++]=new SQLParameter(SQLParameter.INTEGER, sub.getStagione(), "stagione");
+		parametri[i++]=new SQLParameter(SQLParameter.INTEGER, sub.getEpisodio(), "episodio");
+		int tipo=0;
+		if(sub.isNormale() && sub.is720p())
+			tipo=2;
+		else if(sub.isNormale())
+			tipo=0;
+		else if(sub.is720p())
+			tipo=1;
+		parametri[i++]=new SQLParameter(SQLParameter.INTEGER, tipo, "tipo");
+		parametri[i++]=new SQLParameter(SQLParameter.INTEGER, completa?1:0, "is_completa");
+		Database.insert(Database.TABLE_SUBSFACTORY, parametri);
+	}
+	private ArrayList<SottotitoloSubsfactory> caricaSubDaDB(String id_serie){
+		//TODO stub caricamento sub da db
+		return null;
+	}
 	public static void main(String[] args){
 		Subsfactory subs=new Subsfactory();
-		subs.caricaCartella("Serie USA/Arrow");
+		subs.caricaCartella("Serie USA/Breaking Bad", "");
 	}
 
 	@Override
