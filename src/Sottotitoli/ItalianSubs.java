@@ -63,6 +63,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 	private Thread LoggerItasa;
 	private GregorianCalendar RSS_UltimoAggiornamento;
 	private final long update_time_rss=900000L;  //15 minuti
+	private static int download_corrente=0;
 	
 	public ItalianSubs(){
 		feed_rss=new ArrayList<RSSItem>();
@@ -214,8 +215,9 @@ public class ItalianSubs implements ProviderSottotitoli{
 		Scanner file = null;
 		int id = -1;
 		try {
-			Download.downloadFromUrl(url_query, "response_sub");
-			f_r = new FileReader("response_sub");
+			int id_r=download_corrente++;
+			Download.downloadFromUrl(url_query, "response_sub_"+id_r);
+			f_r = new FileReader("response_sub_"+id_r);
 			file = new Scanner(f_r);
 			while (file.hasNextLine()) {
 				String linea = file.nextLine().trim();
@@ -233,7 +235,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 			}
 			file.close();
 			f_r.close();
-			OperazioniFile.deleteFile("response_sub");
+			OperazioniFile.deleteFile("response_sub_"+id_r);
 		}
 		catch (IOException e) {
 			ManagerException.registraEccezione(e);

@@ -15,24 +15,24 @@ public class Naming {
 	 * Stagione 0 Completa / itasa - stagione completa
 	 */
 	
-	public static CaratteristicheFile parseMagnetName(String nome){
-		return null;
+	public static CaratteristicheFile parseString(String nome){
+		return retrieveSE(nome);
 	}
 	private static CaratteristicheFile retrieveSE(String url){
 		String[] regex_s_e={
 			"[Ss][0-9]{1,}[Ee][0-9]{1,}",
 			"[0-9]{1,}x[0-9]{1,}",						// 1x02
 			"[0-9]{1,}.[0-9]{1,}",						// x.y
-			"[Ss]eries\\S[0-9]{1,}\\S[0-9]{1,}of",
-			"[Ss][0-9]{1,}",
-			"[0-9]{1,}of[0-3]{1,}",
-			"[Pp][Aa][Rr][Tt]\\S[0-9]{1,}",	// Part_X
-			"[Pp][Aa][Rr][Tt]\\s[0-9]{1,}"  //PART X
-				/*
-				"[Ss]eason [0-9]{1,} [Ee]pisode [0-9]{1,}",	// Season x Episode y
-				"[Ss]eason [0-9]{1,2}"							// Season x Promo
-				*/
+			//"[Ss]eries\\S[0-9]{1,}\\S[0-9]{1,}of",
+			//"[Ss][0-9]{1,}",
+			//"[0-9]{1,}of[0-3]{1,}",
+			//"[Pp][Aa][Rr][Tt]\\S[0-9]{1,}",	// Part_X
+			//"[Pp][Aa][Rr][Tt]\\s[0-9]{1,}"  //PART X
+			
+			//"[Ss]eason [0-9]{1,} [Ee]pisode [0-9]{1,}",	// Season x Episode y
+			//"[Ss]eason [0-9]{1,2}"							// Season x Promo
 		};
+		
 		int num_prova=-1;
 		for(int i=0;i<regex_s_e.length;i++){
 			if(url.split(regex_s_e[i]).length>=2){
@@ -58,7 +58,7 @@ public class Naming {
 		for(int i=0;i<split.length;i++){
 			splitted=splitted.replace(split[i], " ");
 		}
-		System.out.println(splitted);
+		//System.out.println(splitted);
 		String[] dati=null; 
 		switch(num_prova){
 			case 0:
@@ -90,7 +90,7 @@ public class Naming {
 		}
 		
 		try {
-			cf.setStagione(Integer.parseInt(dati[0]));
+			cf.setStagione(Integer.parseInt(dati[0].trim()));
 		}
 		catch(NumberFormatException | NullPointerException e){
 			e.printStackTrace();
@@ -98,7 +98,7 @@ public class Naming {
 			cf.setStagione(0);
 		}
 		try {
-			cf.setEpisodio(Integer.parseInt(dati[1]));
+			cf.setEpisodio(Integer.parseInt(dati[1].trim()));
 		}
 		catch(NumberFormatException | NullPointerException e){
 			e.printStackTrace();

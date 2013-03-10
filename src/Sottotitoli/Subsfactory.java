@@ -17,6 +17,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import Naming.CaratteristicheFile;
+import Naming.Naming;
 import Naming.Renamer;
 import Programma.Download;
 import Programma.ManagerException;
@@ -121,13 +123,56 @@ public class Subsfactory implements ProviderSottotitoli {
 			return getStagione()+" "+getEpisodio()+" "+isNormale()+" "+is720p();
 		}
 	}
-	
+	class SottotitoloSubsfactory {
+		private String nomefile, id_serie;
+		private int season, ep;
+		private boolean normale=true, hd720p;
+		
+		public SottotitoloSubsfactory(String id_serie) {
+			this.id_serie=id_serie;
+		}
+		public SottotitoloSubsfactory(String nome, String id) {
+			nomefile=nome;
+			this.id_serie=id;
+			parseNome();
+		}
+		private void parseNome(){
+			CaratteristicheFile stats=Naming.parseString(nomefile);
+			ep=stats.getEpisodio();
+			season=stats.getStagione();
+		}
+		public boolean isNormale(){
+			return normale;
+		}
+		public boolean is720p(){
+			return hd720p;
+		}
+		public void setNormale(boolean s){
+			normale=s;
+		}
+		public void set720p(boolean s){
+			hd720p=s;
+		}
+		public int getStagione(){
+			return season;
+		}
+		public int getEpisodio(){
+			return ep;
+		}
+		public String getNomeFile(){
+			return nomefile;
+		}
+		public String getIDSerie(){
+			return id_serie;
+		}
+	}
 	private final static String URL_ELENCO_SERIE="http://subsfactory.it/subtitle/index.php?&direction=0&order=nom";
 	private final static String URL_FEED_RSS="http://subsfactory.it/subtitle/rss.php";
 	private GregorianCalendar RSS_UltimoAggiornamento;
 	private final long update_time_rss=900000L;  //15 minuti
 	private ArrayList<RSSItem> feed_rss;
 	private ArrayList<SerieSub> elenco_serie;
+	private static int download_corrente=0;
 	
 	public Subsfactory() {
 		feed_rss=new ArrayList<RSSItem>();
@@ -181,8 +226,58 @@ public class Subsfactory implements ProviderSottotitoli {
 	public boolean cercaSottotitolo(Torrent t) {
 		System.out.println("Subsfactory.it - "+t.getNomeSerie());
 		SerieTV st=GestioneSerieTV.getSerieFromName(GestioneSerieTV.getElencoSerieInserite(), t.getNomeSerie());
-		
+		/*TODO*/
+		//cerca in database
+		//cerca in feed
+		//cerca nella cartella
 		return cercaFeed(st.getSubsfactoryDirectory(), t)==null?false:true;
+	}
+	//Verifica all'interno della pagina della serie
+	private void caricaCartella(String id){
+		/*
+		 http://subsfactory.it/subtitle/index.php?&direction=0&order=nom&directory=Serie%20USA/Arrow 
+		*/
+		String url="http://subsfactory.it/subtitle/index.php?&direction=0&order=nom&directory="+id.replace(" ", "%20");
+		try {
+			int id_download=download_corrente++;
+			Download.downloadFromUrl(url, "subsf_response_"+id_download);
+			FileReader f=new FileReader("subsf_response_"+id_download);
+			Scanner file=new Scanner(f);
+			while(file.hasNextLine()){
+				String linea=file.nextLine().trim();
+				if(linea.contains(".zip") && linea.contains("title=")){
+					System.out.println(linea);
+					String nome_file=linea.substring(linea.indexOf("title=\"")+"title=\"".length(), linea.indexOf(".zip")+".zip".length());
+					SottotitoloSubsfactory sub=new SottotitoloSubsfactory(nome_file);
+					if(linea.toLowerCase().contains("normale") && linea.toLowerCase().contains("normale")){
+						sub.setNormale(true);
+						sub.set720p(true);
+					}
+					else if(linea.toLowerCase().contains("720p")){
+						sub.set720p(true);
+						sub.setNormale(false);
+					}
+					else {
+						sub.set720p(false);
+						sub.setNormale(true);
+					}
+					//TODO inserimento nel database
+					//System.out.println(nome_file);
+					//System.out.println(sub.getNomeFile()+"\n"+sub.getStagione()+"x"+sub.getEpisodio());
+				}
+			}
+			file.close();
+			f.close();
+			OperazioniFile.deleteFile("subsf_response_"+id_download);
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+			ManagerException.registraEccezione(e);
+		}
+	}
+	public static void main(String[] args){
+		Subsfactory subs=new Subsfactory();
+		subs.caricaCartella("Serie USA/Arrow");
 	}
 
 	@Override
