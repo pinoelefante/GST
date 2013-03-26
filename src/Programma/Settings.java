@@ -9,7 +9,7 @@ import Database.SQLParameter;
 import SerieTV.GestioneSerieTV;
 
 public class Settings {
-	private static final int	VersioneSoftware					= 92;
+	private static final int	VersioneSoftware					= 93;
 	private static final boolean beta								= false;
 	private static final int	beta_versione						= 1;
 	private static int			Client								= 1;
