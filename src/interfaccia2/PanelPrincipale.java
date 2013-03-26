@@ -16,11 +16,17 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
-import java.awt.GridLayout;
 
-public class PanelPrincipale extends JPanel {
+import SerieTV.GestioneSerieTV;
+import SerieTV.SerieTV;
+
+import java.awt.GridLayout;
+import java.util.ArrayList;
+
+public class PanelPrincipale extends JPanel implements GSTPanel{
 	private static final long serialVersionUID = 1L;
 	private JTextField textFieldRicercaSerie;
+	private JComboBox<SerieTV> comboBoxSerieDisponibili;
 
 	/**
 	 * Create the panel.
@@ -38,7 +44,7 @@ public class PanelPrincipale extends JPanel {
 		panel.add(textFieldRicercaSerie);
 		textFieldRicercaSerie.setColumns(10);
 		
-		JComboBox comboBoxSerieDisponibili = new JComboBox();
+		comboBoxSerieDisponibili = new JComboBox<SerieTV>();
 		panel.add(comboBoxSerieDisponibili);
 		
 		JLabel lblStatoSerie = new JLabel("stato serie (rimuovere testo)");
@@ -101,5 +107,19 @@ public class PanelPrincipale extends JPanel {
 		JLabel lblDataprossimoepisodio = new JLabel("data_prossimo_episodio");
 		panel_8.add(lblDataprossimoepisodio);
 
+	}
+
+	@Override
+	public void caricaDefault() {
+		comboBoxSerieDisponibili.removeAllItems();
+		ArrayList<SerieTV> sts=GestioneSerieTV.getElencoSerieInserite();
+		for(int i=0;i<sts.size();i++)
+			comboBoxSerieDisponibili.addItem(sts.get(i));
+	}
+
+	@Override
+	public void traduci() {
+		// TODO Auto-generated method stub
+		
 	}
 }

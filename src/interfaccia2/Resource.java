@@ -34,12 +34,9 @@ public class Resource {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		JLabel img=new JLabel();
-		JLabel img2=new JLabel();
 		frame.add(img);
-		frame.add(img2);
 		try {
-			setImage(img, "C:\\codec\\Koala.jpg", 200);
-			setImage(img2, "C:\\codec\\Koala.jpg", 100);
+			setImage(img, "D:\\Dropbox\\WorkspaceUNISA\\ProgettoTPA\\cover\\31683.jpg", 300);
 		} 
 		catch (IOException e) {
 			img.setText("<html><i>IMMAGINE<br>NON<br>DISPONIBILE</i></html>");

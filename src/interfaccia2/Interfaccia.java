@@ -93,7 +93,7 @@ public class Interfaccia extends JFrame{
 			public void actionPerformed(ActionEvent arg0) {
 				if(p_opzioni==null)
 					p_opzioni=new PanelOpzioni();
-				p_opzioni.caricaDefault();
+				//p_opzioni.caricaDefault();
 				changeView(p_opzioni);
 			}
 		});
@@ -119,6 +119,9 @@ public class Interfaccia extends JFrame{
 		changeView(p_principale);
 	}
 	private void changeView(JComponent c){
+		if(c instanceof GSTPanel){
+			((GSTPanel) c).caricaDefault();
+		}
 		scrollPane.setViewportView(c);
 		revalidate();
 		repaint();
