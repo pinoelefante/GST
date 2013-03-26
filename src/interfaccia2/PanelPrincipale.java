@@ -91,6 +91,15 @@ public class PanelPrincipale extends JPanel {
 		
 		JLabel lblNomegenere = new JLabel("nome_genere");
 		panel_6.add(lblNomegenere);
+		
+		JPanel panel_8 = new JPanel();
+		panel_7.add(panel_8);
+		
+		JLabel lblProssima = new JLabel("Prossima: ");
+		panel_8.add(lblProssima);
+		
+		JLabel lblDataprossimoepisodio = new JLabel("data_prossimo_episodio");
+		panel_8.add(lblDataprossimoepisodio);
 
 	}
 }

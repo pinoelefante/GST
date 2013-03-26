@@ -1,6 +1,6 @@
 package interfaccia2;
 
-public interface PinoPanel {
+public interface GSTPanel {
 	public void caricaDefault();
 	public void traduci();
 }

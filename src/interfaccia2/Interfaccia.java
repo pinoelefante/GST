@@ -48,10 +48,11 @@ public class Interfaccia extends JFrame{
 	 */
 	private JMenuItem mntmPrincipale, mntmSerieTv, mntmLettore,  mntmDownload, mntmOpzioni;
 	public Interfaccia() {
+		setResizable(false);
 		setTitle("GestioneSerieTV by pinoelefante");
 		setAlwaysOnTop(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 500, 500);
+		setBounds(100, 100, 800, 550);
 		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);

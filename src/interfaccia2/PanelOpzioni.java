@@ -15,7 +15,7 @@ import Programma.Settings;
 
 import java.awt.BorderLayout;
 
-public class PanelOpzioni extends JPanel implements PinoPanel{
+public class PanelOpzioni extends JPanel implements GSTPanel{
 	private static final long serialVersionUID = 1L;
 	
 	private JTextField textField_utorrent;
