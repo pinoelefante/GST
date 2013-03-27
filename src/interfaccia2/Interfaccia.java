@@ -79,7 +79,7 @@ public class Interfaccia extends JFrame{
 		JSeparator separator = new JSeparator();
 		mnVista.add(separator);
 		
-		mntmSerieTv = new JMenuItem("Serie TV");
+		mntmSerieTv = new JMenuItem("Le mie Serie");
 		mnVista.add(mntmSerieTv);
 		
 		mntmLettore = new JMenuItem("Lettore");

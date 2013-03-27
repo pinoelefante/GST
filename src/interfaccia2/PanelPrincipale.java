@@ -22,6 +22,7 @@ import SerieTV.SerieTV;
 
 import java.awt.GridLayout;
 import java.util.ArrayList;
+import javax.swing.JTabbedPane;
 
 public class PanelPrincipale extends JPanel implements GSTPanel{
 	private static final long serialVersionUID = 1L;
@@ -106,6 +107,39 @@ public class PanelPrincipale extends JPanel implements GSTPanel{
 		
 		JLabel lblDataprossimoepisodio = new JLabel("data_prossimo_episodio");
 		panel_8.add(lblDataprossimoepisodio);
+		
+		JPanel panel_9 = new JPanel();
+		add(panel_9, BorderLayout.CENTER);
+		panel_9.setLayout(new BorderLayout(0, 0));
+		
+		JPanel panel_bottoni_selezione = new JPanel();
+		panel_9.add(panel_bottoni_selezione, BorderLayout.NORTH);
+		
+		JButton btnSelezionaTutti = new JButton("Seleziona tutti");
+		panel_bottoni_selezione.add(btnSelezionaTutti);
+		
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		panel_9.add(tabbedPane, BorderLayout.CENTER);
+		
+		JPanel panel_episodi_download = new JPanel();
+		tabbedPane.addTab("Episodi", null, panel_episodi_download, null);
+		panel_episodi_download.setLayout(new BorderLayout(0, 0));
+		
+		JPanel panel_trama = new JPanel();
+		JScrollPane scrollPane_trama = new JScrollPane(panel_trama);
+		panel_trama.setLayout(new BorderLayout(0, 0));
+		
+		JLabel lblTitoloEpisodio = new JLabel("Titolo episodio");
+		panel_trama.add(lblTitoloEpisodio, BorderLayout.NORTH);
+		
+		JLabel lblTestoTrama = new JLabel("Testo trama");
+		panel_trama.add(lblTestoTrama, BorderLayout.SOUTH);
+		panel_episodi_download.add(scrollPane_trama, BorderLayout.SOUTH);
+		
+		
+		
+		JPanel panel_sottotitoli = new JPanel();
+		tabbedPane.addTab("Sottotitoli", null, panel_sottotitoli, null);
 
 	}
 
