@@ -34,7 +34,7 @@ public class GestoreInfo {
 			ManagerException.registraEccezione(e);
 		}
 	}
-	private void controllaAssociazioni(){
+	public void controllaAssociazioni(){
 		class checkAssociazioni extends Thread {
 			public void run(){
 				ArrayList<SerieTV> st=GestioneSerieTV.getElencoSerieInserite();
