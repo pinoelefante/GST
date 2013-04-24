@@ -12,7 +12,7 @@ public class Player {
 	private static Thread player;
 	private static boolean test=true;
 	public static void main(String[] args){
-		play("D:\\SerieTV\\Defiance\\Defiance.S01E02.720p.HDTV.x264-EVOLVE.mkv");
+		play("/home/pinoelefante/Pushing.Daisies.1x01.Il.Ritorno.Di.Chuck.ITA.DVDMux.XviD-NovaRip.avi");
 	}
 	public static void play(String file){
 		stringa=file;
@@ -22,23 +22,23 @@ public class Player {
 				String file_r=Settings.getDirectoryDownload()+File.separator+stringa;
 				try {
 					if(test){
-						System.out.println("TESTING");
-						String player="C:\\Program Files\\VideoLAN\\VLC\\vlc.exe";
-						String[] cmd=new String[2];
-						cmd[0]=player;
-						cmd[1]=stringa;
+						String[] cmd=new String[5];
+						cmd[0]="/usr/bin/vlc";
+						cmd[1]="-f";
+						cmd[2]="--disable-screensaver";
+						cmd[3]="--no-video-title-show";
+						cmd[4]=stringa;
+						
 						Runtime.getRuntime().exec(cmd);
-					
 					}
-					else if(Settings.isWindows()){
-						Runtime.getRuntime().exec("\""+Settings.getVLCPath()+"\""+" "+"\""+file_r+"\"");
-					}	
-					else if(Settings.isLinux()){
-						if(Settings.getVLCPath().compareTo("/usr/bin/vlc")==0){
-							Runtime.getRuntime().exec("vlc "+"file://"+file_r);
-						}
-						else
-							Runtime.getRuntime().exec(Settings.getVLCPath()+" file://"+file_r);
+					else {
+						String[] cmd=new String[5];
+						cmd[0]=Settings.getVLCPath();	//path di vlc
+						cmd[1]="-f"; //fullscreen
+						cmd[2]="--disable-screensaver"; //disabilita lo screen saver
+						cmd[3]="--no-video-title-show";
+						cmd[4]=file_r;	//percorso file
+						Runtime.getRuntime().exec(cmd);
 					}
 				}
 				catch (IOException e) {
