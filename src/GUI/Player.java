@@ -10,10 +10,7 @@ import Programma.Settings;
 public class Player {
 	private static String stringa;
 	private static Thread player;
-	private static boolean test=true;
-	public static void main(String[] args){
-		play("/home/pinoelefante/Pushing.Daisies.1x01.Il.Ritorno.Di.Chuck.ITA.DVDMux.XviD-NovaRip.avi");
-	}
+	
 	public static void play(String file){
 		stringa=file;
 		
@@ -21,25 +18,21 @@ public class Player {
 			public void run(){
 				String file_r=Settings.getDirectoryDownload()+File.separator+stringa;
 				try {
-					if(test){
-						String[] cmd=new String[5];
-						cmd[0]="/usr/bin/vlc";
-						cmd[1]="-f";
-						cmd[2]="--disable-screensaver";
-						cmd[3]="--no-video-title-show";
-						cmd[4]=stringa;
-						
-						Runtime.getRuntime().exec(cmd);
+					String[] cmd = null;
+					if(Settings.isVLC()){
+						cmd=new String[5];
+						cmd[0]=Settings.getVLCPath();	//path di vlc
+						cmd[1]="-f"; 					//fullscreen
+						cmd[2]="--disable-screensaver"; //disabilita lo screen saver
+						cmd[3]="--no-video-title-show";	//non mostra il nome del file all'inizio
+						cmd[4]=file_r;					//percorso file
 					}
 					else {
-						String[] cmd=new String[5];
-						cmd[0]=Settings.getVLCPath();	//path di vlc
-						cmd[1]="-f"; //fullscreen
-						cmd[2]="--disable-screensaver"; //disabilita lo screen saver
-						cmd[3]="--no-video-title-show";
-						cmd[4]=file_r;	//percorso file
-						Runtime.getRuntime().exec(cmd);
+						cmd=new String[2];
+						cmd[0]=Settings.getVLCPath();
+						cmd[1]=file_r;
 					}
+					Runtime.getRuntime().exec(cmd);
 				}
 				catch (IOException e) {
 					Desktop d=Desktop.getDesktop();

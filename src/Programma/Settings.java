@@ -9,7 +9,7 @@ import Database.SQLParameter;
 import SerieTV.GestioneSerieTV;
 
 public class Settings {
-	private static final int	VersioneSoftware					= 93;
+	private static final int	VersioneSoftware					= 94;
 	private static final boolean beta								= false;
 	private static final int	beta_versione						= 1;
 	private static int			Client								= 1;
@@ -489,5 +489,18 @@ public class Settings {
 	public static void setHiddenOnPlay(boolean hidden_on_play) {
 		Settings.hidden_on_play = hidden_on_play;
 		AggiornaDB();
+	}
+	public static boolean isVLC(){
+		String path=getVLCPath();
+		if(path.isEmpty())
+			return false;
+		
+		if(isWindows()){
+			return path.toLowerCase().endsWith("vlc.exe");
+		}
+		else if(isLinux())
+			return path.toLowerCase().endsWith("vlc");
+		else
+			return true;
 	}
 }
