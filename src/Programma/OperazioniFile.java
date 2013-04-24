@@ -70,6 +70,8 @@ public class OperazioniFile {
 				if(contenuto[i].startsWith("hs_err_") && contenuto[i].endsWith(".log")){
 					deleteFile(contenuto[i]);
 				}
+				else if(contenuto[i].startsWith("response_sub_"))
+					deleteFile(contenuto[i]);
 			}
 		}
 	}

@@ -215,7 +215,11 @@ public class ItalianSubs implements ProviderSottotitoli{
 		Scanner file = null;
 		int id = -1;
 		try {
-			int id_r=download_corrente++;
+			int id_r;
+			synchronized (this) {
+				id_r=download_corrente;
+				download_corrente++;
+			}
 			Download.downloadFromUrl(url_query, "response_sub_"+id_r);
 			f_r = new FileReader("response_sub_"+id_r);
 			file = new Scanner(f_r);
