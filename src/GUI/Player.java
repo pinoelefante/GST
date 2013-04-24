@@ -10,7 +10,10 @@ import Programma.Settings;
 public class Player {
 	private static String stringa;
 	private static Thread player;
-	
+	private static boolean test=true;
+	public static void main(String[] args){
+		play("D:\\SerieTV\\Defiance\\Defiance.S01E02.720p.HDTV.x264-EVOLVE.mkv");
+	}
 	public static void play(String file){
 		stringa=file;
 		
@@ -18,8 +21,18 @@ public class Player {
 			public void run(){
 				String file_r=Settings.getDirectoryDownload()+File.separator+stringa;
 				try {
-					if(Settings.isWindows())
+					if(test){
+						System.out.println("TESTING");
+						String player="C:\\Program Files\\VideoLAN\\VLC\\vlc.exe";
+						String[] cmd=new String[2];
+						cmd[0]=player;
+						cmd[1]=stringa;
+						Runtime.getRuntime().exec(cmd);
+					
+					}
+					else if(Settings.isWindows()){
 						Runtime.getRuntime().exec("\""+Settings.getVLCPath()+"\""+" "+"\""+file_r+"\"");
+					}	
 					else if(Settings.isLinux()){
 						if(Settings.getVLCPath().compareTo("/usr/bin/vlc")==0){
 							Runtime.getRuntime().exec("vlc "+"file://"+file_r);
