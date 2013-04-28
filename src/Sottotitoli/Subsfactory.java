@@ -63,23 +63,25 @@ public class Subsfactory implements ProviderSottotitoli {
 		String url="";
 		switch(0){
 			case 0:
-				url=cercaSubInDB(st.getSubsfactoryDirectory(), t);
+				url=cercaFeed(st.getSubsfactoryDirectory(), t);
 				if(url!=null){
 					if(url.length()>0)
 						break;
 				}
 			case 1:
-				caricaCartella(st.getSubsfactoryDirectory(), "");
 				url=cercaSubInDB(st.getSubsfactoryDirectory(), t);
 				if(url!=null){
 					if(url.length()>0)
 						break;
 				}
 			case 2:
-				url=cercaFeed(st.getSubsfactoryDirectory(), t);
+				caricaCartella(st.getSubsfactoryDirectory(), "");
+				url=cercaSubInDB(st.getSubsfactoryDirectory(), t);
 				if(url!=null){
 					if(url.length()>0)
 						break;
+					else
+						return false;
 				}
 				else
 					return false;
@@ -95,18 +97,6 @@ public class Subsfactory implements ProviderSottotitoli {
 			}
 		}
 		return false;
-		
-		/* OLD
-		String path=cercaFeed(id_subsfactory, t);
-		System.out.println(t.getNomeSerie()+" - url: "+path);
-		if(path!=null){
-			if(scaricaSub(path, Renamer.generaNomeDownload(t), t.getNomeSerieFolder())){
-				t.setSottotitolo(false, true);
-				return true;
-			}
-		}
-		return false;
-		*/
 	}
 	private boolean scaricaSub(String url, String nome, String folder){
 		String cartella_destinazione=Settings.getDirectoryDownload()+(Settings.getDirectoryDownload().endsWith(File.pathSeparator)?folder:(File.separator+folder));
@@ -157,8 +147,7 @@ public class Subsfactory implements ProviderSottotitoli {
 		*/
 		String url="http://subsfactory.it/subtitle/index.php?&direction=0&order=nom&directory="+id_serie.replace(" ", "%20")+"/"+id_cartella.replace(" ", "%20");
 		try {
-			//TODO caricamento dei sottotitoli della seguente serie
-			String path=url.substring(url.indexOf("directory=")+"directory=".length());
+			//String path=url.substring(url.indexOf("directory=")+"directory=".length());
 			int id_download=download_corrente++;
 			Download.downloadFromUrl(url, "subsf_response_"+id_download);
 			FileReader f=new FileReader("subsf_response_"+id_download);
@@ -185,8 +174,6 @@ public class Subsfactory implements ProviderSottotitoli {
 					if(sub.getEpisodio()>0 && sub.getStagione()>0 && !isSubInDB(path_d)){
 						inserisciSubInDB(path_d, sub, sub.getNomeFile().toLowerCase().contains("stagione"));
 					}
-					
-					//System.out.println(sub.getNomeFile()+"\n"+sub.getStagione()+"x"+sub.getEpisodio());
 				}
 			}
 			file.close();
@@ -211,8 +198,6 @@ public class Subsfactory implements ProviderSottotitoli {
 		return res.size()>0;
 	}
 	private void inserisciSubInDB(String path, SottotitoloSubsfactory sub, boolean completa){
-		//http://www.subsfactory.it/subtitle/index.php?action=view&directory=Serie%20USA%2FHappily%20Divorced%2Fstagione%202&filename=happily.divorced.s02e06.sub.ita.subsfactory.zip
-		//http://www.subsfactory.it/subtitle/index.php?action=downloadfile&filename=Da.Vincis.Demons.s01e01.sub.ita.subsfactory.zip&directory=Serie USA/Da Vincis Demons
 		SQLParameter[] parametri=new SQLParameter[6];
 		int i=0;
 		parametri[i++]=new SQLParameter(SQLParameter.TEXT, path, "path");
@@ -253,7 +238,6 @@ public class Subsfactory implements ProviderSottotitoli {
 		
 		return "";
 	}
-	/*TODO metodo che cerca direttamente la puntata*/
 	private ArrayList<SottotitoloSubsfactoryDB> caricaSubDaDB(String id_serie){
 		ArrayList<SottotitoloSubsfactoryDB> subs=new ArrayList<SottotitoloSubsfactoryDB>();
 		SQLParameter[] par=new SQLParameter[1];
@@ -290,11 +274,7 @@ public class Subsfactory implements ProviderSottotitoli {
 		}
 		return subs;
 	}
-	public static void main(String[] args){
-		Database.Connect();
-		Subsfactory subs=new Subsfactory();
-		subs.caricaCartella("Serie USA/Da Vincis Demons", "");
-	}
+	public static void main(String[] args){	}
 
 	@Override
 	public ArrayList<SerieSub> getElencoSerie() {
@@ -322,7 +302,6 @@ public class Subsfactory implements ProviderSottotitoli {
 		Scanner file=new Scanner(f_r);
 		
 		while(!file.nextLine().contains("<select name=\"loc\""));
-		//file.nextLine();
 		
 		while(true){
 			String riga=file.nextLine().trim();
