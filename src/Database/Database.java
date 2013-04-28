@@ -593,6 +593,7 @@ public class Database {
 				}
 			}
 		}
+		
 		int row_affected=0;
 		try {
 			Statement stat=con.createStatement();
@@ -631,6 +632,7 @@ public class Database {
 				}
 			}
 		}
+		//System.out.println(query);
 		ResultSet res=null;
 		ArrayList<SQLParameter[]> selezione=null;
 		try {
