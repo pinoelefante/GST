@@ -87,6 +87,7 @@ public class Subsfactory implements ProviderSottotitoli {
 		
 		if(url!=null){
 			if(url.length()>0){
+				url=url.replace(" ", "%20");
 				if(scaricaSub(url, Renamer.generaNomeDownload(t), t.getNomeSerieFolder())){
 					t.setSottotitolo(false, true);
 					return true;
@@ -180,7 +181,7 @@ public class Subsfactory implements ProviderSottotitoli {
 						sub.set720p(false);
 						sub.setNormale(true);
 					}
-					String path_d="http://subsfactory.it/subtitle/index.php?action=downloadfile&filename="+sub.getNomeFile()+"&directory="+id_serie+(id_cartella.length()>0?("/"+id_cartella):"");
+					String path_d="http://www.subsfactory.it/subtitle/index.php?action=downloadfile"+"&directory="+id_serie+(id_cartella.length()>0?("/"+id_cartella):""+"&filename="+sub.getNomeFile());
 					if(sub.getEpisodio()>0 && sub.getStagione()>0 && !isSubInDB(path_d)){
 						inserisciSubInDB(path_d, sub, sub.getNomeFile().toLowerCase().contains("stagione"));
 					}
@@ -210,6 +211,8 @@ public class Subsfactory implements ProviderSottotitoli {
 		return res.size()>0;
 	}
 	private void inserisciSubInDB(String path, SottotitoloSubsfactory sub, boolean completa){
+		//http://www.subsfactory.it/subtitle/index.php?action=view&directory=Serie%20USA%2FHappily%20Divorced%2Fstagione%202&filename=happily.divorced.s02e06.sub.ita.subsfactory.zip
+		//http://www.subsfactory.it/subtitle/index.php?action=downloadfile&filename=Da.Vincis.Demons.s01e01.sub.ita.subsfactory.zip&directory=Serie USA/Da Vincis Demons
 		SQLParameter[] parametri=new SQLParameter[6];
 		int i=0;
 		parametri[i++]=new SQLParameter(SQLParameter.TEXT, path, "path");
