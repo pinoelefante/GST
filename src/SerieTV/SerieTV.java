@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 import Database.*;
-import GUI.Interfaccia;
-import GUI.ThreadModificaLabel;
 import Programma.Download;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
@@ -117,10 +115,8 @@ public class SerieTV {
 			public void run() {
 				try {
 					Download.downloadFromUrl("http://eztv.it" + getUrl(), getNomeSerieFile());
-					Interfaccia.download_label_notifiche.setText("");
 				}
 				catch (IOException e) {
-					new ThreadModificaLabel(Interfaccia.download_label_notifiche, "  ERROR: Update later", 1000);
 					ManagerException.registraEccezione(e);
 					return;
 				}

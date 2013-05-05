@@ -1,19 +1,16 @@
 package Programma;
 
+import interfaccia.Language;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
 
-import GUI.Interfaccia;
-import GUI.Language;
-
 public class ThreadControlloAggiornamento extends Thread {
-	private boolean	negative;
 
-	public ThreadControlloAggiornamento(boolean negative) {
-		this.negative = negative;
+	public ThreadControlloAggiornamento() {
 	}
 
 	public void run() {
@@ -49,11 +46,7 @@ public class ThreadControlloAggiornamento extends Thread {
 			catch (IOException e1) {
 				OperazioniFile.copyfile("GestioneSerieTV5.exe_back", "GestioneSerieTV5.exe");
 				ManagerException.registraEccezione(e1);
-				JOptionPane.showMessageDialog(Interfaccia.frame, Language.DIALOGUE_UPDATE_ERROR_DOWNLOAD);
 			}
-		}
-		else if (this.negative) {
-			JOptionPane.showMessageDialog(Interfaccia.frame, Language.DIALOGUE_UPDATE_ULTIMA_VERSIONE);
 		}
 	}
 }

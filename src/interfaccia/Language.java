@@ -1,6 +1,4 @@
-package GUI;
-
-import javax.swing.border.TitledBorder;
+package interfaccia;
 
 import Programma.Settings;
 
@@ -306,49 +304,5 @@ public class Language {
 		ABOUT_SITO="Visit http://pinoelefante.altervista.org";
 		ABOUT_ON_SITO="Click to visit http://pinoelefante.altervista.org";
 		ABOUT_MAIL="Send me an email";
-	}
-
-	public static void setLang() {
-		Interfaccia.opzioni_label_client.setText("Client: ");
-		Interfaccia.opzioni_label_path_download.setText(OPZIONI_CLIENT_LABEL_DIRECTORYDOWNLOAD);
-		Interfaccia.opzioni_label_path_client.setText(OPZIONI_CLIENT_LABEL_PERCORSO);
-		Interfaccia.opzioni_box_askonclose.setText(OPZIONI_AVVIO_CONFERMA_CHIUSURA);
-//		Interfaccia.opzioni_box_parse_nomi.setText(OPZIONI_PARSING_NOME_TORRENT);
-		Interfaccia.opzioni_box_starthidden.setText(OPZIONI_AVVIO_AVVIO_ICONA);
-		Interfaccia.opzioni_box_startwindows.setText(OPZIONI_AVVIO_AVVIO_WINDOWS);
-		Interfaccia.opzioni_box_abilita_ricerca.setText(OPZIONI_RICERCA_ABILITARICERCA);
-		Interfaccia.opzioni_label_cerca_min.setText(OPZIONI_RICERCA_MINUTIRICERCA);
-
-		Interfaccia.opzioni_label_lingua.setText(OPZIONI_LINGUA);
-		Interfaccia.opzioni_bottone_directory_download.setText(OPZIONI_CLIENT_BOTTONE_DIRECTORYDOWNLOAD);
-		Interfaccia.opzioni_bottone_seleziona_client.setText(OPZIONI_CLIENT_BOTTONE_CLIENTPATH);
-		Interfaccia.opzioni_bottone_salva.setText(OPZIONI_SALVAOPZIONI);
-		Interfaccia.about_bottone_update.setText(OPZIONI_AGGIORNAMENTI);
-		Interfaccia.opzioni_textfield_minuti.setToolTipText(OPZIONI_MINUTI_RICERCA_TOOLTIP);
-
-		Interfaccia.download_bottone_aggiungi.setText(INSERIMENTO_BOTTONE_AGGIUNGI);
-		Interfaccia.download_bottone_rimuovi.setText(INSERIMENTO_BOTTONE_RIMUOVI);
-		Interfaccia.download_bottone_reload.setText(INSERIMENTO_BOTTONE_RICARICA);
-		Interfaccia.download_text_top_left.setText(INSERIMENTO_BOXRICERCA);
-		Interfaccia.download_text_top_right.setText(INSERIMENTO_BOXRICERCA);
-		Interfaccia.download_bottone_aggiorna_torrent.setText(DOWNLOAD_BOTTONE_AGGIORNA);
-		Interfaccia.download_bottone_torrent_offline.setText(DOWNLOAD_BOTTONE_TORRENT_OFFLINE);
-		Interfaccia.download_bottone_selectAll.setText(DOWNLOAD_BOTTONE_SELEZIONA_TUTTO);
-		Interfaccia.download_bottone_inverti_selezione.setText(DOWNLOAD_BOTTONE_INVERTI);
-		Interfaccia.download_bottone_720p.setText(DOWNLOAD_BOTTONE_720P);
-		Interfaccia.download_bottone_already_seen.setText(DOWNLOAD_BOTTONE_VISTE);
-		Interfaccia.download_bottone_download.setText(DOWNLOAD_BOTTONE_DOWNLOAD);
-		((TitledBorder) Interfaccia.download_panel_download.getBorder()).setTitle(TAB_DOWNLOAD_TITLE);
-		((TitledBorder) Interfaccia.download_panel_inserimento.getBorder()).setTitle(INSERIMENTO_TITLE);
-
-//		Interfaccia.libreria_bottone_modifica.setText(REFACTOR_BOTTONE_MODIFICA);
-//		Interfaccia.libreria_bottone_salva.setText(REFACTOR_BOTTONE_SALVA);
-		Interfaccia.opzioni_box_ricerca_sottotitoli.setText(OPZIONI_ITASA);
-		Interfaccia.opzioni_bottone_ripristina.setText(OPZIONI_DEFAULT);
-		Interfaccia.opzione_box_alwaysontop.setText(OPZIONI_ALWAYSONTOP);
-		Interfaccia.opzioni_label_vlc.setText(OPZIONI_VLC_LABEL);
-		
-		Interfaccia.indirizzo.setText(Language.ABOUT_SITO);
-		Interfaccia.about_email.setText(Language.ABOUT_MAIL);
 	}
 }

@@ -1,8 +1,7 @@
-package GUI;
+package interfaccia;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
@@ -12,7 +11,7 @@ import javax.swing.JLabel;
 
 public class Resource {
 	public static Image createImage(String path, String description) {
-		URL imageURL = Interfaccia.class.getResource(path);
+		URL imageURL = Resource.class.getResource(path);
 
 		if (imageURL == null) {
 			System.err.println("Resource not found: " + path);

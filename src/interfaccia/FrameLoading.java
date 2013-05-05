@@ -1,4 +1,4 @@
-package GUI;
+package interfaccia;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -7,6 +7,7 @@ import java.awt.Toolkit;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
+
 
 public class FrameLoading extends Thread{
 	private JLabel label_caricamento;

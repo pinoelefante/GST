@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import javax.swing.JComboBox;
 import javax.swing.JButton;
 
-import GUI.Resource;
 import Programma.Settings;
 import SerieTV.GestioneSerieTV;
 import SerieTV.SerieTV;
@@ -213,16 +212,16 @@ public class FramePrincipale extends JFrame {
 		scrollPane_episodi_down.setViewportView(panel_lista_download);
 
 		JLabel lblTipoSelezione = new JLabel("Tipo selezione:");
-		lblTipoSelezione.setBounds(10, 114, 77, 14);
+		lblTipoSelezione.setBounds(10, 114, 89, 14);
 		panel_principale.add(lblTipoSelezione);
 
 		combo_tipo_selezione = new JComboBox<String>();
 
-		combo_tipo_selezione.setBounds(87, 111, 125, 20);
+		combo_tipo_selezione.setBounds(99, 113, 131, 20);
 		panel_principale.add(combo_tipo_selezione);
 
 		btn_aggiorna = new JButton("aggiorna");
-		btn_aggiorna.setBounds(502, 110, 77, 23);
+		btn_aggiorna.setBounds(490, 110, 89, 23);
 		panel_principale.add(btn_aggiorna);
 
 		btnScarica = new JButton("Scarica");
@@ -300,20 +299,20 @@ public class FramePrincipale extends JFrame {
 		lblSubsfactoryLogo.setBounds(379, 36, 200, 35);
 		panel_associatore.add(lblSubsfactoryLogo);
 
-		lblStatoAssociazione = new JLabel("Stato associazione:");
-		lblStatoAssociazione.setBounds(10, 145, 101, 14);
+		lblStatoAssociazione = new JLabel("Stato:");
+		lblStatoAssociazione.setBounds(10, 145, 46, 14);
 		panel_associatore.add(lblStatoAssociazione);
 
 		lblSerieAssociataItasa = new JLabel("serie associata");
-		lblSerieAssociataItasa.setBounds(106, 145, 125, 14);
+		lblSerieAssociataItasa.setBounds(57, 145, 144, 14);
 		panel_associatore.add(lblSerieAssociataItasa);
 
-		lblStatoAssociazione_1 = new JLabel("Stato associazione:");
-		lblStatoAssociazione_1.setBounds(379, 145, 101, 14);
+		lblStatoAssociazione_1 = new JLabel("Stato: ");
+		lblStatoAssociazione_1.setBounds(379, 145, 46, 14);
 		panel_associatore.add(lblStatoAssociazione_1);
 
 		lblSerieAssociataSubsfactory = new JLabel("serie associata");
-		lblSerieAssociataSubsfactory.setBounds(474, 145, 105, 14);
+		lblSerieAssociataSubsfactory.setBounds(423, 145, 156, 14);
 		panel_associatore.add(lblSerieAssociataSubsfactory);
 
 		textField_5 = new JTextField();
@@ -353,21 +352,21 @@ public class FramePrincipale extends JFrame {
 
 		JCheckBox chckbxConclusa = new JCheckBox("conclusa");
 		chckbxConclusa.setEnabled(false);
-		chckbxConclusa.setBounds(516, 40, 67, 23);
+		chckbxConclusa.setBounds(504, 40, 79, 23);
 		panel_2.add(chckbxConclusa);
 
 		chckbxNascondiViste = new JCheckBox("Nascondi viste");
-		chckbxNascondiViste.setBounds(6, 40, 97, 23);
+		chckbxNascondiViste.setBounds(6, 40, 111, 23);
 		panel_2.add(chckbxNascondiViste);
 
 		chckbxNascondiIgnorate = new JCheckBox("Nascondi ignorate");
 		chckbxNascondiIgnorate.setSelected(true);
-		chckbxNascondiIgnorate.setBounds(105, 40, 111, 23);
+		chckbxNascondiIgnorate.setBounds(119, 40, 133, 23);
 		panel_2.add(chckbxNascondiIgnorate);
 
 		chckbxNascondiRimosse = new JCheckBox("Nascondi rimosse");
 		chckbxNascondiRimosse.setSelected(true);
-		chckbxNascondiRimosse.setBounds(218, 40, 111, 23);
+		chckbxNascondiRimosse.setBounds(254, 38, 133, 23);
 		panel_2.add(chckbxNascondiRimosse);
 
 		btnRimuovi_lettore = new JButton("Rimuovi");
@@ -393,19 +392,19 @@ public class FramePrincipale extends JFrame {
 		panel_opzioni_aspetto.setLayout(null);
 
 		chckbxAvviaConIl = new JCheckBox("Avvia con il sistema operativo");
-		chckbxAvviaConIl.setBounds(6, 19, 167, 23);
+		chckbxAvviaConIl.setBounds(6, 19, 261, 23);
 		panel_opzioni_aspetto.add(chckbxAvviaConIl);
 
 		chckbxstart_icon = new JCheckBox("Avvia ridotto nella tray");
-		chckbxstart_icon.setBounds(6, 45, 135, 23);
+		chckbxstart_icon.setBounds(6, 45, 261, 23);
 		panel_opzioni_aspetto.add(chckbxstart_icon);
 
 		chckbxSempreInPrimo = new JCheckBox("Sempre in primo piano");
-		chckbxSempreInPrimo.setBounds(6, 71, 131, 23);
+		chckbxSempreInPrimo.setBounds(6, 71, 261, 23);
 		panel_opzioni_aspetto.add(chckbxSempreInPrimo);
 
 		chckbxChiediConfermaPrima = new JCheckBox("Chiedi conferma prima di uscire");
-		chckbxChiediConfermaPrima.setBounds(6, 97, 173, 23);
+		chckbxChiediConfermaPrima.setBounds(6, 97, 261, 23);
 		panel_opzioni_aspetto.add(chckbxChiediConfermaPrima);
 
 		JPanel panel = new JPanel();
@@ -415,23 +414,23 @@ public class FramePrincipale extends JFrame {
 		panel.setLayout(null);
 
 		chckbxMostrap = new JCheckBox("Mostra 720p");
-		chckbxMostrap.setBounds(6, 7, 97, 23);
+		chckbxMostrap.setBounds(6, 7, 111, 23);
 		panel.add(chckbxMostrap);
 
 		chckbxMostraPreair = new JCheckBox("Mostra pre-air");
-		chckbxMostraPreair.setBounds(6, 33, 97, 23);
+		chckbxMostraPreair.setBounds(6, 33, 275, 23);
 		panel.add(chckbxMostraPreair);
 
 		chckbxAbilitaDownloadAutomatico = new JCheckBox("Abilita download automatico");
-		chckbxAbilitaDownloadAutomatico.setBounds(6, 59, 172, 23);
+		chckbxAbilitaDownloadAutomatico.setBounds(6, 59, 275, 23);
 		panel.add(chckbxAbilitaDownloadAutomatico);
 
 		chckbxScaricap = new JCheckBox("Scarica 720p");
-		chckbxScaricap.setBounds(37, 85, 97, 23);
+		chckbxScaricap.setBounds(37, 85, 107, 23);
 		panel.add(chckbxScaricap);
 
 		chckbxScaricaPreair = new JCheckBox("Scarica pre-air");
-		chckbxScaricaPreair.setBounds(146, 85, 97, 23);
+		chckbxScaricaPreair.setBounds(146, 85, 135, 23);
 		panel.add(chckbxScaricaPreair);
 
 		spinner_1 = new JSpinner();
@@ -440,7 +439,7 @@ public class FramePrincipale extends JFrame {
 		panel.add(spinner_1);
 
 		JLabel lblMinutiTraOgni = new JLabel("minuti tra ogni ricerca");
-		lblMinutiTraOgni.setBounds(72, 119, 106, 14);
+		lblMinutiTraOgni.setBounds(72, 119, 209, 14);
 		panel.add(lblMinutiTraOgni);
 
 		JPanel panel_1 = new JPanel();
@@ -451,12 +450,12 @@ public class FramePrincipale extends JFrame {
 
 		chckbxAbilitaRicercaDei = new JCheckBox("Abilita ricerca dei sottotitoli");
 
-		chckbxAbilitaRicercaDei.setBounds(6, 21, 167, 23);
+		chckbxAbilitaRicercaDei.setBounds(6, 21, 257, 23);
 		panel_1.add(chckbxAbilitaRicercaDei);
 
 		chckbxAbilitaItaliansubsnet = new JCheckBox("Abilita Italiansubs.net");
 
-		chckbxAbilitaItaliansubsnet.setBounds(6, 47, 146, 23);
+		chckbxAbilitaItaliansubsnet.setBounds(6, 47, 257, 23);
 		panel_1.add(chckbxAbilitaItaliansubsnet);
 
 		JLabel lblUsernameItaliansubs = new JLabel("Username Italiansubs");
@@ -509,7 +508,7 @@ public class FramePrincipale extends JFrame {
 		panel_software.add(btnSeleziona);
 
 		lblUtorrent = new JLabel("uTorrent");
-		lblUtorrent.setBounds(10, 74, 46, 14);
+		lblUtorrent.setBounds(10, 74, 81, 14);
 		panel_software.add(lblUtorrent);
 
 		textField_2 = new JTextField();
@@ -523,7 +522,7 @@ public class FramePrincipale extends JFrame {
 		panel_software.add(btnSeleziona_1);
 
 		lblVlcPlayer = new JLabel("VLC Player");
-		lblVlcPlayer.setBounds(10, 122, 65, 14);
+		lblVlcPlayer.setBounds(10, 122, 81, 14);
 		panel_software.add(lblVlcPlayer);
 
 		chckbxUtilizzaPlayerIntegrato = new JCheckBox("Preferisci player integrato");
@@ -570,12 +569,12 @@ public class FramePrincipale extends JFrame {
 		panel_about.setLayout(null);
 
 		JButton btnControllaAggiornamenti = new JButton("Controlla aggiornamenti");
-		btnControllaAggiornamenti.setBounds(362, 119, 152, 45);
+		btnControllaAggiornamenti.setBounds(362, 128, 170, 45);
 		panel_about.add(btnControllaAggiornamenti);
 
 		JLabel lblVersioneCorrente = new JLabel("Versione corrente: " + Settings.getVersioneSoftware());
 		lblVersioneCorrente.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		lblVersioneCorrente.setBounds(200, 132, 152, 14);
+		lblVersioneCorrente.setBounds(200, 141, 152, 14);
 		panel_about.add(lblVersioneCorrente);
 
 		lbllogo = new JLabel("QUI VA IL LOGO");
@@ -583,12 +582,12 @@ public class FramePrincipale extends JFrame {
 		panel_about.add(lbllogo);
 
 		JLabel lblUnPoDi = new JLabel("<html><b>Gestione Serie TV</b> nasce in un caldo giorno d'estate.<br>Di ritorno dalla spiaggia, con il resto della mia famiglia che dormiva, per non annoiarmi decisi di creare un software che mi tenesse al passo con l'uscita delle serie tv.<br>All'inizio non era altro che un programma in una console che scaricava tutti i torrent degli episodi non visti. Man mano \u00E8 diventato il programma attuale.</html>");
-		lblUnPoDi.setBounds(200, 11, 379, 97);
+		lblUnPoDi.setBounds(200, 11, 379, 106);
 		panel_about.add(lblUnPoDi);
 
 		JPanel panel_donazione = new JPanel();
 		panel_donazione.setBorder(new LineBorder(new Color(0, 0, 0), 2));
-		panel_donazione.setBounds(116, 178, 357, 98);
+		panel_donazione.setBounds(115, 194, 357, 98);
 		panel_about.add(panel_donazione);
 		panel_donazione.setLayout(null);
 
@@ -602,7 +601,7 @@ public class FramePrincipale extends JFrame {
 		panel_donazione.add(spinner);
 
 		JLabel lblEur = new JLabel("EUR (\u20AC)");
-		lblEur.setBounds(38, 58, 37, 14);
+		lblEur.setBounds(30, 58, 48, 14);
 		panel_donazione.add(lblEur);
 
 		JButton btnVaiAPaypal = new JButton("Vai a paypal");
@@ -670,6 +669,7 @@ public class FramePrincipale extends JFrame {
 		for (int i = 0; i < GestioneSerieTV.getElencoSerieCompleto().size(); i++)
 			eztv_elenco_serie.addItem(GestioneSerieTV.getElencoSerieCompleto().get(i));
 		
+		comboBox_lettore_serie.addItem(new SerieTV("Mostra tutte", null));
 		for (int i = 0; i < GestioneSerieTV.getElencoSerieInserite().size(); i++){
 			SerieTV st=GestioneSerieTV.getElencoSerieInserite().get(i);
 			proprie_elenco.addItem(st);
@@ -687,7 +687,7 @@ public class FramePrincipale extends JFrame {
 		catch (IOException e) {
 			lbllogo.setText("<html>" + e.getMessage() + "</html>");
 		}
-		comboBox_lettore_serie.addItem(new SerieTV("Mostra tutte", null));
+		
 		btnRimuovi_lettore.setEnabled(false);
 		try {
 			Resource.setImage(lblItasaLogo, "res/itasa.png", 200);
