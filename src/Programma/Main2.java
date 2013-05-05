@@ -12,7 +12,6 @@ import SerieTV.ThreadRicercaAutomatica;
 
 import Database.Database;
 import GUI.FrameLoading;
-import GUI.Interfaccia;
 import GUI.Language;
 
 public class Main2 {
@@ -29,6 +28,7 @@ public class Main2 {
 
 	public static void main(String[] args) {
 		try{	
+			System.out.println("Ciao mondo");
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			
 			fl=new FrameLoading();
