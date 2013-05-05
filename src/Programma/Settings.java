@@ -9,7 +9,7 @@ import Database.SQLParameter;
 import SerieTV.GestioneSerieTV;
 
 public class Settings {
-	private static final int	VersioneSoftware					= 95;
+	private static final int	VersioneSoftware					= 96;
 	private static final boolean beta								= false;
 	private static final int	beta_versione						= 1;
 	private static int			Client								= 1;
@@ -264,7 +264,8 @@ public class Settings {
 		if(isWindows()){
 			current_dir = current_dir.substring(1).replace("/", "\\").replace("%20", " ");
 			try {
-				Download.downloadFromUrl("http://pinoelefante.altervista.org/software/GST/autostart.exe", "autostart.exe");
+				if(!OperazioniFile.fileExists("autostart.exe"))
+					Download.downloadFromUrl("http://pinoelefante.altervista.org/software/GST/autostart.exe", "autostart.exe");
 				registraProgramma();
 			}
 			catch (IOException e) {

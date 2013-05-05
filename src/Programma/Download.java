@@ -57,9 +57,19 @@ public class Download {
 			case 1:
 				String directory_download = Settings.getDirectoryDownload();
 				if(Settings.isWindows()){
+					String[] cmd={
+						Settings.getClientPath(),
+						"/NOINSTALL",
+						"/DIRECTORY",
+						("\"" + directory_download + File.separator + folder + "\""),
+						url
+					};
+					Runtime.getRuntime().exec(cmd);
+					/*
 					Runtime.getRuntime().exec(Settings.getClientPath()
 							+ " /NOINSTALL /DIRECTORY " + "\"" + directory_download
 							+ File.separator + folder + "\"" + " " + url);
+					*/
 				}
 				else if(Settings.isLinux()){
 					Runtime.getRuntime().exec("wine "+Settings.getClientPath()

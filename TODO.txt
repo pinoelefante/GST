@@ -28,6 +28,7 @@
 - inserimento sottotitolo in database
 - stato aggiornamento nella parte inferiore del frame
 - tab con offerte zanox
+- ultime serie inserite
 
 DA ULTIMARE
 

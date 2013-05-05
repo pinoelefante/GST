@@ -31,8 +31,8 @@ public class Resource {
 	public static void setImage(JLabel lab, String file_path, int max_w) throws IOException{
 		if(lab==null)
 			return;
-		
-		BufferedImage myPicture = ImageIO.read(new File(file_path));
+		URL imageURL = Resource.class.getResource(file_path);
+		BufferedImage myPicture = ImageIO.read(imageURL);
 		if(myPicture.getWidth()>max_w && max_w>=0){
 			float percent_to_scale=(max_w)/(float)myPicture.getWidth();
 			float new_h=myPicture.getHeight()*percent_to_scale;
