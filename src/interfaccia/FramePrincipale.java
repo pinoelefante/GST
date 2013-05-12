@@ -2,7 +2,6 @@ package interfaccia;
 
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -47,9 +46,6 @@ import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.GridLayout;
-import java.awt.event.ContainerAdapter;
-import java.awt.event.ContainerEvent;
 
 public class FramePrincipale extends JFrame {
 	private static final long  serialVersionUID = 1L;
@@ -124,12 +120,16 @@ public class FramePrincipale extends JFrame {
 	private JLabel			 lblStatoAssociazione_1;
 	private JLabel			 lblSerieAssociataSubsfactory;
 	private JTextField		 textField_5;
-	private JComboBox		  comboBox_2;
+	private JComboBox		  comboBox_sub_elenco_subsfactory;
 	private JButton			btnAssociaSubsfactory;
 	private JButton			btnRimuoviSubsfactory;
 	private JCheckBox chckbxNascondiViste;
 	private JCheckBox chckbxNascondiIgnorate;
 	private JCheckBox chckbxNascondiRimosse;
+	private JButton btnaggiornasubsfactory;
+	private JButton btnaggiornaitasa;
+	private JComboBox<Integer> comboBox_lettore_stagione;
+	private JComboBox<String> comboBox_lettore_ordine;
 
 	/**
 	 * Create the frame.
@@ -283,20 +283,20 @@ public class FramePrincipale extends JFrame {
 		panel_associatore.add(textField_itasa);
 		textField_itasa.setColumns(10);
 
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setBounds(10, 96, 200, 20);
-		panel_associatore.add(comboBox_1);
+		JComboBox comboBox_sub_elenco_itasa = new JComboBox();
+		comboBox_sub_elenco_itasa.setBounds(10, 96, 226, 20);
+		panel_associatore.add(comboBox_sub_elenco_itasa);
 
 		JButton btnAssociaItasa = new JButton("associa");
-		btnAssociaItasa.setBounds(10, 116, 89, 23);
+		btnAssociaItasa.setBounds(10, 116, 105, 23);
 		panel_associatore.add(btnAssociaItasa);
 
 		JButton btnRimuoviItasa = new JButton("rimuovi");
-		btnRimuoviItasa.setBounds(121, 116, 89, 23);
+		btnRimuoviItasa.setBounds(131, 116, 105, 23);
 		panel_associatore.add(btnRimuoviItasa);
 
 		lblSubsfactoryLogo = new JLabel("subsfactory logo");
-		lblSubsfactoryLogo.setBounds(379, 36, 200, 35);
+		lblSubsfactoryLogo.setBounds(361, 36, 200, 35);
 		panel_associatore.add(lblSubsfactoryLogo);
 
 		lblStatoAssociazione = new JLabel("Stato:");
@@ -304,40 +304,48 @@ public class FramePrincipale extends JFrame {
 		panel_associatore.add(lblStatoAssociazione);
 
 		lblSerieAssociataItasa = new JLabel("serie associata");
-		lblSerieAssociataItasa.setBounds(57, 145, 144, 14);
+		lblSerieAssociataItasa.setBounds(57, 145, 179, 14);
 		panel_associatore.add(lblSerieAssociataItasa);
 
 		lblStatoAssociazione_1 = new JLabel("Stato: ");
-		lblStatoAssociazione_1.setBounds(379, 145, 46, 14);
+		lblStatoAssociazione_1.setBounds(361, 145, 46, 14);
 		panel_associatore.add(lblStatoAssociazione_1);
 
 		lblSerieAssociataSubsfactory = new JLabel("serie associata");
-		lblSerieAssociataSubsfactory.setBounds(423, 145, 156, 14);
+		lblSerieAssociataSubsfactory.setBounds(405, 145, 184, 14);
 		panel_associatore.add(lblSerieAssociataSubsfactory);
 
 		textField_5 = new JTextField();
-		textField_5.setBounds(379, 75, 200, 20);
+		textField_5.setBounds(361, 75, 200, 20);
 		panel_associatore.add(textField_5);
 		textField_5.setColumns(10);
 
-		comboBox_2 = new JComboBox();
-		comboBox_2.setBounds(379, 96, 200, 20);
-		panel_associatore.add(comboBox_2);
+		comboBox_sub_elenco_subsfactory = new JComboBox();
+		comboBox_sub_elenco_subsfactory.setBounds(361, 96, 228, 20);
+		panel_associatore.add(comboBox_sub_elenco_subsfactory);
 
 		btnAssociaSubsfactory = new JButton("associa");
-		btnAssociaSubsfactory.setBounds(379, 116, 89, 23);
+		btnAssociaSubsfactory.setBounds(361, 116, 105, 23);
 		panel_associatore.add(btnAssociaSubsfactory);
 
 		btnRimuoviSubsfactory = new JButton("rimuovi");
-		btnRimuoviSubsfactory.setBounds(490, 116, 89, 23);
+		btnRimuoviSubsfactory.setBounds(484, 116, 105, 23);
 		panel_associatore.add(btnRimuoviSubsfactory);
+		
+		btnaggiornaitasa = new JButton();
+		btnaggiornaitasa.setBounds(206, 74, 30, 23);
+		panel_associatore.add(btnaggiornaitasa);
+		
+		btnaggiornasubsfactory = new JButton();
+		btnaggiornasubsfactory.setBounds(559, 74, 30, 23);
+		panel_associatore.add(btnaggiornasubsfactory);
 
 		JPanel panel_lettore = new JPanel();
 		tabbedPane.addTab("Lettore", null, panel_lettore, null);
 		panel_lettore.setLayout(null);
 
 		JPanel panel_2 = new JPanel();
-		panel_2.setBounds(0, 0, 589, 70);
+		panel_2.setBounds(0, 0, 589, 89);
 		panel_lettore.add(panel_2);
 		panel_2.setLayout(null);
 
@@ -372,9 +380,25 @@ public class FramePrincipale extends JFrame {
 		btnRimuovi_lettore = new JButton("Rimuovi");
 		btnRimuovi_lettore.setBounds(494, 10, 89, 23);
 		panel_2.add(btnRimuovi_lettore);
+		
+		JLabel lblStagione = new JLabel("Stagione: ");
+		lblStagione.setBounds(10, 70, 61, 14);
+		panel_2.add(lblStagione);
+		
+		comboBox_lettore_stagione = new JComboBox();
+		comboBox_lettore_stagione.setBounds(65, 67, 40, 20);
+		panel_2.add(comboBox_lettore_stagione);
+		
+		JLabel lblOrdine = new JLabel("Ordine:");
+		lblOrdine.setBounds(119, 70, 46, 14);
+		panel_2.add(lblOrdine);
+		
+		comboBox_lettore_ordine = new JComboBox();
+		comboBox_lettore_ordine.setBounds(163, 67, 89, 20);
+		panel_2.add(comboBox_lettore_ordine);
 
 		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(0, 73, 589, 368);
+		scrollPane.setBounds(0, 90, 589, 351);
 		panel_lettore.add(scrollPane);
 
 		panel_lista_episodi = new JPanelManagerLista();
@@ -655,6 +679,8 @@ public class FramePrincipale extends JFrame {
 		});
 
 		inizializza();
+		
+		addListener();
 	}
 
 	private void inizializza() {
@@ -696,7 +722,11 @@ public class FramePrincipale extends JFrame {
 		catch (IOException e) {
 			e.printStackTrace();
 		}
-		addListener();
+		btnaggiornaitasa.setIcon(Resource.getIcona("res/aggiorna.png"));
+		btnaggiornasubsfactory.setIcon(Resource.getIcona("res/aggiorna.png"));
+		
+		comboBox_lettore_ordine.addItem("Crescente");
+		comboBox_lettore_ordine.addItem("Decrescente");
 	}
 
 	private void addListener() {
@@ -907,6 +937,12 @@ public class FramePrincipale extends JFrame {
 					// TODO mostra tutte le serie
 				}
 				else {
+					SerieTV st=(SerieTV)comboBox_lettore_serie.getSelectedItem();
+					if(st==null)
+						return;
+					btnRimuovi_lettore.setEnabled(true);
+					comboBox_lettore_stagione.removeAllItems();
+					// TODO aggiungere le stagioni alla combobox
 					// TODO mostra solo serie corrente
 				}
 			}
@@ -914,10 +950,26 @@ public class FramePrincipale extends JFrame {
 		btnRimuovi_lettore.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (comboBox_lettore_serie.getSelectedIndex() == 0) {
+					// TODO
 					// rimuovere da lettore
 					// rimuovere da principale
 					// rimuovere da sottotitoli
 				}
+			}
+		});
+		chckbxNascondiViste.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JPanelEpisodioPlayer.setNascondiViste(chckbxNascondiViste.isSelected());
+			}
+		});
+		chckbxNascondiIgnorate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JPanelEpisodioPlayer.setNascondiIgnorate(chckbxNascondiIgnorate.isSelected());
+			}
+		});
+		chckbxNascondiRimosse.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				JPanelEpisodioPlayer.setNascondiRimosse(chckbxNascondiRimosse.isSelected());
 			}
 		});
 	}

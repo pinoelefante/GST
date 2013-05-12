@@ -97,7 +97,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 			return true;
 		}
 		catch (ItasaSubNotFound e) {
-			ManagerException.registraEccezione(e);
+			//ManagerException.registraEccezione(e);
 			int id_s=cercaFeed(id_itasa, t);
 			if(id_s<=0)
 				return false;
@@ -263,6 +263,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 					parse=linea.substring(linea.indexOf("<show>"), linea.indexOf("</show>")+"</show>".length());
 					int id=Integer.parseInt(parse.substring(parse.indexOf("<id>")+"<id>".length(), parse.indexOf("</id>")));
 					String nome=parse.substring(parse.indexOf("<name>")+"<name>".length(), parse.indexOf("</name>"));
+					nome=nome.replace("&amp;", "&");
 					SerieSub s=new SerieSub(nome, id);
 					elenco.add(s);
 					linea=linea.substring(parse.length());

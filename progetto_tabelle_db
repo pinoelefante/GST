@@ -11,4 +11,12 @@ serietv
 	stato_serie		//stato della serie: in corso - conclusa
 	completata		//indica che la serie è conclusa e tutti gli episodi sono stati scaricati. si può unire con stato_serie
 	inserita
-	
+
+episodi
+	idserie
+	stagione
+	episodio
+	links
+	links_scaricati
+	stato_visualizzazione
+	sottotitolo

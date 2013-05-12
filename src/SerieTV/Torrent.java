@@ -2,9 +2,8 @@ package SerieTV;
 
 import Database.*;
 import Programma.ManagerException;
-import StruttureDati.Indexable;
 
-public class Torrent implements Indexable{
+public class Torrent {
 	public final static int SCARICARE=0, SCARICATO=1, VISTO=2, RIMOSSO=3, IGNORATO=4, NASCOSTO=5; 
 	private int 	id_serie;
 	private String	url;
@@ -311,25 +310,5 @@ public class Torrent implements Indexable{
 	}
 	public int getScaricato(){
 		return scaricato;
-	}
-	
-	public void setOffKey(String key) {
-		setUrl(key);
-	}
-	public int getIndex() {
-		return serie;
-	}
-	public int getKey() {
-		return puntata;
-	}
-	public String getOffKey(){
-		return url;
-	}
-	@Override
-	public String getOffKeyTrim() {
-		if(getUrl().contains("&dn"))
-			return getUrl().substring(0, getUrl().indexOf("&dn")).toLowerCase();
-		else
-			return getUrl();
 	}
 }

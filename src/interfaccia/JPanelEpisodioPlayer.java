@@ -1,21 +1,21 @@
 package interfaccia;
 
-import javax.swing.JPanel;
-import javax.swing.border.MatteBorder;
-import java.awt.Color;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 
+import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JComboBox;
+import javax.swing.JPanel;
+import javax.swing.border.MatteBorder;
 
 import Programma.Download;
 import SerieTV.Torrent;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.io.IOException;
 
 public class JPanelEpisodioPlayer extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -104,7 +104,7 @@ public class JPanelEpisodioPlayer extends JPanel {
 		lblNomeSerie.setText(lblNomeSerie.getText().replace("%num_stagione%", torrent.getSerie()+"").replace("%num_episodio%", ""+torrent.getPuntata()));
 		//int SCARICARE=0, SCARICATO=1, VISTO=2, RIMOSSO=3, IGNORATO=4, NASCOSTO=5; 
 		comboBox_stati.addItem("SCARICARE");
-		comboBox_stati.addItem("SCARICATO");
+		comboBox_stati.addItem("VEDERE");	//SCARICATO
 		comboBox_stati.addItem("VISTO");
 		comboBox_stati.addItem("RIMOSSO");
 		comboBox_stati.addItem("IGNORATO");
@@ -137,7 +137,23 @@ public class JPanelEpisodioPlayer extends JPanel {
 		comboBox_stati.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				torrent.setScaricato(comboBox_stati.getSelectedIndex(), true);
-				//TODO ridisegna
+				switch(comboBox_stati.getSelectedIndex()){
+					case Torrent.IGNORATO:
+						if(getNascondiIgnorate())
+							parent.remove(JPanelEpisodioPlayer.this);
+						break;
+					case Torrent.NASCOSTO:
+					case Torrent.RIMOSSO:
+						if(getNascondiRimosse())
+							parent.remove(JPanelEpisodioPlayer.this);
+						break;
+					case Torrent.SCARICARE:
+					case Torrent.SCARICATO:
+					case Torrent.VISTO:
+						if(getNascondiViste())
+							parent.remove(JPanelEpisodioPlayer.this);
+						break;
+				}
 			}
 		});
 	}
@@ -161,5 +177,8 @@ public class JPanelEpisodioPlayer extends JPanel {
 	}
 	public static void setNascondiIgnorate(boolean s){
 		h_ignorate=s;
+	}
+	public Torrent getTorrent(){
+		return torrent;
 	}
 }

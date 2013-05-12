@@ -39,7 +39,7 @@ public class Database {
 			conf.setSynchronous(SynchronousMode.OFF);
 			
 			con = DriverManager.getConnection("jdbc:sqlite:"+getNomeDB(), conf.toProperties());
-			System.out.println("Connessione OK");
+			System.out.println("Connessione al database SQLite avvenuta con successo");
 			creaDB();
 			checkIntegrita();
 		} 

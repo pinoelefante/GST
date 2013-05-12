@@ -14,11 +14,12 @@ import StruttureDati.ElencoIndicizzatoImpl2;
 import StruttureDati.Indexable;
 
 public class SerieTV {
-	public final static int STATO_CONCLUSA=1;
-	private int id_database;
+	public final static int STATO_IN_CORSO=0, STATO_TERMINATA=1, STATO_CONCLUSA=2;
+	
+	private int 	id_database;
 	private String	nome_serie;
 	private String	url_eztv;
-	private ElencoIndicizzato 	episodi;
+	private ElencoEpisodi 	episodi;
 	private int		id_itasa=-1;
 	private String 	directory_subsfactory="";
 	private int		stato; //1 se la serie è Ended altrimenti 0
@@ -29,12 +30,12 @@ public class SerieTV {
 	public SerieTV(String nome, String url) {
 		setNomeSerie(nome);
 		this.url_eztv = url;
-		episodi=new ElencoIndicizzatoImpl2();
+		episodi=new ElencoEpisodi();
 	}
 	public SerieTV(String nome, String url, boolean insert_db) {
 		setNomeSerie(nome);
 		this.url_eztv = url;
-		episodi=new ElencoIndicizzatoImpl2();
+		episodi=new ElencoEpisodi();
 		InsertInDB();
 	}
 	public void setIDDB(int id){
@@ -56,9 +57,7 @@ public class SerieTV {
 			}
 		}
 	}
-	public ElencoIndicizzato getEpisodi(){
-		return episodi;
-	}
+	
 	public String getNomeSerie() {
 		return this.nome_serie;
 	}
