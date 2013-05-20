@@ -2,6 +2,8 @@ package SerieTV;
 
 import java.util.ArrayList;
 
+import Naming.CaratteristicheFile;
+
 public class ElencoEpisodi {
 	private ArrayList<Stagione> stagioni;
 	
@@ -15,24 +17,36 @@ public class ElencoEpisodi {
 		}
 		return list;
 	}
-	public void addStagione(int n){
+	private Stagione addStagione(int num_stagione){
 		synchronized (this) {
 			boolean inserita=false;
 			for(int i=0;i<stagioni.size();i++){
-				if(n<stagioni.get(i).getStagione()){
-					stagioni.add(i, new Stagione(n));
+				if(num_stagione<stagioni.get(i).getStagione()){
+					Stagione s=new Stagione(num_stagione);
+					stagioni.add(i, s);
 					inserita=true;
 					break;
 				}
-				else if(n==stagioni.get(i).getStagione()){
-					return;
+				else if(num_stagione==stagioni.get(i).getStagione()){
+					return stagioni.get(i);
 				}
 			}
-			if(!inserita)
-				stagioni.add(new Stagione(n));
+			if(!inserita){
+				Stagione s=new Stagione(num_stagione);
+				stagioni.add(s);
+				return s;
+			}
+			return null;
 		}
 	}
-	public void addEpisodio(/*Aggiungere parametri*/){
+	public void addEpisodio(String link, CaratteristicheFile c){
+		Stagione stag=getStagione(c.getStagione());
+		if(stag!=null){
+			
+		}
+		//TODO completare
+	}
+	public void addEpisodio(String link){
 		//TODO completare
 	}
 	public int isStagionePresente(int s){

@@ -27,7 +27,11 @@ import Programma.Settings;
 import SerieTV.GestioneSerieTV;
 import SerieTV.SerieTV;
 import SerieTV.Torrent;
-
+/**TODO
+ * Controllo della cartella online solo la prima volta
+ * @author Pino
+ *
+ */
 public class Subsfactory implements ProviderSottotitoli {
 	private final static String URL_ELENCO_SERIE="http://subsfactory.it/subtitle/index.php?&direction=0&order=nom";
 	private final static String URL_FEED_RSS="http://subsfactory.it/subtitle/rss.php";
