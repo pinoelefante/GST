@@ -3,6 +3,7 @@ package SerieTV;
 import java.util.ArrayList;
 
 import Naming.CaratteristicheFile;
+import Naming.Naming;
 
 public class ElencoEpisodi {
 	private ArrayList<Stagione> stagioni;
@@ -42,12 +43,23 @@ public class ElencoEpisodi {
 	public void addEpisodio(String link, CaratteristicheFile c){
 		Stagione stag=getStagione(c.getStagione());
 		if(stag!=null){
-			
+			Episodio ep=stag.getEpisodio(c.getEpisodio());
+			if(ep!=null){
+				ep.addLink(link, c);
+			}
+			else {
+				ep=stag.addEpisodio(c.getEpisodio());
+				ep.addLink(link, c);
+			}
 		}
-		//TODO completare
+		else {
+			stag=addStagione(c.getStagione());
+			Episodio ep=stag.addEpisodio(c.getEpisodio());
+			ep.addLink(link, c);
+		}
 	}
 	public void addEpisodio(String link){
-		//TODO completare
+		addEpisodio(link, Naming.parse(link, null));
 	}
 	public int isStagionePresente(int s){
 		for(int i=0;i<stagioni.size();i++)

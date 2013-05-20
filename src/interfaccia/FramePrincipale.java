@@ -130,6 +130,8 @@ public class FramePrincipale extends JFrame {
 	private JButton btnaggiornaitasa;
 	private JComboBox<Integer> comboBox_lettore_stagione;
 	private JComboBox<String> comboBox_lettore_ordine;
+	private JScrollPane scrollPane_player;
+	private JPanel panel_regole_serie;
 
 	/**
 	 * Create the frame.
@@ -339,6 +341,9 @@ public class FramePrincipale extends JFrame {
 		btnaggiornasubsfactory = new JButton();
 		btnaggiornasubsfactory.setBounds(559, 74, 30, 23);
 		panel_associatore.add(btnaggiornasubsfactory);
+		
+		panel_regole_serie = new JPanel();
+		tabbedPane.addTab("Regole serie", null, panel_regole_serie, null);
 
 		JPanel panel_lettore = new JPanel();
 		tabbedPane.addTab("Lettore", null, panel_lettore, null);
@@ -397,16 +402,17 @@ public class FramePrincipale extends JFrame {
 		comboBox_lettore_ordine.setBounds(163, 67, 89, 20);
 		panel_2.add(comboBox_lettore_ordine);
 
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(0, 90, 589, 351);
-		panel_lettore.add(scrollPane);
+		scrollPane_player = new JScrollPane();
+		scrollPane_player.getVerticalScrollBar().setUnitIncrement(15);
+		scrollPane_player.setBounds(0, 90, 589, 351);
+		panel_lettore.add(scrollPane_player);
 
 		panel_lista_episodi = new JPanelManagerLista();
-		scrollPane.setViewportView(panel_lista_episodi);
+		scrollPane_player.setViewportView(panel_lista_episodi);
 
 		JPanel panel_opzioni = new JPanel();
 		tabbedPane.addTab("Opzioni", null, panel_opzioni, null);
-		tabbedPane.setEnabledAt(3, true);
+		tabbedPane.setEnabledAt(4, true);
 		panel_opzioni.setLayout(null);
 
 		JPanel panel_opzioni_aspetto = new JPanel();
@@ -691,17 +697,19 @@ public class FramePrincipale extends JFrame {
 		chckbxNascondiIgnorate.setSelected(JPanelEpisodioPlayer.getNascondiIgnorate());
 		chckbxNascondiRimosse.setSelected(JPanelEpisodioPlayer.getNascondiRimosse());
 		chckbxNascondiViste.setSelected(JPanelEpisodioPlayer.getNascondiViste());
-		
+		/*
 		for (int i = 0; i < GestioneSerieTV.getElencoSerieCompleto().size(); i++)
 			eztv_elenco_serie.addItem(GestioneSerieTV.getElencoSerieCompleto().get(i));
-		
+		*/
 		comboBox_lettore_serie.addItem(new SerieTV("Mostra tutte", null));
+		/*
 		for (int i = 0; i < GestioneSerieTV.getElencoSerieInserite().size(); i++){
 			SerieTV st=GestioneSerieTV.getElencoSerieInserite().get(i);
 			proprie_elenco.addItem(st);
 			comboBox_lettore_serie.addItem(st);
 			comboBox_serie_sottotitoli.addItem(st);
 		}
+		*/
 		combo_tipo_selezione.addItem("Deseleziona tutto");
 		combo_tipo_selezione.addItem("Seleziona tutto");
 		combo_tipo_selezione.addItem("720p");

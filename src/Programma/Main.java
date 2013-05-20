@@ -78,7 +78,7 @@ public class Main {
 			*/
 			
 			fl.settext("Scaricando lista serie");
-			GestioneSerieTV.Showlist();
+			//GestioneSerieTV.Showlist();
 			fl.setprog(++i);
 			
 			fl.settext("Avvio interfaccia grafica");

@@ -16,6 +16,7 @@ import javax.swing.border.MatteBorder;
 
 import Programma.Download;
 import SerieTV.Torrent;
+import javax.swing.border.BevelBorder;
 
 public class JPanelEpisodioPlayer extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -38,7 +39,9 @@ public class JPanelEpisodioPlayer extends JPanel {
 		if(torrent.getSerie()==0 && torrent.getPuntata()==0)
 			torrent.parseMagnet();
 		
-		setBorder(new MatteBorder(4, 2, 4, 2, (Color) new Color(0, 0, 0)));
+		setBorder(new BevelBorder(BevelBorder.RAISED, Color.RED, null, null, null));
+		//setBorder(new MatteBorder(4, 2, 4, 2, (Color) new Color(0, 0, 0)));
+		
 		setLayout(new BorderLayout(0, 0));
 		
 		JPanel panel_nord = new JPanel();

@@ -12,7 +12,6 @@ import Programma.Download;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Sottotitoli.GestoreSottotitoli;
-import StruttureDati.Indexable;
 
 public class GestioneSerieTV {
 	private static ArrayList<SerieTV> serietv=new ArrayList<SerieTV>();
@@ -332,6 +331,7 @@ public class GestioneSerieTV {
 		return infomanager;
 	}
 	public static void controlloStatoEpisodi(){
+		/*
 		System.out.println("Controllo episodi in corso");
 		carica_serie_database();
 		ArrayList<SerieTV> el_s=getElencoSerieInserite();
@@ -357,5 +357,6 @@ public class GestioneSerieTV {
 			el_s.remove(st);
 		}
 		getElencoSerieInserite().clear();
+		*/
 	}
 }

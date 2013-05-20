@@ -41,7 +41,7 @@ public class Naming {
 			//aggiungere qui i nuovi pattern
 
 	public static void main(String[] args){
-		System.out.println(parse("magnet:?xt=urn:btih:LVB46Y6GWX3WDMQ6KP2CRXTXSH4SKVFM&dn=Merlin.3x04.Gwaine.WS.PDTV.XviD-FoV&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80", null)+"\n");
+		System.out.println(parse("magnet:?xt=urn:btih:MIVWZORJG6VY6T3ZBENWJIZ2MIDJ6M5S&dn=The.Hour.UK.2011.2x06.HDTV.x264-FoV&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80", null)+"\n");
 		//System.out.println(parse("Discovery.Ch.River.Monsters.Series.3.10of10.The.Lost.Reels.Part.2.DVDrip.x264.AACmp4-MVGroup", null));
 	}
 	public static CaratteristicheFile parse(String toParse, String[] pattern){

@@ -49,7 +49,7 @@ public class CaratteristicheFile {
 		else
 			return 0;
 	}
-	private int value(CaratteristicheFile s){
+	public int value(CaratteristicheFile s){
 		int val=0;
 		if(s.is720p())
 			val+=HD;
@@ -64,5 +64,23 @@ public class CaratteristicheFile {
 	}
 	public void setDVDRip(boolean dvdrip) {
 		this.dvdrip = dvdrip;
+	}
+	public void setStatsFromValue(int v){
+		int val=v&1;
+		System.out.println("Value: "+v+" AND: "+val);
+		setProper(val==1?true:false);
+		v=v>>1;
+		val=v&1;
+		System.out.println("Value: "+v+" AND: "+val);
+		setRepack(val==1?true:false);
+		v=v>>1;
+		val=v&1;
+		System.out.println("Value: "+v+" AND: "+val);
+		set720p(val==1?true:false);
+	}
+	public static void main(String[] args){
+		CaratteristicheFile f=new CaratteristicheFile();
+		f.setStatsFromValue(7);
+		System.out.println("\n\n"+f);
 	}
 }
