@@ -1,5 +1,6 @@
 package Sottotitoli;
 
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,6 +22,8 @@ import SerieTV.Torrent;
 
 public class Subspedia implements ProviderSottotitoli {
 	private final String URLFeedRSS="http://subspedia.weebly.com/1/feed";
+	private long time_update=(1000*60)* 20L/*minuti*/;
+	private long last_update=0L;
 	private static ArrayList<SubsPediaRSSItem> rss;
 	
 	public Subspedia(){
@@ -40,6 +43,11 @@ public class Subspedia implements ProviderSottotitoli {
 	public void caricaElencoSerie() {}
 	
 	private void scaricaFeed() {
+		/* Aggiorna il feed RSS ogni time_update minuti */
+		if(System.currentTimeMillis()-last_update<time_update)
+			return;
+		
+		last_update=System.currentTimeMillis();
 		try {
 			Download.downloadFromUrl(URLFeedRSS, "feed_subspedia");
 			rss.clear();
@@ -99,6 +107,7 @@ public class Subspedia implements ProviderSottotitoli {
 	public static void main(String[] args) {
 		Subspedia subs=new Subspedia();
 		subs.scaricaFeed();
+		Toolkit.getDefaultToolkit().beep();
 		subs.stampaFeed();
 	}
 

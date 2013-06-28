@@ -35,11 +35,12 @@ import SerieTV.Torrent;
 public class Subsfactory implements ProviderSottotitoli {
 	private final static String URL_ELENCO_SERIE="http://subsfactory.it/subtitle/index.php?&direction=0&order=nom";
 	private final static String URL_FEED_RSS="http://subsfactory.it/subtitle/rss.php";
-	private GregorianCalendar RSS_UltimoAggiornamento;
-	private final long update_time_rss=900000L;  //15 minuti
+	private final long time_update=(1000*60)*15L;  //15 minuti
+	private long last_update=0L;
 	private ArrayList<SubsfactoryRSSItem> feed_rss;
 	private ArrayList<SerieSub> elenco_serie;
 	private static int download_corrente=0;
+	private static boolean dir_update=false;
 	
 	public Subsfactory() {
 		feed_rss=new ArrayList<SubsfactoryRSSItem>();
@@ -352,10 +353,12 @@ public class Subsfactory implements ProviderSottotitoli {
 		}
 	}
 	private String cercaFeed(String id_subs, Torrent t){
-		if(verificaTempo(update_time_rss, RSS_UltimoAggiornamento)){
+		if(System.currentTimeMillis()-last_update>time_update){
+			last_update=System.currentTimeMillis();
 			System.out.println("Aggiornando il feed RSS - Subsfactory.it");
 			aggiornaFeedRSS();
 		}
+	
 		for(int i=0;i<feed_rss.size();i++){
 			SubsfactoryRSSItem rss=feed_rss.get(i);
 			System.out.println(rss.getStagione()+" "+rss.getEpisodio()+" "+ rss.getUrlDownload());
@@ -377,7 +380,6 @@ public class Subsfactory implements ProviderSottotitoli {
 		return null;
 	}
 	private void aggiornaFeedRSS(){
-		RSS_UltimoAggiornamento=new GregorianCalendar();
 		feed_rss.clear();
 		try {
 			Download.downloadFromUrl(URL_FEED_RSS, "feed_subs");
@@ -426,17 +428,6 @@ public class Subsfactory implements ProviderSottotitoli {
 			e.printStackTrace();
 			ManagerException.registraEccezione(e);
 		}
-	}
-	private boolean verificaTempo(long maxdif, GregorianCalendar last){
-		if(last==null)
-			return true;
-		GregorianCalendar adesso=new GregorianCalendar();
-		long time_now=adesso.getTimeInMillis();
-		adesso=null;
-		long time_last=last.getTimeInMillis();
-		if((time_now-time_last)>maxdif)
-			return true;
-		return false;
 	}
 	public void stampa_feed(){
 		for(int i=0;i<feed_rss.size();i++)
