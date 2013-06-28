@@ -37,12 +37,12 @@ public class Subsfactory implements ProviderSottotitoli {
 	private final static String URL_FEED_RSS="http://subsfactory.it/subtitle/rss.php";
 	private GregorianCalendar RSS_UltimoAggiornamento;
 	private final long update_time_rss=900000L;  //15 minuti
-	private ArrayList<RSSItemSubsfactory> feed_rss;
+	private ArrayList<SubsfactoryRSSItem> feed_rss;
 	private ArrayList<SerieSub> elenco_serie;
 	private static int download_corrente=0;
 	
 	public Subsfactory() {
-		feed_rss=new ArrayList<RSSItemSubsfactory>();
+		feed_rss=new ArrayList<SubsfactoryRSSItem>();
 		elenco_serie=new ArrayList<SerieSub>();
 		caricaElencoSerie();
 	}
@@ -357,7 +357,7 @@ public class Subsfactory implements ProviderSottotitoli {
 			aggiornaFeedRSS();
 		}
 		for(int i=0;i<feed_rss.size();i++){
-			RSSItemSubsfactory rss=feed_rss.get(i);
+			SubsfactoryRSSItem rss=feed_rss.get(i);
 			System.out.println(rss.getStagione()+" "+rss.getEpisodio()+" "+ rss.getUrlDownload());
 			System.out.println("ID: "+rss.getID()+" - "+id_subs);
 			if(rss.getID().toLowerCase().startsWith(id_subs.toLowerCase())){
@@ -408,7 +408,7 @@ public class Subsfactory implements ProviderSottotitoli {
 						}
 					}
 				}
-				RSSItemSubsfactory rss=new RSSItemSubsfactory(titolo, descrizione, link);
+				SubsfactoryRSSItem rss=new SubsfactoryRSSItem(titolo, descrizione, link);
 				if(rss.isValid())
 					feed_rss.add(rss);
 			}

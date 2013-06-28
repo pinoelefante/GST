@@ -41,6 +41,11 @@ public class SerieTV {
 	public void aggiungiEpisodio(String link){
 		episodi.addEpisodio(link);
 	}
+	/**
+	 * Aggiunge il link alla serie avendo già effettuato il parsing dell'episodio
+	 * @param link link dell'episodio
+	 * @param s statistiche del link
+	 */
 	public void aggiungiEpisodio(String link, CaratteristicheFile s){
 		episodi.addEpisodio(link, s);
 	}

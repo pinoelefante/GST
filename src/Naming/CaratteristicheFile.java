@@ -5,6 +5,7 @@ public class CaratteristicheFile {
 	private boolean hd720, repack, proper, dvdrip;
 	
 	public CaratteristicheFile() {}
+	
 	public int getStagione() {
 		return stagione;
 	}

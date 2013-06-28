@@ -54,7 +54,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 	private static String API_SUB_GETID = "https://api.italiansubs.net/api/rest/subtitles/search?q=<QUERY>&show_id=<SHOW_ID>&version=<VERSIONE>&apikey="+APIKEY;
 	private static String API_LOGIN="https://api.italiansubs.net/api/rest/users/login?username=<USERNAME>&password=<PASSWORD>&apikey="+APIKEY;
 	
-	private ArrayList<RSSItem> feed_rss; 
+	private ArrayList<ItalianSubsRSSItem> feed_rss; 
 	private ArrayList<SerieSub> elenco_serie;
 	
 	private WebClient webClient;
@@ -66,7 +66,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 	private static int download_corrente=0;
 	
 	public ItalianSubs(){
-		feed_rss=new ArrayList<RSSItem>();
+		feed_rss=new ArrayList<ItalianSubsRSSItem>();
 		elenco_serie=new ArrayList<SerieSub>();
 	
 		caricaElencoSerie();
@@ -139,7 +139,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 			aggiornaFeedRSS();
 		}
 		for(int i=0;i<feed_rss.size();i++){
-			RSSItem rss=feed_rss.get(i);
+			ItalianSubsRSSItem rss=feed_rss.get(i);
 			if(rss.getIDSerie()==iditasa){
 				if(rss.is720p()==t.is720p()){
 					if(rss.isNormale()==!t.is720p()){
@@ -179,7 +179,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 							u_done=true;
 						}
 						if(u_done && n_done){
-							RSSItem sub=new RSSItem(nome, url);
+							ItalianSubsRSSItem sub=new ItalianSubsRSSItem(this, nome, url);
 							feed_rss.add(sub);
 							u_done=false;
 							n_done=false;
@@ -449,7 +449,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 			}
 		}
 	}
-	private int cercaSerie(String nome){
+	int cercaSerie(String nome){
 		for(int i=0;i<elenco_serie.size();i++){
 			SerieSub s=elenco_serie.get(i);
 			if(s.getNomeSerie().compareToIgnoreCase(nome)==0)
@@ -469,123 +469,6 @@ public class ItalianSubs implements ProviderSottotitoli{
 		for(int i=0;i<elenco_serie.size();i++)
 			str+=elenco_serie.get(i).getNomeSerie()+" - "+(Integer)elenco_serie.get(i).getID()+"\n";
 		return str;
-	}
-	class RSSItem{
-		private String url;
-		private String nomeserie;
-		private int stagione, episodio;
-		private boolean hd720p;
-		private boolean preair;
-		private boolean normale=true;
-		private int idserie;
-		private int idsub;
-		
-		public RSSItem(String itemname, String url){
-			this.setUrl(url);
-			parse(itemname);
-		}
-		private void parse(String item){
-			String nome = item;
-			if (nome.contains("720p")) {
-				nome = nome.replace("720p", "").trim();
-				setNormale(false);
-				set720p(true);
-			}
-			else if (nome.contains("Bluray")) {
-				nome = nome.replace("Bluray", "").trim();
-				setNormale(false);
-			}
-			else if (nome.contains("DVDRip")) {
-				nome = nome.replace("DVDRip", "").trim();
-				setNormale(false);
-			}
-			else if (nome.contains("BDRip")) {
-				nome = nome.replace("BDRip", "").trim();
-				setNormale(false);
-			}
-			else if (nome.contains("WEB-DL")) {
-				nome = nome.replace("WEB-DL", "").trim();
-				setNormale(false);
-			}
-			
-			if (nome.contains("Preair"))
-				nome.replace("Preair", "");
-
-			String str_index = nome.substring(nome.lastIndexOf(" ")).trim();
-			try {
-				if (!str_index.contains("x")) {
-					setEpisodio(Integer.parseInt(str_index));
-				}
-				else {
-					setStagione(Integer.parseInt(str_index.substring(0, str_index.indexOf("x"))));
-					setEpisodio(Integer.parseInt(str_index.substring(str_index.indexOf("x") + 1)));
-				}
-			}
-			catch (NumberFormatException e) {
-				ManagerException.registraEccezione(e);
-				return;
-			}
-			setNomeSerie(nome.substring(0, nome.indexOf(str_index)).trim().replace("&amp;", "&"));
-			setIDSerie(cercaSerie(getNomeSerie()));
-			setIDSub(Integer.parseInt(getUrl().substring(getUrl().indexOf("&id=")+"&id=".length())));
-		}
-		public String getUrl() {
-			return url;
-		}
-		public void setUrl(String url) {
-			this.url = url;
-		}
-		public String getNomeSerie() {
-			return nomeserie;
-		}
-		public void setNomeSerie(String nomeserie) {
-			this.nomeserie = nomeserie;
-		}
-		public int getEpisodio() {
-			return episodio;
-		}
-		public void setEpisodio(int episodio) {
-			this.episodio = episodio;
-		}
-		public int getStagione() {
-			return stagione;
-		}
-		public void setStagione(int stagione) {
-			this.stagione = stagione;
-		}
-		public boolean is720p() {
-			return hd720p;
-		}
-		public void set720p(boolean hd720p) {
-			this.hd720p = hd720p;
-		}
-		public boolean isPreAir() {
-			return preair;
-		}
-		public void setPreAir(boolean preair) {
-			this.preair = preair;
-		}
-		public String toString(){
-			return nomeserie+" "+getStagione()+"x"+getEpisodio()+(is720p()?" 720p":"")+(isNormale()?" Normale":"");
-		}
-		public boolean isNormale() {
-			return normale;
-		}
-		public void setNormale(boolean normale) {
-			this.normale = normale;
-		}
-		public int getIDSerie() {
-			return idserie;
-		}
-		public void setIDSerie(int idserie) {
-			this.idserie = idserie;
-		}
-		public int getIDSub() {
-			return idsub;
-		}
-		public void setIDSub(int idsub) {
-			this.idsub = idsub;
-		}
 	}
 	@Override
 	public String getIDSerieAssociata(String nome_serie) {
