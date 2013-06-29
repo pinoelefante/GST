@@ -474,7 +474,6 @@ public class Interfaccia {
 									}
 								}
 							}
-							GestioneSerieTV.getInfoManager().controllaAssociazioni();
 							
 							download_text_top_left.setText("");
 							aggiornaComboEZTV();
