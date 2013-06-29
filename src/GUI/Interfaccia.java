@@ -1669,7 +1669,7 @@ public class Interfaccia {
 			return;
 		}
 		PopupMenu popup = new PopupMenu();
-		final TrayIcon trayIcon = new TrayIcon(Resource.createImage("res/icona16x16.png", Language.TITLE), Language.TITLE);
+		final TrayIcon trayIcon = new TrayIcon(Resource.createImage("res/icona16.png", Language.TITLE), Language.TITLE);
 
 		tray = SystemTray.getSystemTray();
 		MenuItem restoreWin = new MenuItem(Language.TRAYICON_RIPRISTINA);
