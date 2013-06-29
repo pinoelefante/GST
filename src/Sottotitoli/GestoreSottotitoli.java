@@ -68,8 +68,6 @@ public class GestoreSottotitoli {
 	private Thread ricerca_automatica;
 	private ProviderSottotitoli itasa;
 	private ProviderSottotitoli subsfactory;
-	//TODO classe per subspedia
-	@SuppressWarnings("unused")
 	private ProviderSottotitoli subspedia;
 	
 	private ArrayList<Torrent> sottotitoli_da_scaricare;
@@ -78,6 +76,7 @@ public class GestoreSottotitoli {
 		sottotitoli_da_scaricare=new ArrayList<Torrent>();
 		itasa=new ItalianSubs();
 		subsfactory=new Subsfactory();
+		subspedia=new Subspedia();
 		ricerca_automatica=new RicercaSottotitoliAutomatica();
 	}
 	public void avviaRicercaAutomatica(){
@@ -156,27 +155,27 @@ public class GestoreSottotitoli {
 		return (itasa_assoc || subs_assoc) || (it_al || subs_al);
 	}
 	public boolean cercaSottotitolo(Torrent t){
-		boolean itasa, subsfactory;
+		boolean itasa, subsfactory, subspedia;
 		itasa=this.itasa.cercaSottotitolo(t);
 		subsfactory=this.subsfactory.cercaSottotitolo(t);
-		return (itasa || subsfactory);
+		subspedia=this.subspedia.cercaSottotitolo(t);
+		return (itasa || subsfactory || subspedia);
 	}
 	public boolean scaricaSottotitolo(Torrent t){
-		boolean subsfactory=false;
-		boolean itasa=this.itasa.scaricaSottotitolo(t);
-		
-		if(!itasa)
-			subsfactory=this.subsfactory.scaricaSottotitolo(t);
-	
-		if(itasa||subsfactory)
-			Renamer.rinominaSottotitolo(t);
-		
-		if(itasa)
+		if(itasa.scaricaSottotitolo(t)){
 			aggiungiLogEntry(t, this.itasa);
-		else if(subsfactory)
+		}
+		else if(subsfactory.scaricaSottotitolo(t)){
 			aggiungiLogEntry(t, this.subsfactory);
+		}
+		else if(subspedia.scaricaSottotitolo(t)){
+			aggiungiLogEntry(t, this.subspedia);
+		}
+		else 
+			return false;
 		
-		return (itasa||subsfactory);
+		Renamer.rinominaSottotitolo(t);
+		return true;
 	}
 	public ArrayList<SerieSub> getElencoSerie(int provider){
 		switch(provider){
@@ -196,7 +195,7 @@ public class GestoreSottotitoli {
 			case SUBSFACTORY:
 				return subsfactory;
 			case SUBSPEDIA:
-				System.out.println("Subspedia - Funzione non supportata");
+				return subspedia;
 		}
 		return null;
 	}

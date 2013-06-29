@@ -1,19 +1,20 @@
 package Sottotitoli;
 
 import Naming.CaratteristicheFile;
+import Naming.Naming;
 
-class SubsPediaRSSItem {
+class SubspediaRSSItem {
 	private String titolo;
 	private String link;
 	private CaratteristicheFile stats;
-	private static final String[] patterns_file={Naming.Naming.PATTERN_SxE};
+	private static final String[] patterns_file={Naming.PATTERN_SxE};
 	
-	public SubsPediaRSSItem(String titolo, String link){
+	public SubspediaRSSItem(String titolo, String link){
 		this.titolo=tryToCutTheTitle(titolo);
 		if(this.titolo.isEmpty())
 			this.titolo=titolo;
 		this.link=link;
-		stats=Naming.Naming.parse(titolo, patterns_file);
+		stats=Naming.parse(titolo, patterns_file);
 	}
 	public int getStagione(){
 		return stats.getStagione();
@@ -39,5 +40,8 @@ class SubsPediaRSSItem {
 	}
 	public String getLink(){
 		return link;
+	}
+	public String getTitolo(){
+		return titolo;
 	}
 }

@@ -1,6 +1,5 @@
 package Sottotitoli;
 
-import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,26 +14,77 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import Naming.Renamer;
 import Programma.Download;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
+import Programma.Settings;
 import SerieTV.Torrent;
 
 public class Subspedia implements ProviderSottotitoli {
 	private final String URLFeedRSS="http://subspedia.weebly.com/1/feed";
 	private long time_update=(1000*60)* 20L/*minuti*/;
 	private long last_update=0L;
-	private static ArrayList<SubsPediaRSSItem> rss;
+	private static ArrayList<SubspediaRSSItem> rss;
 	
 	public Subspedia(){
-		rss=new ArrayList<SubsPediaRSSItem>();
+		rss=new ArrayList<SubspediaRSSItem>();
 	}
 	
-	public boolean scaricaSottotitolo(Torrent t) {return false;}
+	public boolean scaricaSottotitolo(Torrent t) {
+		String link=cercaSottotitolo(t, false);
+		if(link==null)
+			return false;
+		else {
+			link=link.replace(" ", "%20");
+			return scaricaSub(link, Renamer.generaNomeDownload(t), t.getNomeSerieFolder());
+		}
+	}
+	private boolean scaricaSub(String url, String nome, String folder){
+		String dir_s=Settings.getDirectoryDownload()+(Settings.getDirectoryDownload().endsWith(File.pathSeparator)?folder:(File.separator+folder));
+		String destinazione=dir_s+File.separator+nome;
+		File dir=new File(dir_s);
+		if(!dir.exists()){
+			if(!dir.mkdir())
+				ManagerException.registraEccezione(new Exception("Impossibile creare la cartella della serie"));
+				return false;
+		}
+		try {
+			Download.downloadFromUrl(url, destinazione);
+			return true;
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+			ManagerException.registraEccezione(e);
+			return false;
+		}
+	}
 	public String getIDSerieAssociata(String nome_serie) {return null;}
 	public boolean cercaSottotitolo(Torrent t) {
-		// TODO Auto-generated method stub
+		scaricaFeed();
+		for(int i=0;i<rss.size();i++){
+			SubspediaRSSItem item=rss.get(i);
+			if(item.getTitolo().compareToIgnoreCase(t.getNomeSerie())==0){
+				if(item.getStagione()==t.getSerie()){
+					if(item.getEpisodio()==t.getPuntata())
+						return true;
+				}
+			}
+		}
 		return false;
+	}
+	private String cercaSottotitolo(Torrent t,boolean b) {
+		scaricaFeed();
+		for(int i=0;i<rss.size();i++){
+			SubspediaRSSItem item=rss.get(i);
+			if(item.getTitolo().compareToIgnoreCase(t.getNomeSerie())==0){
+				if(item.getStagione()==t.getSerie()){
+					if(item.getEpisodio()==t.getPuntata())
+						return item.getLink();
+				}
+			}
+		}
+		return null;
 	}
 	public ArrayList<SerieSub> getElencoSerie() {return null;}
 	public String getProviderName() {
@@ -81,7 +131,7 @@ public class Subspedia implements ProviderSottotitoli {
 						}
 					}
 				}
-				rss.add(new SubsPediaRSSItem(titolo, link));
+				rss.add(new SubspediaRSSItem(titolo, link));
 			}
 			OperazioniFile.deleteFile("feed_subspedia");
 		} 
@@ -98,17 +148,20 @@ public class Subspedia implements ProviderSottotitoli {
 			ManagerException.registraEccezione(e);
 		}
 	}
+	/*
 	private void stampaFeed(){
 		for(int i=0;i<rss.size();i++){
 			System.out.println(rss.get(i));
 		}
 	}
-	
+	*/
 	public static void main(String[] args) {
 		Subspedia subs=new Subspedia();
-		subs.scaricaFeed();
-		Toolkit.getDefaultToolkit().beep();
-		subs.stampaFeed();
+		Torrent t=new Torrent("", 0, "Baby Daddy", 0);
+		t.setEpisodio(6);
+		t.setStagione(2);
+		System.out.println("Sottotitolo disponibile: "+subs.cercaSottotitolo(t));
+		System.out.println("Sottotitolo scaricato: "+subs.scaricaSottotitolo(t));
 	}
 
 }

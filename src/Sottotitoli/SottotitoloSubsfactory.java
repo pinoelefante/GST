@@ -16,7 +16,7 @@ class SottotitoloSubsfactory {
 	}
 	private void parseNome(){
 		try{
-			CaratteristicheFile stats=Naming.parseString(nomefile);
+			CaratteristicheFile stats=Naming.parse(nomefile, null);
 			ep=stats.getEpisodio();
 			season=stats.getStagione();
 		}
