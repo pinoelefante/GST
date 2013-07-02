@@ -37,7 +37,10 @@ public class Subspedia implements ProviderSottotitoli {
 			return false;
 		else {
 			link=link.replace(" ", "%20");
-			return scaricaSub(link, Renamer.generaNomeDownload(t), t.getNomeSerieFolder());
+			if(scaricaSub(link, Renamer.generaNomeDownload(t), t.getNomeSerieFolder())){
+				t.setSottotitolo(false, true);
+			}
+			return false;
 		}
 	}
 	private boolean scaricaSub(String url, String nome, String folder){
