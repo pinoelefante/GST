@@ -9,11 +9,12 @@ import SerieTV.ThreadRicercaAutomatica;
 import Database.Database;
 import GUI.FrameLoading;
 import GUI.Interfaccia;
+import GUI.Interfaccia2;
 import GUI.Language;
 
 public class Main {
 	public static Interfaccia					frame;
-	public static ThreadControlloAggiornamento	thread_update		= new ThreadControlloAggiornamento(false);
+	public static ThreadAggiornamentiSoftware	thread_update		= new ThreadAggiornamentiSoftware(false);
 	public static ThreadRicercaAutomatica		thread_autosearch	= new ThreadRicercaAutomatica();
 	public static FrameLoading 					fl;
 	
@@ -84,9 +85,15 @@ public class Main {
 			}
 			fl.chiudi();
 			
-			Interfaccia.createPanel();
-			if(Settings.getNumeroAvvii()>0 && (Settings.getNumeroAvvii()%30)==0)
-				Interfaccia.donazione_visualizza_frame();
+			if(Settings.getGUI()==1){
+				Interfaccia.createPanel();
+				if(Settings.getNumeroAvvii()>0 && (Settings.getNumeroAvvii()%30)==0)
+					Interfaccia.donazione_visualizza_frame();
+			}
+			
+			else
+				new Interfaccia2();
+			
 			
 			if(Settings.isRicercaSottotitoli()){
 				GestioneSerieTV.getSubManager().avviaRicercaAutomatica();

@@ -65,7 +65,7 @@ import Programma.Main;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
-import Programma.ThreadControlloAggiornamento;
+import Programma.ThreadAggiornamentiSoftware;
 import SerieTV.GestioneSerieTV;
 import SerieTV.SerieTV;
 import SerieTV.Torrent;
@@ -177,7 +177,7 @@ public class Interfaccia {
 	public static JButton				download_bottone_download			= new JButton();
 	protected static JButton			download_bottone_esplora			= new JButton();
 	private static JPanel				download_panel_scroll				= new JPanel();
-	private static JButton				download_bottone_test				= new JButton("42");
+	private static JButton				download_bottone_test				= new JButton("T");
 	
 	private static void creaTabDownload() {
 		TabbedDownload.addTab(Language.TAB_DOWNLOAD_EPISODI, panel_download);
@@ -591,9 +591,7 @@ public class Interfaccia {
 		});
 		download_bottone_test.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
-				JOptionPane.showMessageDialog(Interfaccia.frame,
-						"English: \nJust wait a sodding minute! You want a question that goes with the answer for 42? Well, how about \"What's six times seven?\"\n\n"
-					  + "Italiano: \nLa domanda, l'unica della quale avrei voluto la risposta: è la ragazza giusta? E la risposta non è 42\n");
+				
 			}
 		});
 	}
@@ -1761,7 +1759,12 @@ public class Interfaccia {
 							NativeInterface.open();
 							browser_donazione=new JWebBrowser(JWebBrowser.destroyOnFinalization());
 							if(browser_donazione==null){
-								OperazioniFile.esploraWeb(Settings.IndirizzoDonazioni);
+								try {
+									OperazioniFile.esploraWeb(Settings.IndirizzoDonazioni);
+								} catch (Exception e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
 								return;
 							}
 							browser_donazione.setBarsVisible(false);
@@ -2226,7 +2229,12 @@ public class Interfaccia {
 				if(Settings.isWindows())
 					donazione_visualizza_frame();
 				else
-					OperazioniFile.esploraWeb(Settings.IndirizzoDonazioni);
+					try {
+						OperazioniFile.esploraWeb(Settings.IndirizzoDonazioni);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
 			}
 			public void mouseExited(MouseEvent arg0) {
 				about_label_donazione.setText(Language.ABOUT_DONATION);
@@ -2241,7 +2249,12 @@ public class Interfaccia {
 		indirizzo.addMouseListener(new MouseListener() {
 			public void mouseReleased(MouseEvent arg0) {}
 			public void mousePressed(MouseEvent arg0) {	
-				OperazioniFile.esploraWeb("http://pinoelefante.altervista.org");
+				try {
+					OperazioniFile.esploraWeb("http://pinoelefante.altervista.org");
+				} catch (Exception e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 			public void mouseExited(MouseEvent arg0) {
 				indirizzo.setText(Language.ABOUT_SITO);
@@ -2265,7 +2278,7 @@ public class Interfaccia {
 		about_bottone_update.setIcon(Resource.getIcona("res/update.png"));
 		about_bottone_update.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
-				ThreadControlloAggiornamento t1 = new ThreadControlloAggiornamento(true);
+				ThreadAggiornamentiSoftware t1 = new ThreadAggiornamentiSoftware(true);
 				t1.start();
 			}
 		});

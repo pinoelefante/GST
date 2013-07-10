@@ -9,6 +9,7 @@ import Database.SQLParameter;
 import SerieTV.GestioneSerieTV;
 
 public class Settings {
+	private static int 			GUI									= 2;
 	private static final int	VersioneSoftware					= 98;
 	private static final boolean beta								= false;
 	private static final int	beta_versione						= 1;
@@ -503,5 +504,11 @@ public class Settings {
 			return path.toLowerCase().endsWith("vlc");
 		else
 			return true;
+	}
+	public static int getGUI() {
+		return GUI;
+	}
+	public static void setGUI(int gUI) {
+		GUI = gUI;
 	}
 }

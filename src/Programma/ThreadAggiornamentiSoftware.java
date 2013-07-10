@@ -9,10 +9,10 @@ import javax.swing.JOptionPane;
 import GUI.Interfaccia;
 import GUI.Language;
 
-public class ThreadControlloAggiornamento extends Thread {
+public class ThreadAggiornamentiSoftware extends Thread {
 	private boolean	negative;
 
-	public ThreadControlloAggiornamento(boolean negative) {
+	public ThreadAggiornamentiSoftware(boolean negative) {
 		this.negative = negative;
 	}
 

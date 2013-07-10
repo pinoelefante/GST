@@ -84,14 +84,14 @@ public class OperazioniFile {
 		else
 			throw new Exception("Il percorso non è una cartella");
 	}
-	public static void esploraWeb(String url){
+	public static void esploraWeb(String url) throws Exception{
 		Desktop d=Desktop.getDesktop();
 		try {
 			d.browse(new URI(url));
 		}
 		catch (IOException | URISyntaxException e) {
-			e.printStackTrace();
 			ManagerException.registraEccezione(e);
+			throw e;
 		}
 	}
 	public static void email(String uri){
