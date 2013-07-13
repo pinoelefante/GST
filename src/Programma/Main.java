@@ -1,6 +1,9 @@
 package Programma;
 
+import java.awt.EventQueue;
+
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import SerieTV.GestioneSerieTV;
@@ -24,10 +27,11 @@ public class Main {
 			thread_autosearch.start();
 		}
 	}
-
+	static Interfaccia2 frame2;
 	public static void main(String[] args) {
 		try{	
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			
+			//UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			
 			fl=new FrameLoading();
 			fl.start();
@@ -67,16 +71,17 @@ public class Main {
 			fl.settext("Applicando aggiornamenti");
 			Update.start();
 			fl.setprog(++i);
-			
+			/*
 			fl.settext("Controllo aggiornamenti");
 			thread_update.start();
 			fl.setprog(++i);
 			thread_update.join();
-			
+			*/
+			/*
 			fl.settext("Scaricando lista serie");
 			GestioneSerieTV.Showlist();
 			fl.setprog(++i);
-			
+			*/
 			fl.settext("Avvio interfaccia grafica");
 			fl.setprog(++i);
 			
@@ -91,13 +96,22 @@ public class Main {
 					Interfaccia.donazione_visualizza_frame();
 			}
 			
-			else
-				new Interfaccia2();
+			else{
+				EventQueue.invokeLater(new Runnable() {
+					public void run() {
+						frame2=new Interfaccia2();
+						frame2.setVisible(true);
+						System.out.println("EVVIVA");
+					}
+				});
+			}
+				
 			
-			
+			/*
 			if(Settings.isRicercaSottotitoli()){
 				GestioneSerieTV.getSubManager().avviaRicercaAutomatica();
 			}
+			*/
 		}
 		catch(Exception e){
 			JOptionPane.showMessageDialog(null, e.getMessage());

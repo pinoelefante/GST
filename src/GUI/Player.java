@@ -55,6 +55,7 @@ public class Player {
 		player.start();
 	}
 
+
 	/*
 	SwingUtilities.invokeLater(new Runnable() { 
 		JVLCPlayer vlc; 

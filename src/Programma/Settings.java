@@ -511,4 +511,12 @@ public class Settings {
 	public static void setGUI(int gUI) {
 		GUI = gUI;
 	}
+	public static boolean is32bit(){
+		String arch_vm = System.getProperty("os.arch");
+		boolean x86 = arch_vm.contains("x86")||arch_vm.contains("i386");
+		return x86;
+	}
+	public static boolean is64bit(){
+		return !is32bit();
+	}
 }

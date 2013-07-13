@@ -6,8 +6,11 @@ import Programma.ControlloAggiornamenti;
 import Programma.OperazioniFile;
 import Programma.Settings;
 
+import LettoreVideo.Player;
+
 import javax.swing.JTabbedPane;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -15,6 +18,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -22,7 +27,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
-import javax.swing.SwingUtilities;
 
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
@@ -34,6 +38,8 @@ import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.border.LineBorder;
 import java.awt.Color;
+import javax.swing.JScrollPane;
+import javax.swing.JSlider;
 
 public class Interfaccia2 extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -43,13 +49,22 @@ public class Interfaccia2 extends JFrame {
 	private JTextField textField_1;
 	private JTextField textField_2;
 	private JTextField textField_3;
+	
+	private Player VLCPanel;
+	private JPanel LettorePanel;
 
 	public Interfaccia2(){
 		super("Gestione Serie TV rel."+Settings.getVersioneSoftware()+" by pinoelefante");
+		
 		setResizable(false);
 		setAlwaysOnTop(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(750, 600);
+		Dimension res=Toolkit.getDefaultToolkit().getScreenSize();
+		if(res.getWidth()>750){
+			int x_screen=(int)(res.getWidth()-750)/2;
+			setLocation(x_screen,10);
+		}
 		
 		JTabbedPane tab = new JTabbedPane(JTabbedPane.TOP);
 		getContentPane().add(tab, BorderLayout.CENTER);
@@ -61,8 +76,127 @@ public class Interfaccia2 extends JFrame {
 		JPanel SottotitoliPanel = new JPanel();
 		tab.addTab("Sottotitoli", new ImageIcon(Interfaccia2.class.getResource("/GUI/res/sottotitoli.png")), SottotitoliPanel, null);
 		
-		JPanel LettorePanel = new JPanel();
+		LettorePanel = new JPanel();
 		tab.addTab("Lettore", new ImageIcon(Interfaccia2.class.getResource("/GUI/res/player.png")), LettorePanel, null);
+		LettorePanel.setLayout(null);
+		
+		VLCPanel=new Player(LettorePanel);
+		if(VLCPanel.isLinked()){
+			VLCPanel.setBounds(10, 0, 417, 235);
+			LettorePanel.add(VLCPanel.getPlayerPane());
+		}
+		
+		
+		/*	TODO commentare per la build
+		JPanel PanelLettoreVideoVLC = new JPanel();
+		PanelLettoreVideoVLC.setBounds(10, 0, 417, 235);
+		LettorePanel.add(PanelLettoreVideoVLC);
+		*/
+		
+		JComboBox comboBoxLettoreSerie = new JComboBox();
+		comboBoxLettoreSerie.setBounds(45, 263, 260, 20);
+		LettorePanel.add(comboBoxLettoreSerie);
+		
+		JLabel lblSerie = new JLabel("Serie");
+		lblSerie.setBounds(12, 265, 37, 16);
+		LettorePanel.add(lblSerie);
+		
+		JLabel lblStagione = new JLabel("Stagione");
+		lblStagione.setBounds(323, 265, 55, 16);
+		LettorePanel.add(lblStagione);
+		
+		JComboBox comboBoxLettoreStagione = new JComboBox();
+		comboBoxLettoreStagione.setBounds(377, 263, 45, 20);
+		LettorePanel.add(comboBoxLettoreStagione);
+		
+		JScrollPane scrollPaneLettoreEpisodi = new JScrollPane();
+		scrollPaneLettoreEpisodi.setBounds(0, 285, 739, 210);
+		LettorePanel.add(scrollPaneLettoreEpisodi);
+		
+		JPanel panel_elenco_puntate = new JPanel();
+		scrollPaneLettoreEpisodi.setViewportView(panel_elenco_puntate);
+		
+		JCheckBox chckbxNascondiViste = new JCheckBox("Nascondi viste");
+		chckbxNascondiViste.setBounds(10, 497, 112, 24);
+		LettorePanel.add(chckbxNascondiViste);
+		
+		JCheckBox chckbxNascondiIgnorate = new JCheckBox("Nascondi ignorate");
+		chckbxNascondiIgnorate.setBounds(134, 497, 135, 24);
+		LettorePanel.add(chckbxNascondiIgnorate);
+		
+		JCheckBox chckbxNascondiRimosse = new JCheckBox("Nascondi rimosse");
+		chckbxNascondiRimosse.setBounds(277, 497, 140, 24);
+		LettorePanel.add(chckbxNascondiRimosse);
+		
+		JPanel panelLettorePlaylist = new JPanel();
+		panelLettorePlaylist.setBorder(new TitledBorder(null, "Playlist", TitledBorder.LEADING, TitledBorder.BOTTOM, null, null));
+		panelLettorePlaylist.setBounds(469, 0, 226, 210);
+		LettorePanel.add(panelLettorePlaylist);
+		
+		JButton btnVLCFullscreen = new JButton("");
+		btnVLCFullscreen.setToolTipText("Schermo intero");
+		btnVLCFullscreen.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/fullscreen.png")));
+		btnVLCFullscreen.setBounds(433, 54, 26, 26);
+		LettorePanel.add(btnVLCFullscreen);
+		
+		JLabel lblOrdine = new JLabel("Ordine");
+		lblOrdine.setBounds(565, 265, 44, 16);
+		LettorePanel.add(lblOrdine);
+		
+		JComboBox<String> comboBoxLettoreOrdine = new JComboBox<String>();
+		comboBoxLettoreOrdine.addItem("Crescente");
+		comboBoxLettoreOrdine.addItem("Decrescente");
+		comboBoxLettoreOrdine.setBounds(615, 263, 112, 20);
+		LettorePanel.add(comboBoxLettoreOrdine);
+		
+		final JButton buttonVLCPlay = new JButton("");
+		buttonVLCPlay.setToolTipText("Play");
+		buttonVLCPlay.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/play_pause.png")));
+		buttonVLCPlay.setBounds(433, 0, 26, 26);
+		LettorePanel.add(buttonVLCPlay);
+		
+		JButton buttonVLCStop = new JButton("");
+		buttonVLCStop.setToolTipText("Stop");
+		buttonVLCStop.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/stop.png")));
+		buttonVLCStop.setBounds(433, 26, 26, 26);
+		LettorePanel.add(buttonVLCStop);
+		
+		JButton buttonPlaylistRimuovi = new JButton("");
+		buttonPlaylistRimuovi.setToolTipText("Rimuovi dalla playlist");
+		buttonPlaylistRimuovi.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/cestino.png")));
+		buttonPlaylistRimuovi.setBounds(701, 172, 26, 26);
+		LettorePanel.add(buttonPlaylistRimuovi);
+		
+		JButton buttonPlaylistDown = new JButton("");
+		buttonPlaylistDown.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/down.png")));
+		buttonPlaylistDown.setBounds(701, 107, 26, 26);
+		LettorePanel.add(buttonPlaylistDown);
+		
+		JButton buttonPlaylistUp = new JButton("");
+		buttonPlaylistUp.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/up.png")));
+		buttonPlaylistUp.setBounds(701, 76, 26, 26);
+		LettorePanel.add(buttonPlaylistUp);
+		
+		JSlider slider_time = new JSlider();
+		slider_time.setValue(0);
+		slider_time.setBounds(11, 237, 368, 16);
+		LettorePanel.add(slider_time);
+		
+		JSlider slider_volume = new JSlider();
+		slider_volume.setValue(100);
+		slider_volume.setOrientation(SwingConstants.VERTICAL);
+		slider_volume.setBounds(433, 124, 26, 86);
+		LettorePanel.add(slider_volume);
+		
+		JLabel lblTimer = new JLabel("0.20.25");
+		lblTimer.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTimer.setBounds(377, 237, 50, 16);
+		LettorePanel.add(lblTimer);
+		
+		JLabel imgVolume = new JLabel("");
+		imgVolume.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/volume.png")));
+		imgVolume.setBounds(433, 215, 26, 26);
+		LettorePanel.add(imgVolume);
 		
 		JPanel OpzioniPanel = new JPanel();
 		tab.addTab("Opzioni", new ImageIcon(Interfaccia2.class.getResource("/GUI/res/opzioni.png")), OpzioniPanel, null);
@@ -264,7 +398,7 @@ public class Interfaccia2 extends JFrame {
 		
 		final JButton btnCercaAggiornamenti = new JButton("Cerca aggiornamenti");
 		btnCercaAggiornamenti.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/update.png")));
-		btnCercaAggiornamenti.setBounds(380, 223, 151, 44);
+		btnCercaAggiornamenti.setBounds(380, 223, 152, 44);
 		InfoPanel.add(btnCercaAggiornamenti);
 		
 		final JLabel lblRisultatoAggiornamenti = new JLabel("Verifica disponibilit\u00E0 aggiornamenti");
@@ -286,26 +420,24 @@ public class Interfaccia2 extends JFrame {
 		
 		final JWebBrowser advertising=new JWebBrowser(JWebBrowser.destroyOnFinalization());
 		/**TODO rimuovere commento per la distribuzione */
-		/*
-		SwingUtilities.invokeLater(new Runnable(){
-			public void run() {
-				if(advertising!=null){
-					NativeInterface.open();
-					advertising.setBarsVisible(false);
-					advertising.setStatusBarVisible(false);
-					advertising.setBounds(10, 372, 676, 143);
-					advertising.navigate("http://pinoelefante.altervista.org/ads.html");
-					InfoPanel.add(advertising);
-				}
-			}
-		});
-		*/
 		
-		/** Solo per windows builder*/
+		if(advertising!=null){
+			if(!NativeInterface.isOpen())
+				NativeInterface.open();
+			advertising.setBarsVisible(false);
+			advertising.setStatusBarVisible(false);
+			advertising.setBounds(10, 372, 676, 143);
+			advertising.navigate("http://pinoelefante.altervista.org/ads.html");
+			InfoPanel.add(advertising);
+		}
+	
+		
+		
+		/** Solo per windows builder*//*
 		InfoPanel.add(btnAggiornaAds);
 		JPanel panel = new JPanel();
 		panel.setBounds(10, 372, 676, 143);
-		InfoPanel.add(panel);
+		InfoPanel.add(panel);*/
 		
 		final JButton btnChiudiADS = new JButton("");
 		btnChiudiADS.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/remove.png")));
@@ -313,7 +445,7 @@ public class Interfaccia2 extends JFrame {
 		btnChiudiADS.setBounds(696, 492, 33, 23);
 		InfoPanel.add(btnChiudiADS);
 		
-		setVisible(true);
+
 		
 		btnAggiornaAds.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -403,5 +535,40 @@ public class Interfaccia2 extends JFrame {
 				lblRicercaOre.setText("( "+ore+((ore==1)?" ora ":" ore ")+minuti+" min )");
 			}
 		});
+		
+		VLCPanel.addToPlaylist("D:\\SerieTV\\Alcatraz\\Alcatraz.S01E01.HDTV.XviD-LOL.[VTV].avi");
+		buttonVLCPlay.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent arg0) {
+				VLCPanel.play();
+			}
+		});
+		buttonVLCStop.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				VLCPanel.stop();
+			}
+		});
+		btnVLCFullscreen.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				VLCPanel.set_fullscreen();
+			}
+		});
+		
+		addWindowListener(new WindowListener() {
+			public void windowOpened(WindowEvent arg0) {}
+			public void windowIconified(WindowEvent arg0) {}
+			public void windowDeiconified(WindowEvent arg0) {}
+			public void windowDeactivated(WindowEvent arg0) {}
+			public void windowClosing(WindowEvent arg0) {
+				advertising.disposeNativePeer();
+				NativeInterface.close();
+				VLCPanel.stop();
+				VLCPanel.release();
+				
+			}
+			public void windowClosed(WindowEvent arg0) {}
+			public void windowActivated(WindowEvent arg0) {}
+		});
+		
 	}
 }
