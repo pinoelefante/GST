@@ -4,10 +4,9 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -24,6 +23,7 @@ import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 public class Player {
 	private static Playlist playlist;
 	private boolean isLinked=false;
+	//TODO modificare
 	private final static String DEFAULT_PATH="C:\\vlc";
 	private static EmbeddedMediaPlayerComponent vlc;
 	private JComponent default_parent;
@@ -58,7 +58,6 @@ public class Player {
 			try{
 				locateVLC();
 				vlc=new EmbeddedMediaPlayerComponent();
-				addMouseListener();
 			}
 			catch(RuntimeException e){
 				ManagerException.registraEccezione(e);
@@ -73,6 +72,10 @@ public class Player {
 		return vlc;
 	}
 	public void play(){
+		if(vlc.getMediaPlayer().isPlaying()){
+			togglePause();
+			return;
+		}
 		if(vlc.getMediaPlayer().isPlayable()){
 			vlc.getMediaPlayer().play();
 		}
@@ -81,7 +84,12 @@ public class Player {
 		}
 	}
 	public void play(String s){
-		vlc.getMediaPlayer().playMedia(s);
+		if(s!=null){
+			if(new File(s).exists()){
+				//System.out.println(s);
+				vlc.getMediaPlayer().playMedia(s);
+			}
+		}
 	}
 	public void setBounds(int x, int y, int wid, int hei){
 		vlc.setBounds(x, y, wid, hei);
@@ -130,9 +138,11 @@ public class Player {
 				public void keyTyped(KeyEvent arg0) {}
 				public void keyReleased(KeyEvent arg0) {}
 				public void keyPressed(KeyEvent arg0) {
-					if(arg0.getExtendedKeyCode()==KeyEvent.VK_F){ //Tasto F - chiude finestra schermo intero
+					if(arg0.getExtendedKeyCode()==KeyEvent.VK_F || arg0.getExtendedKeyCode()==KeyEvent.VK_ESCAPE){ //Tasto F e ESC - chiude finestra schermo intero
 						fullscreen_frame.dispose();
 					}
+					else if(arg0.getExtendedKeyCode()==KeyEvent.VK_SPACE)
+						play();
 				}
 			});
 		}
@@ -163,32 +173,30 @@ public class Player {
 	public boolean isFullscreen(){
 		return isFullscreen;
 	}
-	MouseListener ml;
-	private void addMouseListener(){
-		ml=new MouseListener() {
-			long last_click=0L;
-			public void mouseReleased(MouseEvent arg0) {}
-			public void mousePressed(MouseEvent arg0) {}
-			public void mouseExited(MouseEvent arg0) {}
-			public void mouseEntered(MouseEvent arg0) {}
-			public void mouseClicked(MouseEvent arg0) {
-				System.out.println("Mouse clicked");
-				long current=System.currentTimeMillis();
-				if(isDoubleClick(last_click, current)){
-					if(isFullscreen)
-						remove_fullscreen();
-					else
-						set_fullscreen();
-				}
-				last_click=System.currentTimeMillis();
-			}
-			//Doppio click se avviene in 1.5 secondi
-			private boolean isDoubleClick(long precedente, long corrente){
-				if((corrente-precedente)<=1500)
-					return true;
-				return false;
-			}
-		};
-		
+	
+	public void next(){
+		stop();
+		if(vlc.getMediaPlayer().isPlaying()){
+			play(playlist.getItem(playlist.getCurrentItem()));
+		}
+		else {
+			play(playlist.getItem(playlist.getCurrentItem()+1));
+		}
+	}
+	public void prev(){
+		stop();
+		if(vlc.getMediaPlayer().isPlaying()){
+			int index=playlist.getCurrentItem()-2;
+			if(index<0)
+				index=playlist.getLastItem();
+			play(playlist.getItem(index));
+		}
+		else {
+			int index=playlist.getCurrentItem()-1;
+			if(index<0)
+				index=playlist.getLastItem();
+			play(playlist.getItem(index));
+			
+		}
 	}
 }

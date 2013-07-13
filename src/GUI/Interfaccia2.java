@@ -136,7 +136,7 @@ public class Interfaccia2 extends JFrame {
 		JButton btnVLCFullscreen = new JButton("");
 		btnVLCFullscreen.setToolTipText("Schermo intero");
 		btnVLCFullscreen.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/fullscreen.png")));
-		btnVLCFullscreen.setBounds(433, 54, 26, 26);
+		btnVLCFullscreen.setBounds(433, 104, 26, 26);
 		LettorePanel.add(btnVLCFullscreen);
 		
 		JLabel lblOrdine = new JLabel("Ordine");
@@ -185,7 +185,7 @@ public class Interfaccia2 extends JFrame {
 		JSlider slider_volume = new JSlider();
 		slider_volume.setValue(100);
 		slider_volume.setOrientation(SwingConstants.VERTICAL);
-		slider_volume.setBounds(433, 124, 26, 86);
+		slider_volume.setBounds(433, 130, 26, 86);
 		LettorePanel.add(slider_volume);
 		
 		JLabel lblTimer = new JLabel("0.20.25");
@@ -197,6 +197,16 @@ public class Interfaccia2 extends JFrame {
 		imgVolume.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/volume.png")));
 		imgVolume.setBounds(433, 215, 26, 26);
 		LettorePanel.add(imgVolume);
+		
+		JButton btnVLCPrec = new JButton("");
+		btnVLCPrec.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/prev.png")));
+		btnVLCPrec.setBounds(433, 52, 26, 26);
+		LettorePanel.add(btnVLCPrec);
+		
+		JButton btnVLCNext = new JButton("");
+		btnVLCNext.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/nextt.png")));
+		btnVLCNext.setBounds(433, 78, 26, 26);
+		LettorePanel.add(btnVLCNext);
 		
 		JPanel OpzioniPanel = new JPanel();
 		tab.addTab("Opzioni", new ImageIcon(Interfaccia2.class.getResource("/GUI/res/opzioni.png")), OpzioniPanel, null);
@@ -535,8 +545,12 @@ public class Interfaccia2 extends JFrame {
 				lblRicercaOre.setText("( "+ore+((ore==1)?" ora ":" ore ")+minuti+" min )");
 			}
 		});
-		
+		/**TODO rimuovere per la build*/
 		VLCPanel.addToPlaylist("D:\\SerieTV\\Alcatraz\\Alcatraz.S01E01.HDTV.XviD-LOL.[VTV].avi");
+		VLCPanel.addToPlaylist("D:\\SerieTV\\How I met your mother\\How.I.Met.Your.Mother.S08E24.HDTV.x264-LOL.mp4");
+		VLCPanel.addToPlaylist("D:\\SerieTV\\Hunted\\Hunted.1x01.Mort.HDTV.x264-FoV.mp4");
+		VLCPanel.addToPlaylist("D:\\SerieTV\\Monk\\Monk - Stagione 8\\Detective Monk.8x01.Il Sig. Monk E Il Clan Dei Cooper.ITA.avi");
+		
 		buttonVLCPlay.addActionListener(new ActionListener() {
 			
 			public void actionPerformed(ActionEvent arg0) {
@@ -551,6 +565,16 @@ public class Interfaccia2 extends JFrame {
 		btnVLCFullscreen.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				VLCPanel.set_fullscreen();
+			}
+		});
+		btnVLCNext.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				VLCPanel.next();
+			}
+		});
+		btnVLCPrec.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				VLCPanel.prev();
 			}
 		});
 		

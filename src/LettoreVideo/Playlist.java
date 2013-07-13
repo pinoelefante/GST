@@ -77,14 +77,19 @@ public class Playlist {
 			return true;
 	}
 	public String getNext(){
-		if(currentItem>=playlist.size() || currentItem<0)
-			currentItem=0;
-		return playlist.get(currentItem++);
+		return getItem(currentItem);
+	}
+	public String getPrevious(){
+		return getItem(currentItem-2);
 	}
 	public String getItem(int i) throws RuntimeException{
+		if(i<0)
+			i=playlist.size()-1;
+		if(i==playlist.size())
+			i=0;
 		if(i>=0 && i<playlist.size()){
 			currentItem=i;
-			return playlist.get(i);
+			return playlist.get(i++);
 		}
 		RuntimeException e=new RuntimeException("Playlist - Indice non valido\nCurrentItem="+currentItem+"\n"+"Indice richiesto: "+i+"\nLunghezza playlist: "+playlist.size());
 		ManagerException.registraEccezione(e);
@@ -95,10 +100,5 @@ public class Playlist {
 	}
 	public int getLastItem(){
 		return playlist.size()-1;
-	}
-	
-	
-	public static void main(String[] args){
-		
 	}
 }
