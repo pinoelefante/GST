@@ -86,13 +86,6 @@ public class Interfaccia2 extends JFrame {
 			LettorePanel.add(VLCPanel.getPlayerPane());
 		}
 		
-		
-		/*	TODO commentare per la build
-		JPanel PanelLettoreVideoVLC = new JPanel();
-		PanelLettoreVideoVLC.setBounds(10, 0, 417, 235);
-		LettorePanel.add(PanelLettoreVideoVLC);
-		*/
-		
 		JComboBox comboBoxLettoreSerie = new JComboBox();
 		comboBoxLettoreSerie.setBounds(45, 263, 260, 20);
 		LettorePanel.add(comboBoxLettoreSerie);
@@ -105,7 +98,7 @@ public class Interfaccia2 extends JFrame {
 		lblStagione.setBounds(323, 265, 55, 16);
 		LettorePanel.add(lblStagione);
 		
-		JComboBox comboBoxLettoreStagione = new JComboBox();
+		JComboBox<Integer> comboBoxLettoreStagione = new JComboBox<Integer>();
 		comboBoxLettoreStagione.setBounds(377, 263, 45, 20);
 		LettorePanel.add(comboBoxLettoreStagione);
 		
@@ -429,7 +422,6 @@ public class Interfaccia2 extends JFrame {
 		InfoPanel.add(btnAggiornaAds);
 		
 		final JWebBrowser advertising=new JWebBrowser(JWebBrowser.destroyOnFinalization());
-		/**TODO rimuovere commento per la distribuzione */
 		
 		if(advertising!=null){
 			if(!NativeInterface.isOpen())
@@ -440,14 +432,6 @@ public class Interfaccia2 extends JFrame {
 			advertising.navigate("http://pinoelefante.altervista.org/ads.html");
 			InfoPanel.add(advertising);
 		}
-	
-		
-		
-		/** Solo per windows builder*//*
-		InfoPanel.add(btnAggiornaAds);
-		JPanel panel = new JPanel();
-		panel.setBounds(10, 372, 676, 143);
-		InfoPanel.add(panel);*/
 		
 		final JButton btnChiudiADS = new JButton("");
 		btnChiudiADS.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/remove.png")));
