@@ -27,6 +27,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
+import javax.swing.SwingUtilities;
 
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
@@ -52,6 +53,7 @@ public class Interfaccia2 extends JFrame {
 	
 	private Player VLCPanel;
 	private JPanel LettorePanel;
+	private JWebBrowser advertising;
 
 	public Interfaccia2(){
 		super("Gestione Serie TV rel."+Settings.getVersioneSoftware()+" by pinoelefante");
@@ -80,11 +82,16 @@ public class Interfaccia2 extends JFrame {
 		tab.addTab("Lettore", new ImageIcon(Interfaccia2.class.getResource("/GUI/res/player.png")), LettorePanel, null);
 		LettorePanel.setLayout(null);
 		
-		VLCPanel=new Player(LettorePanel);
+		JButton btnVLCInstance=new JButton("Carica VLC");
+		btnVLCInstance.setBounds(165, 115, 100, 25);
+		LettorePanel.add(btnVLCInstance);
+		/*
 		if(VLCPanel.isLinked()){
+			VLCPanel=new Player(LettorePanel);
 			VLCPanel.setBounds(10, 0, 417, 235);
 			LettorePanel.add(VLCPanel.getPlayerPane());
 		}
+		*/
 		
 		JComboBox comboBoxLettoreSerie = new JComboBox();
 		comboBoxLettoreSerie.setBounds(45, 263, 260, 20);
@@ -421,17 +428,19 @@ public class Interfaccia2 extends JFrame {
 		btnAggiornaAds.setBounds(696, 372, 33, 23);
 		InfoPanel.add(btnAggiornaAds);
 		
-		final JWebBrowser advertising=new JWebBrowser(JWebBrowser.destroyOnFinalization());
+		SwingUtilities.invokeLater(new Runnable() {@Override
+			public void run() {
+    			if(!NativeInterface.isOpen())
+    				NativeInterface.open();
+				advertising=new JWebBrowser(JWebBrowser.destroyOnFinalization());
+				advertising.setBarsVisible(false);
+				advertising.setStatusBarVisible(false);
+				advertising.setBounds(10, 372, 676, 143);
+				advertising.navigate("http://pinoelefante.altervista.org/ads.html");
+				InfoPanel.add(advertising);
+			}
+		});
 		
-		if(advertising!=null){
-			if(!NativeInterface.isOpen())
-				NativeInterface.open();
-			advertising.setBarsVisible(false);
-			advertising.setStatusBarVisible(false);
-			advertising.setBounds(10, 372, 676, 143);
-			advertising.navigate("http://pinoelefante.altervista.org/ads.html");
-			InfoPanel.add(advertising);
-		}
 		
 		final JButton btnChiudiADS = new JButton("");
 		btnChiudiADS.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/remove.png")));
@@ -530,10 +539,29 @@ public class Interfaccia2 extends JFrame {
 			}
 		});
 		/**TODO rimuovere per la build*/
+		/*
 		VLCPanel.addToPlaylist("D:\\SerieTV\\Alcatraz\\Alcatraz.S01E01.HDTV.XviD-LOL.[VTV].avi");
 		VLCPanel.addToPlaylist("D:\\SerieTV\\How I met your mother\\How.I.Met.Your.Mother.S08E24.HDTV.x264-LOL.mp4");
 		VLCPanel.addToPlaylist("D:\\SerieTV\\Hunted\\Hunted.1x01.Mort.HDTV.x264-FoV.mp4");
 		VLCPanel.addToPlaylist("D:\\SerieTV\\Monk\\Monk - Stagione 8\\Detective Monk.8x01.Il Sig. Monk E Il Clan Dei Cooper.ITA.avi");
+		*/
+		btnVLCInstance.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				VLCPanel=new Player(LettorePanel);
+				if(VLCPanel.isLinked()){
+					VLCPanel.setBounds(10, 0, 417, 235);
+					LettorePanel.add(VLCPanel.getPlayerPane());
+					LettorePanel.remove((JButton)arg0.getSource());
+					
+					/**TODO rimuovere per la build*/
+					VLCPanel.addToPlaylist("D:\\SerieTV\\Alcatraz\\Alcatraz.S01E01.HDTV.XviD-LOL.[VTV].avi");
+					VLCPanel.addToPlaylist("D:\\SerieTV\\How I met your mother\\How.I.Met.Your.Mother.S08E24.HDTV.x264-LOL.mp4");
+					VLCPanel.addToPlaylist("D:\\SerieTV\\Hunted\\Hunted.1x01.Mort.HDTV.x264-FoV.mp4");
+					VLCPanel.addToPlaylist("D:\\SerieTV\\Monk\\Monk - Stagione 8\\Detective Monk.8x01.Il Sig. Monk E Il Clan Dei Cooper.ITA.avi");
+				}
+				
+			}
+		});
 		
 		buttonVLCPlay.addActionListener(new ActionListener() {
 			
@@ -568,11 +596,15 @@ public class Interfaccia2 extends JFrame {
 			public void windowDeiconified(WindowEvent arg0) {}
 			public void windowDeactivated(WindowEvent arg0) {}
 			public void windowClosing(WindowEvent arg0) {
-				advertising.disposeNativePeer();
+				if(advertising!=null)
+					advertising.disposeNativePeer();
 				NativeInterface.close();
-				VLCPanel.stop();
-				VLCPanel.release();
-				
+				if(VLCPanel!=null){
+					if(VLCPanel.isLinked()){
+        				VLCPanel.stop();
+        				VLCPanel.release();
+					}
+				}
 			}
 			public void windowClosed(WindowEvent arg0) {}
 			public void windowActivated(WindowEvent arg0) {}

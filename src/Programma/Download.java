@@ -24,6 +24,13 @@ public class Download {
 			}
 
 			is = urlConn.getInputStream();
+			
+			if(localFilename.contains(File.separator)){
+				String path=localFilename.substring(localFilename.lastIndexOf(File.separator));
+				File f=new File(path);
+				f.mkdirs();
+			}
+			
 			fos = new FileOutputStream(localFilename);
 
 			byte[] buffer = new byte[32768]; //32KB

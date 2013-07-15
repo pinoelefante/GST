@@ -3,7 +3,6 @@ package Programma;
 import java.awt.EventQueue;
 
 import javax.swing.JOptionPane;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
 import SerieTV.GestioneSerieTV;
@@ -29,9 +28,10 @@ public class Main {
 	}
 	static Interfaccia2 frame2;
 	public static void main(String[] args) {
+		
 		try{	
 			
-			//UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			
 			fl=new FrameLoading();
 			fl.start();
@@ -84,10 +84,11 @@ public class Main {
 			*/
 			fl.settext("Avvio interfaccia grafica");
 			fl.setprog(++i);
-			
+			/*
 			if (Settings.isDownloadAutomatico()) {
 				avviaThreadRicercaAutomatica();
 			}
+			*/
 			fl.chiudi();
 			
 			if(Settings.getGUI()==1){
@@ -97,13 +98,9 @@ public class Main {
 			}
 			
 			else{
-				EventQueue.invokeLater(new Runnable() {
-					public void run() {
-						frame2=new Interfaccia2();
-						frame2.setVisible(true);
-						System.out.println("EVVIVA");
-					}
-				});
+				Interfaccia2 frame=new Interfaccia2();
+				frame.setVisible(true);
+				System.out.println("EVVIVA");
 			}
 				
 			
@@ -115,6 +112,7 @@ public class Main {
 		}
 		catch(Exception e){
 			JOptionPane.showMessageDialog(null, e.getMessage());
+			System.out.println(e.getMessage());
 			e.printStackTrace();
 			ManagerException.registraEccezione(e);
 		}

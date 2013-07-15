@@ -1,6 +1,7 @@
 package Programma;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -19,7 +20,7 @@ public class MySevenZipCallBack implements IArchiveExtractCallback {
         private String destinazione;
         private String rename;
         
-        private FileWriter fw;
+        private FileOutputStream fw;
         
         public MySevenZipCallBack(ISevenZipInArchive inArchive, String destinazione, String rename) {
             this.inArchive = inArchive;
@@ -36,6 +37,7 @@ public class MySevenZipCallBack implements IArchiveExtractCallback {
             return new ISequentialOutStream() {
             	
             	private String nome_file="";
+            	private String file_f="";
             	
                 public int write(byte[] data) throws SevenZipException {
                 	if(nome_file.isEmpty()){
@@ -62,8 +64,8 @@ public class MySevenZipCallBack implements IArchiveExtractCallback {
                 			}
                 			System.out.println(nome_file);
                 		}
-                		String nome_file_dest=destinazione+(destinazione.endsWith(File.separator)?"":File.separator)+nome_file;
-                		File f=new File(nome_file_dest);
+                		file_f=destinazione+(destinazione.endsWith(File.separator)?"":File.separator)+nome_file;
+                		File f=new File(file_f);
                 		if(f.exists()){
                 			f.delete();
                 			try {
@@ -74,24 +76,35 @@ public class MySevenZipCallBack implements IArchiveExtractCallback {
 								e.printStackTrace();
 							}
                 		}
-                		
-                		try {
-							fw=new FileWriter(destinazione+(destinazione.endsWith(File.separator)?"":File.separator)+nome_file);
-						} 
-                		catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+						else
+							try {
+								f.createNewFile();
+							}
+							catch (IOException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
                 	}
-                	if(fw!=null){
-                		try {
-							fw.append(new String(data));
-						} 
-                		catch (IOException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+                	try {
+                		fw=new FileOutputStream(file_f, true);
+						fw.write(data);
+					} 
+                	catch (IOException e) {
+						e.printStackTrace();
+					}
+                	finally {
+                		if(fw!=null){
+                			try {
+								fw.flush();
+								fw.close();
+							}
+							catch (IOException e) {
+								e.printStackTrace();
+							}
+                			
+                		}
                 	}
+                	
                 	
                     return data.length; // Return amount of proceed data
                 }

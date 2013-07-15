@@ -519,4 +519,22 @@ public class Settings {
 	public static boolean is64bit(){
 		return !is32bit();
 	}
+	public static String getOSName(){
+		String name="";
+		
+		if(isWindows())
+			name="win32";
+		else if(isLinux())
+			name="linux";
+		else if(isMacOS())
+			name="macos";
+		
+		return name;
+	}
+	public static String getVMArch(){
+		if(is32bit())
+			return "i386";
+		else
+			return "amd64";
+	}
 }

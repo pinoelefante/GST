@@ -12,6 +12,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 
 import Programma.ManagerException;
+import Programma.Settings;
 
 import com.sun.jna.Native;
 import com.sun.jna.NativeLibrary;
@@ -24,7 +25,7 @@ public class Player {
 	private static Playlist playlist;
 	private boolean isLinked=false;
 	//TODO modificare
-	private final static String DEFAULT_PATH="C:\\vlc";
+	private final static String DEFAULT_PATH=Settings.getCurrentDir()+"lib"+File.separator+"vlc"+File.separator+Settings.getOSName()+"-"+Settings.getVMArch();
 	private static EmbeddedMediaPlayerComponent vlc;
 	private JComponent default_parent;
 	private boolean isFullscreen;
@@ -35,26 +36,26 @@ public class Player {
 	}
 	
 	private boolean search_path=false;
-	private void locateVLC() throws RuntimeException{
+	private void locateVLC() {
+		System.out.println(DEFAULT_PATH);
 		if(!search_path){
 			NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), DEFAULT_PATH);
 			search_path=true;
 		}
-		
 		try {
 			Native.loadLibrary(RuntimeUtil.getLibVlcLibraryName(), LibVlc.class);
 			isLinked=true;
 		}
-		catch(Exception e){
-			isLinked=false;
-			throw new RuntimeException("Non è stato possibile trovare la libreria libvlc\n"+e.getMessage());
+		catch(UnsatisfiedLinkError e){
+			e.printStackTrace();
+			ManagerException.registraEccezione(e.getMessage());
 		}
 	}
 	public void instance(){
 		if(playlist==null)
 			playlist=new Playlist();
 		
-		if(!isLinked()){
+		if(vlc==null){
 			try{
 				locateVLC();
 				vlc=new EmbeddedMediaPlayerComponent();
@@ -199,4 +200,5 @@ public class Player {
 			
 		}
 	}
+	
 }

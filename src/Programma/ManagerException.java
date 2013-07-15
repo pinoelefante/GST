@@ -19,4 +19,15 @@ public class ManagerException {
 		}
 		catch(Exception e1){}
 	}
+	public static synchronized void registraEccezione(String m){
+		try{
+			FileWriter file=new FileWriter("eccezioni.txt", true);
+			GregorianCalendar date=new GregorianCalendar();
+			file.append(date.getTime().toString()+"\n");
+			file.append(m+"\n");
+			file.append("\n\n");
+			file.close();
+		}
+		catch(Exception e1){}
+	}
 }
