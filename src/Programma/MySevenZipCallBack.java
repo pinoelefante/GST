@@ -2,7 +2,6 @@ package Programma;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 
 import net.sf.sevenzipjbinding.ExtractAskMode;
@@ -72,7 +71,7 @@ public class MySevenZipCallBack implements IArchiveExtractCallback {
 								f.createNewFile();
 							} 
                 			catch (IOException e) {
-								// TODO Auto-generated catch block
+                				ManagerException.registraEccezione(e);
 								e.printStackTrace();
 							}
                 		}
@@ -81,7 +80,7 @@ public class MySevenZipCallBack implements IArchiveExtractCallback {
 								f.createNewFile();
 							}
 							catch (IOException e) {
-								// TODO Auto-generated catch block
+								ManagerException.registraEccezione(e);
 								e.printStackTrace();
 							}
                 	}
@@ -91,6 +90,7 @@ public class MySevenZipCallBack implements IArchiveExtractCallback {
 					} 
                 	catch (IOException e) {
 						e.printStackTrace();
+						ManagerException.registraEccezione(e);
 					}
                 	finally {
                 		if(fw!=null){
@@ -101,15 +101,11 @@ public class MySevenZipCallBack implements IArchiveExtractCallback {
 							catch (IOException e) {
 								e.printStackTrace();
 							}
-                			
                 		}
                 	}
-                	
-                	
                     return data.length; // Return amount of proceed data
                 }
             };
-            
         }
         public int getIndex(){
         	return index;
@@ -132,7 +128,6 @@ public class MySevenZipCallBack implements IArchiveExtractCallback {
                 	try {
 						fw.close();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
                 	fw=null;

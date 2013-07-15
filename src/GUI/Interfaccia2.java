@@ -41,6 +41,10 @@ import javax.swing.border.LineBorder;
 import java.awt.Color;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
+import java.awt.event.MouseAdapter;
+import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
 
 public class Interfaccia2 extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -54,9 +58,17 @@ public class Interfaccia2 extends JFrame {
 	private Player VLCPanel;
 	private JPanel LettorePanel;
 	private JWebBrowser advertising;
+	private JTextField textField_4;
+	private JTextField textField_5;
+	private JTable table;
+	private JTextField textField_6;
+	private JTextField textField_7;
+	private JTextField textField_8;
+	private JTextField textField_9;
 
 	public Interfaccia2(){
 		super("Gestione Serie TV rel."+Settings.getVersioneSoftware()+" by pinoelefante");
+		setIconImage(Toolkit.getDefaultToolkit().getImage(Interfaccia2.class.getResource("/GUI/res/icona32.png")));
 		
 		setResizable(false);
 		setAlwaysOnTop(true);
@@ -77,6 +89,259 @@ public class Interfaccia2 extends JFrame {
 		
 		JPanel SottotitoliPanel = new JPanel();
 		tab.addTab("Sottotitoli", new ImageIcon(Interfaccia2.class.getResource("/GUI/res/sottotitoli.png")), SottotitoliPanel, null);
+		SottotitoliPanel.setLayout(null);
+		
+		JPanel panel = new JPanel();
+		panel.setBorder(new TitledBorder(null, "Associatore", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel.setBounds(0, 0, 739, 200);
+		SottotitoliPanel.add(panel);
+		panel.setLayout(null);
+		
+		JLabel imgItasaLogo = new JLabel("");
+		imgItasaLogo.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent arg0) {
+				try {
+					OperazioniFile.esploraWeb("http://www.italiansubs.net");
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		imgItasaLogo.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/itasa.png")));
+		imgItasaLogo.setBounds(10, 49, 208, 37);
+		panel.add(imgItasaLogo);
+		
+		JLabel lblitaliansubs = new JLabel("<html><b>ItalianSubs</b></html>");
+		lblitaliansubs.setBounds(82, 87, 73, 14);
+		panel.add(lblitaliansubs);
+		
+		JLabel lblSerieTV = new JLabel("<html><b>Serie</b><html>");
+		lblSerieTV.setBounds(172, 24, 46, 14);
+		panel.add(lblSerieTV);
+		
+		JComboBox comboBox_SerieTVAssociatore = new JComboBox();
+		comboBox_SerieTVAssociatore.setBounds(228, 21, 238, 20);
+		panel.add(comboBox_SerieTVAssociatore);
+		
+		JLabel imgSubsfactoryLogo = new JLabel("");
+		imgSubsfactoryLogo.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				try {
+					OperazioniFile.esploraWeb("http://www.subsfactory.it");
+				}
+				catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+		imgSubsfactoryLogo.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/subsfactory.jpg")));
+		imgSubsfactoryLogo.setBounds(258, 49, 208, 37);
+		panel.add(imgSubsfactoryLogo);
+		
+		JLabel lblsubsfactory = new JLabel("<html><b>Subsfactory</b></html>");
+		lblsubsfactory.setBounds(313, 87, 82, 14);
+		panel.add(lblsubsfactory);
+		
+		JLabel imgSubspediaLogo = new JLabel("");
+		imgSubspediaLogo.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				try {
+					OperazioniFile.esploraWeb("http://subspedia.weebly.com/");
+				}
+				catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+		imgSubspediaLogo.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/subspedia.png")));
+		imgSubspediaLogo.setBounds(505, 49, 208, 37);
+		panel.add(imgSubspediaLogo);
+		
+		JLabel lblsubspedia = new JLabel("<html><b>Subspedia</b></html>");
+		lblsubspedia.setBounds(581, 87, 73, 14);
+		panel.add(lblsubspedia);
+		
+		JLabel lblCerca = new JLabel("Cerca");
+		lblCerca.setBounds(10, 105, 46, 14);
+		panel.add(lblCerca);
+		
+		textField_4 = new JTextField();
+		textField_4.setBounds(57, 103, 161, 20);
+		panel.add(textField_4);
+		textField_4.setColumns(20);
+		
+		JComboBox comboBox = new JComboBox();
+		comboBox.setBounds(10, 125, 208, 20);
+		panel.add(comboBox);
+		
+		JButton btnAssocia = new JButton("Associa");
+		btnAssocia.setBounds(10, 163, 98, 26);
+		panel.add(btnAssocia);
+		
+		JButton btnRimuovi = new JButton("Rimuovi");
+		btnRimuovi.setBounds(120, 163, 98, 26);
+		panel.add(btnRimuovi);
+		
+		JLabel lblAssociataA = new JLabel("Associata a: ");
+		lblAssociataA.setBounds(10, 145, 73, 16);
+		panel.add(lblAssociataA);
+		
+		JLabel lblItasaSerieAss = new JLabel("");
+		lblItasaSerieAss.setBounds(89, 145, 129, 16);
+		panel.add(lblItasaSerieAss);
+		
+		JLabel lblCerca_1 = new JLabel("Cerca");
+		lblCerca_1.setBounds(258, 105, 46, 14);
+		panel.add(lblCerca_1);
+		
+		textField_5 = new JTextField();
+		textField_5.setBounds(302, 103, 164, 20);
+		panel.add(textField_5);
+		textField_5.setColumns(20);
+		
+		JComboBox comboBox_1 = new JComboBox();
+		comboBox_1.setBounds(258, 125, 208, 20);
+		panel.add(comboBox_1);
+		
+		JLabel lblAssociataA_1 = new JLabel("Associata a:");
+		lblAssociataA_1.setBounds(258, 145, 73, 16);
+		panel.add(lblAssociataA_1);
+		
+		JLabel label = new JLabel("");
+		label.setBounds(337, 145, 129, 16);
+		panel.add(label);
+		
+		JButton btnAssocia_1 = new JButton("Associa");
+		btnAssocia_1.setBounds(258, 163, 98, 26);
+		panel.add(btnAssocia_1);
+		
+		JButton btnRimuovi_1 = new JButton("Rimuovi");
+		btnRimuovi_1.setBounds(368, 163, 98, 26);
+		panel.add(btnRimuovi_1);
+		
+		JScrollPane scrollPane_subscaricare = new JScrollPane();
+		scrollPane_subscaricare.setBounds(0, 202, 370, 220);
+		SottotitoliPanel.add(scrollPane_subscaricare);
+		
+		JLabel lblSottotitoliDaScaricare = new JLabel("Sottotitoli da scaricare");
+		scrollPane_subscaricare.setColumnHeaderView(lblSottotitoliDaScaricare);
+		
+		JPanel panel_SottotitoliDaScaricare = new JPanel();
+		scrollPane_subscaricare.setViewportView(panel_SottotitoliDaScaricare);
+		
+		JScrollPane scrollPane_logsub = new JScrollPane();
+		scrollPane_logsub.setBounds(372, 202, 367, 220);
+		SottotitoliPanel.add(scrollPane_logsub);
+		
+		table = new JTable();
+		table.setModel(new DefaultTableModel(
+			new Object[][] {
+				{null, null, null, null},
+				{null, null, null, null},
+				{null, null, null, null},
+				{null, null, null, null},
+				{null, null, null, null},
+				{null, null, null, null},
+				{null, null, null, null},
+				{null, null, null, null},
+				{null, null, null, null},
+				{null, null, null, null},
+				{null, null, null, null},
+				{null, null, null, null},
+			},
+			new String[] {
+				"Serie", "Stagione", "Episodio", "da"
+			}
+		) {
+			boolean[] columnEditables = new boolean[] {
+				false, false, true, true
+			};
+			public boolean isCellEditable(int row, int column) {
+				return columnEditables[column];
+			}
+		});
+		table.getColumnModel().getColumn(0).setPreferredWidth(90);
+		table.getColumnModel().getColumn(0).setMaxWidth(110);
+		table.getColumnModel().getColumn(1).setPreferredWidth(60);
+		table.getColumnModel().getColumn(1).setMinWidth(20);
+		table.getColumnModel().getColumn(1).setMaxWidth(80);
+		table.getColumnModel().getColumn(2).setPreferredWidth(60);
+		table.getColumnModel().getColumn(2).setMinWidth(20);
+		table.getColumnModel().getColumn(2).setMaxWidth(80);
+		table.getColumnModel().getColumn(3).setPreferredWidth(110);
+		table.getColumnModel().getColumn(3).setMaxWidth(125);
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		table.setRowSelectionAllowed(false);
+		scrollPane_logsub.setViewportView(table);
+		
+		JPanel panel_7 = new JPanel();
+		panel_7.setBounds(0, 0, 10, 10);
+		SottotitoliPanel.add(panel_7);
+		
+		JPanel panel_8 = new JPanel();
+		panel_8.setBorder(new TitledBorder(null, "Scarica sottotitolo da un provider", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_8.setBounds(0, 426, 739, 103);
+		SottotitoliPanel.add(panel_8);
+		panel_8.setLayout(null);
+		
+		JLabel lblProvider = new JLabel("Provider");
+		lblProvider.setBounds(12, 25, 55, 16);
+		panel_8.add(lblProvider);
+		
+		JComboBox comboBox_provider = new JComboBox();
+		comboBox_provider.setBounds(72, 21, 200, 20);
+		panel_8.add(comboBox_provider);
+		
+		JLabel lblSerie_1 = new JLabel("Serie");
+		lblSerie_1.setBounds(12, 53, 55, 16);
+		panel_8.add(lblSerie_1);
+		
+		JComboBox comboBox_2 = new JComboBox();
+		comboBox_2.setBounds(72, 75, 200, 20);
+		panel_8.add(comboBox_2);
+		
+		textField_6 = new JTextField();
+		textField_6.setBounds(72, 53, 200, 20);
+		panel_8.add(textField_6);
+		textField_6.setColumns(30);
+		
+		JLabel lblStagione_1 = new JLabel("Stagione");
+		lblStagione_1.setBounds(291, 25, 55, 16);
+		panel_8.add(lblStagione_1);
+		
+		textField_7 = new JTextField();
+		textField_7.setBounds(345, 23, 40, 20);
+		panel_8.add(textField_7);
+		textField_7.setColumns(10);
+		
+		JLabel lblEpisodio = new JLabel("Episodio");
+		lblEpisodio.setBounds(290, 53, 55, 16);
+		panel_8.add(lblEpisodio);
+		
+		textField_8 = new JTextField();
+		textField_8.setBounds(345, 51, 40, 20);
+		panel_8.add(textField_8);
+		textField_8.setColumns(10);
+		
+		JLabel lblDestinazione = new JLabel("Destinazione");
+		lblDestinazione.setBounds(410, 25, 73, 16);
+		panel_8.add(lblDestinazione);
+		
+		textField_9 = new JTextField();
+		textField_9.setBounds(485, 23, 160, 20);
+		panel_8.add(textField_9);
+		textField_9.setColumns(10);
+		
+		JButton btnSfoglia_3 = new JButton("Sfoglia");
+		btnSfoglia_3.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/cartella.png")));
+		btnSfoglia_3.setBounds(645, 20, 91, 24);
+		panel_8.add(btnSfoglia_3);
+		
+		JButton btnScarica = new JButton("Scarica");
+		btnScarica.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/download.png")));
+		btnScarica.setBounds(525, 65, 120, 26);
+		panel_8.add(btnScarica);
 		
 		LettorePanel = new JPanel();
 		tab.addTab("Lettore", new ImageIcon(Interfaccia2.class.getResource("/GUI/res/player.png")), LettorePanel, null);
@@ -85,13 +350,6 @@ public class Interfaccia2 extends JFrame {
 		JButton btnVLCInstance=new JButton("Carica VLC");
 		btnVLCInstance.setBounds(165, 115, 100, 25);
 		LettorePanel.add(btnVLCInstance);
-		/*
-		if(VLCPanel.isLinked()){
-			VLCPanel=new Player(LettorePanel);
-			VLCPanel.setBounds(10, 0, 417, 235);
-			LettorePanel.add(VLCPanel.getPlayerPane());
-		}
-		*/
 		
 		JComboBox comboBoxLettoreSerie = new JComboBox();
 		comboBoxLettoreSerie.setBounds(45, 263, 260, 20);
@@ -428,6 +686,7 @@ public class Interfaccia2 extends JFrame {
 		btnAggiornaAds.setBounds(696, 372, 33, 23);
 		InfoPanel.add(btnAggiornaAds);
 		
+		/**TODO
 		SwingUtilities.invokeLater(new Runnable() {@Override
 			public void run() {
     			if(!NativeInterface.isOpen())
@@ -440,7 +699,7 @@ public class Interfaccia2 extends JFrame {
 				InfoPanel.add(advertising);
 			}
 		});
-		
+		*/
 		
 		final JButton btnChiudiADS = new JButton("");
 		btnChiudiADS.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/remove.png")));
@@ -538,13 +797,7 @@ public class Interfaccia2 extends JFrame {
 				lblRicercaOre.setText("( "+ore+((ore==1)?" ora ":" ore ")+minuti+" min )");
 			}
 		});
-		/**TODO rimuovere per la build*/
-		/*
-		VLCPanel.addToPlaylist("D:\\SerieTV\\Alcatraz\\Alcatraz.S01E01.HDTV.XviD-LOL.[VTV].avi");
-		VLCPanel.addToPlaylist("D:\\SerieTV\\How I met your mother\\How.I.Met.Your.Mother.S08E24.HDTV.x264-LOL.mp4");
-		VLCPanel.addToPlaylist("D:\\SerieTV\\Hunted\\Hunted.1x01.Mort.HDTV.x264-FoV.mp4");
-		VLCPanel.addToPlaylist("D:\\SerieTV\\Monk\\Monk - Stagione 8\\Detective Monk.8x01.Il Sig. Monk E Il Clan Dei Cooper.ITA.avi");
-		*/
+		
 		btnVLCInstance.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				VLCPanel=new Player(LettorePanel);
@@ -552,12 +805,19 @@ public class Interfaccia2 extends JFrame {
 					VLCPanel.setBounds(10, 0, 417, 235);
 					LettorePanel.add(VLCPanel.getPlayerPane());
 					LettorePanel.remove((JButton)arg0.getSource());
-					
+					LettorePanel.revalidate();
+					LettorePanel.repaint();
 					/**TODO rimuovere per la build*/
-					VLCPanel.addToPlaylist("D:\\SerieTV\\Alcatraz\\Alcatraz.S01E01.HDTV.XviD-LOL.[VTV].avi");
-					VLCPanel.addToPlaylist("D:\\SerieTV\\How I met your mother\\How.I.Met.Your.Mother.S08E24.HDTV.x264-LOL.mp4");
-					VLCPanel.addToPlaylist("D:\\SerieTV\\Hunted\\Hunted.1x01.Mort.HDTV.x264-FoV.mp4");
-					VLCPanel.addToPlaylist("D:\\SerieTV\\Monk\\Monk - Stagione 8\\Detective Monk.8x01.Il Sig. Monk E Il Clan Dei Cooper.ITA.avi");
+					if(Settings.isWindows()){
+    					VLCPanel.addToPlaylist("D:\\SerieTV\\Alcatraz\\Alcatraz.S01E01.HDTV.XviD-LOL.[VTV].avi");
+    					VLCPanel.addToPlaylist("D:\\SerieTV\\How I met your mother\\How.I.Met.Your.Mother.S08E24.HDTV.x264-LOL.mp4");
+    					VLCPanel.addToPlaylist("D:\\SerieTV\\Hunted\\Hunted.1x01.Mort.HDTV.x264-FoV.mp4");
+    					VLCPanel.addToPlaylist("D:\\SerieTV\\Monk\\Monk - Stagione 8\\Detective Monk.8x01.Il Sig. Monk E Il Clan Dei Cooper.ITA.avi");
+					}
+					else if(Settings.isLinux()){
+						VLCPanel.addToPlaylist("lost.1x01.pilota._parte.1_.ita.dvdrip.avi");
+						VLCPanel.addToPlaylist("./Grover Washington Jr. Featuring Bill Withers - Just the Two .flv");
+					}
 				}
 				
 			}

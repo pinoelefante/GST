@@ -39,6 +39,9 @@ public class Player {
 	private void locateVLC() {
 		System.out.println(DEFAULT_PATH);
 		if(!search_path){
+			if(Settings.isLinux()){
+				System.setProperty("VLC_PLUGIN_PATH", DEFAULT_PATH+File.separator+"vlc"+File.separator+"plugins");
+			}
 			NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), DEFAULT_PATH);
 			search_path=true;
 		}
@@ -73,6 +76,8 @@ public class Player {
 		return vlc;
 	}
 	public void play(){
+		if(vlc==null)
+			return;
 		if(vlc.getMediaPlayer().isPlaying()){
 			togglePause();
 			return;
@@ -85,6 +90,9 @@ public class Player {
 		}
 	}
 	public void play(String s){
+		if(vlc==null)
+			return;
+		
 		if(s!=null){
 			if(new File(s).exists()){
 				//System.out.println(s);
@@ -97,13 +105,19 @@ public class Player {
 		default_player=new Rectangle(x, y, wid, hei);
 	}
 	public void stop(){
+		if(vlc==null)
+			return;
 		if(vlc.getMediaPlayer().isPlaying())
 			vlc.getMediaPlayer().stop();
 	}
 	public void release(){
-		vlc.release();
+		if(vlc!=null)
+			vlc.release();
 	}
 	public void togglePause(){
+		if(vlc==null)
+			return;
+		
 		if(vlc.getMediaPlayer().isPlaying())
 			vlc.getMediaPlayer().pause();
 		else
@@ -115,6 +129,9 @@ public class Player {
 	
 	private float last_seen;
 	public void set_fullscreen(){
+		if(vlc==null)
+			return;
+		
 		if(fullscreen_frame==null){
 			fullscreen_frame=new JFrame();
 			fullscreen_frame.setAlwaysOnTop(true);
@@ -161,6 +178,9 @@ public class Player {
 		isFullscreen=true;
 	}
 	public void remove_fullscreen(){
+		if(vlc==null)
+			return;
+		
 		fullscreen_frame.remove(vlc);
 		vlc.setBounds(default_player);
 		default_parent.add(vlc);
@@ -176,6 +196,8 @@ public class Player {
 	}
 	
 	public void next(){
+		if(vlc==null)
+			return;
 		stop();
 		if(vlc.getMediaPlayer().isPlaying()){
 			play(playlist.getItem(playlist.getCurrentItem()));
@@ -185,6 +207,8 @@ public class Player {
 		}
 	}
 	public void prev(){
+		if(vlc==null)
+			return;
 		stop();
 		if(vlc.getMediaPlayer().isPlaying()){
 			int index=playlist.getCurrentItem()-2;

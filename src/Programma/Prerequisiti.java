@@ -55,6 +55,7 @@ public class Prerequisiti {
 					String dest_nome=d.getUrl().substring(d.getUrl().lastIndexOf("/"));
 					
 					try {
+						System.out.println("Scaricando: "+d.getNome());
 						Download.downloadFromUrl(d.getUrl(), destinazione+dest_nome);
 						ArchiviZip.estrai_tutto(destinazione+dest_nome, destinazione);
 						OperazioniFile.deleteFile(destinazione+dest_nome);
@@ -68,6 +69,7 @@ public class Prerequisiti {
 			else {
 				String dest_nome=d.getUrl().substring(d.getUrl().lastIndexOf("/"));
 				try {
+					System.out.println("Scaricando: "+d.getNome());
 					Download.downloadFromUrl(d.getUrl(), destinazione+dest_nome);
 					ArchiviZip.estrai_tutto(destinazione+dest_nome, destinazione);
 					OperazioniFile.deleteFile(destinazione+dest_nome);
@@ -94,10 +96,16 @@ public class Prerequisiti {
 		}
 		else if(Settings.isLinux()){
 			if(Settings.is32bit()){
-				
+				vlc_dep.add(new Dipendenza("libvlc.so.5", destinazione+"libvlc.so.5", sito+"vlc_linux32.zip", "linux", 15L, true, false));
+				vlc_dep.add(new Dipendenza("libvlc.so.5.3.2", destinazione+"libvlc.so.5.3.2", sito+"vlc_linux32.zip", "linux", 112552L, true, false));
+				vlc_dep.add(new Dipendenza("libvlccore.so.5", destinazione+"libvlccore.so.5", sito+"vlc_linux32.zip", "linux", 19L, true, false));
+				vlc_dep.add(new Dipendenza("libvlccore.so.5.1.1", destinazione+"libvlccore.so.5.1.1", sito+"vlc_linux32.zip", "linux", 1032372L, true, false));
 			}
 			else {
-				
+				vlc_dep.add(new Dipendenza("libvlc.so.5", destinazione+"libvlc.so.5", sito+"vlc_linux64.zip", "linux", 15L, false, true));
+				vlc_dep.add(new Dipendenza("libvlc.so.5.3.2", destinazione+"libvlc.so.5.3.2", sito+"vlc_linux64.zip", "linux", 105584L, false, true));
+				vlc_dep.add(new Dipendenza("libvlccore.so.5", destinazione+"libvlccore.so.5", sito+"vlc_linux64.zip", "linux", 19L, false, true));
+				vlc_dep.add(new Dipendenza("libvlccore.so.5.1.1", destinazione+"libvlccore.so.5.1.1", sito+"vlc_linux64.zip", "linux", 949824L, false, true));
 			}
 		}
 		else if(Settings.isMacOS()){

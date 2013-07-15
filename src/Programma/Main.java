@@ -48,9 +48,11 @@ public class Main {
 			Settings.baseSettings();
 			fl.setprog(++i);
 			
+			/*
 			fl.settext("Controllo dipendenze");
 			Prerequisiti.checkDipendenze();
 			fl.setprog(++i);
+			*/
 			
 			fl.settext("Connessione al database");
 			Database.Connect();
