@@ -5,15 +5,18 @@ import javax.swing.JFrame;
 import Programma.ControlloAggiornamenti;
 import Programma.OperazioniFile;
 import Programma.Settings;
-
 import LettoreVideo.Player;
 
 import javax.swing.JTabbedPane;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.datatransfer.DataFlavor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -27,10 +30,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
-import javax.swing.SwingUtilities;
 
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
+
 import javax.swing.border.TitledBorder;
 import javax.swing.JCheckBox;
 import javax.swing.UIManager;
@@ -38,10 +41,14 @@ import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import javax.swing.border.LineBorder;
+
 import java.awt.Color;
+
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
+
 import java.awt.event.MouseAdapter;
+
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
@@ -58,13 +65,18 @@ public class Interfaccia2 extends JFrame {
 	private Player VLCPanel;
 	private JPanel LettorePanel;
 	private JWebBrowser advertising;
+	private JTextField txt_itasa_cerca;
+	private JTextField txt_subsfactory_cerca;
+	private JTable table;
+	private JTextField txt_serie_provider;
+	private JTextField txt_stagione_provider;
+	private JTextField txt_episodio_provider;
+	private JTextField txt_destinazione_provider;
 	private JTextField textField_4;
 	private JTextField textField_5;
-	private JTable table;
 	private JTextField textField_6;
 	private JTextField textField_7;
 	private JTextField textField_8;
-	private JTextField textField_9;
 
 	public Interfaccia2(){
 		super("Gestione Serie TV rel."+Settings.getVersioneSoftware()+" by pinoelefante");
@@ -86,6 +98,147 @@ public class Interfaccia2 extends JFrame {
 		JPanel DownloadPanel = new JPanel();
 		tab.addTab("Download", new ImageIcon(Interfaccia2.class.getResource("/GUI/res/download.png")), DownloadPanel, null);
 		tab.setEnabledAt(0, true);
+		DownloadPanel.setLayout(null);
+		
+		JScrollPane scrollPane = new JScrollPane();
+		scrollPane.setViewportBorder(new TitledBorder(null, "Nuove serie", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		scrollPane.setBounds(485, 0, 254, 223);
+		DownloadPanel.add(scrollPane);
+		
+		JPanel panel_nuove_serie = new JPanel();
+		scrollPane.setViewportView(panel_nuove_serie);
+		
+		JPanel panel_9 = new JPanel();
+		panel_9.setBorder(new TitledBorder(null, "Aggiungi/Rimuovi serie", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_9.setBounds(0, 0, 485, 140);
+		DownloadPanel.add(panel_9);
+		panel_9.setLayout(null);
+		
+		JLabel lblSerieDisponibili = new JLabel("<html><font size=4><b>Serie disponibili</b><html>");
+		lblSerieDisponibili.setHorizontalAlignment(SwingConstants.CENTER);
+		lblSerieDisponibili.setBounds(10, 15, 222, 22);
+		panel_9.add(lblSerieDisponibili);
+		
+		JLabel lblCerca_2 = new JLabel("Cerca");
+		lblCerca_2.setBounds(10, 45, 42, 14);
+		panel_9.add(lblCerca_2);
+		
+		textField_4 = new JTextField();
+		textField_4.setBounds(73, 42, 159, 20);
+		panel_9.add(textField_4);
+		textField_4.setColumns(20);
+		
+		JComboBox comboBox = new JComboBox();
+		comboBox.setBounds(73, 68, 159, 20);
+		panel_9.add(comboBox);
+		
+		JLabel lblSeleziona = new JLabel("Seleziona");
+		lblSeleziona.setBounds(10, 70, 55, 16);
+		panel_9.add(lblSeleziona);
+		
+		JLabel lblNewLabel = new JLabel("<html><font size=4><b>Serie aggiunte</b></font></html>");
+		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		lblNewLabel.setBounds(253, 15, 222, 22);
+		panel_9.add(lblNewLabel);
+		
+		JLabel lblCerca_3 = new JLabel("Cerca");
+		lblCerca_3.setBounds(253, 45, 42, 16);
+		panel_9.add(lblCerca_3);
+		
+		JLabel lblSeleziona_1 = new JLabel("Seleziona");
+		lblSeleziona_1.setBounds(252, 70, 55, 16);
+		panel_9.add(lblSeleziona_1);
+		
+		textField_5 = new JTextField();
+		textField_5.setBounds(315, 42, 159, 20);
+		panel_9.add(textField_5);
+		textField_5.setColumns(10);
+		
+		JComboBox comboBox_1 = new JComboBox();
+		comboBox_1.setBounds(315, 68, 159, 20);
+		panel_9.add(comboBox_1);
+		
+		JButton btnAggiungi = new JButton("Aggiungi");
+		btnAggiungi.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/add.png")));
+		btnAggiungi.setBounds(95, 95, 103, 26);
+		panel_9.add(btnAggiungi);
+		
+		JButton btnRimuovi = new JButton("Rimuovi");
+		btnRimuovi.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/remove.png")));
+		btnRimuovi.setBounds(335, 95, 103, 26);
+		panel_9.add(btnRimuovi);
+		
+		JPanel panel_10 = new JPanel();
+		panel_10.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "Aggiungi episodio dall'esterno", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_10.setBounds(0, 143, 485, 80);
+		DownloadPanel.add(panel_10);
+		panel_10.setLayout(null);
+		
+		JLabel lblSerie_2 = new JLabel("Serie");
+		lblSerie_2.setBounds(12, 38, 40, 16);
+		panel_10.add(lblSerie_2);
+		
+		JComboBox comboBox_2 = new JComboBox();
+		comboBox_2.setBounds(57, 36, 150, 20);
+		panel_10.add(comboBox_2);
+		
+		JLabel lblStagione_2 = new JLabel("Stagione");
+		lblStagione_2.setBounds(225, 25, 55, 16);
+		panel_10.add(lblStagione_2);
+		
+		textField_6 = new JTextField();
+		textField_6.addKeyListener(new TextListenerOnlyNumber(textField_6));
+		textField_6.setBounds(280, 23, 30, 20);
+		panel_10.add(textField_6);
+		textField_6.setColumns(3);
+		
+		JLabel lblEpisodio_1 = new JLabel("Episodio");
+		lblEpisodio_1.setBounds(325, 25, 55, 16);
+		panel_10.add(lblEpisodio_1);
+		
+		textField_7 = new JTextField();
+		textField_7.addKeyListener(new TextListenerOnlyNumber(textField_7));
+		textField_7.setBounds(380, 23, 30, 20);
+		panel_10.add(textField_7);
+		textField_7.setColumns(3);
+		
+		JLabel lblLink = new JLabel("Link");
+		lblLink.setBounds(225, 52, 40, 16);
+		panel_10.add(lblLink);
+		
+		textField_8 = new JTextField();
+		textField_8.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if(e.getButton()==MouseEvent.BUTTON3){
+					textField_8.setText("");
+					Clipboard clip=Toolkit.getDefaultToolkit().getSystemClipboard();
+					Transferable contents = clip.getContents(null);
+					boolean hasTransferableText = (contents != null) && contents.isDataFlavorSupported(DataFlavor.stringFlavor);
+					if (hasTransferableText) {
+						try {
+							String result = (String) contents.getTransferData(DataFlavor.stringFlavor);
+							textField_8.setText(result.trim());
+						}
+						catch (UnsupportedFlavorException ex) {
+							System.out.println(ex);
+							ex.printStackTrace();
+						}
+						catch (Exception ex) {
+							System.out.println(ex);
+							ex.printStackTrace();
+						}
+					}
+				}
+			}
+		});
+		textField_8.setBounds(266, 50, 144, 20);
+		panel_10.add(textField_8);
+		textField_8.setColumns(10);
+		
+		JButton btnAggiungiTorrent = new JButton("");
+		btnAggiungiTorrent.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/add.png")));
+		btnAggiungiTorrent.setBounds(428, 30, 40, 26);
+		panel_10.add(btnAggiungiTorrent);
 		
 		JPanel SottotitoliPanel = new JPanel();
 		tab.addTab("Sottotitoli", new ImageIcon(Interfaccia2.class.getResource("/GUI/res/sottotitoli.png")), SottotitoliPanel, null);
@@ -98,6 +251,7 @@ public class Interfaccia2 extends JFrame {
 		panel.setLayout(null);
 		
 		JLabel imgItasaLogo = new JLabel("");
+		imgItasaLogo.setToolTipText("Clicca per visitare ItalianSubs");
 		imgItasaLogo.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent arg0) {
 				try {
@@ -125,6 +279,7 @@ public class Interfaccia2 extends JFrame {
 		panel.add(comboBox_SerieTVAssociatore);
 		
 		JLabel imgSubsfactoryLogo = new JLabel("");
+		imgSubsfactoryLogo.setToolTipText("Clicca per visitare Subsfactory");
 		imgSubsfactoryLogo.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				try {
@@ -144,6 +299,7 @@ public class Interfaccia2 extends JFrame {
 		panel.add(lblsubsfactory);
 		
 		JLabel imgSubspediaLogo = new JLabel("");
+		imgSubspediaLogo.setToolTipText("Clicca per visitare Subspedia");
 		imgSubspediaLogo.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				try {
@@ -166,22 +322,22 @@ public class Interfaccia2 extends JFrame {
 		lblCerca.setBounds(10, 105, 46, 14);
 		panel.add(lblCerca);
 		
-		textField_4 = new JTextField();
-		textField_4.setBounds(57, 103, 161, 20);
-		panel.add(textField_4);
-		textField_4.setColumns(20);
+		txt_itasa_cerca = new JTextField();
+		txt_itasa_cerca.setBounds(57, 103, 161, 20);
+		panel.add(txt_itasa_cerca);
+		txt_itasa_cerca.setColumns(20);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(10, 125, 208, 20);
-		panel.add(comboBox);
+		JComboBox cmb_itasa_serie = new JComboBox();
+		cmb_itasa_serie.setBounds(10, 125, 208, 20);
+		panel.add(cmb_itasa_serie);
 		
-		JButton btnAssocia = new JButton("Associa");
-		btnAssocia.setBounds(10, 163, 98, 26);
-		panel.add(btnAssocia);
+		JButton btnItasaAssocia = new JButton("Associa");
+		btnItasaAssocia.setBounds(10, 163, 98, 26);
+		panel.add(btnItasaAssocia);
 		
-		JButton btnRimuovi = new JButton("Rimuovi");
-		btnRimuovi.setBounds(120, 163, 98, 26);
-		panel.add(btnRimuovi);
+		JButton btnItasaRimuovi = new JButton("Rimuovi");
+		btnItasaRimuovi.setBounds(120, 163, 98, 26);
+		panel.add(btnItasaRimuovi);
 		
 		JLabel lblAssociataA = new JLabel("Associata a: ");
 		lblAssociataA.setBounds(10, 145, 73, 16);
@@ -195,14 +351,14 @@ public class Interfaccia2 extends JFrame {
 		lblCerca_1.setBounds(258, 105, 46, 14);
 		panel.add(lblCerca_1);
 		
-		textField_5 = new JTextField();
-		textField_5.setBounds(302, 103, 164, 20);
-		panel.add(textField_5);
-		textField_5.setColumns(20);
+		txt_subsfactory_cerca = new JTextField();
+		txt_subsfactory_cerca.setBounds(302, 103, 164, 20);
+		panel.add(txt_subsfactory_cerca);
+		txt_subsfactory_cerca.setColumns(20);
 		
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setBounds(258, 125, 208, 20);
-		panel.add(comboBox_1);
+		JComboBox cmb_subsfactory_serie = new JComboBox();
+		cmb_subsfactory_serie.setBounds(258, 125, 208, 20);
+		panel.add(cmb_subsfactory_serie);
 		
 		JLabel lblAssociataA_1 = new JLabel("Associata a:");
 		lblAssociataA_1.setBounds(258, 145, 73, 16);
@@ -212,13 +368,13 @@ public class Interfaccia2 extends JFrame {
 		label.setBounds(337, 145, 129, 16);
 		panel.add(label);
 		
-		JButton btnAssocia_1 = new JButton("Associa");
-		btnAssocia_1.setBounds(258, 163, 98, 26);
-		panel.add(btnAssocia_1);
+		JButton btnSubsfactoryAssocia = new JButton("Associa");
+		btnSubsfactoryAssocia.setBounds(258, 163, 98, 26);
+		panel.add(btnSubsfactoryAssocia);
 		
-		JButton btnRimuovi_1 = new JButton("Rimuovi");
-		btnRimuovi_1.setBounds(368, 163, 98, 26);
-		panel.add(btnRimuovi_1);
+		JButton btnSubsfactoryRimuovi = new JButton("Rimuovi");
+		btnSubsfactoryRimuovi.setBounds(368, 163, 98, 26);
+		panel.add(btnSubsfactoryRimuovi);
 		
 		JScrollPane scrollPane_subscaricare = new JScrollPane();
 		scrollPane_subscaricare.setBounds(0, 202, 370, 220);
@@ -297,51 +453,55 @@ public class Interfaccia2 extends JFrame {
 		lblSerie_1.setBounds(12, 53, 55, 16);
 		panel_8.add(lblSerie_1);
 		
-		JComboBox comboBox_2 = new JComboBox();
-		comboBox_2.setBounds(72, 75, 200, 20);
-		panel_8.add(comboBox_2);
+		JComboBox cmb_serie_provider = new JComboBox();
+		cmb_serie_provider.setBounds(72, 75, 200, 20);
+		panel_8.add(cmb_serie_provider);
 		
-		textField_6 = new JTextField();
-		textField_6.setBounds(72, 53, 200, 20);
-		panel_8.add(textField_6);
-		textField_6.setColumns(30);
+		txt_serie_provider = new JTextField();
+		txt_serie_provider.setBounds(72, 53, 200, 20);
+		panel_8.add(txt_serie_provider);
+		txt_serie_provider.setColumns(30);
 		
 		JLabel lblStagione_1 = new JLabel("Stagione");
 		lblStagione_1.setBounds(291, 25, 55, 16);
 		panel_8.add(lblStagione_1);
 		
-		textField_7 = new JTextField();
-		textField_7.setBounds(345, 23, 40, 20);
-		panel_8.add(textField_7);
-		textField_7.setColumns(10);
+		txt_stagione_provider = new JTextField();
+		txt_stagione_provider.addKeyListener(new TextListenerOnlyNumber(txt_stagione_provider));
+		
+		
+		txt_stagione_provider.setBounds(345, 23, 40, 20);
+		panel_8.add(txt_stagione_provider);
+		txt_stagione_provider.setColumns(10);
 		
 		JLabel lblEpisodio = new JLabel("Episodio");
 		lblEpisodio.setBounds(290, 53, 55, 16);
 		panel_8.add(lblEpisodio);
 		
-		textField_8 = new JTextField();
-		textField_8.setBounds(345, 51, 40, 20);
-		panel_8.add(textField_8);
-		textField_8.setColumns(10);
+		txt_episodio_provider = new JTextField();
+		txt_episodio_provider.addKeyListener(new TextListenerOnlyNumber(txt_episodio_provider));
+		txt_episodio_provider.setBounds(345, 51, 40, 20);
+		panel_8.add(txt_episodio_provider);
+		txt_episodio_provider.setColumns(10);
 		
 		JLabel lblDestinazione = new JLabel("Destinazione");
 		lblDestinazione.setBounds(410, 25, 73, 16);
 		panel_8.add(lblDestinazione);
 		
-		textField_9 = new JTextField();
-		textField_9.setBounds(485, 23, 160, 20);
-		panel_8.add(textField_9);
-		textField_9.setColumns(10);
+		txt_destinazione_provider = new JTextField();
+		txt_destinazione_provider.setBounds(485, 23, 160, 20);
+		panel_8.add(txt_destinazione_provider);
+		txt_destinazione_provider.setColumns(10);
 		
-		JButton btnSfoglia_3 = new JButton("Sfoglia");
-		btnSfoglia_3.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/cartella.png")));
-		btnSfoglia_3.setBounds(645, 20, 91, 24);
-		panel_8.add(btnSfoglia_3);
+		JButton btnSfoglia_provider = new JButton("Sfoglia");
+		btnSfoglia_provider.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/cartella.png")));
+		btnSfoglia_provider.setBounds(645, 20, 91, 24);
+		panel_8.add(btnSfoglia_provider);
 		
-		JButton btnScarica = new JButton("Scarica");
-		btnScarica.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/download.png")));
-		btnScarica.setBounds(525, 65, 120, 26);
-		panel_8.add(btnScarica);
+		JButton btnScarica_provider = new JButton("Scarica");
+		btnScarica_provider.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/download.png")));
+		btnScarica_provider.setBounds(525, 65, 120, 26);
+		panel_8.add(btnScarica_provider);
 		
 		LettorePanel = new JPanel();
 		tab.addTab("Lettore", new ImageIcon(Interfaccia2.class.getResource("/GUI/res/player.png")), LettorePanel, null);

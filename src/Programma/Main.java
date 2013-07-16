@@ -53,15 +53,16 @@ public class Main {
 			Prerequisiti.checkDipendenze();
 			fl.setprog(++i);
 			*/
-			
+			/*
 			fl.settext("Connessione al database");
 			Database.Connect();
 			fl.setprog(++i);
-			
+			*/
+			/*
 			fl.settext("Caricamento impostazioni");
 			Settings.CaricaSetting();
 			fl.setprog(++i);
-			
+			*/
 			fl.settext("Impostando la lingua");
 			Language.setLanguage(Settings.getLingua());
 			fl.setprog(++i);
@@ -70,9 +71,11 @@ public class Main {
 			OperazioniFile.dumpfileclean();
 			fl.setprog(++i);
 			
+			/*
 			fl.settext("Applicando aggiornamenti");
 			Update.start();
 			fl.setprog(++i);
+			*/
 			/*
 			fl.settext("Controllo aggiornamenti");
 			thread_update.start();
