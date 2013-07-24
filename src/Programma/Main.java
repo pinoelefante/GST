@@ -48,21 +48,21 @@ public class Main {
 			Settings.baseSettings();
 			fl.setprog(++i);
 			
-			
+			/*
 			fl.settext("Controllo dipendenze");
 			Prerequisiti.checkDipendenze();
 			fl.setprog(++i);
 			
-			/*
+			*/
 			fl.settext("Connessione al database");
 			Database.Connect();
 			fl.setprog(++i);
-			*/
-			/*
+			
+			
 			fl.settext("Caricamento impostazioni");
 			Settings.CaricaSetting();
 			fl.setprog(++i);
-			*/
+			
 			fl.settext("Impostando la lingua");
 			Language.setLanguage(Settings.getLingua());
 			fl.setprog(++i);
@@ -82,11 +82,11 @@ public class Main {
 			fl.setprog(++i);
 			thread_update.join();
 			*/
-			/*
+			
 			fl.settext("Scaricando lista serie");
 			GestioneSerieTV.Showlist();
 			fl.setprog(++i);
-			*/
+			
 			fl.settext("Avvio interfaccia grafica");
 			fl.setprog(++i);
 			/*

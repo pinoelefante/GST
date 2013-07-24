@@ -5,8 +5,10 @@ import javax.swing.JFrame;
 import Programma.ControlloAggiornamenti;
 import Programma.OperazioniFile;
 import Programma.Settings;
+import SerieTV.SerieTV;
 import LettoreVideo.Player;
 import LettoreVideo.PlaylistItem;
+import SerieTV.GestioneSerieTV;
 
 import javax.swing.JTabbedPane;
 
@@ -19,6 +21,9 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
@@ -49,6 +54,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 
 import java.awt.event.MouseAdapter;
+import java.util.ArrayList;
 
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -74,12 +80,17 @@ public class Interfaccia2 extends JFrame {
 	private JTextField txt_stagione_provider;
 	private JTextField txt_episodio_provider;
 	private JTextField txt_destinazione_provider;
-	private JTextField textField_4;
-	private JTextField textField_5;
+	private JTextField txt_cerca_serie_tutte;
+	private JTextField txt_cerca_serie_inserite;
 	private JTextField textField_6;
 	private JTextField textField_7;
 	private JTextField textField_8;
 	private JPlaylist playlist;
+	private JComboBox<SerieTV> cmb_serie_aggiunte;
+	private JComboBox<SerieTV> cmb_serie_aggiunte_add_episodio;
+	private JComboBox<SerieTV> cmb_serie_lettore;
+	private JComboBox<SerieTV> cmb_serie_sottotitoli;
+	private JComboBox<SerieTV> cmb_serie_tutte;
 
 	public Interfaccia2(){
 		super("Gestione Serie TV rel."+Settings.getVersioneSoftware()+" by pinoelefante");
@@ -126,14 +137,14 @@ public class Interfaccia2 extends JFrame {
 		lblCerca_2.setBounds(10, 45, 42, 14);
 		panel_9.add(lblCerca_2);
 		
-		textField_4 = new JTextField();
-		textField_4.setBounds(73, 42, 159, 20);
-		panel_9.add(textField_4);
-		textField_4.setColumns(20);
+		txt_cerca_serie_tutte = new JTextField();
+		txt_cerca_serie_tutte.setBounds(73, 42, 159, 20);
+		panel_9.add(txt_cerca_serie_tutte);
+		txt_cerca_serie_tutte.setColumns(20);
 		
-		JComboBox comboBox = new JComboBox();
-		comboBox.setBounds(73, 68, 159, 20);
-		panel_9.add(comboBox);
+		cmb_serie_tutte = new JComboBox<SerieTV>();
+		cmb_serie_tutte.setBounds(73, 68, 159, 20);
+		panel_9.add(cmb_serie_tutte);
 		
 		JLabel lblSeleziona = new JLabel("Seleziona");
 		lblSeleziona.setBounds(10, 70, 55, 16);
@@ -152,14 +163,14 @@ public class Interfaccia2 extends JFrame {
 		lblSeleziona_1.setBounds(252, 70, 55, 16);
 		panel_9.add(lblSeleziona_1);
 		
-		textField_5 = new JTextField();
-		textField_5.setBounds(315, 42, 159, 20);
-		panel_9.add(textField_5);
-		textField_5.setColumns(10);
+		txt_cerca_serie_inserite = new JTextField();
+		txt_cerca_serie_inserite.setBounds(315, 42, 159, 20);
+		panel_9.add(txt_cerca_serie_inserite);
+		txt_cerca_serie_inserite.setColumns(10);
 		
-		JComboBox comboBox_1 = new JComboBox();
-		comboBox_1.setBounds(315, 68, 159, 20);
-		panel_9.add(comboBox_1);
+		cmb_serie_aggiunte = new JComboBox();
+		cmb_serie_aggiunte.setBounds(315, 68, 159, 20);
+		panel_9.add(cmb_serie_aggiunte);
 		
 		JButton btnAggiungi = new JButton("Aggiungi");
 		btnAggiungi.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/add.png")));
@@ -171,6 +182,12 @@ public class Interfaccia2 extends JFrame {
 		btnRimuovi.setBounds(335, 95, 103, 26);
 		panel_9.add(btnRimuovi);
 		
+		JButton buttonReloadSerie = new JButton("");
+		buttonReloadSerie.setToolTipText("Ricarica elenco serie");
+		buttonReloadSerie.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/aggiorna.png")));
+		buttonReloadSerie.setBounds(197, 15, 33, 23);
+		panel_9.add(buttonReloadSerie);
+		
 		JPanel panel_10 = new JPanel();
 		panel_10.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "Aggiungi episodio dall'esterno", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panel_10.setBounds(0, 143, 485, 80);
@@ -181,9 +198,9 @@ public class Interfaccia2 extends JFrame {
 		lblSerie_2.setBounds(12, 38, 40, 16);
 		panel_10.add(lblSerie_2);
 		
-		JComboBox comboBox_2 = new JComboBox();
-		comboBox_2.setBounds(57, 36, 150, 20);
-		panel_10.add(comboBox_2);
+		cmb_serie_aggiunte_add_episodio = new JComboBox();
+		cmb_serie_aggiunte_add_episodio.setBounds(57, 36, 150, 20);
+		panel_10.add(cmb_serie_aggiunte_add_episodio);
 		
 		JLabel lblStagione_2 = new JLabel("Stagione");
 		lblStagione_2.setBounds(225, 25, 55, 16);
@@ -272,9 +289,9 @@ public class Interfaccia2 extends JFrame {
 		lblSerieTV.setBounds(172, 24, 46, 14);
 		panel.add(lblSerieTV);
 		
-		JComboBox comboBox_SerieTVAssociatore = new JComboBox();
-		comboBox_SerieTVAssociatore.setBounds(228, 21, 238, 20);
-		panel.add(comboBox_SerieTVAssociatore);
+		cmb_serie_sottotitoli = new JComboBox();
+		cmb_serie_sottotitoli.setBounds(228, 21, 238, 20);
+		panel.add(cmb_serie_sottotitoli);
 		
 		JLabel imgSubsfactoryLogo = new JLabel("");
 		imgSubsfactoryLogo.setToolTipText("Clicca per visitare Subsfactory");
@@ -509,9 +526,9 @@ public class Interfaccia2 extends JFrame {
 		btnVLCInstance.setBounds(165, 115, 100, 25);
 		LettorePanel.add(btnVLCInstance);
 		
-		JComboBox comboBoxLettoreSerie = new JComboBox();
-		comboBoxLettoreSerie.setBounds(45, 263, 260, 20);
-		LettorePanel.add(comboBoxLettoreSerie);
+		cmb_serie_lettore = new JComboBox();
+		cmb_serie_lettore.setBounds(45, 263, 260, 20);
+		LettorePanel.add(cmb_serie_lettore);
 		
 		JLabel lblSerie = new JLabel("Serie");
 		lblSerie.setBounds(12, 265, 37, 16);
@@ -625,32 +642,6 @@ public class Interfaccia2 extends JFrame {
 		btnVLCNext.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/nextt.png")));
 		btnVLCNext.setBounds(433, 78, 26, 26);
 		LettorePanel.add(btnVLCNext);
-		
-		
-		
-		/**TODO rimuovere
-		JButton button = new JButton("+");
-		button.setBounds(694, 11, 45, 23);
-		LettorePanel.add(button); 
-		
-		JButton btnT = new JButton("t");
-		btnT.setBounds(702, 45, 37, 23);
-		LettorePanel.add(btnT);
-		btnT.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				playlist.stampaPlaylist();
-			}
-		});
-		button.addActionListener(new ActionListener() {
-			int current=0;
-			String[] items=new String[]{
-				"D:\\SerieTV\\Continuum\\Continuum.S02E11.720p.HDTV.x264-KILLERS.mkv"
-			};
-			public void actionPerformed(ActionEvent e) {
-				playlist.addItem(new PlaylistItem(items[current], "Continuum"));
-			}
-		});
-		*/
 		
 		JPanel OpzioniPanel = new JPanel();
 		tab.addTab("Opzioni", new ImageIcon(Interfaccia2.class.getResource("/GUI/res/opzioni.png")), OpzioniPanel, null);
@@ -872,7 +863,7 @@ public class Interfaccia2 extends JFrame {
 		btnAggiornaAds.setBounds(696, 372, 33, 23);
 		InfoPanel.add(btnAggiornaAds);
 		
-		/**TODO*/
+		/**TODO decommentare per la distribuzione*/   /*
 		SwingUtilities.invokeLater(new Runnable() {@Override
 			public void run() {
     			if(!NativeInterface.isOpen())
@@ -1056,8 +1047,81 @@ public class Interfaccia2 extends JFrame {
 			public void windowClosed(WindowEvent arg0) {}
 			public void windowActivated(WindowEvent arg0) {}
 		});
+		txt_cerca_serie_tutte.addKeyListener(new KeyAdapter() {
+			public void keyReleased(KeyEvent e) {
+				String text=txt_cerca_serie_tutte.getText().trim().toLowerCase();
+				if(text.isEmpty()){
+					cmb_serie_tutte.removeAllItems();
+					ArrayList<SerieTV> t=GestioneSerieTV.getElencoSerieCompleto();
+					for(int i=0;i<t.size();i++){
+						cmb_serie_tutte.addItem(t.get(i));
+					}
+				}
+				else {
+					cmb_serie_tutte.removeAllItems();
+					ArrayList<SerieTV> t=GestioneSerieTV.getElencoSerieCompleto();
+					for(int i=0;i<t.size();i++){
+						SerieTV s=t.get(i);
+						if(s.getNomeSerie().toLowerCase().contains(text))
+							cmb_serie_tutte.addItem(s);
+					}
+				}
+			}
+		});
+		txt_cerca_serie_inserite.addKeyListener(new KeyAdapter() {
+			public void keyReleased(KeyEvent e) {
+				String text=txt_cerca_serie_inserite.getText().trim().toLowerCase();
+				if(text.isEmpty()){
+					cmb_serie_aggiunte.removeAllItems();
+					ArrayList<SerieTV> t=GestioneSerieTV.getElencoSerieInserite();
+					for(int i=0;i<t.size();i++){
+						cmb_serie_aggiunte.addItem(t.get(i));
+					}
+				}
+				else {
+					cmb_serie_aggiunte.removeAllItems();
+					ArrayList<SerieTV> t=GestioneSerieTV.getElencoSerieInserite();
+					for(int i=0;i<t.size();i++){
+						SerieTV s=t.get(i);
+						if(s.getNomeSerie().toLowerCase().contains(text))
+							cmb_serie_aggiunte.addItem(t.get(i));
+					}
+				}
+			}
+		});
+		btnAggiungi.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				SerieTV s=(SerieTV) cmb_serie_tutte.getSelectedItem();
+				if(s!=null){
+					cmb_serie_aggiunte.addItem(s);
+					cmb_serie_aggiunte_add_episodio.addItem(s);
+	    			cmb_serie_lettore.addItem(s);
+	    			cmb_serie_sottotitoli.addItem(s);
+				}
+			}
+		});
+		
+		
+		init();
 	}
 	private void init(){
+		/** inizializza i campi che contengono le serie tv inserite*/
+		ArrayList<SerieTV> st=GestioneSerieTV.getElencoSerieInserite();
+		if(st!=null){
+    		for(int i=0;i<st.size();i++){
+    			cmb_serie_aggiunte.addItem(st.get(i));
+    			cmb_serie_aggiunte_add_episodio.addItem(st.get(i));
+    			cmb_serie_lettore.addItem(st.get(i));
+    			cmb_serie_sottotitoli.addItem(st.get(i));
+    		}
+		}
+		/** inizializza il campo che contiene tutte le serie disponibili*/
+		st=GestioneSerieTV.getElencoSerieCompleto();
+		if(st!=null){
+			for(int i=0;i<st.size();i++){
+				cmb_serie_tutte.addItem(st.get(i));
+			}
+		}
 		
 	}
 }
