@@ -5,58 +5,113 @@ import java.util.ArrayList;
 import Programma.ManagerException;
 
 public class Playlist {
-	private ArrayList<String> playlist;
+	private ArrayList<PlaylistItem> playlist;
 	private int currentItem=0;
 	
 	public Playlist(){
-		playlist=new ArrayList<String>(3);
+		playlist=new ArrayList<PlaylistItem>(3);
 	}
 	public void addItem(String file_path){
-		playlist.add(file_path);
+		playlist.add(new PlaylistItem(file_path));
 	}
-	public void removeItem(String file){
-		int index=playlist.indexOf(file);
+	public void addItem(PlaylistItem i){
+		playlist.add(i);
+	}
+	public void removeItem(PlaylistItem item){
+		int index=playlist.indexOf(item);
+		if(index<0)
+			return;
 		if(index<currentItem)
 			currentItem--;
-		playlist.remove(file);
+		playlist.remove(playlist.get(index));
 		playlist.trimToSize();
 	}
-	public void removeItem(String file, int index){
-		String item=playlist.get(index);
-		if(item.compareTo(file)==0){
-			playlist.remove(index);
-			if(index<currentItem)
-				currentItem--;
-		}
+	public void removeItem(int index){
 		if(playlist.isEmpty())
-			clear();
+			return;
+		if(index<0 || index>=playlist.size())
+			return;
+		if(index<currentItem)
+			currentItem--;
+		playlist.remove(index);
 	}
 	public void clear(){
 		playlist.clear();
 		playlist.trimToSize();
 	}
+	private int search(String filename){
+		for(int i=0;i<playlist.size();i++){
+			String p=playlist.get(i).toString();
+			if(p.compareTo(filename)==0)
+				return i;
+		}
+		return -1;
+	}
+	public void moveUp(PlaylistItem item){
+		if(playlist.isEmpty())
+			return;
+		int index=playlist.indexOf(item);
+		if(index>0){
+			if(index==currentItem)
+				currentItem--;
+			PlaylistItem last=playlist.set(index-1, item);
+			playlist.set(index, last);
+		}
+	}
+	public void moveUp(int index){
+		if(playlist.isEmpty())
+			return;
+		if(index>0){
+			if(index==currentItem)
+				currentItem--;
+			PlaylistItem last=playlist.set(index-1, playlist.get(index));
+			playlist.set(index, last);
+		}
+	}
 	public void moveUp(String file){
 		if(playlist.isEmpty())
 			return;
 		
-		int index=playlist.indexOf(file);
-		if(index==0)
+		int index=search(file);
+		
+		if(index==0 || index==-1)
 			return;
 		if(index==currentItem)
 			currentItem--;
-		String last=playlist.set(index-1, file);
+		PlaylistItem last=playlist.set(index-1, playlist.get(index));
 		playlist.set(index, last);
+	}
+	public void moveDown(PlaylistItem item){
+		if(playlist.isEmpty())
+			return;
+		int index=playlist.indexOf(item);
+		if(index>=0 && index!=playlist.size()-1){
+			if(index==currentItem)
+				currentItem++;
+			PlaylistItem last=playlist.set(index+1, item);
+			playlist.set(index, last);
+		}
+	}
+	public void moveDown(int index){
+		if(playlist.isEmpty())
+			return;
+		if(index>=0 && index!=playlist.size()-1){
+			if(index==currentItem)
+				currentItem++;
+			PlaylistItem last=playlist.set(index+1, playlist.get(index));
+			playlist.set(index, last);
+		}
 	}
 	public void moveDown(String file){
 		if(playlist.isEmpty())
 			return;
 		
-		int index=playlist.indexOf(file);
-		if(index==playlist.size()-1)
+		int index=search(file);
+		if(index==playlist.size()-1 || index==-1)
 			return;
 		if(index==currentItem)
 			currentItem++;
-		String last=playlist.set(index+1, file);
+		PlaylistItem last=playlist.set(index+1, playlist.get(index));
 		playlist.set(index, last);
 	}
 	public String toString(){
@@ -89,7 +144,7 @@ public class Playlist {
 			i=0;
 		if(i>=0 && i<playlist.size()){
 			currentItem=i;
-			return playlist.get(i++);
+			return playlist.get(i++).getPath();
 		}
 		RuntimeException e=new RuntimeException("Playlist - Indice non valido\nCurrentItem="+currentItem+"\n"+"Indice richiesto: "+i+"\nLunghezza playlist: "+playlist.size());
 		ManagerException.registraEccezione(e);
@@ -100,5 +155,14 @@ public class Playlist {
 	}
 	public int getLastItem(){
 		return playlist.size()-1;
+	}
+	public PlaylistItem[] getArray(){
+		return playlist.toArray(new PlaylistItem[playlist.size()]);
+	}
+	public void setCurrentItem(int i){
+		if(!playlist.isEmpty()){
+			if(i>=0 && i<playlist.size())
+				currentItem=i;
+		}
 	}
 }

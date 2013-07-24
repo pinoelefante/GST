@@ -6,6 +6,7 @@ import Programma.ControlloAggiornamenti;
 import Programma.OperazioniFile;
 import Programma.Settings;
 import LettoreVideo.Player;
+import LettoreVideo.PlaylistItem;
 
 import javax.swing.JTabbedPane;
 
@@ -15,7 +16,6 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -30,6 +30,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
+import javax.swing.SwingUtilities;
 
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
@@ -52,6 +53,7 @@ import java.awt.event.MouseAdapter;
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.DefaultComboBoxModel;
 
 public class Interfaccia2 extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -77,6 +79,7 @@ public class Interfaccia2 extends JFrame {
 	private JTextField textField_6;
 	private JTextField textField_7;
 	private JTextField textField_8;
+	private JPlaylist playlist;
 
 	public Interfaccia2(){
 		super("Gestione Serie TV rel."+Settings.getVersioneSoftware()+" by pinoelefante");
@@ -209,7 +212,7 @@ public class Interfaccia2 extends JFrame {
 		textField_8 = new JTextField();
 		textField_8.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
-				if(e.getButton()==MouseEvent.BUTTON3){
+				if(e.getButton()==MouseEvent.BUTTON3 || e.getButton()==MouseEvent.BUTTON2){
 					textField_8.setText("");
 					Clipboard clip=Toolkit.getDefaultToolkit().getSystemClipboard();
 					Transferable contents = clip.getContents(null);
@@ -219,13 +222,8 @@ public class Interfaccia2 extends JFrame {
 							String result = (String) contents.getTransferData(DataFlavor.stringFlavor);
 							textField_8.setText(result.trim());
 						}
-						catch (UnsupportedFlavorException ex) {
-							System.out.println(ex);
-							ex.printStackTrace();
-						}
-						catch (Exception ex) {
-							System.out.println(ex);
-							ex.printStackTrace();
+						catch(Exception e1){
+							e1.printStackTrace();
 						}
 					}
 				}
@@ -411,7 +409,7 @@ public class Interfaccia2 extends JFrame {
 			}
 		) {
 			boolean[] columnEditables = new boolean[] {
-				false, false, true, true
+				false, false, false, false
 			};
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
@@ -535,21 +533,24 @@ public class Interfaccia2 extends JFrame {
 		scrollPaneLettoreEpisodi.setViewportView(panel_elenco_puntate);
 		
 		JCheckBox chckbxNascondiViste = new JCheckBox("Nascondi viste");
+		chckbxNascondiViste.setSelected(true);
 		chckbxNascondiViste.setBounds(10, 497, 112, 24);
 		LettorePanel.add(chckbxNascondiViste);
 		
 		JCheckBox chckbxNascondiIgnorate = new JCheckBox("Nascondi ignorate");
+		chckbxNascondiIgnorate.setSelected(true);
 		chckbxNascondiIgnorate.setBounds(134, 497, 135, 24);
 		LettorePanel.add(chckbxNascondiIgnorate);
 		
 		JCheckBox chckbxNascondiRimosse = new JCheckBox("Nascondi rimosse");
+		chckbxNascondiRimosse.setSelected(true);
 		chckbxNascondiRimosse.setBounds(277, 497, 140, 24);
 		LettorePanel.add(chckbxNascondiRimosse);
 		
-		JPanel panelLettorePlaylist = new JPanel();
-		panelLettorePlaylist.setBorder(new TitledBorder(null, "Playlist", TitledBorder.LEADING, TitledBorder.BOTTOM, null, null));
-		panelLettorePlaylist.setBounds(469, 0, 226, 210);
-		LettorePanel.add(panelLettorePlaylist);
+		playlist = new JPlaylist();
+		playlist.setBorder(new TitledBorder(null, "Playlist", TitledBorder.LEADING, TitledBorder.BOTTOM, null, null));
+		playlist.setBounds(469, 0, 226, 210);
+		LettorePanel.add(playlist);
 		
 		JButton btnVLCFullscreen = new JButton("");
 		btnVLCFullscreen.setToolTipText("Schermo intero");
@@ -562,8 +563,7 @@ public class Interfaccia2 extends JFrame {
 		LettorePanel.add(lblOrdine);
 		
 		JComboBox<String> comboBoxLettoreOrdine = new JComboBox<String>();
-		comboBoxLettoreOrdine.addItem("Crescente");
-		comboBoxLettoreOrdine.addItem("Decrescente");
+		comboBoxLettoreOrdine.setModel(new DefaultComboBoxModel<String>(new String[] {"Crescente", "Decrescente"}));
 		comboBoxLettoreOrdine.setBounds(615, 263, 112, 20);
 		LettorePanel.add(comboBoxLettoreOrdine);
 		
@@ -579,18 +579,18 @@ public class Interfaccia2 extends JFrame {
 		buttonVLCStop.setBounds(433, 26, 26, 26);
 		LettorePanel.add(buttonVLCStop);
 		
-		JButton buttonPlaylistRimuovi = new JButton("");
+		JButton buttonPlaylistRimuovi = playlist.getButtonDel();
 		buttonPlaylistRimuovi.setToolTipText("Rimuovi dalla playlist");
 		buttonPlaylistRimuovi.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/cestino.png")));
 		buttonPlaylistRimuovi.setBounds(701, 172, 26, 26);
 		LettorePanel.add(buttonPlaylistRimuovi);
 		
-		JButton buttonPlaylistDown = new JButton("");
+		JButton buttonPlaylistDown = playlist.getButtonDown();
 		buttonPlaylistDown.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/down.png")));
 		buttonPlaylistDown.setBounds(701, 107, 26, 26);
 		LettorePanel.add(buttonPlaylistDown);
 		
-		JButton buttonPlaylistUp = new JButton("");
+		JButton buttonPlaylistUp = playlist.getButtonUp();
 		buttonPlaylistUp.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/up.png")));
 		buttonPlaylistUp.setBounds(701, 76, 26, 26);
 		LettorePanel.add(buttonPlaylistUp);
@@ -625,6 +625,32 @@ public class Interfaccia2 extends JFrame {
 		btnVLCNext.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/nextt.png")));
 		btnVLCNext.setBounds(433, 78, 26, 26);
 		LettorePanel.add(btnVLCNext);
+		
+		
+		
+		/**TODO rimuovere
+		JButton button = new JButton("+");
+		button.setBounds(694, 11, 45, 23);
+		LettorePanel.add(button); 
+		
+		JButton btnT = new JButton("t");
+		btnT.setBounds(702, 45, 37, 23);
+		LettorePanel.add(btnT);
+		btnT.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				playlist.stampaPlaylist();
+			}
+		});
+		button.addActionListener(new ActionListener() {
+			int current=0;
+			String[] items=new String[]{
+				"D:\\SerieTV\\Continuum\\Continuum.S02E11.720p.HDTV.x264-KILLERS.mkv"
+			};
+			public void actionPerformed(ActionEvent e) {
+				playlist.addItem(new PlaylistItem(items[current], "Continuum"));
+			}
+		});
+		*/
 		
 		JPanel OpzioniPanel = new JPanel();
 		tab.addTab("Opzioni", new ImageIcon(Interfaccia2.class.getResource("/GUI/res/opzioni.png")), OpzioniPanel, null);
@@ -846,7 +872,7 @@ public class Interfaccia2 extends JFrame {
 		btnAggiornaAds.setBounds(696, 372, 33, 23);
 		InfoPanel.add(btnAggiornaAds);
 		
-		/**TODO
+		/**TODO*/
 		SwingUtilities.invokeLater(new Runnable() {@Override
 			public void run() {
     			if(!NativeInterface.isOpen())
@@ -859,7 +885,7 @@ public class Interfaccia2 extends JFrame {
 				InfoPanel.add(advertising);
 			}
 		});
-		*/
+		/**/
 		
 		final JButton btnChiudiADS = new JButton("");
 		btnChiudiADS.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/remove.png")));
@@ -960,23 +986,24 @@ public class Interfaccia2 extends JFrame {
 		
 		btnVLCInstance.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				VLCPanel=new Player(LettorePanel);
+				VLCPanel=new Player(LettorePanel, playlist.getPlaylist());
 				if(VLCPanel.isLinked()){
 					VLCPanel.setBounds(10, 0, 417, 235);
 					LettorePanel.add(VLCPanel.getPlayerPane());
 					LettorePanel.remove((JButton)arg0.getSource());
 					LettorePanel.revalidate();
 					LettorePanel.repaint();
+					playlist.setPlayer(VLCPanel);
 					/**TODO rimuovere per la build*/
 					if(Settings.isWindows()){
-    					VLCPanel.addToPlaylist("D:\\SerieTV\\Alcatraz\\Alcatraz.S01E01.HDTV.XviD-LOL.[VTV].avi");
-    					VLCPanel.addToPlaylist("D:\\SerieTV\\How I met your mother\\How.I.Met.Your.Mother.S08E24.HDTV.x264-LOL.mp4");
-    					VLCPanel.addToPlaylist("D:\\SerieTV\\Hunted\\Hunted.1x01.Mort.HDTV.x264-FoV.mp4");
-    					VLCPanel.addToPlaylist("D:\\SerieTV\\Monk\\Monk - Stagione 8\\Detective Monk.8x01.Il Sig. Monk E Il Clan Dei Cooper.ITA.avi");
+    					playlist.addItem("D:\\SerieTV\\Alcatraz\\Alcatraz.S01E01.HDTV.XviD-LOL.[VTV].avi");
+    					playlist.addItem("D:\\SerieTV\\How I met your mother\\How.I.Met.Your.Mother.S08E24.HDTV.x264-LOL.mp4");
+    					playlist.addItem("D:\\SerieTV\\Hunted\\Hunted.1x01.Mort.HDTV.x264-FoV.mp4");
+    					playlist.addItem("D:\\SerieTV\\Monk\\Monk - Stagione 8\\Detective Monk.8x01.Il Sig. Monk E Il Clan Dei Cooper.ITA.avi");
 					}
 					else if(Settings.isLinux()){
-						VLCPanel.addToPlaylist("lost.1x01.pilota._parte.1_.ita.dvdrip.avi");
-						VLCPanel.addToPlaylist("./Grover Washington Jr. Featuring Bill Withers - Just the Two .flv");
+						playlist.addItem("lost.1x01.pilota._parte.1_.ita.dvdrip.avi");
+						playlist.addItem("./Grover Washington Jr. Featuring Bill Withers - Just the Two .flv");
 					}
 				}
 				
@@ -1029,6 +1056,8 @@ public class Interfaccia2 extends JFrame {
 			public void windowClosed(WindowEvent arg0) {}
 			public void windowActivated(WindowEvent arg0) {}
 		});
+	}
+	private void init(){
 		
 	}
 }

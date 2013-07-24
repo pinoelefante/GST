@@ -7,7 +7,7 @@ import java.io.IOException;
 import Programma.ManagerException;
 import Programma.Settings;
 
-public class Player {
+public class PlayerOLD {
 	private static String stringa;
 	private static Thread player;
 	

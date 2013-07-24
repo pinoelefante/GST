@@ -16,7 +16,6 @@ public class TextListenerOnlyNumber extends KeyAdapter {
 		if(arg0.getExtendedKeyCode()==KeyEvent.VK_DELETE || arg0.getExtendedKeyCode()==KeyEvent.VK_BACK_SPACE){
 			if(!old.isEmpty()){
 				old=old.substring(0, old.length()-1);
-				System.out.println(old);
 			}
 			return;
 		}

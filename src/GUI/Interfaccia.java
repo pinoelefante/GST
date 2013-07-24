@@ -1345,7 +1345,7 @@ public class Interfaccia {
 						}
 					}
 					
-					Player.play(st.getNomeSerieFolder()+File.separator+nomepuntata);
+					PlayerOLD.play(st.getNomeSerieFolder()+File.separator+nomepuntata);
 					torrent.setScaricato(Torrent.VISTO, true);
 					setLabelStato(torrent.getScaricato());
 					if(Settings.isHiddenOnPlay())

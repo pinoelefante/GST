@@ -30,8 +30,9 @@ public class Player {
 	private JComponent default_parent;
 	private boolean isFullscreen;
 	
-	public Player(JComponent f){
+	public Player(JComponent f, Playlist p){
 		default_parent=f;
+		playlist=p;
 		instance();
 	}
 	
@@ -54,10 +55,7 @@ public class Player {
 			ManagerException.registraEccezione(e.getMessage());
 		}
 	}
-	public void instance(){
-		if(playlist==null)
-			playlist=new Playlist();
-		
+	public void instance(){		
 		if(vlc==null){
 			try{
 				locateVLC();
@@ -223,6 +221,9 @@ public class Player {
 			play(playlist.getItem(index));
 			
 		}
+	}
+	public Playlist getPlaylist() {
+		return playlist;
 	}
 	
 }
