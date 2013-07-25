@@ -1,7 +1,5 @@
 package Programma;
 
-import java.awt.EventQueue;
-
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
@@ -48,12 +46,12 @@ public class Main {
 			Settings.baseSettings();
 			fl.setprog(++i);
 			
-			/*
+			
 			fl.settext("Controllo dipendenze");
 			Prerequisiti.checkDipendenze();
 			fl.setprog(++i);
 			
-			*/
+			
 			fl.settext("Connessione al database");
 			Database.Connect();
 			fl.setprog(++i);
@@ -71,17 +69,17 @@ public class Main {
 			OperazioniFile.dumpfileclean();
 			fl.setprog(++i);
 			
-			/*
+			
 			fl.settext("Applicando aggiornamenti");
 			Update.start();
 			fl.setprog(++i);
-			*/
-			/*
+			
+			
 			fl.settext("Controllo aggiornamenti");
 			thread_update.start();
 			fl.setprog(++i);
 			thread_update.join();
-			*/
+			
 			
 			fl.settext("Scaricando lista serie");
 			GestioneSerieTV.Showlist();
@@ -89,11 +87,11 @@ public class Main {
 			
 			fl.settext("Avvio interfaccia grafica");
 			fl.setprog(++i);
-			/*
+			
 			if (Settings.isDownloadAutomatico()) {
 				avviaThreadRicercaAutomatica();
 			}
-			*/
+			
 			fl.chiudi();
 			
 			if(Settings.getGUI()==1){
@@ -109,11 +107,11 @@ public class Main {
 			}
 				
 			
-			/*
+			
 			if(Settings.isRicercaSottotitoli()){
 				GestioneSerieTV.getSubManager().avviaRicercaAutomatica();
 			}
-			*/
+			
 		}
 		catch(Exception e){
 			JOptionPane.showMessageDialog(null, e.getMessage());

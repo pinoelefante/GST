@@ -68,8 +68,8 @@ public class Subspedia implements ProviderSottotitoli {
 		for(int i=0;i<rss.size();i++){
 			SubspediaRSSItem item=rss.get(i);
 			if(item.getTitolo().compareToIgnoreCase(t.getNomeSerie())==0){
-				if(item.getStagione()==t.getSerie()){
-					if(item.getEpisodio()==t.getPuntata())
+				if(item.getStagione()==t.getStagione()){
+					if(item.getEpisodio()==t.getEpisodio())
 						return true;
 				}
 			}
@@ -81,8 +81,8 @@ public class Subspedia implements ProviderSottotitoli {
 		for(int i=0;i<rss.size();i++){
 			SubspediaRSSItem item=rss.get(i);
 			if(item.getTitolo().compareToIgnoreCase(t.getNomeSerie())==0){
-				if(item.getStagione()==t.getSerie()){
-					if(item.getEpisodio()==t.getPuntata())
+				if(item.getStagione()==t.getStagione()){
+					if(item.getEpisodio()==t.getEpisodio())
 						return item.getLink();
 				}
 			}
@@ -158,13 +158,5 @@ public class Subspedia implements ProviderSottotitoli {
 		}
 	}
 	*/
-	public static void main(String[] args) {
-		Subspedia subs=new Subspedia();
-		Torrent t=new Torrent("", 0, "Baby Daddy", 0);
-		t.setEpisodio(6);
-		t.setStagione(2);
-		System.out.println("Sottotitolo disponibile: "+subs.cercaSottotitolo(t));
-		System.out.println("Sottotitolo scaricato: "+subs.scaricaSottotitolo(t));
-	}
 
 }

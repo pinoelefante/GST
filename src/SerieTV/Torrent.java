@@ -1,7 +1,7 @@
 package SerieTV;
 
 import Database.*;
-import Programma.ManagerException;
+import Naming.CaratteristicheFile;
 import StruttureDati.Indexable;
 
 public class Torrent implements Indexable{
@@ -10,27 +10,33 @@ public class Torrent implements Indexable{
 	private String	url;
 	private String	nomeserie;
 	private int		scaricato; //0 non scaricato - 1 scaricato - 2 visto - 3 rimosso - 4 ignorato
-	private int		serie;
-	private int		puntata;
-	private boolean	HD720p;
-	private boolean	repack;
+	//private int		serie;
+	//private int		puntata;
+	//private boolean	HD720p;
+	//private boolean	repack;
 	private boolean preair;
-	private boolean proper;
+	//private boolean proper;
 	private boolean sub_down; //true se è da scaricare, false non scaricare
+	private CaratteristicheFile prop_torrent;
 
 	public Torrent(String url, int visto, String nome_serie, int id_serie) {
 		this.url=url;
 		scaricato=visto;
 		this.setIdSerie(id_serie);
 		this.nomeserie = nome_serie;
-		this.serie = 0;
-		this.puntata = 0;
+	}
+	public Torrent(String url, int visto, String nome_serie, int id_serie, CaratteristicheFile f){
+		this.url=url;
+		scaricato=visto;
+		this.setIdSerie(id_serie);
+		this.nomeserie = nome_serie;
+		prop_torrent=f;
 	}
 	public boolean isPreAir(){
 		return preair;
 	}
 	public boolean isPROPER(){
-		return proper;
+		return prop_torrent.isProper();
 	}
 	public String getUrl() {
 		return this.url;
@@ -54,15 +60,15 @@ public class Torrent implements Indexable{
 	}
 
 	public boolean is720p() {
-		return this.HD720p;
+		return prop_torrent.is720p();
 	}
 
-	public int getSerie() {
-		return this.serie;
+	public int getStagione() {
+		return prop_torrent.getStagione();
 	}
 
-	public int getPuntata() {
-		return this.puntata;
+	public int getEpisodio() {
+		return prop_torrent.getEpisodio();
 	}
 
 	public String getNomeSerie() {
@@ -70,7 +76,7 @@ public class Torrent implements Indexable{
 	}
 
 	public boolean isRepack() {
-		return this.repack;
+		return prop_torrent.isRepack();
 	}
 
 	public String getName() {
@@ -80,6 +86,15 @@ public class Torrent implements Indexable{
 	}
 
 	public void parseMagnet() {
+		this.preair = this.url.toUpperCase().contains("PREAIR");
+		String[] patt=new String[]{
+				Naming.Naming.PATTERN_SnEn,
+				Naming.Naming.PATTERN_SxE,
+				Naming.Naming.PATTERN_Part_dotnofn,
+				Naming.Naming.PATTERN_nofn
+		};
+		prop_torrent=Naming.Naming.parse(getName(), patt);
+		/*
 		int prova = 0;
 
 		this.repack = this.url.contains("REPACK");
@@ -178,8 +193,10 @@ public class Torrent implements Indexable{
 			ManagerException.registraEccezione(e);
 		}
 		//FINE PARSE NUMERI
+		 
+		*/
 	}
-
+	/*
 	private int getCut(String nomeserie) {
 		int cut = nomeserie.length() + 1;
 		
@@ -233,7 +250,7 @@ public class Torrent implements Indexable{
 		}
 		return cut;
 	}
-
+	*/
 	public String getNomeSerieFolder() {
 		return nomeserie.replace(":", "-").replace("?", "").replace("/", "-").replace("\\", "-").replace("*", "").replace("<", "").replace(">", "").replace("|", "").replace("\"", "");
 	}
@@ -256,6 +273,7 @@ public class Torrent implements Indexable{
 	public boolean isSottotitolo(){
 		return sub_down;
 	}
+	/*
 	public void set720p(boolean stato) {
 		HD720p=stato;
 	}
@@ -271,16 +289,18 @@ public class Torrent implements Indexable{
 	public void setEpisodio(int stato) {
 		puntata=stato;
 	}
+	*/
 	public void setPreair(boolean stato) {
 		preair=stato;
 	}
+	
 	public void insert(){
 		SQLParameter[] par=new SQLParameter[10];
 		par[0]=new SQLParameter(SQLParameter.TEXT, getUrl(), "magnet");
 		par[1]=new SQLParameter(SQLParameter.INTEGER, getIdSerie(), "id_serie");
 		par[2]=new SQLParameter(SQLParameter.INTEGER, scaricato, "vista");
-		par[3]=new SQLParameter(SQLParameter.INTEGER, getSerie(), "serie");
-		par[4]=new SQLParameter(SQLParameter.INTEGER, getPuntata(), "episodio");
+		par[3]=new SQLParameter(SQLParameter.INTEGER, getStagione(), "serie");
+		par[4]=new SQLParameter(SQLParameter.INTEGER, getEpisodio(), "episodio");
 		par[5]=new SQLParameter(SQLParameter.INTEGER, is720p()?1:0, "HD720p");
 		par[6]=new SQLParameter(SQLParameter.INTEGER, isRepack()?1:0, "repack");
 		par[7]=new SQLParameter(SQLParameter.INTEGER, isPreAir()?1:0, "preair");
@@ -293,8 +313,8 @@ public class Torrent implements Indexable{
 		SQLParameter[] par=new SQLParameter[9];
 		par[i++]=new SQLParameter(SQLParameter.INTEGER, getIdSerie(), "id_serie");
 		par[i++]=new SQLParameter(SQLParameter.INTEGER, getScaricato(), "vista");
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, getSerie(), "serie");
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, getPuntata(), "episodio");
+		par[i++]=new SQLParameter(SQLParameter.INTEGER, getStagione(), "serie");
+		par[i++]=new SQLParameter(SQLParameter.INTEGER, getEpisodio(), "episodio");
 		par[i++]=new SQLParameter(SQLParameter.INTEGER, is720p()?1:0, "HD720p");
 		par[i++]=new SQLParameter(SQLParameter.INTEGER, isRepack()?1:0, "repack");
 		par[i++]=new SQLParameter(SQLParameter.INTEGER, isPreAir()?1:0, "preair");
@@ -307,7 +327,7 @@ public class Torrent implements Indexable{
 		Database.update(Database.TABLE_TORRENT, par, con, "AND", "=");
 	}
 	public String toString(){
-		return getNomeSerie()+" "+getSerie()+"x"+getPuntata();
+		return getNomeSerie()+" "+getStagione()+"x"+getEpisodio();
 	}
 	public int getScaricato(){
 		return scaricato;
@@ -317,10 +337,10 @@ public class Torrent implements Indexable{
 		setUrl(key);
 	}
 	public int getIndex() {
-		return serie;
+		return prop_torrent.getStagione();
 	}
 	public int getKey() {
-		return puntata;
+		return prop_torrent.getEpisodio();
 	}
 	public String getOffKey(){
 		return url;

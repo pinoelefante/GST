@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import Database.*;
+import Naming.CaratteristicheFile;
 import Programma.Download;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
@@ -143,14 +144,15 @@ public class GestioneSerieTV {
 					break;
 				}
 			}
-			Torrent t=new Torrent(magnet, vista, st.getNomeSerie(), st.getIDDB());
-			t.setSottotitolo(sottotitolo==1?true:false, false);
-			t.set720p(hd720p==1?true:false);
-			t.setRepack(repack==1?true:false);
-			t.setProper(proper==1?true:false);
-			t.setStagione(serie);
-			t.setEpisodio(episodio);
+			CaratteristicheFile stat=new CaratteristicheFile();
+			stat.set720p(hd720p==1?true:false);
+			stat.setRepack(repack==1?true:false);
+			stat.setProper(proper==1?true:false);
+			stat.setStagione(serie);
+			stat.setEpisodio(episodio);
+			Torrent t=new Torrent(magnet, vista, st.getNomeSerie(), st.getIDDB(), stat);
 			t.setPreair(preair==1?true:false);
+			t.setSottotitolo(sottotitolo==1?true:false, false);
 			st.addEpisodioFromDB(t);
 		}
 	}

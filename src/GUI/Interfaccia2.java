@@ -1002,7 +1002,6 @@ public class Interfaccia2 extends JFrame {
 		});
 		
 		buttonVLCPlay.addActionListener(new ActionListener() {
-			
 			public void actionPerformed(ActionEvent arg0) {
 				VLCPanel.play();
 			}
@@ -1097,6 +1096,7 @@ public class Interfaccia2 extends JFrame {
 					cmb_serie_aggiunte_add_episodio.addItem(s);
 	    			cmb_serie_lettore.addItem(s);
 	    			cmb_serie_sottotitoli.addItem(s);
+	    			//TODO aggiungere altro XD
 				}
 			}
 		});

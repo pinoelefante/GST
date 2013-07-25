@@ -196,7 +196,7 @@ public class SerieTV {
 		ArrayList<Indexable> el=episodi.getLinear();
 		for(int i=0;i<el.size();i++){
 			Torrent t=(Torrent)el.get(i);
-			if(t.getSerie()==season && t.getPuntata()==ep && t.is720p()==is720p)
+			if(t.getStagione()==season && t.getEpisodio()==ep && t.is720p()==is720p)
 				return t;
 		}
 		return null;

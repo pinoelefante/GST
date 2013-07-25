@@ -40,16 +40,18 @@ public class CasellaDownload extends JPanel{
 	
 	public JButton scarica;
 	public JButton rimuovi;
+	public JButton reparse;
 	
 	private static final Font font_label=new Font("Arial", Font.BOLD, 12);
 	
 	public void disegna(){
 		thispanel=this;
-		box=new JCheckBox(torrent.getNomeSerie()+" "+torrent.getSerie()+"x"+torrent.getPuntata());
+		box=new JCheckBox(torrent.getNomeSerie()+" "+torrent.getStagione()+"x"+torrent.getEpisodio());
 		label_tag=new JLabel(torrent.isPreAir()?"PREAIR":""+" "+(torrent.isRepack()?"REPACK":"")+" "+(torrent.is720p()?"720p":"")+" "+(torrent.isPROPER()?"PROPER":""));
 		label_tag.setFont(font_label);
 		scarica=new JButton(Language.DOWNLOAD_BOTTONE_DOWNLOAD);
 		rimuovi=new JButton(Language.INSERIMENTO_BOTTONE_RIMUOVI);
+		reparse=new JButton("Re-Parse");
 		setLayout(new BorderLayout());
 		setBorder(new EtchedBorder());
 		add(box, BorderLayout.WEST);
@@ -57,6 +59,7 @@ public class CasellaDownload extends JPanel{
 		JPanel panel_button=new JPanel();
 		panel_button.add(scarica);
 		panel_button.add(rimuovi);
+		panel_button.add(reparse);
 		add(est, BorderLayout.EAST);
 		est.add(panel_button, BorderLayout.CENTER);
 		est.add(label_tag, BorderLayout.SOUTH);
@@ -109,6 +112,13 @@ public class CasellaDownload extends JPanel{
 			public void actionPerformed(ActionEvent arg0) {
 				torrent.setScaricato(Torrent.IGNORATO, true);
 				rimuovi_panel();
+			}
+		});
+		reparse.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				torrent.parseMagnet();
+				torrent.update();
+				box.setText(torrent.getNomeSerie()+" "+torrent.getStagione()+"x"+torrent.getEpisodio());
 			}
 		});
 	}

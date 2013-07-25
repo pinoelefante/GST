@@ -108,8 +108,8 @@ public class GestoreSottotitoli {
 	public void aggiungiLogEntry(Torrent t, ProviderSottotitoli provider){
 		SQLParameter[] p=new SQLParameter[4];
 		p[0]=new SQLParameter(SQLParameter.TEXT, t.getNomeSerie(), "nome_serie");
-		p[1]=new SQLParameter(SQLParameter.INTEGER, t.getSerie(), "serie");
-		p[2]=new SQLParameter(SQLParameter.INTEGER, t.getPuntata(), "episodio");
+		p[1]=new SQLParameter(SQLParameter.INTEGER, t.getStagione(), "serie");
+		p[2]=new SQLParameter(SQLParameter.INTEGER, t.getEpisodio(), "episodio");
 		p[3]=new SQLParameter(SQLParameter.TEXT, provider.getProviderName(), "provider");
 		Database.insert(Database.TABLE_LOGSUB, p);
 		Interfaccia.addEntryLogSottotitoli(t, provider.getProviderName());

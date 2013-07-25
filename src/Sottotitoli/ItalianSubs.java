@@ -91,7 +91,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 		try {
 			if(id_itasa<=0)
 				return false;
-			int id=cercaIDSottotitoloFromAPI(id_itasa, t.getSerie(), t.getPuntata(), t.is720p()?HD720p:HDTV);
+			int id=cercaIDSottotitoloFromAPI(id_itasa, t.getStagione(), t.getEpisodio(), t.is720p()?HD720p:HDTV);
 			scaricaSub(id, Renamer.generaNomeDownload(t), t.getNomeSerieFolder());
 			t.setSottotitolo(false, true);
 			return true;
@@ -143,8 +143,8 @@ public class ItalianSubs implements ProviderSottotitoli{
 			if(rss.getIDSerie()==iditasa){
 				if(rss.is720p()==t.is720p()){
 					if(rss.isNormale()==!t.is720p()){
-						if(rss.getStagione()==t.getSerie()){
-							if(rss.getEpisodio()==t.getPuntata()){
+						if(rss.getStagione()==t.getStagione()){
+							if(rss.getEpisodio()==t.getEpisodio()){
 								return rss.getIDSub();
 							}
 						}
@@ -602,7 +602,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 			int api_search=-1;
 			int feed_search=-1;
 			try {
-				api_search=cercaIDSottotitoloFromAPI(id_itasa, t.getSerie(), t.getPuntata(), t.is720p()?HD720p:HDTV);
+				api_search=cercaIDSottotitoloFromAPI(id_itasa, t.getStagione(), t.getEpisodio(), t.is720p()?HD720p:HDTV);
 				if(api_search>0){
 					System.out.println("ITASA - Sottotitolo trovato tramite API");
 					return true;

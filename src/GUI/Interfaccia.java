@@ -177,7 +177,7 @@ public class Interfaccia {
 	public static JButton				download_bottone_download			= new JButton();
 	protected static JButton			download_bottone_esplora			= new JButton();
 	private static JPanel				download_panel_scroll				= new JPanel();
-	private static JButton				download_bottone_test				= new JButton("T");
+	//private static JButton				download_bottone_test				= new JButton("T");
 	
 	private static void creaTabDownload() {
 		TabbedDownload.addTab(Language.TAB_DOWNLOAD_EPISODI, panel_download);
@@ -446,7 +446,7 @@ public class Interfaccia {
 		label_top_right.setFont(new Font("Tahoma", 3, 14));
 		top_destra.add(label_top_right, BorderLayout.WEST);
 		top_destra.add(download_text_top_right, BorderLayout.CENTER);
-		top_destra.add(download_bottone_test, BorderLayout.EAST);
+		//top_destra.add(download_bottone_test, BorderLayout.EAST);
 		destra.setLayout(new BorderLayout());
 		destra.add(top_destra, BorderLayout.NORTH);
 		destra.add(download_combo_proprie, BorderLayout.CENTER);
@@ -589,11 +589,13 @@ public class Interfaccia {
 				}
 			}
 		});
+		/*
 		download_bottone_test.addActionListener(new ActionListener(){
 			public void actionPerformed(ActionEvent arg0) {
 				
 			}
 		});
+		*/
 	}
 
 	private static void AggiornaComboBoxEZTV_Ricerca(String cerca) {
@@ -1162,7 +1164,7 @@ public class Interfaccia {
 		scroll_log.getVerticalScrollBar().setValue(scroll_log.getVerticalScrollBar().getMaximum());
 	}
 	public static void addEntryLogSottotitoli(Torrent t, String provider){
-		String log=" "+t.getNomeSerie()+" "+t.getSerie()+"x"+t.getPuntata()+" tramite "+provider;
+		String log=" "+t.getNomeSerie()+" "+t.getStagione()+"x"+t.getEpisodio()+" tramite "+provider;
 		sottotitoli_textarea_log.append(log+"\n");
 		scroll_log.getVerticalScrollBar().setValue(scroll_log.getVerticalScrollBar().getMaximum());
 		if(tray!=null)
@@ -1188,7 +1190,8 @@ public class Interfaccia {
 		private JButton scarica=new JButton(),
 				play=new JButton(),
 				sottotitolo=new JButton(),
-				cancella=new JButton();
+				cancella=new JButton(),
+				reparse=new JButton("Re-parse");
 		
 		public PanelEpisodio(Torrent t){
 			torrent=t;
@@ -1215,6 +1218,7 @@ public class Interfaccia {
 			sud.add(play);
 			sud.add(sottotitolo);
 			sud.add(cancella);
+			sud.add(reparse);
 			sud.setBorder(BorderFactory.createLoweredBevelBorder());
 			sud.setBackground(Color.ORANGE);
 			
@@ -1225,7 +1229,7 @@ public class Interfaccia {
 		private void inizializza(){
 			stato.setFont(new Font("Tahoma", Font.BOLD, 12));
 			setLabelStato(torrent.getScaricato());
-			check_scaricato.setText(torrent.getNomeSerie()+" "+torrent.getSerie()+"x"+torrent.getPuntata());
+			check_scaricato.setText(torrent.getNomeSerie()+" "+torrent.getStagione()+"x"+torrent.getEpisodio());
 			check_scaricato.setSelected(torrent.isScaricato());
 			nome_torrent.setText(Language.REFACTOR_LABEL_NOMETORRENT+torrent.getName());
 			scarica.setText("Scarica");
@@ -1406,6 +1410,13 @@ public class Interfaccia {
 						ManagerException.registraEccezione(e1);
 					}
 					setLabelStato(torrent.getScaricato());
+				}
+			});
+			reparse.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent arg0) {
+					torrent.parseMagnet();
+					check_scaricato.setText(torrent.getNomeSerie()+" "+torrent.getStagione()+"x"+torrent.getEpisodio());
+					torrent.update();
 				}
 			});
 		}

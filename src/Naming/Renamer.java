@@ -16,7 +16,7 @@ public class Renamer {
 	
 	public static String generaNomeDownload(Torrent t){
 		if(t!=null){
-			return t.getNomeSerie().replace(" ", "_")+"_S"+t.getSerie()+"_E"+t.getPuntata()+"_sub"+".zip";
+			return t.getNomeSerie().replace(" ", "_")+"_S"+t.getStagione()+"_E"+t.getEpisodio()+"_sub"+".zip";
 		}
 		throw new InvalidParameterException("E' stato passato un parametro non valido");
 	}

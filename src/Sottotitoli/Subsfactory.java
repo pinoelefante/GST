@@ -220,7 +220,7 @@ public class Subsfactory implements ProviderSottotitoli {
 		
 		for(int i=0;i<subs.size();i++){
 			SottotitoloSubsfactoryDB s=subs.get(i);
-			if(s.getEpisodio()==t.getPuntata() && s.getStagione()==t.getSerie()){
+			if(s.getEpisodio()==t.getEpisodio() && s.getStagione()==t.getStagione()){
 				switch(t.is720p()?1:0){
 					case 0:
 						if(s.isNormale())
@@ -357,10 +357,10 @@ public class Subsfactory implements ProviderSottotitoli {
 			System.out.println(rss.getStagione()+" "+rss.getEpisodio()+" "+ rss.getUrlDownload());
 			System.out.println("ID: "+rss.getID()+" - "+id_subs);
 			if(rss.getID().toLowerCase().startsWith(id_subs.toLowerCase())){
-				System.out.println("Stagione: "+rss.getStagione() + " - "+t.getSerie());
-				if(rss.getStagione()==t.getSerie()){
-					System.out.println("Puntata: "+rss.getEpisodio()+" - "+t.getPuntata());
-					if(rss.getEpisodio()==t.getPuntata()){
+				System.out.println("Stagione: "+rss.getStagione() + " - "+t.getStagione());
+				if(rss.getStagione()==t.getStagione()){
+					System.out.println("Puntata: "+rss.getEpisodio()+" - "+t.getEpisodio());
+					if(rss.getEpisodio()==t.getEpisodio()){
 						System.out.println("Risoluzione: Rss("+rss.is720p()+rss.isNormale()+")"+" - Torrent("+t.is720p()+!t.is720p()+")");
 						if(rss.isNormale()==!t.is720p())
 							return rss.getUrlDownload();

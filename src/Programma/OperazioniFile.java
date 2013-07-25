@@ -124,8 +124,8 @@ public class OperazioniFile {
 			throw new FileNotFoundException("Il percorso "+path_download+" non è una directory");
 
 		String[] lista=cartella_download.list();
-		String puntata_s=t.getPuntata()<10?"0"+t.getPuntata():t.getPuntata()+"";
-		String serie_s=t.getSerie()<10?"0"+t.getSerie():t.getSerie()+"";
+		String puntata_s=t.getEpisodio()<10?"0"+t.getEpisodio():t.getEpisodio()+"";
+		String serie_s=t.getStagione()<10?"0"+t.getStagione():t.getStagione()+"";
 		for(int i=0;i<lista.length;i++){
 			if(!(lista[i].endsWith(".avi")||lista[i].endsWith(".mp4")||lista[i].endsWith(".mkv")))
 				continue;
@@ -140,7 +140,7 @@ public class OperazioniFile {
 			
 			int index_serie=lista[i].indexOf(serie_s);
 			if(index_serie<0 && serie_s.startsWith("0")){
-				serie_s=t.getSerie()+"";
+				serie_s=t.getStagione()+"";
 				index_serie=lista[i].indexOf(serie_s);
 			}
 			String linea;
