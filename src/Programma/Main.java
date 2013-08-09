@@ -25,6 +25,7 @@ public class Main {
 		}
 	}
 	static Interfaccia2 frame2;
+	private static Interfaccia2 GUIframe;
 	public static void main(String[] args) {
 		
 		try{	
@@ -64,7 +65,7 @@ public class Main {
 			fl.settext("Impostando la lingua");
 			Language.setLanguage(Settings.getLingua());
 			fl.setprog(++i);
-			
+		
 			fl.settext("Eliminazione dump files");
 			OperazioniFile.dumpfileclean();
 			fl.setprog(++i);
@@ -74,17 +75,15 @@ public class Main {
 			Update.start();
 			fl.setprog(++i);
 			
-			
 			fl.settext("Controllo aggiornamenti");
 			thread_update.start();
 			fl.setprog(++i);
 			thread_update.join();
-			
-			
+			/*
 			fl.settext("Scaricando lista serie");
 			GestioneSerieTV.Showlist();
 			fl.setprog(++i);
-			
+			*/
 			fl.settext("Avvio interfaccia grafica");
 			fl.setprog(++i);
 			
@@ -101,9 +100,12 @@ public class Main {
 			}
 			
 			else{
-				Interfaccia2 frame=new Interfaccia2();
-				frame.setVisible(true);
-				System.out.println("EVVIVA");
+				GUIframe = new Interfaccia2();
+				GUIframe.setVisible(true);
+				GestioneSerieTV.carica_serie_database();
+				GUIframe.init();
+				GestioneSerieTV.Showlist();
+				GUIframe.reloadSerieDisponibili();
 			}
 				
 			
@@ -114,7 +116,7 @@ public class Main {
 			
 		}
 		catch(Exception e){
-			JOptionPane.showMessageDialog(null, e.getMessage());
+			JOptionPane.showMessageDialog(GUIframe, e.getMessage());
 			System.out.println(e.getMessage());
 			e.printStackTrace();
 			ManagerException.registraEccezione(e);

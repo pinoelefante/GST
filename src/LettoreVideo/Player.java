@@ -4,12 +4,18 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
 
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import Programma.ManagerException;
 import Programma.Settings;
@@ -24,16 +30,21 @@ import uk.co.caprica.vlcj.runtime.RuntimeUtil;
 public class Player {
 	private static Playlist playlist;
 	private boolean isLinked=false;
-	//TODO modificare
 	private final static String DEFAULT_PATH=Settings.getCurrentDir()+"lib"+File.separator+"vlc"+File.separator+Settings.getOSName()+"-"+Settings.getVMArch();
 	private static EmbeddedMediaPlayerComponent vlc;
 	private JComponent default_parent;
+	private JSlider current_time, volume;
+	private JLabel current_time_label;
 	private boolean isFullscreen;
+	private Thread thread_play;
 	
 	public Player(JComponent f, Playlist p){
 		default_parent=f;
 		playlist=p;
 		instance();
+		current_time=new JSlider(0,0,0);
+		volume=new JSlider(0, 100, 100);
+		current_time_label=new JLabel("00:00:00");
 	}
 	
 	private boolean search_path=false;
@@ -54,6 +65,15 @@ public class Player {
 			e.printStackTrace();
 			ManagerException.registraEccezione(e.getMessage());
 		}
+	}
+	public JSlider getProgressSlider(){
+		return current_time;
+	}
+	public JSlider getVolumeSlider(){
+		return volume;
+	}
+	public JLabel getCurrentTimeLabel(){
+		return current_time_label;
 	}
 	public void instance(){		
 		if(vlc==null){
@@ -77,11 +97,17 @@ public class Player {
 		if(vlc==null)
 			return;
 		if(vlc.getMediaPlayer().isPlaying()){
-			togglePause();
+			vlc.getMediaPlayer().pause();
+			thread_play.interrupt();
+			thread_play=null;
 			return;
 		}
 		if(vlc.getMediaPlayer().isPlayable()){
 			vlc.getMediaPlayer().play();
+			if(thread_play==null || thread_play.isInterrupted()){
+    			thread_play=new ThreadPlay();
+    			thread_play.start();
+			}
 		}
 		else {
 			play(playlist.getNext());
@@ -94,7 +120,11 @@ public class Player {
 		if(s!=null){
 			if(new File(s).exists()){
 				//System.out.println(s);
+				if(thread_play!=null)
+					thread_play.interrupt();
 				vlc.getMediaPlayer().playMedia(s);
+				thread_play=new ThreadPlay();
+	    		thread_play.start();
 			}
 		}
 	}
@@ -105,23 +135,19 @@ public class Player {
 	public void stop(){
 		if(vlc==null)
 			return;
-		if(vlc.getMediaPlayer().isPlaying())
+		if(vlc.getMediaPlayer().isPlayable()){
 			vlc.getMediaPlayer().stop();
+			thread_play.interrupt();
+			thread_play=null;
+			current_time.setMaximum(0);
+			current_time_label.setText("00:00:00");
+			current_time.setValue(0);
+		}
 	}
 	public void release(){
 		if(vlc!=null)
 			vlc.release();
 	}
-	public void togglePause(){
-		if(vlc==null)
-			return;
-		
-		if(vlc.getMediaPlayer().isPlaying())
-			vlc.getMediaPlayer().pause();
-		else
-			vlc.getMediaPlayer().play();
-	}
-	
 	private Rectangle default_player;
 	private JFrame fullscreen_frame;
 	
@@ -182,7 +208,7 @@ public class Player {
 		fullscreen_frame.remove(vlc);
 		vlc.setBounds(default_player);
 		default_parent.add(vlc);
-		vlc.getMediaPlayer().play();
+		play();
 		vlc.getMediaPlayer().setPosition(last_seen);
 		isFullscreen=false;
 	}
@@ -225,5 +251,56 @@ public class Player {
 	public Playlist getPlaylist() {
 		return playlist;
 	}
-	
+	public void addListener(){
+		volume.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				vlc.getMediaPlayer().setVolume(volume.getValue());
+			}
+		});
+		current_time.addMouseListener(new MouseAdapter() {
+			public void mouseReleased(MouseEvent arg0) {
+				if(vlc.getMediaPlayer().isPlayable() || vlc.getMediaPlayer().isPlaying()){
+    				int pos=current_time.getValue();
+    				
+    				float perc=(float)pos/current_time.getMaximum();
+    				System.out.println("Posizione:"+perc+"%");
+    				vlc.getMediaPlayer().setPosition(perc);
+				}
+				else {
+					current_time.setValue(0);
+				}
+			}
+		});
+	}
+	class ThreadPlay extends Thread {
+		public void run() {
+			try {
+				while(!vlc.getMediaPlayer().isPlaying()){
+					current_time.setMaximum((int) vlc.getMediaPlayer().getLength()/1000);
+					sleep(10);
+				}
+    			while(true) {
+    				long current_pos=vlc.getMediaPlayer().getTime();
+    				int secondi_passati=(int) (current_pos/1000);
+    				current_time.setValue(secondi_passati);
+    				int minuti=secondi_passati/60;
+    				int ore=minuti/60;
+    				if(minuti>=60)
+    					minuti=minuti-(ore*60);
+    				int secondi=secondi_passati%60;
+    				current_time_label.setText((ore<10?"0"+ore:ore)+":"+(minuti<10?"0"+minuti:minuti)+":"+(secondi<10?"0"+secondi:secondi));
+    				
+    				long next_pos=(current_pos/1000)*1000+1000;
+    			
+    				if(current_time.getValue()==current_time.getMaximum())
+    					break;
+    				sleep(next_pos-current_pos);
+    			}
+    			current_time.setValue(0);
+    			current_time_label.setText("00:00:00");
+    			//TODO inserire qui play next
+			}
+			catch (InterruptedException e) {}
+		}
+	}
 }

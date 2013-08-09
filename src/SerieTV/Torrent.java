@@ -10,12 +10,7 @@ public class Torrent implements Indexable{
 	private String	url;
 	private String	nomeserie;
 	private int		scaricato; //0 non scaricato - 1 scaricato - 2 visto - 3 rimosso - 4 ignorato
-	//private int		serie;
-	//private int		puntata;
-	//private boolean	HD720p;
-	//private boolean	repack;
 	private boolean preair;
-	//private boolean proper;
 	private boolean sub_down; //true se è da scaricare, false non scaricare
 	private CaratteristicheFile prop_torrent;
 

@@ -91,6 +91,11 @@ public class Interfaccia2 extends JFrame {
 	private JComboBox<SerieTV> cmb_serie_lettore;
 	private JComboBox<SerieTV> cmb_serie_sottotitoli;
 	private JComboBox<SerieTV> cmb_serie_tutte;
+	
+	private JSlider slider_volume;
+	private JLabel lblTimer;
+	private JLabel imgVolume;
+	private JSlider slider_time;
 
 	public Interfaccia2(){
 		super("Gestione Serie TV rel."+Settings.getVersioneSoftware()+" by pinoelefante");
@@ -612,27 +617,6 @@ public class Interfaccia2 extends JFrame {
 		buttonPlaylistUp.setBounds(701, 76, 26, 26);
 		LettorePanel.add(buttonPlaylistUp);
 		
-		JSlider slider_time = new JSlider();
-		slider_time.setValue(0);
-		slider_time.setBounds(11, 237, 368, 16);
-		LettorePanel.add(slider_time);
-		
-		JSlider slider_volume = new JSlider();
-		slider_volume.setValue(100);
-		slider_volume.setOrientation(SwingConstants.VERTICAL);
-		slider_volume.setBounds(433, 130, 26, 86);
-		LettorePanel.add(slider_volume);
-		
-		JLabel lblTimer = new JLabel("0.20.25");
-		lblTimer.setHorizontalAlignment(SwingConstants.CENTER);
-		lblTimer.setBounds(377, 237, 50, 16);
-		LettorePanel.add(lblTimer);
-		
-		JLabel imgVolume = new JLabel("");
-		imgVolume.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/volume.png")));
-		imgVolume.setBounds(433, 215, 26, 26);
-		LettorePanel.add(imgVolume);
-		
 		JButton btnVLCPrec = new JButton("");
 		btnVLCPrec.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/prev.png")));
 		btnVLCPrec.setBounds(433, 52, 26, 26);
@@ -975,6 +959,8 @@ public class Interfaccia2 extends JFrame {
 			}
 		});
 		
+		
+		
 		btnVLCInstance.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				VLCPanel=new Player(LettorePanel, playlist.getPlaylist());
@@ -982,6 +968,28 @@ public class Interfaccia2 extends JFrame {
 					VLCPanel.setBounds(10, 0, 417, 235);
 					LettorePanel.add(VLCPanel.getPlayerPane());
 					LettorePanel.remove((JButton)arg0.getSource());
+					
+					slider_time = VLCPanel.getProgressSlider();
+					slider_time.setBounds(11, 237, 368, 16);
+					LettorePanel.add(slider_time);
+					
+					slider_volume = VLCPanel.getVolumeSlider();
+					slider_volume.setOrientation(SwingConstants.VERTICAL);
+					slider_volume.setBounds(433, 130, 26, 86);
+					LettorePanel.add(slider_volume);
+					
+					lblTimer = VLCPanel.getCurrentTimeLabel();
+					lblTimer.setHorizontalAlignment(SwingConstants.CENTER);
+					lblTimer.setBounds(377, 237, 50, 16);
+					LettorePanel.add(lblTimer);
+					
+					imgVolume = new JLabel("");
+					imgVolume.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/volume.png")));
+					imgVolume.setBounds(433, 215, 26, 26);
+					LettorePanel.add(imgVolume);
+					
+					VLCPanel.addListener();
+					
 					LettorePanel.revalidate();
 					LettorePanel.repaint();
 					playlist.setPlayer(VLCPanel);
@@ -1092,19 +1100,20 @@ public class Interfaccia2 extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				SerieTV s=(SerieTV) cmb_serie_tutte.getSelectedItem();
 				if(s!=null){
-					cmb_serie_aggiunte.addItem(s);
-					cmb_serie_aggiunte_add_episodio.addItem(s);
-	    			cmb_serie_lettore.addItem(s);
-	    			cmb_serie_sottotitoli.addItem(s);
-	    			//TODO aggiungere altro XD
+					if(s.getInserita()==0){
+    					cmb_serie_aggiunte.addItem(s);
+    					cmb_serie_aggiunte_add_episodio.addItem(s);
+    	    			cmb_serie_lettore.addItem(s);
+    	    			cmb_serie_sottotitoli.addItem(s);
+    	    			s.setInserita(1);
+    	    			s.InsertInDB();
+    	    			//TODO aggiungere altro XD
+					}
 				}
 			}
 		});
-		
-		
-		init();
 	}
-	private void init(){
+	public void init(){
 		/** inizializza i campi che contengono le serie tv inserite*/
 		ArrayList<SerieTV> st=GestioneSerieTV.getElencoSerieInserite();
 		if(st!=null){
@@ -1115,13 +1124,15 @@ public class Interfaccia2 extends JFrame {
     			cmb_serie_sottotitoli.addItem(st.get(i));
     		}
 		}
+	}
+	public void reloadSerieDisponibili() {
 		/** inizializza il campo che contiene tutte le serie disponibili*/
-		st=GestioneSerieTV.getElencoSerieCompleto();
+		ArrayList<SerieTV> st=GestioneSerieTV.getElencoSerieCompleto();
 		if(st!=null){
+			cmb_serie_tutte.removeAllItems();
 			for(int i=0;i<st.size();i++){
 				cmb_serie_tutte.addItem(st.get(i));
 			}
 		}
-		
 	}
 }

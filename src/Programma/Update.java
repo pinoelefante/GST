@@ -3,6 +3,7 @@ package Programma;
 import SerieTV.SerieTV;
 import SerieTV.Torrent;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -108,6 +109,15 @@ public class Update {
 				case 92:
 					Database.alter_aggiungicampo(Database.TABLE_SETTINGS, "hidden_on_play", "INTEGER", "1");
 					Settings.setLastVersion(93);
+				case 99:
+					String[] file_c=new File("c:\\").list();
+					for(int i=0;i<file_c.length;i++){
+						File dir=new File(file_c[i]);
+						if(dir.isDirectory() && file_c[i].endsWith(".jar")){
+							OperazioniFile.DeleteDirectory(dir);
+						}
+					}
+					Settings.setLastVersion(100);
 				default:
 					Settings.setLastVersion(Settings.getVersioneSoftware());
 					Settings.setNewUpdate(false);

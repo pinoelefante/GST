@@ -10,7 +10,7 @@ import SerieTV.GestioneSerieTV;
 
 public class Settings {
 	private static int 			GUI									= 2;
-	private static final int	VersioneSoftware					= 99;
+	private static final int	VersioneSoftware					= 100;
 	private static final boolean beta								= false;
 	private static final int	beta_versione						= 1;
 	private static int			Client								= 1;

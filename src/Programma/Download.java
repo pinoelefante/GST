@@ -26,7 +26,7 @@ public class Download {
 			is = urlConn.getInputStream();
 			
 			if(localFilename.contains(File.separator)){
-				String path=localFilename.substring(localFilename.lastIndexOf(File.separator));
+				String path=localFilename.substring(0, localFilename.lastIndexOf(File.separator));
 				File f=new File(path);
 				f.mkdirs();
 			}
