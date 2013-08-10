@@ -3,18 +3,19 @@ package SerieTV;
 import java.util.ArrayList;
 
 public abstract class ProviderSerieTV {
-	protected ArrayList<SerieTV> elenco_serie, nuove_serie;
+	protected ArrayList<SerieTV2> elenco_serie, 
+		nuove_serie;
 	
 	public ProviderSerieTV(){
-		elenco_serie=new ArrayList<SerieTV>();
+		elenco_serie=new ArrayList<SerieTV2>();
 		caricaSerieDB();
 	}
-	protected ArrayList<SerieTV> getElencoSerie(){
+	protected ArrayList<SerieTV2> getElencoSerie(){
 		return elenco_serie;
 	}
-	protected SerieTV addSerie(SerieTV s){
+	protected SerieTV2 addSerie(SerieTV2 s){
 		for(int i=0;i<getSeriesCount();i++){
-			SerieTV st=elenco_serie.get(i);
+			SerieTV2 st=elenco_serie.get(i);
 			if(s.getNomeSerie().compareTo(st.getNomeSerie())<0){
 				elenco_serie.add(i,s);
 				salvaSerieInDB(s);
@@ -32,7 +33,7 @@ public abstract class ProviderSerieTV {
 	public int getSeriesCount(){
 		return elenco_serie.size();
 	}
-	public SerieTV getSerieAt(int i){
+	public SerieTV2 getSerieAt(int i){
 		if(i<0 || i>=getSeriesCount())
 			return null;
 		return elenco_serie.get(i);
@@ -40,7 +41,7 @@ public abstract class ProviderSerieTV {
 	public int getNuoveSerieCount(){
 		return nuove_serie.size();
 	}
-	public SerieTV getNuoveSerieAt(int i){
+	public SerieTV2 getNuoveSerieAt(int i){
 		if(i<0 || i>=getNuoveSerieCount())
 			return null;
 		return nuove_serie.get(i);
@@ -49,7 +50,8 @@ public abstract class ProviderSerieTV {
 	public abstract String getProviderName();
 	public abstract String getBaseURL();
 	public abstract void aggiornaElencoSerie();
-	public abstract ArrayList<Torrent> nuoviEpisodi(SerieTV serie);
+	public abstract ArrayList<Torrent> nuoviEpisodi(SerieTV2 serie);
+	public abstract ArrayList<Torrent> caricaEpisodiDB(SerieTV2 serie);
 	public abstract void caricaSerieDB();
-	protected abstract void salvaSerieInDB(SerieTV s);
+	protected abstract void salvaSerieInDB(SerieTV2 s);
 }

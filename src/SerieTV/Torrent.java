@@ -322,7 +322,12 @@ public class Torrent implements Indexable{
 		Database.update(Database.TABLE_TORRENT, par, con, "AND", "=");
 	}
 	public String toString(){
-		return getNomeSerie()+" "+getStagione()+"x"+getEpisodio();
+		if(isMagnetLink())
+			return this.url.substring(this.url.indexOf("&dn")+4, this.url.indexOf("&tr"));
+		else if(isTorrent())
+			return url.substring(url.lastIndexOf("/")+1);
+		else
+			return nomeserie+" S"+getStagione()+"E"+getEpisodio();
 	}
 	public int getScaricato(){
 		return scaricato;
@@ -346,5 +351,17 @@ public class Torrent implements Indexable{
 			return getUrl().substring(0, getUrl().indexOf("&dn")).toLowerCase();
 		else
 			return getUrl();
+	}
+	private boolean isTorrent(){
+		return (url.toLowerCase().endsWith(".torrent"));
+	}
+	private boolean isMagnetLink(){
+		return url.toLowerCase().startsWith("magnet");
+	}
+	public void setEpisodio(int e){
+		prop_torrent.setEpisodio(e);
+	}
+	public void setStagione(int nuovo) {
+		prop_torrent.setStagione(nuovo);
 	}
 }

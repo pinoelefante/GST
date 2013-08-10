@@ -46,8 +46,8 @@ public class EZTV extends ProviderSerieTV{
 					int stato=0;
 					if(nextline.contains("ended"))
 						stato=1;
-					SerieTV toInsert=new SerieTV(nomeserie, url);
-					toInsert.setStato(stato);
+					SerieTV2 toInsert=new SerieTV2(this, nomeserie, url);
+					toInsert.setConclusa(stato==0?false:true);
 					addSerie(toInsert);
 					
 					/*
@@ -89,8 +89,8 @@ public class EZTV extends ProviderSerieTV{
 	}
 
 	@Override
-	public ArrayList<Torrent> nuoviEpisodi(SerieTV serie) {
-		
+	public ArrayList<Torrent> nuoviEpisodi(SerieTV2 serie) {
+		// TODO
 		return null;
 	}
 
@@ -100,9 +100,14 @@ public class EZTV extends ProviderSerieTV{
 		
 	}
 	@Override
-	protected void salvaSerieInDB(SerieTV s) {
+	protected void salvaSerieInDB(SerieTV2 s) {
 		// TODO Auto-generated method stub
 		
+	}
+	@Override
+	public ArrayList<Torrent> caricaEpisodiDB(SerieTV2 serie) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
