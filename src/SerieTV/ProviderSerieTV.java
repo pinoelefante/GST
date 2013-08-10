@@ -3,11 +3,13 @@ package SerieTV;
 import java.util.ArrayList;
 
 public abstract class ProviderSerieTV {
-	protected ArrayList<SerieTV2> elenco_serie, 
-		nuove_serie;
+	protected ArrayList<SerieTV2> elenco_serie, nuove_serie, preferite;
 	
 	public ProviderSerieTV(){
 		elenco_serie=new ArrayList<SerieTV2>();
+		preferite=new ArrayList<SerieTV2>();
+		nuove_serie=new ArrayList<SerieTV2>();
+		
 		caricaSerieDB();
 	}
 	protected ArrayList<SerieTV2> getElencoSerie(){
@@ -46,6 +48,14 @@ public abstract class ProviderSerieTV {
 			return null;
 		return nuove_serie.get(i);
 	}
+	public int getPreferiteSerieCount(){
+		return preferite.size();
+	}
+	public SerieTV2 getPreferiteSerieAt(int i){
+		if(i<0 || i>=getPreferiteSerieCount())
+			return null;
+		return preferite.get(i);
+	}
 
 	public abstract String getProviderName();
 	public abstract String getBaseURL();
@@ -54,4 +64,5 @@ public abstract class ProviderSerieTV {
 	public abstract ArrayList<Torrent> caricaEpisodiDB(SerieTV2 serie);
 	public abstract void caricaSerieDB();
 	protected abstract void salvaSerieInDB(SerieTV2 s);
+	protected abstract void salvaEpisodioInDB(Torrent2 t);
 }

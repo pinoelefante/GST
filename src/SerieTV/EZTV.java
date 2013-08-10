@@ -109,5 +109,10 @@ public class EZTV extends ProviderSerieTV{
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	protected void salvaEpisodioInDB(Torrent2 t) {
+		// TODO Auto-generated method stub
+		
+	}
 	
 }

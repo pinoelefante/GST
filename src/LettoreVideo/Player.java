@@ -98,6 +98,7 @@ public class Player {
 			return;
 		if(vlc.getMediaPlayer().isPlaying()){
 			vlc.getMediaPlayer().pause();
+			if(thread_play!=null)
 			thread_play.interrupt();
 			thread_play=null;
 			return;
@@ -137,7 +138,8 @@ public class Player {
 			return;
 		if(vlc.getMediaPlayer().isPlayable()){
 			vlc.getMediaPlayer().stop();
-			thread_play.interrupt();
+			if(thread_play!=null)
+				thread_play.interrupt();
 			thread_play=null;
 			current_time.setMaximum(0);
 			current_time_label.setText("00:00:00");
@@ -183,13 +185,13 @@ public class Player {
 					if(arg0.getExtendedKeyCode()==KeyEvent.VK_F || arg0.getExtendedKeyCode()==KeyEvent.VK_ESCAPE){ //Tasto F e ESC - chiude finestra schermo intero
 						fullscreen_frame.dispose();
 					}
-					else if(arg0.getExtendedKeyCode()==KeyEvent.VK_SPACE)
+					else if(arg0.getExtendedKeyCode()==KeyEvent.VK_SPACE) //Tasto SPAZIO - pausa/play
 						play();
 				}
 			});
 		}
 		
-		if(vlc.getMediaPlayer().isPlaying()){
+		if(vlc.getMediaPlayer().isPlayable()){
 			last_seen=vlc.getMediaPlayer().getPosition();
 			stop();
 		}

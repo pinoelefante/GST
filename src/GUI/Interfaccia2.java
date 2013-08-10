@@ -5,10 +5,11 @@ import javax.swing.JFrame;
 import Programma.ControlloAggiornamenti;
 import Programma.OperazioniFile;
 import Programma.Settings;
-import SerieTV.SerieTV;
 import LettoreVideo.Player;
 import LettoreVideo.PlaylistItem;
 import SerieTV.GestioneSerieTV;
+import SerieTV.GestioneSerieTV2;
+import SerieTV.SerieTV2;
 
 import javax.swing.JTabbedPane;
 
@@ -86,11 +87,11 @@ public class Interfaccia2 extends JFrame {
 	private JTextField textField_7;
 	private JTextField textField_8;
 	private JPlaylist playlist;
-	private JComboBox<SerieTV> cmb_serie_aggiunte;
-	private JComboBox<SerieTV> cmb_serie_aggiunte_add_episodio;
-	private JComboBox<SerieTV> cmb_serie_lettore;
-	private JComboBox<SerieTV> cmb_serie_sottotitoli;
-	private JComboBox<SerieTV> cmb_serie_tutte;
+	private JComboBox<SerieTV2> cmb_serie_aggiunte;
+	private JComboBox<SerieTV2> cmb_serie_aggiunte_add_episodio;
+	private JComboBox<SerieTV2> cmb_serie_lettore;
+	private JComboBox<SerieTV2> cmb_serie_sottotitoli;
+	private JComboBox<SerieTV2> cmb_serie_tutte;
 	
 	private JSlider slider_volume;
 	private JLabel lblTimer;
@@ -147,7 +148,7 @@ public class Interfaccia2 extends JFrame {
 		panel_9.add(txt_cerca_serie_tutte);
 		txt_cerca_serie_tutte.setColumns(20);
 		
-		cmb_serie_tutte = new JComboBox<SerieTV>();
+		cmb_serie_tutte = new JComboBox<SerieTV2>();
 		cmb_serie_tutte.setBounds(73, 68, 159, 20);
 		panel_9.add(cmb_serie_tutte);
 		
@@ -1059,16 +1060,16 @@ public class Interfaccia2 extends JFrame {
 				String text=txt_cerca_serie_tutte.getText().trim().toLowerCase();
 				if(text.isEmpty()){
 					cmb_serie_tutte.removeAllItems();
-					ArrayList<SerieTV> t=GestioneSerieTV.getElencoSerieCompleto();
+					ArrayList<SerieTV2> t=GestioneSerieTV2.getElencoSerieCompleto();
 					for(int i=0;i<t.size();i++){
 						cmb_serie_tutte.addItem(t.get(i));
 					}
 				}
 				else {
 					cmb_serie_tutte.removeAllItems();
-					ArrayList<SerieTV> t=GestioneSerieTV.getElencoSerieCompleto();
+					ArrayList<SerieTV2> t=GestioneSerieTV2.getElencoSerieCompleto();
 					for(int i=0;i<t.size();i++){
-						SerieTV s=t.get(i);
+						SerieTV2 s=t.get(i);
 						if(s.getNomeSerie().toLowerCase().contains(text))
 							cmb_serie_tutte.addItem(s);
 					}
@@ -1080,16 +1081,16 @@ public class Interfaccia2 extends JFrame {
 				String text=txt_cerca_serie_inserite.getText().trim().toLowerCase();
 				if(text.isEmpty()){
 					cmb_serie_aggiunte.removeAllItems();
-					ArrayList<SerieTV> t=GestioneSerieTV.getElencoSerieInserite();
+					ArrayList<SerieTV2> t=GestioneSerieTV2.getElencoSerieInserite();
 					for(int i=0;i<t.size();i++){
 						cmb_serie_aggiunte.addItem(t.get(i));
 					}
 				}
 				else {
 					cmb_serie_aggiunte.removeAllItems();
-					ArrayList<SerieTV> t=GestioneSerieTV.getElencoSerieInserite();
+					ArrayList<SerieTV2> t=GestioneSerieTV2.getElencoSerieInserite();
 					for(int i=0;i<t.size();i++){
-						SerieTV s=t.get(i);
+						SerieTV2 s=t.get(i);
 						if(s.getNomeSerie().toLowerCase().contains(text))
 							cmb_serie_aggiunte.addItem(t.get(i));
 					}
@@ -1098,15 +1099,15 @@ public class Interfaccia2 extends JFrame {
 		});
 		btnAggiungi.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				SerieTV s=(SerieTV) cmb_serie_tutte.getSelectedItem();
+				SerieTV2 s=(SerieTV2) cmb_serie_tutte.getSelectedItem();
 				if(s!=null){
-					if(s.getInserita()==0){
+					if(!s.isInserita()){
     					cmb_serie_aggiunte.addItem(s);
     					cmb_serie_aggiunte_add_episodio.addItem(s);
     	    			cmb_serie_lettore.addItem(s);
     	    			cmb_serie_sottotitoli.addItem(s);
-    	    			s.setInserita(1);
-    	    			s.InsertInDB();
+    	    			s.setInserita(true);
+    	    			s.aggiornaDB();;
     	    			//TODO aggiungere altro XD
 					}
 				}
@@ -1115,7 +1116,7 @@ public class Interfaccia2 extends JFrame {
 	}
 	public void init(){
 		/** inizializza i campi che contengono le serie tv inserite*/
-		ArrayList<SerieTV> st=GestioneSerieTV.getElencoSerieInserite();
+		ArrayList<SerieTV2> st=GestioneSerieTV2.getElencoSerieInserite();
 		if(st!=null){
     		for(int i=0;i<st.size();i++){
     			cmb_serie_aggiunte.addItem(st.get(i));
@@ -1127,7 +1128,7 @@ public class Interfaccia2 extends JFrame {
 	}
 	public void reloadSerieDisponibili() {
 		/** inizializza il campo che contiene tutte le serie disponibili*/
-		ArrayList<SerieTV> st=GestioneSerieTV.getElencoSerieCompleto();
+		ArrayList<SerieTV2> st=GestioneSerieTV2.getElencoSerieCompleto();
 		if(st!=null){
 			cmb_serie_tutte.removeAllItems();
 			for(int i=0;i<st.size();i++){

@@ -5,7 +5,9 @@ public class SerieTV2 {
 	private ProviderSerieTV provider;
 	private String url_serie;
 	
-	private boolean conclusa, stop_search;
+	private int id_db;
+	
+	private boolean conclusa, stop_search, inserita;
 	
 	
 	public SerieTV2(ProviderSerieTV provider, String nomeserie, String url) {
@@ -30,5 +32,20 @@ public class SerieTV2 {
 	public void clearEpisodi(){
 		// TODO
 		Runtime.getRuntime().gc();
+	}
+	public String getFolderSerie() {
+		return getNomeSerie().replace(":", "-").replace("?", "").replace("/", "-").replace("\\", "-").replace("*", "").replace("<", "").replace(">", "").replace("|", "").replace("\"", "");
+	}
+	public int getIdDb(){
+		return id_db;
+	}
+	public boolean isInserita(){
+		return inserita;
+	}
+	public void setInserita(boolean s){
+		inserita=s;
+	}
+	public void aggiornaDB(){
+		provider.salvaSerieInDB(this);
 	}
 }

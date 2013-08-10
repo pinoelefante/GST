@@ -4,8 +4,8 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import SerieTV.GestioneSerieTV;
+import SerieTV.GestioneSerieTV2;
 import SerieTV.ThreadRicercaAutomatica;
-
 import Database.Database;
 import GUI.FrameLoading;
 import GUI.Interfaccia;
@@ -102,9 +102,10 @@ public class Main {
 			else{
 				GUIframe = new Interfaccia2();
 				GUIframe.setVisible(true);
-				GestioneSerieTV.carica_serie_database();
+				GestioneSerieTV2.instance();
+				GestioneSerieTV2.carica_serie_database();
 				GUIframe.init();
-				GestioneSerieTV.Showlist();
+				GestioneSerieTV2.Showlist();
 				GUIframe.reloadSerieDisponibili();
 			}
 				
