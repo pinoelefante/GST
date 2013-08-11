@@ -17,17 +17,17 @@ public class Prerequisiti {
 			
 			for(int i=0;i<list_dipendenze.size();i++){
 				Dipendenza d=list_dipendenze.get(i);
-				File file=new File("lib"+File.separator+d.getNomeDest());
+				File file=new File(Settings.getCurrentDir()+"lib"+File.separator+d.getNomeDest());
 				if(file.exists()){
 					System.out.println(d.getNome()+": "+file.length()+"/"+d.getSize());
 					if(file.length()!=d.getSize()){
 						System.out.println("Scaricando: "+d.getNome());
-						Download.downloadFromUrl(d.getUrl(), "lib"+File.separator+d.getNomeDest());
+						Download.downloadFromUrl(d.getUrl(), Settings.getCurrentDir()+"lib"+File.separator+d.getNomeDest());
 					}
 				}
 				else {
 					System.out.println("Scaricando: "+d.getNome());
-					Download.downloadFromUrl(d.getUrl(), "lib"+File.separator+d.getNomeDest());
+					Download.downloadFromUrl(d.getUrl(), Settings.getCurrentDir()+"lib"+File.separator+d.getNomeDest());
 				}
 			}
 		}
@@ -42,7 +42,7 @@ public class Prerequisiti {
 		if(vlc_dep.isEmpty()){
 			popola_vlc();
 		}
-		String destinazione="lib"+File.separator+"vlc"+File.separator+Settings.getOSName()+"-"+Settings.getVMArch()+File.separator;
+		String destinazione=Settings.getCurrentDir()+"lib"+File.separator+"vlc"+File.separator+Settings.getOSName()+"-"+Settings.getVMArch()+File.separator;
 		File dest=new File(destinazione);
 		if(!dest.exists())
 			dest.mkdirs();
@@ -83,7 +83,7 @@ public class Prerequisiti {
 		
 	}
 	private static void popola_vlc() {
-		String destinazione="lib"+File.separator+"vlc"+File.separator+Settings.getOSName()+"-"+Settings.getVMArch()+File.separator;
+		String destinazione=Settings.getCurrentDir()+"lib"+File.separator+"vlc"+File.separator+Settings.getOSName()+"-"+Settings.getVMArch()+File.separator;
 		if(Settings.isWindows()){
 			if(Settings.is32bit()){
 				vlc_dep.add(new Dipendenza("libvlc.dll", destinazione+"libvlc.dll", sito+"vlc_win32.7z", "windows", 144896L, true, false));

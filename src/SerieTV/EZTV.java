@@ -86,7 +86,7 @@ public class EZTV extends ProviderSerieTV{
 				ManagerException.registraEccezione(e);
 			}
 		}
-		OperazioniFile.deleteFile("file.html");
+		OperazioniFile.deleteFile(Settings.getCurrentDir()+"file.html");
 	}
 
 	@Override
