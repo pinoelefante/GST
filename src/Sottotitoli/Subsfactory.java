@@ -149,8 +149,8 @@ public class Subsfactory implements ProviderSottotitoli {
 		try {
 			//String path=url.substring(url.indexOf("directory=")+"directory=".length());
 			int id_download=download_corrente++;
-			Download.downloadFromUrl(url, "subsf_response_"+id_download);
-			FileReader f=new FileReader("subsf_response_"+id_download);
+			Download.downloadFromUrl(url, Settings.getCurrentDir()+"subsf_response_"+id_download);
+			FileReader f=new FileReader(Settings.getCurrentDir()+"subsf_response_"+id_download);
 			Scanner file=new Scanner(f);
 			while(file.hasNextLine()){
 				String linea=file.nextLine().trim();
@@ -178,7 +178,7 @@ public class Subsfactory implements ProviderSottotitoli {
 			}
 			file.close();
 			f.close();
-			OperazioniFile.deleteFile("subsf_response_"+id_download);
+			OperazioniFile.deleteFile(Settings.getCurrentDir()+"subsf_response_"+id_download);
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -290,11 +290,11 @@ public class Subsfactory implements ProviderSottotitoli {
 	public void caricaElencoSerie() {
 		FileReader f_r;
 		try {
-			Download.downloadFromUrl(URL_ELENCO_SERIE, "response_subs");
-			f_r=new FileReader("response_subs");
+			Download.downloadFromUrl(URL_ELENCO_SERIE, Settings.getCurrentDir()+"response_subs");
+			f_r=new FileReader(Settings.getCurrentDir()+"response_subs");
 		}
 		catch (IOException e) {
-			OperazioniFile.deleteFile("response_subs");
+			OperazioniFile.deleteFile(Settings.getCurrentDir()+"response_subs");
 			ManagerException.registraEccezione(e);
 			return;
 		}
@@ -321,7 +321,7 @@ public class Subsfactory implements ProviderSottotitoli {
 		file.close();
 		try {
 			f_r.close();
-			OperazioniFile.deleteFile("response_subs");
+			OperazioniFile.deleteFile(Settings.getCurrentDir()+"response_subs");
 		}
 		catch (IOException e) {
 			ManagerException.registraEccezione(e);
@@ -376,11 +376,11 @@ public class Subsfactory implements ProviderSottotitoli {
 		RSS_UltimoAggiornamento=new GregorianCalendar();
 		feed_rss.clear();
 		try {
-			Download.downloadFromUrl(URL_FEED_RSS, "feed_subs");
+			Download.downloadFromUrl(URL_FEED_RSS, Settings.getCurrentDir()+"feed_subs");
 			
 			DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder domparser = dbfactory.newDocumentBuilder();
-			Document doc = domparser.parse(new File("feed_subs"));
+			Document doc = domparser.parse(new File(Settings.getCurrentDir()+"feed_subs"));
 			
 			NodeList elementi=doc.getElementsByTagName("item");
 			for(int i=0;i<elementi.getLength();i++){
@@ -408,7 +408,7 @@ public class Subsfactory implements ProviderSottotitoli {
 				if(rss.isValid())
 					feed_rss.add(rss);
 			}
-			OperazioniFile.deleteFile("feed_subs");
+			OperazioniFile.deleteFile(Settings.getCurrentDir()+"feed_subs");
 		} 
 		catch (IOException e) {	
 			e.printStackTrace();

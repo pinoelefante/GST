@@ -9,6 +9,7 @@ import java.util.Scanner;
 import Programma.Download2;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
+import Programma.Settings;
 
 public class EZTV extends ProviderSerieTV{
 	public String getProviderName() {
@@ -20,7 +21,7 @@ public class EZTV extends ProviderSerieTV{
 
 	@Override
 	public void aggiornaElencoSerie() {
-		Download2 downloader=new Download2("http://eztv.it/showlist/", "file.html");
+		Download2 downloader=new Download2("http://eztv.it/showlist/", Settings.getCurrentDir()+"file.html");
 		downloader.avviaDownload();
 		
 		try {
@@ -34,7 +35,7 @@ public class EZTV extends ProviderSerieTV{
 		FileReader f_r=null;
 		Scanner file=null;
 		try {
-			f_r=new FileReader("file.html");
+			f_r=new FileReader(Settings.getCurrentDir()+"file.html");
 			file=new Scanner(f_r);
 			
 			while(file.hasNextLine()){

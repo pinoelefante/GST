@@ -13,6 +13,7 @@ import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteConfig.SynchronousMode;
 
 import Programma.ManagerException;
+import Programma.Settings;
 
 public class Database2 {
 	private static Connection con;
@@ -26,7 +27,7 @@ public class Database2 {
 	public final static String TABLE_TRADUZIONI="traduzioni";
 	public final static String TABLE_SETTINGS="settings";
 	public final static String TABLE_TVRAGE="tvrage";
-	private final static String NOMEDB="database.db";
+	private final static String NOMEDB=Settings.getCurrentDir()+"database.db";
 	
 	public static void Connect() {
 		try {

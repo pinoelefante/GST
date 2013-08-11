@@ -19,8 +19,8 @@ public class ThreadAggiornamentiSoftware extends Thread {
 	public void run() {
 		FileReader file_r = null;
 		try {
-			Download.downloadFromUrl("http://pinoelefante.altervista.org/software/GST/version.dat", "version.dat");
-			file_r = new FileReader("version.dat");
+			Download.downloadFromUrl("http://pinoelefante.altervista.org/software/GST/version.dat", Settings.getCurrentDir()+"version.dat");
+			file_r = new FileReader(Settings.getCurrentDir()+"version.dat");
 		}
 		catch (IOException e1) {
 			JOptionPane.showMessageDialog(null, Language.DIALOGUE_ERROR_UPDATE);
@@ -31,23 +31,23 @@ public class ThreadAggiornamentiSoftware extends Thread {
 		int versione = file.nextInt();
 		file.close();
 
-		File file_v = new File("version.dat");
+		File file_v = new File(Settings.getCurrentDir()+"version.dat");
 		file_v.delete();
 		//TODO aggiungere aggiornamento versione beta
 		//TODO Modificare per versione Linux e Mac
 		if (versione > Settings.getVersioneSoftware() || (Settings.isBeta() && versione==Settings.getVersioneSoftware())) {
 			OperazioniFile.copyfile("GestioneSerieTV5.exe", "GestioneSerieTV5.exe_back");
 			try {
-				Download.downloadFromUrl("http://pinoelefante.altervista.org/software/GST/GestioneSerieTV5.exe", "GestioneSerieTV5.exe");
-				File f=new File("GestioneSerieTV5.exe_back");
+				Download.downloadFromUrl("http://pinoelefante.altervista.org/software/GST/GestioneSerieTV5.exe", Settings.getCurrentDir()+"GestioneSerieTV5.exe");
+				File f=new File(Settings.getCurrentDir()+"GestioneSerieTV5.exe_back");
 				f.delete();
 				Settings.setNewUpdate(true);
 				Settings.setLastVersion(Settings.getVersioneSoftware());
-				Runtime.getRuntime().exec("GestioneSerieTV5.exe");
+				Runtime.getRuntime().exec(Settings.getCurrentDir()+"GestioneSerieTV5.exe");
 				System.exit(0);
 			}
 			catch (IOException e1) {
-				OperazioniFile.copyfile("GestioneSerieTV5.exe_back", "GestioneSerieTV5.exe");
+				OperazioniFile.copyfile(Settings.getCurrentDir()+"GestioneSerieTV5.exe_back", Settings.getCurrentDir()+"GestioneSerieTV5.exe");
 				ManagerException.registraEccezione(e1);
 				JOptionPane.showMessageDialog(Interfaccia.frame, Language.DIALOGUE_UPDATE_ERROR_DOWNLOAD);
 			}

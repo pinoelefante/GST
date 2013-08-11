@@ -7,14 +7,14 @@ import SerieTV.GestioneSerieTV;
 import SerieTV.GestioneSerieTV2;
 import SerieTV.ThreadRicercaAutomatica;
 import Database.Database;
+import Database.Database2;
 import GUI.FrameLoading;
 import GUI.Interfaccia;
 import GUI.Interfaccia2;
-import GUI.Language;
 
 public class Main {
 	public static Interfaccia					frame;
-	public static ThreadAggiornamentiSoftware	thread_update		= new ThreadAggiornamentiSoftware(false);
+	//public static ThreadAggiornamentiSoftware	thread_update		= new ThreadAggiornamentiSoftware(false);
 	public static ThreadRicercaAutomatica		thread_autosearch	= new ThreadRicercaAutomatica();
 	public static FrameLoading 					fl;
 	
@@ -28,8 +28,7 @@ public class Main {
 	private static Interfaccia2 GUIframe;
 	public static void main(String[] args) {
 		
-		try{	
-			
+		try{			
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			
 			fl=new FrameLoading();
@@ -62,9 +61,11 @@ public class Main {
 			Settings.CaricaSetting();
 			fl.setprog(++i);
 			
+			/*
 			fl.settext("Impostando la lingua");
 			Language.setLanguage(Settings.getLingua());
 			fl.setprog(++i);
+			*/
 		
 			fl.settext("Eliminazione dump files");
 			OperazioniFile.dumpfileclean();
@@ -75,10 +76,12 @@ public class Main {
 			Update.start();
 			fl.setprog(++i);
 			
+			/*
 			fl.settext("Controllo aggiornamenti");
 			thread_update.start();
 			fl.setprog(++i);
 			thread_update.join();
+			*/
 			/*
 			fl.settext("Scaricando lista serie");
 			GestioneSerieTV.Showlist();
@@ -109,8 +112,6 @@ public class Main {
 				GUIframe.reloadSerieDisponibili();
 			}
 				
-			
-			
 			if(Settings.isRicercaSottotitoli()){
 				GestioneSerieTV.getSubManager().avviaRicercaAutomatica();
 			}

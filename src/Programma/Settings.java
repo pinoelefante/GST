@@ -1,8 +1,10 @@
 package Programma;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
+
+import com.sun.jna.platform.win32.Advapi32Util;
+import com.sun.jna.platform.win32.WinReg;
 
 import Database.Database;
 import Database.SQLParameter;
@@ -262,18 +264,11 @@ public class Settings {
 	public static void baseSettings(){
 		SistemaOperativo = System.getProperty("os.name");
 		current_dir = ClassLoader.getSystemClassLoader().getResource(".").getPath();
-		if(isWindows()){
-			current_dir = current_dir.substring(1).replace("/", "\\").replace("%20", " ");
-			try {
-				if(!OperazioniFile.fileExists("autostart.exe"))
-					Download.downloadFromUrl("http://pinoelefante.altervista.org/software/GST/autostart.exe", "autostart.exe");
-				registraProgramma();
-			}
-			catch (IOException e) {
-				e.printStackTrace();
-				ManagerException.registraEccezione(e);
-			}
+		if(current_dir.startsWith("/")){
+			current_dir=current_dir.substring(1).replace("%20", " ").replace("\\", File.separator).replace("/", File.separator);
 		}
+		System.setProperty("user.dir", current_dir);
+		
 		DirectoryDownload=current_dir+"Download";
 	}
 	public static void CaricaSetting(){
@@ -347,29 +342,25 @@ public class Settings {
 	}
 
 	public static void createAutoStart() {
-		try {
-			Runtime.getRuntime().exec("autostart.exe 1 \"" + current_dir.substring(0, current_dir.length() - 1) + "\"");
+		if(isWindows()){
+			Advapi32Util.registrySetStringValue(WinReg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Run", "GestioneSerieTV", getCurrentDir()+"GestioneSerieTV5.exe");
 		}
-		catch (IOException e) {
-			ManagerException.registraEccezione(e);
+		else if(isLinux()){
+			
+		}
+		else if(isMacOS()){
+			
 		}
 	}
 	public static void removeAutostart() {
-		try {
-			Runtime.getRuntime().exec("autostart.exe 2");
+		if(isWindows()){
+			Advapi32Util.registryDeleteValue(WinReg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Run", "GestioneSerieTV");
 		}
-		catch (IOException e) {
-			ManagerException.registraEccezione(e);
+		else if(isLinux()){
+			
 		}
-	}
-
-	public static void registraProgramma() {
-		try {
-			Runtime.getRuntime().exec("autostart.exe 3 \"" + current_dir.substring(0, current_dir.length() - 1) + "\"" + " " + "GestioneSerieTV5.exe");
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-			ManagerException.registraEccezione(e);
+		else if(isMacOS()){
+			
 		}
 	}
 	public static boolean verificaUtorrent(){

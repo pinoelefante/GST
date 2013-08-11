@@ -39,6 +39,7 @@ public class Subspedia implements ProviderSottotitoli {
 			link=link.replace(" ", "%20");
 			if(scaricaSub(link, Renamer.generaNomeDownload(t), t.getNomeSerieFolder())){
 				t.setSottotitolo(false, true);
+				return true;
 			}
 			return false;
 		}
@@ -102,13 +103,13 @@ public class Subspedia implements ProviderSottotitoli {
 		
 		last_update=System.currentTimeMillis();
 		try {
-			Download.downloadFromUrl(URLFeedRSS, "feed_subspedia");
+			Download.downloadFromUrl(URLFeedRSS, Settings.getCurrentDir()+"feed_subspedia");
 			rss.clear();
 			
 			DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
 			dbfactory.setNamespaceAware(true);
 			DocumentBuilder domparser = dbfactory.newDocumentBuilder();
-			Document doc = domparser.parse(new File("feed_subspedia"));
+			Document doc = domparser.parse(new File(Settings.getCurrentDir()+"feed_subspedia"));
 			
 			NodeList elementi=doc.getElementsByTagName("item");
 			for(int i=0;i<elementi.getLength();i++){
@@ -136,7 +137,7 @@ public class Subspedia implements ProviderSottotitoli {
 				}
 				rss.add(new SubspediaRSSItem(titolo, link));
 			}
-			OperazioniFile.deleteFile("feed_subspedia");
+			OperazioniFile.deleteFile(Settings.getCurrentDir()+"feed_subspedia");
 		} 
 		catch (IOException e) {	
 			e.printStackTrace();
