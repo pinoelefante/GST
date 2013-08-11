@@ -18,8 +18,8 @@ import Programma.Settings;
 public class Database2 {
 	private static Connection con;
 	
-	public final static String TABLE_SERIETV="serie";
-	public final static String TABLE_TORRENT="torrent";
+	public final static String TABLE_SERIETV="serietv";
+	public final static String TABLE_EPISODI="episodi";
 	public final static String TABLE_ITASA="itasa";
 	public final static String TABLE_SUBSFACTORY="subsfactory";
 	public final static String TABLE_LOGSUB="logsub";
@@ -27,7 +27,7 @@ public class Database2 {
 	public final static String TABLE_TRADUZIONI="traduzioni";
 	public final static String TABLE_SETTINGS="settings";
 	public final static String TABLE_TVRAGE="tvrage";
-	private final static String NOMEDB=Settings.getCurrentDir()+"database.db";
+	private final static String NOMEDB=Settings.getCurrentDir()+"database2.sqlite";
 	
 	public static void Connect() {
 		try {
@@ -38,9 +38,8 @@ public class Database2 {
 			conf.enforceForeignKeys(true);
 			conf.setSynchronous(SynchronousMode.OFF);
 			
-			con = DriverManager.getConnection("jdbc:sqlite:"+getNomeDB(), conf.toProperties());
+			con = DriverManager.getConnection("jdbc:sqlite:"+NOMEDB, conf.toProperties());
 			System.out.println("Connessione OK");
-			creaDB();
 			checkIntegrita();
 		} 
 		catch (Exception e) {
@@ -81,85 +80,33 @@ public class Database2 {
 				Connect();
 
 			Statement stat = con.createStatement();
-			/**
-			 * Tabella Serie TV
-			 * 
-			 * id (int) | nome (string) | url (string) | end (int) | stato (int) | inserita (int) | id_itasa (int) | directory_subsfactory (string)  
-			 */
-			stat.executeUpdate("CREATE TABLE IF NOT EXISTS serie (" +
-					"id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-					"nome TEXT NOT NULL, " +
-					"url TEXT NOT NULL UNIQUE," +
-					"stato INTEGER DEFAULT 0,"+
-					"end INTEGER DEFAULT 0," +
-					"inserita INTEGER DEFAULT 0," +
-					"id_itasa INTEGER DEFAULT 0," +
-					"tv_rage INTEGER DEFAULT 0,"+
-					"cleanup INTEGER DEFAULT 0,"+
-					"directory_subsfactory TEXT DEFAULT 0)");
-			/**
-			 *  Tabella Torrent
-			 *  
-			 *   id (int) | id_serie (int) | magnet (string) | vista (int) | serie (int) | episodio (int) | 720p(int) | repack (int) | preair (int) | proper (int) | sottotitolo (int)
-			 */
-			stat.executeUpdate("CREATE TABLE IF NOT EXISTS torrent (" +
-					"id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-					"id_serie INTEGER NOT NULL, " +
-					"magnet TEXT NOT NULL UNIQUE," +
-					"vista INTEGER DEFAULT 0," +
-					"serie INTEGER DEFAULT 0," +
-					"episodio INTEGER DEFAULT 0," +
-					"HD720p INTEGER DEFAULT 0," +
-					"repack INTEGER DEFAULT 0," +
-					"preair INTEGER DEFAULT 0," +
-					"proper INTEGER DEFAULT 0," +
-					"sottotitolo INTEGER DEFAULT 0," +
-					"FOREIGN KEY(id_serie) REFERENCES serie(id) ON DELETE CASCADE)");
-			/**
-			 *  Tabella Itasa
-			 *   id_serie (int) | nome_serie (string)
-			 */
-			stat.executeUpdate("CREATE TABLE IF NOT EXISTS itasa(" +
-					"id_serie INTEGER PRIMARY KEY," +
-					"nome_serie TEXT NOT NULL)");
-			/**
-			 *  Tabella Subsfactory.it
-			 *   id_serie (int) | nome_serie (string)
-			 */
-			stat.executeUpdate("CREATE TABLE IF NOT EXISTS subsfactory(" +
-					"id_serie INTEGER PRIMARY KEY NOT NULL," +
-					"nome_serie TEXT NOT NULL)");
-			/**
-			 * Log sottotitoli scaricati
-			 *  id (int) | nome_serie (string) | serie (int) | episodio (int) | provider (string)
-			 */
+			
+			stat.executeUpdate("CREATE TABLE IF NOT EXISTS "+TABLE_SERIETV+" (" +
+					"id INTEGER PRIMARY KEY AUTOINCREMENT)");
+			
+			stat.executeUpdate("CREATE TABLE IF NOT EXISTS "+TABLE_EPISODI+" (" +
+					"id INTEGER PRIMARY KEY AUTOINCREMENT)");
+			
+			stat.executeUpdate("CREATE TABLE IF NOT EXISTS "+TABLE_ITASA+" (" +
+					"id INTEGER PRIMARY KEY AUTOINCREMENT," +
+					"nome_serie TEXT NOT NULL,"+
+					"id_serie INTEGER NOT NULL)");
+			
+			stat.executeUpdate("CREATE TABLE IF NOT EXISTS "+TABLE_SUBSFACTORY +" (" +
+					"id INTEGER PRIMARY KEY AUTOINCREMENT," +
+					"nome_serie TEXT NOT NULL,"+
+					"directory TEXT NOT NULL)");
+			
 			stat.executeUpdate("CREATE TABLE IF NOT EXISTS logsub(" +
 					"id INTEGER PRIMARY KEY AUTOINCREMENT," +
-					"nome_serie TEXT NOT NULL," +
-					"serie INTEGER DEFAULT 0," +
-					"episodio INTEGER DEFAULT 0," +
-					"provider TEXT DEFAULT '')");
-			/**
-			 * Tabella lingue
-			 *  id (int) | nome (string) 
-			 */
-			stat.executeUpdate("CREATE TABLE IF NOT EXISTS lingue(" +
-					"id INTEGER PRIMARY KEY NOT NULL," +
-					"nome TEXT NOT NULL)");
-			/**
-			 * Tabella traduzioni
-			 *  id (int) | id_lingua (int) | voce (string) | traduzione (string)
-			 */
-			stat.executeUpdate("CREATE TABLE IF NOT EXISTS traduzioni(" +
-					"id INTEGER PRIMARY KEY," +
-					"id_serie INTEGER NOT NULL," +
-					"voce TEXT NOT NULL," +
-					"traduzione TEXT DEFAULT ''," +
-					"FOREIGN KEY(id_serie) REFERENCES lingue(id) ON DELETE CASCADE)");
+					"id_serie INTEGER NOT NULL,"+
+					"id_provider INTEGER)");
+	
 			/**
 			 * Tabella Settings
 			 * dir_download | dir_client | dir_vlc | tray_on_icon | start_hidden | ask_on_close | always_on_top | start_win | ricerca_auto | min_ricerca | lingua | new_update | last_version | numero_avvii | ricerca_sub | itasa_id | itasa_pass | id_client
 			 */
+			//TODO modificare tabella settings
 			stat.executeUpdate("CREATE TABLE IF NOT EXISTS settings(" +
 					"dir_download TEXT DEFAULT ''," +
 					"dir_client TEXT DEFAULT ''," +
@@ -198,6 +145,7 @@ public class Database2 {
 		}
 	}
 	private static void checkIntegrita(){
+		creaDB();
 		if(!checkColumn(TABLE_SERIETV, "id")){
 			alter_aggiungicampo(TABLE_SERIETV, "id", "INTEGER", "");
 		}
@@ -225,38 +173,38 @@ public class Database2 {
 		if(!checkColumn(TABLE_SERIETV, "directory_subsfactory")){
 			alter_aggiungicampo(TABLE_SERIETV, "directory_subsfactory", "TEXT", "");
 		}
-		if(!checkColumn(TABLE_TORRENT, "id")){
-			alter_aggiungicampo(TABLE_TORRENT, "id", "INTEGER", "");
+		if(!checkColumn(TABLE_EPISODI, "id")){
+			alter_aggiungicampo(TABLE_EPISODI, "id", "INTEGER", "");
 		}
-		if(!checkColumn(TABLE_TORRENT, "id_serie")){
-			alter_aggiungicampo(TABLE_TORRENT, "id_serie", "INTEGER", "");
+		if(!checkColumn(TABLE_EPISODI, "id_serie")){
+			alter_aggiungicampo(TABLE_EPISODI, "id_serie", "INTEGER", "");
 		}
-		if(!checkColumn(TABLE_TORRENT, "magnet")){
-			alter_aggiungicampo(TABLE_TORRENT, "magnet", "TEXT", "");
+		if(!checkColumn(TABLE_EPISODI, "magnet")){
+			alter_aggiungicampo(TABLE_EPISODI, "magnet", "TEXT", "");
 		}
-		if(!checkColumn(TABLE_TORRENT, "vista")){
-			alter_aggiungicampo(TABLE_TORRENT, "vista", "INTEGER", "0");
+		if(!checkColumn(TABLE_EPISODI, "vista")){
+			alter_aggiungicampo(TABLE_EPISODI, "vista", "INTEGER", "0");
 		}
-		if(!checkColumn(TABLE_TORRENT, "serie")){
-			alter_aggiungicampo(TABLE_TORRENT, "serie", "INTEGER", "0");
+		if(!checkColumn(TABLE_EPISODI, "serie")){
+			alter_aggiungicampo(TABLE_EPISODI, "serie", "INTEGER", "0");
 		}
-		if(!checkColumn(TABLE_TORRENT, "episodio")){
-			alter_aggiungicampo(TABLE_TORRENT, "episodio", "INTEGER", "0");
+		if(!checkColumn(TABLE_EPISODI, "episodio")){
+			alter_aggiungicampo(TABLE_EPISODI, "episodio", "INTEGER", "0");
 		}
-		if(!checkColumn(TABLE_TORRENT, "HD720p")){
-			alter_aggiungicampo(TABLE_TORRENT, "HD720p", "INTEGER", "0");
+		if(!checkColumn(TABLE_EPISODI, "HD720p")){
+			alter_aggiungicampo(TABLE_EPISODI, "HD720p", "INTEGER", "0");
 		}
-		if(!checkColumn(TABLE_TORRENT, "repack")){
-			alter_aggiungicampo(TABLE_TORRENT, "repack", "INTEGER", "0");
+		if(!checkColumn(TABLE_EPISODI, "repack")){
+			alter_aggiungicampo(TABLE_EPISODI, "repack", "INTEGER", "0");
 		}
-		if(!checkColumn(TABLE_TORRENT, "preair")){
-			alter_aggiungicampo(TABLE_TORRENT, "preair", "INTEGER", "0");
+		if(!checkColumn(TABLE_EPISODI, "preair")){
+			alter_aggiungicampo(TABLE_EPISODI, "preair", "INTEGER", "0");
 		}
-		if(!checkColumn(TABLE_TORRENT, "proper")){
-			alter_aggiungicampo(TABLE_TORRENT, "proper", "INTEGER", "0");
+		if(!checkColumn(TABLE_EPISODI, "proper")){
+			alter_aggiungicampo(TABLE_EPISODI, "proper", "INTEGER", "0");
 		}
-		if(!checkColumn(TABLE_TORRENT, "sottotitolo")){
-			alter_aggiungicampo(TABLE_TORRENT, "sottotitolo", "INTEGER", "0");
+		if(!checkColumn(TABLE_EPISODI, "sottotitolo")){
+			alter_aggiungicampo(TABLE_EPISODI, "sottotitolo", "INTEGER", "0");
 		}
 		if(!checkColumn(TABLE_LOGSUB, "id")){
 			alter_aggiungicampo(TABLE_LOGSUB, "id", "INTEGER", "0");
@@ -436,7 +384,7 @@ public class Database2 {
 		}
 		return -1;
 	}
-	public static boolean executeQuery(String query){
+	public static boolean updateQuery(String query){
 		int ins_ok=0;
 		try {
 			Statement stat=con.createStatement();
@@ -448,15 +396,5 @@ public class Database2 {
 			ManagerException.registraEccezione(e);
 		}
 		return (ins_ok==0?false:true);
-	}
-
-	public static String getNomeDB() {
-		return NOMEDB;
-	}
-	public static void main(String[] args){
-		Connect();
-		ArrayList<String> col=getTableColumns(TABLE_SETTINGS);
-		for(int i=0;i<col.size();i++)
-			System.out.println(col.get(i));
 	}
 }

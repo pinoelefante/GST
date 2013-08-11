@@ -6,8 +6,6 @@ import javax.swing.JCheckBox;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.GridLayout;
-import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -18,77 +16,103 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
+import javax.swing.border.EtchedBorder;
 
 import SerieTV.EZTV;
 import SerieTV.SerieTV2;
 import SerieTV.Torrent;
 import SerieTV.Torrent2;
+import javax.swing.SwingConstants;
 
 public class PanelEpisodioDownload extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private Torrent2 episodio;
+	
 	private JButton btnScarica;
+	
 	private JButton btnIgnora;
 	private JLabel lblserie;
 	private JLabel lblepisodio;
+	private JButton btnInfo;
+	
 
 	public PanelEpisodioDownload(Torrent2 t) {
 		episodio = t;
 		Color bkgcolor=backgroundByTags();
-		
+		setSize(375,90);
 		setLayout(new BorderLayout(0, 0));
+		setBorder(new EtchedBorder());
+		setBackground(bkgcolor);
+		
+		JPanel panel_n = new JPanel();
+		panel_n.setBackground(bkgcolor);
+		add(panel_n, BorderLayout.NORTH);
+		panel_n.setLayout(new BorderLayout(0, 0));
+		
+		JCheckBox chckbxNomeserie = new JCheckBox(episodio.getNomeSerie());
+		chckbxNomeserie.setBackground(bkgcolor);
+		chckbxNomeserie.setHorizontalAlignment(SwingConstants.CENTER);
+		panel_n.add(chckbxNomeserie, BorderLayout.WEST);
+		
+		JPanel panel_1 = new JPanel();
+		panel_1.setBackground(bkgcolor);
+		panel_n.add(panel_1, BorderLayout.EAST);
+		
+		btnScarica = new JButton("Scarica");
+		btnScarica.setIcon(new ImageIcon(PanelEpisodioDownload.class.getResource("/GUI/res/salva.png")));
+		panel_1.add(btnScarica);
+		
+		btnIgnora = new JButton("Ignora");
+		btnIgnora.setIcon(new ImageIcon(PanelEpisodioDownload.class.getResource("/GUI/res/reset.png")));
+		panel_1.add(btnIgnora);
+		
+		JPanel panel_s = new JPanel();
+		panel_s.setBackground(bkgcolor);
+		add(panel_s, BorderLayout.SOUTH);
+		panel_s.setLayout(new BorderLayout(0, 0));
+		
+		JLabel lblTorrentname = new JLabel("  "+episodio.toString());
+		lblTorrentname.setBackground(bkgcolor);
+		panel_s.add(lblTorrentname, BorderLayout.WEST);
 		
 		JPanel panel = new JPanel();
-		add(panel, BorderLayout.CENTER);
-		panel.setLayout(null);
+		panel.setBackground(bkgcolor);
+		add(panel, BorderLayout.WEST);
 		
-		JCheckBox chckbxNomeserie = new JCheckBox("<html>"+episodio.getNomeSerie()+"</html>");
-		chckbxNomeserie.setBounds(6, 7, 173, 23);
-		panel.add(chckbxNomeserie);
-		chckbxNomeserie.setBackground(bkgcolor);
+		JLabel lblStagione = new JLabel("Stagione: ");
+		lblStagione.setBackground(bkgcolor);
+		panel.add(lblStagione);
 		
-		JLabel labelEpisodio = new JLabel("Episodio:");
-		labelEpisodio.setBounds(94, 37, 60, 14);
-		panel.add(labelEpisodio);
-		labelEpisodio.setBackground(bkgcolor);
-		
-		JLabel labelStagione = new JLabel("Stagione:");
-		labelStagione.setBounds(8, 37, 60, 14);
-		panel.add(labelStagione);
-		labelStagione.setBackground(bkgcolor);
-		
-		lblserie = new JLabel("<html><center><b>"+episodio.getStagione()+"</b></center></html>");
-		lblserie.setBounds(65, 37, 27, 16);
-		panel.add(lblserie);
+		lblserie = new JLabel("<html><b>"+episodio.getStagione()+"</b></html>");
 		lblserie.setBackground(bkgcolor);
+		panel.add(lblserie);
 		
-		lblepisodio = new JLabel("<html><center><b>"+episodio.getEpisodio()+"</b></center></html>");
-		lblepisodio.setBounds(152, 37, 22, 16);
-		panel.add(lblepisodio);
+		JLabel lblEpisodio = new JLabel("Episodio: ");
+		lblEpisodio.setBackground(bkgcolor);
+		panel.add(lblEpisodio);
+		
+		lblepisodio = new JLabel("<html><b>"+episodio.getEpisodio()+"</b></html>");
 		lblepisodio.setBackground(bkgcolor);
-		
-		JLabel lbllinktorrent = new JLabel(episodio.toString());
-		lbllinktorrent.setBounds(8, 60, 352, 14);
-		panel.add(lbllinktorrent);
-		lbllinktorrent.setBackground(bkgcolor);
-		
-		btnScarica = new JButton("<html>Scarica</html>");
-		btnScarica.setIcon(new ImageIcon(PanelEpisodioDownload.class.getResource("/GUI/res/salva.png")));
-		btnScarica.setBounds(190, 6, 90, 25);
-		panel.add(btnScarica);
-		
-		btnIgnora = new JButton("<html>Ignora</html>");
-		btnIgnora.setIcon(new ImageIcon(PanelEpisodioDownload.class.getResource("/GUI/res/reset.png")));
-		btnIgnora.setBounds(280, 6, 90, 25);
-		panel.add(btnIgnora);
+		panel.add(lblepisodio);
 		
 		String tags=""+(episodio.is720p()?"720p":"")+" "+(episodio.isPROPER()?"PROPER":"")+" "+(episodio.isRepack()?"REPACK":"")+" "+(episodio.isPreAir()?"PREAIR":"").trim();
 		JLabel lbltags = new JLabel("<html><b>"+tags+"</b></html>");
-		lbltags.setBounds(192, 37, 115, 16);
-		panel.add(lbltags);
 		lbltags.setBackground(bkgcolor);
+		add(lbltags, BorderLayout.EAST);
+		
+		JPanel panel_2 = new JPanel();
+		add(panel_2, BorderLayout.CENTER);
+		panel_2.setLayout(new BorderLayout(0, 0));
+		
+		JPanel panel_3 = new JPanel();
+		panel_2.add(panel_3, BorderLayout.EAST);
+		
+		btnInfo = new JButton("");
+		panel_3.add(btnInfo);
+		btnInfo.setIcon(new ImageIcon(PanelEpisodioDownload.class.getResource("/GUI/res/info.png")));
 		
 		addListener();
+		
 	}
 	private Color backgroundByTags(){
 		boolean hd=episodio.is720p();
@@ -111,6 +135,7 @@ public class PanelEpisodioDownload extends JPanel {
 		return new Color(240,240,240);
 	}
 	private void addListener(){
+		
 		btnIgnora.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				episodio.setScaricato(Torrent.IGNORATO, false);
@@ -120,6 +145,12 @@ public class PanelEpisodioDownload extends JPanel {
 		btnScarica.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				// TODO inserire download
+			}
+		});
+		btnInfo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Inserire info button listener
+				
 			}
 		});
 		lblepisodio.addMouseListener(new MouseAdapter() {
@@ -164,22 +195,20 @@ public class PanelEpisodioDownload extends JPanel {
 				}
 			}
 		});
+		
 	}
 	private void removeFromParent(){
-		LayoutManager layout=getParent().getLayout();
+		//LayoutManager layout=getParent().getLayout();
 		Container parent=getParent();
 		parent.remove(PanelEpisodioDownload.this);
+		/*
 		if(layout instanceof GridLayout){
 			GridLayout lay=(GridLayout)layout;
-			int count=parent.getComponentCount();
-			if(count%2==0){
-				if(lay.getColumns()*lay.getRows()>count){
-					lay.setRows(lay.getRows()-1);
-				}
-			}
+			lay.setRows(lay.getRows()-1);
 		}
 		parent.revalidate();
 		parent.repaint();
+		*/
 	}
 	public static void main(String[] args){
 		JFrame frame=new JFrame("Prova");

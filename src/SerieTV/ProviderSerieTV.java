@@ -22,6 +22,8 @@ public abstract class ProviderSerieTV {
 				elenco_serie.add(i,s);
 				salvaSerieInDB(s);
 				nuove_serie.add(s);
+				if(s.isInserita())
+					preferite.add(s);
 				return null;
 			}
 			else if(s.getNomeSerie().compareTo(st.getNomeSerie())==0)
@@ -30,6 +32,8 @@ public abstract class ProviderSerieTV {
 		elenco_serie.add(s);
 		salvaSerieInDB(s);
 		nuove_serie.add(s);
+		if(s.isInserita())
+			preferite.add(s);
 		return null;
 	}
 	public int getSeriesCount(){
@@ -42,6 +46,19 @@ public abstract class ProviderSerieTV {
 	}
 	public int getNuoveSerieCount(){
 		return nuove_serie.size();
+	}
+	public void cercaPreferite(){
+		if(elenco_serie!=null){
+			if(elenco_serie.size()>0){
+				preferite.clear();
+				for(int i=0;i<getSeriesCount();i++){
+					SerieTV2 s=getSerieAt(i);
+					if(s.isInserita())
+						preferite.add(s);
+				}
+				preferite.trimToSize();
+			}
+		}
 	}
 	public SerieTV2 getNuoveSerieAt(int i){
 		if(i<0 || i>=getNuoveSerieCount())
@@ -65,4 +82,5 @@ public abstract class ProviderSerieTV {
 	public abstract void caricaSerieDB();
 	protected abstract void salvaSerieInDB(SerieTV2 s);
 	protected abstract void salvaEpisodioInDB(Torrent2 t);
+	public abstract int getProviderID();
 }

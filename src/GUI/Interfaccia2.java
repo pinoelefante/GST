@@ -7,14 +7,17 @@ import Programma.OperazioniFile;
 import Programma.Settings;
 import LettoreVideo.Player;
 import LettoreVideo.PlaylistItem;
+import SerieTV.EZTV;
 import SerieTV.GestioneSerieTV;
 import SerieTV.GestioneSerieTV2;
 import SerieTV.SerieTV2;
+import SerieTV.Torrent2;
 
 import javax.swing.JTabbedPane;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.LayoutManager;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -22,6 +25,8 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -62,6 +67,10 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.DefaultComboBoxModel;
 
+import java.awt.GridLayout;
+
+import javax.swing.border.EtchedBorder;
+
 public class Interfaccia2 extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel InfoPanel;
@@ -97,6 +106,7 @@ public class Interfaccia2 extends JFrame {
 	private JLabel lblTimer;
 	private JLabel imgVolume;
 	private JSlider slider_time;
+	private JPanel panel_scroll_download;
 
 	public Interfaccia2(){
 		super("Gestione Serie TV rel."+Settings.getVersioneSoftware()+" by pinoelefante");
@@ -260,6 +270,37 @@ public class Interfaccia2 extends JFrame {
 		btnAggiungiTorrent.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/add.png")));
 		btnAggiungiTorrent.setBounds(428, 30, 40, 26);
 		panel_10.add(btnAggiungiTorrent);
+		
+		JScrollPane scrollPaneDownload = new JScrollPane();
+		scrollPaneDownload.setBounds(0, 257, 375, 269);
+		DownloadPanel.add(scrollPaneDownload);
+		
+		panel_scroll_download = new JPanel();
+		scrollPaneDownload.setViewportView(panel_scroll_download);
+		panel_scroll_download.setLayout(new GridLayout(0, 1, 0, 0));
+		
+		JPanel panel_info_episodio = new JPanel();
+		panel_info_episodio.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
+		panel_info_episodio.setBounds(385, 257, 344, 269);
+		DownloadPanel.add(panel_info_episodio);
+		
+		JButton btnTest = new JButton("test");
+		panel_info_episodio.add(btnTest);
+		
+		JButton btnAggiorna = new JButton("Aggiorna");
+		btnAggiorna.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/aggiorna.png")));
+		btnAggiorna.setBounds(10, 228, 105, 23);
+		DownloadPanel.add(btnAggiorna);
+		
+		JButton btnScarica = new JButton("Scarica");
+		btnScarica.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/download.png")));
+		btnScarica.setBounds(127, 228, 114, 23);
+		DownloadPanel.add(btnScarica);
+		
+		JButton btnIgnora = new JButton("Ignora");
+		btnIgnora.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/remove.png")));
+		btnIgnora.setBounds(253, 228, 97, 23);
+		DownloadPanel.add(btnIgnora);
 		
 		JPanel SottotitoliPanel = new JPanel();
 		tab.addTab("Sottotitoli", new ImageIcon(Interfaccia2.class.getResource("/GUI/res/sottotitoli.png")), SottotitoliPanel, null);
@@ -1102,15 +1143,46 @@ public class Interfaccia2 extends JFrame {
 				SerieTV2 s=(SerieTV2) cmb_serie_tutte.getSelectedItem();
 				if(s!=null){
 					if(!s.isInserita()){
-    					cmb_serie_aggiunte.addItem(s);
-    					cmb_serie_aggiunte_add_episodio.addItem(s);
-    	    			cmb_serie_lettore.addItem(s);
-    	    			cmb_serie_sottotitoli.addItem(s);
     	    			s.setInserita(true);
     	    			s.aggiornaDB();;
     	    			//TODO aggiungere altro XD
+    	    			reloadSeriePreferite();
 					}
 				}
+			}
+		});
+		btnTest.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Torrent2 t=new Torrent2(new SerieTV2(new EZTV(), "Anger Management", ""), "magnet:?xt=urn:btih:CESZGU2HYDQ3V7PMARB3MXELSZ3AMDWU&dn=Anger.Management.S02E31.HDTV.x264-ASAP&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80",Torrent2.SCARICARE);
+				t.parseMagnet();
+				PanelEpisodioDownload p=new PanelEpisodioDownload(t);
+				panel_scroll_download.add(p);
+			}
+		});
+		panel_scroll_download.addContainerListener(new ContainerListener() {
+			public void componentRemoved(ContainerEvent arg0) {
+				GridLayout l=(GridLayout) panel_scroll_download.getLayout();
+				if(panel_scroll_download.getComponentCount()<=3)
+					l.setRows(3);
+				else
+					l.setRows(l.getRows()-1);
+				panel_scroll_download.revalidate();
+				panel_scroll_download.repaint();
+			}
+			public void componentAdded(ContainerEvent arg0) {
+				GridLayout l=(GridLayout) panel_scroll_download.getLayout();
+				if(panel_scroll_download.getComponentCount()<=3)
+					l.setRows(3);
+				else
+					l.setRows(l.getRows()+1);
+				panel_scroll_download.revalidate();
+				panel_scroll_download.repaint();
+			}
+		});
+		buttonReloadSerie.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				GestioneSerieTV2.Showlist();
+				reloadSerieDisponibili();
 			}
 		});
 	}
@@ -1125,6 +1197,23 @@ public class Interfaccia2 extends JFrame {
     			cmb_serie_sottotitoli.addItem(st.get(i));
     		}
 		}
+		st=null;
+	}
+	public void reloadSeriePreferite() {
+		ArrayList<SerieTV2> st=GestioneSerieTV2.getElencoSerieInserite();
+		if(st!=null){
+    		cmb_serie_aggiunte.removeAllItems();
+    		cmb_serie_aggiunte_add_episodio.removeAllItems();
+    		cmb_serie_lettore.removeAllItems();
+    		cmb_serie_sottotitoli.removeAllItems();
+    		for(int i=0;i<st.size();i++){
+        		cmb_serie_aggiunte.addItem(st.get(i));
+        		cmb_serie_aggiunte_add_episodio.addItem(st.get(i));
+        		cmb_serie_lettore.addItem(st.get(i));
+        		cmb_serie_sottotitoli.addItem(st.get(i));
+       		}
+		}
+		st=null;
 	}
 	public void reloadSerieDisponibili() {
 		/** inizializza il campo che contiene tutte le serie disponibili*/
@@ -1135,5 +1224,6 @@ public class Interfaccia2 extends JFrame {
 				cmb_serie_tutte.addItem(st.get(i));
 			}
 		}
+		st=null;
 	}
 }

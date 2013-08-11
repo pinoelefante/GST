@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import Database.Database2;
 import Programma.Download2;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
@@ -102,7 +103,27 @@ public class EZTV extends ProviderSerieTV{
 	}
 	@Override
 	protected void salvaSerieInDB(SerieTV2 s) {
-		// TODO Auto-generated method stub
+		if(s.getIDDb()>0){
+			String query="INSERT INTO "+Database2.TABLE_SERIETV+" (nome, url, inserita, conclusa, stop_search, provider, id_itasa, id_subsfactory, id_subspedia, id_tvdb, id_tvrage) VALUES ("+
+					"\""+s.getNomeSerie()+"\", "+
+					"\""+s.getUrl()+"\","+
+					(s.isInserita()?1:0)+","+
+					(s.isConclusa()?1:0)+","+
+					(s.isStopSearch()?1:0)+","+
+					getProviderID()+","+
+					s.getIDItasa()+","+
+					s.getIDSubsfactory()+","+
+					s.getIDSubspedia()+","+
+					s.getIDTvdb()+","+
+					s.getIDTvrage()+")";
+			Database2.updateQuery(query);
+		}
+		else {
+			String query="UPDATE "+Database2.TABLE_SERIETV+" SET nome="+"\""+s.getNomeSerie()+"\", url="+"\""+s.getUrl()+"\", inserita="+(s.isInserita()?1:0)+","+
+					" conclusa="+(s.isConclusa()?1:0)+", stop_search="+(s.isStopSearch()?1:0)+", id_itasa="+s.getIDItasa()+", id_subsfactory="+s.getIDSubsfactory()+","+
+					" id_subspedia="+s.getIDSubspedia()+", id_tvdb="+s.getIDTvdb()+", id_tvrage="+s.getIDTvrage()+" WHERE id="+s.getIDDb();
+			Database2.updateQuery(query);
+		}
 		
 	}
 	@Override
@@ -114,6 +135,10 @@ public class EZTV extends ProviderSerieTV{
 	protected void salvaEpisodioInDB(Torrent2 t) {
 		// TODO Auto-generated method stub
 		
+	}
+	@Override
+	public int getProviderID() {
+		return 1;
 	}
 	
 }

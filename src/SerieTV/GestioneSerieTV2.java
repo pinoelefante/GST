@@ -31,7 +31,8 @@ public class GestioneSerieTV2 {
 		return st;
 	}
 	public static ArrayList<SerieTV2> getElencoSerieInserite(){
-		ArrayList<SerieTV2> st=new ArrayList<SerieTV2>();
+		p_eztv.cercaPreferite();
+		ArrayList<SerieTV2> st=new ArrayList<SerieTV2>(p_eztv.getPreferiteSerieCount());
 		for(int i=0;i<p_eztv.getPreferiteSerieCount();i++){
 			if(p_eztv.getPreferiteSerieAt(i)!=null)
 				st.add(p_eztv.getPreferiteSerieAt(i));

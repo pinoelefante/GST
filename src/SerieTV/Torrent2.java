@@ -110,7 +110,7 @@ public class Torrent2 {
 	public void insert(){
 		String query="INSERT INTO "+Database.TABLE_TORRENT+" "+"(magnet, id_serie, vista, serie, episodio, HD720p, repack, preair, proper, sottotitolo) VALUES ("+
 				"\""+getUrl()+"\","+
-				serietv.getIdDb()+","+
+				serietv.getIDDb()+","+
 				stato+","+
 				getStagione()+","+
 				getEpisodio()+","+
@@ -119,14 +119,14 @@ public class Torrent2 {
 				(isPreAir()?1:0)+","+
 				(isPROPER()?1:0)+","+
 				(isSottotitolo()?1:0)+")";
-		if(Database2.executeQuery(query)==false)
+		if(Database2.updateQuery(query)==false)
 			ManagerException.registraEccezione(getClass().getName()+ "\nMetodo insert()\nQuery:"+query+"\n");
 		
 	}
 	public void update(){
 		int i=0;
 		SQLParameter[] par=new SQLParameter[9];
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, serietv.getIdDb(), "id_serie");
+		par[i++]=new SQLParameter(SQLParameter.INTEGER, serietv.getIDDb(), "id_serie");
 		par[i++]=new SQLParameter(SQLParameter.INTEGER, getScaricato(), "vista");
 		par[i++]=new SQLParameter(SQLParameter.INTEGER, getStagione(), "serie");
 		par[i++]=new SQLParameter(SQLParameter.INTEGER, getEpisodio(), "episodio");
