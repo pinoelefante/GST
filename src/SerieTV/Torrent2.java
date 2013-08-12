@@ -108,7 +108,7 @@ public class Torrent2 {
 	}
 	*/
 	public void insert(){
-		String query="INSERT INTO "+Database.TABLE_TORRENT+" "+"(magnet, id_serie, vista, serie, episodio, HD720p, repack, preair, proper, sottotitolo) VALUES ("+
+		String query="INSERT INTO "+Database2.TABLE_EPISODI+" "+"(magnet, id_serie, vista, serie, episodio, HD720p, repack, preair, proper, sottotitolo) VALUES ("+
 				"\""+getUrl()+"\","+
 				serietv.getIDDb()+","+
 				stato+","+
@@ -124,6 +124,7 @@ public class Torrent2 {
 		
 	}
 	public void update(){
+		/*
 		int i=0;
 		SQLParameter[] par=new SQLParameter[9];
 		par[i++]=new SQLParameter(SQLParameter.INTEGER, serietv.getIDDb(), "id_serie");
@@ -140,6 +141,7 @@ public class Torrent2 {
 		con[0]=new SQLParameter(SQLParameter.TEXT, getUrl(), "magnet");
 		
 		Database.update(Database.TABLE_TORRENT, par, con, "AND", "=");
+		*/
 	}
 	public String toString(){
 		if(isMagnetLink())

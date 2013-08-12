@@ -6,9 +6,7 @@ import Programma.ControlloAggiornamenti;
 import Programma.OperazioniFile;
 import Programma.Settings;
 import LettoreVideo.Player;
-import LettoreVideo.PlaylistItem;
 import SerieTV.EZTV;
-import SerieTV.GestioneSerieTV;
 import SerieTV.GestioneSerieTV2;
 import SerieTV.SerieTV2;
 import SerieTV.Torrent2;
@@ -17,7 +15,6 @@ import javax.swing.JTabbedPane;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.LayoutManager;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
@@ -29,7 +26,6 @@ import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
@@ -41,7 +37,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
-import javax.swing.SwingUtilities;
 
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
@@ -70,6 +65,7 @@ import javax.swing.DefaultComboBoxModel;
 import java.awt.GridLayout;
 
 import javax.swing.border.EtchedBorder;
+import javax.swing.border.CompoundBorder;
 
 public class Interfaccia2 extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -670,12 +666,13 @@ public class Interfaccia2 extends JFrame {
 		LettorePanel.add(btnVLCNext);
 		
 		JPanel OpzioniPanel = new JPanel();
+		OpzioniPanel.setBorder(new CompoundBorder());
 		tab.addTab("Opzioni", new ImageIcon(Interfaccia2.class.getResource("/GUI/res/opzioni.png")), OpzioniPanel, null);
 		OpzioniPanel.setLayout(null);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "Aspetto", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-		panel_1.setBounds(10, 11, 350, 141);
+		panel_1.setBounds(10, 11, 350, 144);
 		OpzioniPanel.add(panel_1);
 		panel_1.setLayout(null);
 		
@@ -683,21 +680,25 @@ public class Interfaccia2 extends JFrame {
 		chckbxSempreInPrimo.setBounds(6, 19, 338, 23);
 		panel_1.add(chckbxSempreInPrimo);
 		
-		JCheckBox chckbxNascondiDuranteLa = new JCheckBox("Nascondi durante la visualizzazione");
-		chckbxNascondiDuranteLa.setBounds(6, 71, 338, 23);
-		panel_1.add(chckbxNascondiDuranteLa);
+		JCheckBox chckbxExternalVLC = new JCheckBox("Preferisci il player esterno");
+		chckbxExternalVLC.setBounds(6, 70, 338, 23);
+		panel_1.add(chckbxExternalVLC);
 		
 		JCheckBox chckbxChiediConfermaPrima = new JCheckBox("Chiedi conferma prima di uscire");
-		chckbxChiediConfermaPrima.setBounds(6, 45, 338, 23);
+		chckbxChiediConfermaPrima.setBounds(6, 44, 338, 23);
 		panel_1.add(chckbxChiediConfermaPrima);
 		
 		JCheckBox chckbxAvviaConIl = new JCheckBox("Avvia con il sistema operativo");
-		chckbxAvviaConIl.setBounds(6, 97, 196, 23);
+		chckbxAvviaConIl.setBounds(6, 96, 196, 23);
 		panel_1.add(chckbxAvviaConIl);
 		
 		JCheckBox chckbxAvviaRidottoA = new JCheckBox("Avvia ridotto a icona");
-		chckbxAvviaRidottoA.setBounds(204, 97, 140, 23);
+		chckbxAvviaRidottoA.setBounds(204, 96, 140, 23);
 		panel_1.add(chckbxAvviaRidottoA);
+		
+		JCheckBox chckbxTrayOnIcon = new JCheckBox("Minimizza nella tray");
+		chckbxTrayOnIcon.setBounds(6, 117, 336, 24);
+		panel_1.add(chckbxTrayOnIcon);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new TitledBorder(null, "Download", TitledBorder.CENTER, TitledBorder.TOP, null, null));
@@ -762,14 +763,6 @@ public class Interfaccia2 extends JFrame {
 		JCheckBox chckbxAbilitaItaliansubsnet = new JCheckBox("Abilita ItalianSubs.net");
 		chckbxAbilitaItaliansubsnet.setBounds(6, 35, 150, 23);
 		panel_4.add(chckbxAbilitaItaliansubsnet);
-		
-		JCheckBox chckbxAbilitaSubsfactory = new JCheckBox("Abilita Subsfactory");
-		chckbxAbilitaSubsfactory.setBounds(277, 35, 135, 23);
-		panel_4.add(chckbxAbilitaSubsfactory);
-		
-		JCheckBox chckbxAbilitaSubspedia = new JCheckBox("Abilita Subspedia");
-		chckbxAbilitaSubspedia.setBounds(458, 29, 141, 34);
-		panel_4.add(chckbxAbilitaSubspedia);
 		
 		JLabel lblUsername = new JLabel("<html>Username ItaSa</html>");
 		lblUsername.setBounds(6, 66, 91, 23);
@@ -837,6 +830,7 @@ public class Interfaccia2 extends JFrame {
 		panel_5.add(btnSfoglia_2);
 		
 		JPanel panel_6 = new JPanel();
+		panel_6.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panel_6.setBounds(10, 480, 717, 37);
 		OpzioniPanel.add(panel_6);
 		

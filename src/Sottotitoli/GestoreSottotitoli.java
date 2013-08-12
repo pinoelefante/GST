@@ -7,9 +7,6 @@ import Programma.ManagerException;
 import SerieTV.GestioneSerieTV;
 import SerieTV.SerieTV;
 import SerieTV.Torrent;
-import Database.Database;
-import Database.SQLParameter;
-import GUI.Interfaccia;
 
 public class GestoreSottotitoli {
 	class AssociatoreAutomatico extends Thread {
@@ -106,6 +103,7 @@ public class GestoreSottotitoli {
 		elenco_serie=null;
 	}
 	public void aggiungiLogEntry(Torrent t, ProviderSottotitoli provider){
+		/*
 		SQLParameter[] p=new SQLParameter[4];
 		p[0]=new SQLParameter(SQLParameter.TEXT, t.getNomeSerie(), "nome_serie");
 		p[1]=new SQLParameter(SQLParameter.INTEGER, t.getStagione(), "serie");
@@ -113,6 +111,7 @@ public class GestoreSottotitoli {
 		p[3]=new SQLParameter(SQLParameter.TEXT, provider.getProviderName(), "provider");
 		Database.insert(Database.TABLE_LOGSUB, p);
 		Interfaccia.addEntryLogSottotitoli(t, provider.getProviderName());
+		*/
 	}
 	public void aggiungiEpisodio(Torrent t){
 		for(int i=0;i<sottotitoli_da_scaricare.size();i++){

@@ -50,7 +50,9 @@ public class EZTV extends ProviderSerieTV{
 						stato=1;
 					SerieTV2 toInsert=new SerieTV2(this, nomeserie, url);
 					toInsert.setConclusa(stato==0?false:true);
-					addSerie(toInsert);
+					if(addSerie(toInsert)==null){ //null se non è presente nel database
+						
+					}
 					
 					/*
 					if(!isSeriePresente(getElencoSerieCompleto(), url)){
@@ -104,7 +106,7 @@ public class EZTV extends ProviderSerieTV{
 	@Override
 	protected void salvaSerieInDB(SerieTV2 s) {
 		if(s.getIDDb()>0){
-			String query="INSERT INTO "+Database2.TABLE_SERIETV+" (nome, url, inserita, conclusa, stop_search, provider, id_itasa, id_subsfactory, id_subspedia, id_tvdb, id_tvrage) VALUES ("+
+			String query="INSERT INTO "+Database2.TABLE_SERIETV+" (nome, url, inserita, conclusa, stop_search, provider, id_itasa, id_subsfactory, id_subspedia, id_tvdb) VALUES ("+
 					"\""+s.getNomeSerie()+"\", "+
 					"\""+s.getUrl()+"\","+
 					(s.isInserita()?1:0)+","+
@@ -114,14 +116,21 @@ public class EZTV extends ProviderSerieTV{
 					s.getIDItasa()+","+
 					s.getIDSubsfactory()+","+
 					s.getIDSubspedia()+","+
-					s.getIDTvdb()+","+
-					s.getIDTvrage()+")";
+					s.getIDTvdb()+")";
 			Database2.updateQuery(query);
 		}
 		else {
-			String query="UPDATE "+Database2.TABLE_SERIETV+" SET nome="+"\""+s.getNomeSerie()+"\", url="+"\""+s.getUrl()+"\", inserita="+(s.isInserita()?1:0)+","+
-					" conclusa="+(s.isConclusa()?1:0)+", stop_search="+(s.isStopSearch()?1:0)+", id_itasa="+s.getIDItasa()+", id_subsfactory="+s.getIDSubsfactory()+","+
-					" id_subspedia="+s.getIDSubspedia()+", id_tvdb="+s.getIDTvdb()+", id_tvrage="+s.getIDTvrage()+" WHERE id="+s.getIDDb();
+			String query="UPDATE "+Database2.TABLE_SERIETV+" SET "+
+					  "nome="+"\""+s.getNomeSerie()+"\""+
+					", url="+"\""+s.getUrl()+"\""+
+					", inserita="+(s.isInserita()?1:0)+
+					", conclusa="+(s.isConclusa()?1:0)+
+					", stop_search="+(s.isStopSearch()?1:0)+
+					", id_itasa="+s.getIDItasa()+
+					", id_subsfactory="+s.getIDSubsfactory()+
+					", id_subspedia="+s.getIDSubspedia()+
+					", id_tvdb="+s.getIDTvdb()+
+					" WHERE id="+s.getIDDb();
 			Database2.updateQuery(query);
 		}
 		

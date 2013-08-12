@@ -3,6 +3,7 @@ package Database;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -14,6 +15,8 @@ import org.sqlite.SQLiteConfig.SynchronousMode;
 
 import Programma.ManagerException;
 import Programma.Settings;
+import StruttureDati.KVItem;
+import StruttureDati.KVResult;
 
 public class Database2 {
 	private static Connection con;
@@ -23,12 +26,13 @@ public class Database2 {
 	public final static String TABLE_ITASA="itasa";
 	public final static String TABLE_SUBSFACTORY="subsfactory";
 	public final static String TABLE_LOGSUB="logsub";
-	public final static String TABLE_LINGUE="lingue";
-	public final static String TABLE_TRADUZIONI="traduzioni";
 	public final static String TABLE_SETTINGS="settings";
-	public final static String TABLE_TVRAGE="tvrage";
-	private final static String NOMEDB=Settings.getCurrentDir()+"database2.sqlite";
+	public static final String TABLE_SUBSPEDIA = "subspedia";
+	public static final String TABLE_TVDB_SERIE = "tvdb_serie";
+	public static final String TABLE_TVDB_EPISODI = "tvdb_ep";
 	
+	private final static String NOMEDB=Settings.getCurrentDir()+"database2.sqlite";
+
 	public static void Connect() {
 		try {
 			Class.forName("org.sqlite.JDBC");
@@ -60,20 +64,6 @@ public class Database2 {
 			ManagerException.registraEccezione(e);
 		}
 	}
-	public static void createTable(String nome_tabella, ArrayList<SQLColumn> colonne) throws Exception{
-		if(nome_tabella.trim().isEmpty() || colonne.isEmpty())
-			throw new Exception("Specificare il nome della tabella e/o le colonne");
-		
-		String query="CREATE TABLE IF NOT EXISTS "+nome_tabella+" (";
-		for(int i=0;i<colonne.size()-1;i++)
-			query+=colonne.get(i)+", ";
-		query+=colonne.get(colonne.size()-1)+" )";
-		
-		Statement st=con.createStatement();
-		//System.out.println(query);
-		st.executeUpdate(query);
-		st.close();
-	}
 	public static void creaDB(){
 		try {
 			if(con==null || con.isClosed())
@@ -88,54 +78,33 @@ public class Database2 {
 					"id INTEGER PRIMARY KEY AUTOINCREMENT)");
 			
 			stat.executeUpdate("CREATE TABLE IF NOT EXISTS "+TABLE_ITASA+" (" +
-					"id INTEGER PRIMARY KEY AUTOINCREMENT," +
-					"nome_serie TEXT NOT NULL,"+
-					"id_serie INTEGER NOT NULL)");
+					"id_serie INTEGER PRIMARY KEY AUTOINCREMENT)");
 			
 			stat.executeUpdate("CREATE TABLE IF NOT EXISTS "+TABLE_SUBSFACTORY +" (" +
-					"id INTEGER PRIMARY KEY AUTOINCREMENT," +
-					"nome_serie TEXT NOT NULL,"+
-					"directory TEXT NOT NULL)");
+					"id INTEGER PRIMARY KEY AUTOINCREMENT)");
+					
+			stat.executeUpdate("CREATE TABLE IF NOT EXISTS "+TABLE_LOGSUB+" (" +
+					"id INTEGER PRIMARY KEY AUTOINCREMENT)");
+
+			stat.executeUpdate("CREATE TABLE IF NOT EXISTS "+TABLE_SUBSPEDIA+" (" +
+					"id INTEGER PRIMARY KEY AUTOINCREMENT)");
 			
-			stat.executeUpdate("CREATE TABLE IF NOT EXISTS logsub(" +
-					"id INTEGER PRIMARY KEY AUTOINCREMENT," +
-					"id_serie INTEGER NOT NULL,"+
-					"id_provider INTEGER)");
+			stat.executeUpdate("CREATE TABLE IF NOT EXISTS "+TABLE_TVDB_SERIE+" (" +
+					"id_serie INTEGER PRIMARY KEY AUTOINCREMENT)");
+			
+			stat.executeUpdate("CREATE TABLE IF NOT EXISTS "+TABLE_TVDB_EPISODI+" (" +
+					"id_episodio INTEGER PRIMARY KEY AUTOINCREMENT)");
 	
 			/**
 			 * Tabella Settings
 			 * dir_download | dir_client | dir_vlc | tray_on_icon | start_hidden | ask_on_close | always_on_top | start_win | ricerca_auto | min_ricerca | lingua | new_update | last_version | numero_avvii | ricerca_sub | itasa_id | itasa_pass | id_client
 			 */
 			//TODO modificare tabella settings
-			stat.executeUpdate("CREATE TABLE IF NOT EXISTS settings(" +
-					"dir_download TEXT DEFAULT ''," +
-					"dir_client TEXT DEFAULT ''," +
-					"dir_vlc TEXT DEFAULT ''," +
-					"tray_on_icon INTEGER DEFAULT 1," +
-					"start_hidden INTEGER DEFAULT 0," +
-					"ask_on_close INTEGER DEFAULT 1," +
-					"always_on_top INTEGER DEFAULT 0," +
-					"start_win INTEGER DEFAULT 1," +
-					"ricerca_auto INTEGER DEFAULT 0," +
-					"min_ricerca INTEGER DEFAULT 480," +
-					"lingua INTEGER DEFAULT 1," +
-					"new_update INTEGER DEFAULT 1," +
-					"last_version INTEGER DEFAULT 0," +
-					"numero_avvii INTEGER DEFAULT 1," +
-					"ricerca_sub INTEGER DEFAULT 1," +
-					"itasa_id TEXT DEFAULT ''," +
-					"itasa_pass TEXT DEFAULT ''," +
-					"client_id TEXT DEFAULT ''," +
-					"mostra_preair INTEGER DEFAULT 1," +
-					"mostra_720p INTEGER DEFAULT 1," +
-					"download_preair INTEGER DEFAULT 0," +
-					"download_720p INTEGER DEFAULT 0"+
-					")");
+			stat.executeUpdate("CREATE TABLE IF NOT EXISTS "+TABLE_SETTINGS+" ("+
+					"ask_on_close INTEGER)");
 			if(isEmptyTable(TABLE_SETTINGS)){
-				SQLParameter[] parametri=new SQLParameter[1];
-				parametri[0]=new SQLParameter(SQLParameter.INTEGER, 1, "tray_on_icon");
-				//TODO inserire valore per avere i settaggi di default inseriti
-				//insert(TABLE_SETTINGS, parametri);
+				String query="INSERT INTO "+TABLE_SETTINGS+" (ask_on_close) VALUES(1)";
+				updateQuery(query);
 			}
 			stat.close();
 		}
@@ -146,8 +115,10 @@ public class Database2 {
 	}
 	private static void checkIntegrita(){
 		creaDB();
+		
+		/** SERIETV */
 		if(!checkColumn(TABLE_SERIETV, "id")){
-			alter_aggiungicampo(TABLE_SERIETV, "id", "INTEGER", "");
+			alter_aggiungicampo(TABLE_SERIETV, "id", "INTEGER PRIMARY KEY AUTOINCREMENT", "");
 		}
 		if(!checkColumn(TABLE_SERIETV, "nome")){
 			alter_aggiungicampo(TABLE_SERIETV, "nome", "TEXT", "");
@@ -155,90 +126,170 @@ public class Database2 {
 		if(!checkColumn(TABLE_SERIETV, "url")){
 			alter_aggiungicampo(TABLE_SERIETV, "url", "TEXT", "");
 		}
-		if(!checkColumn(TABLE_SERIETV, "stato")){
-			alter_aggiungicampo(TABLE_SERIETV, "stato", "INTEGER", "0");
-		}
-		if(!checkColumn(TABLE_SERIETV, "end")){
-			alter_aggiungicampo(TABLE_SERIETV, "id", "INTEGER", "0");
-		}
 		if(!checkColumn(TABLE_SERIETV, "inserita")){
 			alter_aggiungicampo(TABLE_SERIETV, "inserita", "INTEGER", "0");
+		}
+		if(!checkColumn(TABLE_SERIETV, "conclusa")){
+			alter_aggiungicampo(TABLE_SERIETV, "conclusa", "INTEGER", "0");
+		}
+		if(!checkColumn(TABLE_SERIETV, "stop_search")){
+			alter_aggiungicampo(TABLE_SERIETV, "stop_search", "INTEGER", "0");
+		}
+		if(!checkColumn(TABLE_SERIETV, "provider")){
+			alter_aggiungicampo(TABLE_SERIETV, "provider", "INTEGER", "0");
 		}
 		if(!checkColumn(TABLE_SERIETV, "id_itasa")){
 			alter_aggiungicampo(TABLE_SERIETV, "id_itasa", "INTEGER", "0");
 		}
-		if(!checkColumn(TABLE_SERIETV, "cleanup")){
-			alter_aggiungicampo(TABLE_SERIETV, "cleanup", "INTEGER", "0");
+		if(!checkColumn(TABLE_SERIETV, "id_subsfactory")){
+			alter_aggiungicampo(TABLE_SERIETV, "id_subsfactory", "INTEGER", "0");
 		}
-		if(!checkColumn(TABLE_SERIETV, "directory_subsfactory")){
-			alter_aggiungicampo(TABLE_SERIETV, "directory_subsfactory", "TEXT", "");
+		if(!checkColumn(TABLE_SERIETV, "id_subspedia")){
+			alter_aggiungicampo(TABLE_SERIETV, "id_subspedia", "INTEGER", "0");
 		}
+		if(!checkColumn(TABLE_SERIETV, "id_tvdb")){
+			alter_aggiungicampo(TABLE_SERIETV, "id_tvdb", "INTEGER", "0");
+		}
+		/** SERIETV - FINE*/
+		
+		/** ITASA*/
+		if(!checkColumn(TABLE_ITASA, "id_serie")){
+			alter_aggiungicampo(TABLE_ITASA, "id_serie", "INTEGER PRIMARY KEY", "");
+		}
+		if(!checkColumn(TABLE_ITASA, "nome_serie")){
+			alter_aggiungicampo(TABLE_ITASA, "nome_serie", "TEXT", "");
+		}
+		/** ITASA - FINE*/
+		
+		/** SUBSFACTORY */
+		if(!checkColumn(TABLE_SUBSFACTORY, "id")){
+			alter_aggiungicampo(TABLE_SUBSFACTORY, "id", "INTEGER PRIMARY KEY AUTOINCREMENT", "");
+		}
+		if(!checkColumn(TABLE_SUBSFACTORY, "nome_serie")){
+			alter_aggiungicampo(TABLE_SUBSFACTORY, "nome_serie", "TEXT", "");
+		}
+		if(!checkColumn(TABLE_SUBSFACTORY, "directory")){
+			alter_aggiungicampo(TABLE_SUBSFACTORY, "directory", "TEXT", "");
+		}
+		/** SUBSFACTORY - FINE */
+		
+		/** SUBSPEDIA */
+		if(!checkColumn(TABLE_SUBSPEDIA, "id")){
+			alter_aggiungicampo(TABLE_SUBSPEDIA, "id", "INTEGER PRIMARY KEY AUTOINCREMENT", "");
+		}
+		if(!checkColumn(TABLE_SUBSPEDIA, "nome_serie")){
+			alter_aggiungicampo(TABLE_SUBSPEDIA, "nome_serie", "TEXT", "");
+		}
+		if(!checkColumn(TABLE_SUBSPEDIA, "directory")){
+			alter_aggiungicampo(TABLE_SUBSPEDIA, "directory", "TEXT", "");
+		}
+		/** SUBSPEDIA - FINE */
+		
+		/** LOGSUB */
+		if(!checkColumn(TABLE_LOGSUB, "id")){
+			alter_aggiungicampo(TABLE_LOGSUB, "id", "INTEGER PRIMARY KEY AUTOINCREMENT", "");
+		}
+		if(!checkColumn(TABLE_LOGSUB, "id_episodio")){
+			alter_aggiungicampo(TABLE_LOGSUB, "id_episodio", "INTEGER", "");
+		}
+		if(!checkColumn(TABLE_LOGSUB, "id_provider")){
+			alter_aggiungicampo(TABLE_LOGSUB, "id_provider", "INTEGER", "");
+		}
+		/** LOGSUB - FINE */
+		
+		/** TVDB_SERIE */
+		if(!checkColumn(TABLE_TVDB_SERIE, "id_serie")){
+			alter_aggiungicampo(TABLE_TVDB_SERIE, "id_serie", "INTEGER PRIMARY KEY", "");
+		}
+		if(!checkColumn(TABLE_TVDB_SERIE, "banner")){
+			alter_aggiungicampo(TABLE_TVDB_SERIE, "banner", "TEXT", "");
+		}
+		if(!checkColumn(TABLE_TVDB_SERIE, "trama")){
+			alter_aggiungicampo(TABLE_TVDB_SERIE, "trama", "TEXT", "");
+		}
+		if(!checkColumn(TABLE_TVDB_SERIE, "zap2it")){
+			alter_aggiungicampo(TABLE_TVDB_SERIE, "zap2it", "TEXT", "");
+		}
+		/** TVDB_SERIE - FINE*/
+		
+		/** TVDB_EP */
+		if(!checkColumn(TABLE_TVDB_EPISODI, "id_episodio")){
+			alter_aggiungicampo(TABLE_TVDB_EPISODI, "id_episodio", "INTEGER PRIMARY KEY", "");
+		}
+		if(!checkColumn(TABLE_TVDB_EPISODI, "id_serie")){
+			alter_aggiungicampo(TABLE_TVDB_EPISODI, "id_serie", "INTEGER", "");
+		}
+		if(!checkColumn(TABLE_TVDB_EPISODI, "stagione")){
+			alter_aggiungicampo(TABLE_TVDB_EPISODI, "stagione", "INTEGER", "");
+		}
+		if(!checkColumn(TABLE_TVDB_EPISODI, "episodio")){
+			alter_aggiungicampo(TABLE_TVDB_EPISODI, "episodio", "INTEGER", "");
+		}
+		if(!checkColumn(TABLE_TVDB_EPISODI, "titolo")){
+			alter_aggiungicampo(TABLE_TVDB_EPISODI, "titolo", "TEXT", "");
+		}
+		if(!checkColumn(TABLE_TVDB_EPISODI, "trama")){
+			alter_aggiungicampo(TABLE_TVDB_EPISODI, "trama", "TEXT", "");
+		}
+		if(!checkColumn(TABLE_TVDB_EPISODI, "attori")){
+			alter_aggiungicampo(TABLE_TVDB_EPISODI, "attori", "TEXT", "");
+		}
+		/** TVDB_EP - FINE */
+		
+		/** EPISODI */
 		if(!checkColumn(TABLE_EPISODI, "id")){
-			alter_aggiungicampo(TABLE_EPISODI, "id", "INTEGER", "");
+			alter_aggiungicampo(TABLE_EPISODI, "id", "INTEGER PRIMARY KEY AUTOINCREMENT", "");
 		}
 		if(!checkColumn(TABLE_EPISODI, "id_serie")){
 			alter_aggiungicampo(TABLE_EPISODI, "id_serie", "INTEGER", "");
 		}
-		if(!checkColumn(TABLE_EPISODI, "magnet")){
-			alter_aggiungicampo(TABLE_EPISODI, "magnet", "TEXT", "");
+		if(!checkColumn(TABLE_EPISODI, "url")){
+			alter_aggiungicampo(TABLE_EPISODI, "url", "TEXT", "");
 		}
 		if(!checkColumn(TABLE_EPISODI, "vista")){
 			alter_aggiungicampo(TABLE_EPISODI, "vista", "INTEGER", "0");
 		}
-		if(!checkColumn(TABLE_EPISODI, "serie")){
-			alter_aggiungicampo(TABLE_EPISODI, "serie", "INTEGER", "0");
+		if(!checkColumn(TABLE_EPISODI, "stagione")){
+			alter_aggiungicampo(TABLE_EPISODI, "stagione", "INTEGER", "0");
 		}
 		if(!checkColumn(TABLE_EPISODI, "episodio")){
 			alter_aggiungicampo(TABLE_EPISODI, "episodio", "INTEGER", "0");
 		}
-		if(!checkColumn(TABLE_EPISODI, "HD720p")){
-			alter_aggiungicampo(TABLE_EPISODI, "HD720p", "INTEGER", "0");
-		}
-		if(!checkColumn(TABLE_EPISODI, "repack")){
-			alter_aggiungicampo(TABLE_EPISODI, "repack", "INTEGER", "0");
+		if(!checkColumn(TABLE_EPISODI, "tags")){
+			alter_aggiungicampo(TABLE_EPISODI, "tags", "INTEGER", "0");
 		}
 		if(!checkColumn(TABLE_EPISODI, "preair")){
 			alter_aggiungicampo(TABLE_EPISODI, "preair", "INTEGER", "0");
 		}
-		if(!checkColumn(TABLE_EPISODI, "proper")){
-			alter_aggiungicampo(TABLE_EPISODI, "proper", "INTEGER", "0");
-		}
 		if(!checkColumn(TABLE_EPISODI, "sottotitolo")){
 			alter_aggiungicampo(TABLE_EPISODI, "sottotitolo", "INTEGER", "0");
 		}
-		if(!checkColumn(TABLE_LOGSUB, "id")){
-			alter_aggiungicampo(TABLE_LOGSUB, "id", "INTEGER", "0");
+		if(!checkColumn(TABLE_EPISODI, "id_tvdb_ep")){
+			alter_aggiungicampo(TABLE_EPISODI, "id_tvdb_ep", "INTEGER", "0");
 		}
-		if(!checkColumn(TABLE_LOGSUB, "serie")){
-			alter_aggiungicampo(TABLE_LOGSUB, "serie", "INTEGER", "0");
+		/** EPISODI - FINE */
+		
+		/** SETTINGS */
+		if(!checkColumn(TABLE_SETTINGS, "download_path")){
+			alter_aggiungicampo(TABLE_SETTINGS, "download_path", "TEXT", "");
 		}
-		if(!checkColumn(TABLE_LOGSUB, "episodio")){
-			alter_aggiungicampo(TABLE_LOGSUB, "episodio", "INTEGER", "0");
+		if(!checkColumn(TABLE_SETTINGS, "utorrent")){
+			alter_aggiungicampo(TABLE_SETTINGS, "utorrent", "TEXT", "");
 		}
-		if(!checkColumn(TABLE_LOGSUB, "nome_serie")){
-			alter_aggiungicampo(TABLE_LOGSUB, "nome_serie", "TEXT", "");
+		if(!checkColumn(TABLE_SETTINGS, "vlc")){
+			alter_aggiungicampo(TABLE_SETTINGS, "vlc", "TEXT", "");
 		}
-		if(!checkColumn(TABLE_LOGSUB, "provider")){
-			alter_aggiungicampo(TABLE_LOGSUB, "provider", "TEXT", "");
-		}
-		if(!checkColumn(TABLE_SETTINGS, "dir_download")){
-			alter_aggiungicampo(TABLE_SETTINGS, "dir_download", "TEXT", "");
-		}
-		if(!checkColumn(TABLE_SETTINGS, "dir_client")){
-			alter_aggiungicampo(TABLE_SETTINGS, "dir_client", "TEXT", "");
-		}
-		if(!checkColumn(TABLE_SETTINGS, "dir_vlc")){
-			alter_aggiungicampo(TABLE_SETTINGS, "dir_vlc", "TEXT", "");
-		}
-		if(!checkColumn(TABLE_SETTINGS, "itasa_id")){
-			alter_aggiungicampo(TABLE_SETTINGS, "itasa_id", "TEXT", "");
+		if(!checkColumn(TABLE_SETTINGS, "itasa_user")){
+			alter_aggiungicampo(TABLE_SETTINGS, "itasa_user", "TEXT", "");
 		}
 		if(!checkColumn(TABLE_SETTINGS, "itasa_pass")){
 			alter_aggiungicampo(TABLE_SETTINGS, "itasa_pass", "TEXT", "");
 		}
+		/** UTILE QUANDO VERRA' INSERITO IL PREMIUM*/
 		if(!checkColumn(TABLE_SETTINGS, "client_id")){
 			alter_aggiungicampo(TABLE_SETTINGS, "client_id", "TEXT", "");
 		}
+		/** */
 		if(!checkColumn(TABLE_SETTINGS, "tray_on_icon")){
 			alter_aggiungicampo(TABLE_SETTINGS, "tray_on_icon", "INTEGER", "1");
 		}
@@ -249,49 +300,56 @@ public class Database2 {
 			alter_aggiungicampo(TABLE_SETTINGS, "ask_on_close", "INTEGER", "1");
 		}
 		if(!checkColumn(TABLE_SETTINGS, "always_on_top")){
-			alter_aggiungicampo(TABLE_SETTINGS, "always_on_top", "INTEGER", "0");
+			alter_aggiungicampo(TABLE_SETTINGS, "always_on_top", "INTEGER", "1");
 		}
-		if(!checkColumn(TABLE_SETTINGS, "start_win")){
-			alter_aggiungicampo(TABLE_SETTINGS, "start_win", "INTEGER", "1");
+		if(!checkColumn(TABLE_SETTINGS, "autostart")){
+			alter_aggiungicampo(TABLE_SETTINGS, "autostart", "INTEGER", "1");
 		}
-		if(!checkColumn(TABLE_SETTINGS, "ricerca_auto")){
-			alter_aggiungicampo(TABLE_SETTINGS, "ricerca_auto", "INTEGER", "0");
+		if(!checkColumn(TABLE_SETTINGS, "download_auto")){
+			alter_aggiungicampo(TABLE_SETTINGS, "download_auto", "INTEGER", "0");
 		}
-		if(!checkColumn(TABLE_SETTINGS, "min_ricerca")){
-			alter_aggiungicampo(TABLE_SETTINGS, "min_ricerca", "INTEGER", "480");
+		if(!checkColumn(TABLE_SETTINGS, "min_download_auto")){
+			alter_aggiungicampo(TABLE_SETTINGS, "min_download_auto", "INTEGER", "480");
 		}
-		if(!checkColumn(TABLE_SETTINGS, "lingua")){
-			alter_aggiungicampo(TABLE_SETTINGS, "lingua", "INTEGER", "1");
-		}
+		
 		if(!checkColumn(TABLE_SETTINGS, "new_update")){
 			alter_aggiungicampo(TABLE_SETTINGS, "new_update", "INTEGER", "1");
 		}
 		if(!checkColumn(TABLE_SETTINGS, "last_version")){
 			alter_aggiungicampo(TABLE_SETTINGS, "last_version", "INTEGER", "0");
 		}
-		if(!checkColumn(TABLE_SETTINGS, "numero_avvii")){
-			alter_aggiungicampo(TABLE_SETTINGS, "numero_avvii", "INTEGER", "1");
-		}
-		if(!checkColumn(TABLE_SETTINGS, "ricerca_sub")){
-			alter_aggiungicampo(TABLE_SETTINGS, "ricerca_sub", "INTEGER", "1");
+		if(!checkColumn(TABLE_SETTINGS, "download_sottotitoli")){
+			alter_aggiungicampo(TABLE_SETTINGS, "download_sottotitoli", "INTEGER", "1");
 		}
 		if(!checkColumn(TABLE_SETTINGS, "mostra_preair")){
 			alter_aggiungicampo(TABLE_SETTINGS, "mostra_preair", "INTEGER", "1");
 		}
-		if(!checkColumn(TABLE_SETTINGS, "mostra_720p")){
-			alter_aggiungicampo(TABLE_SETTINGS, "mostra_720p", "INTEGER", "1");
+		if(!checkColumn(TABLE_SETTINGS, "mostra_hd")){
+			alter_aggiungicampo(TABLE_SETTINGS, "mostra_hd", "INTEGER", "1");
 		}
-		if(!checkColumn(TABLE_SETTINGS, "download_preair")){
-			alter_aggiungicampo(TABLE_SETTINGS, "download_preair", "INTEGER", "0");
+		if(!checkColumn(TABLE_SETTINGS, "download_auto_preair")){
+			alter_aggiungicampo(TABLE_SETTINGS, "download_auto_preair", "INTEGER", "0");
 		}
-		if(!checkColumn(TABLE_SETTINGS, "download_720p")){
-			alter_aggiungicampo(TABLE_SETTINGS, "download_720p", "INTEGER", "0");
+		if(!checkColumn(TABLE_SETTINGS, "download_auto_hd")){
+			alter_aggiungicampo(TABLE_SETTINGS, "download_auto_hd", "INTEGER", "0");
 		}
-		if(!checkColumn(TABLE_SETTINGS, "check_episodi")){
-			alter_aggiungicampo(TABLE_SETTINGS, "check_episodi", "INTEGER", "0");
+		if(!checkColumn(TABLE_SETTINGS, "external_vlc")){
+			alter_aggiungicampo(TABLE_SETTINGS, "external_vlc", "INTEGER", "0");
 		}
-		if(!checkColumn(TABLE_SETTINGS, "hidden_on_play")){
-			alter_aggiungicampo(TABLE_SETTINGS, "hidden_on_play", "INTEGER", "1");
+		if(!checkColumn(TABLE_SETTINGS, "itasa")){
+			alter_aggiungicampo(TABLE_SETTINGS, "itasa", "INTEGER", "0");
+		}
+		if(!checkColumn(TABLE_SETTINGS, "hide_viste")){
+			alter_aggiungicampo(TABLE_SETTINGS, "hide_viste", "INTEGER", "1");
+		}
+		if(!checkColumn(TABLE_SETTINGS, "hide_ignorate")){
+			alter_aggiungicampo(TABLE_SETTINGS, "hide_ignorate", "INTEGER", "1");
+		}
+		if(!checkColumn(TABLE_SETTINGS, "hide_rimosse")){
+			alter_aggiungicampo(TABLE_SETTINGS, "hide_rimosse", "INTEGER", "1");
+		}
+		if(!checkColumn(TABLE_SETTINGS, "ordine_lettore")){
+			alter_aggiungicampo(TABLE_SETTINGS, "ordine_lettore", "INTEGER", "0");
 		}
 	}
 	
@@ -379,10 +437,34 @@ public class Database2 {
 		}
 		catch (SQLException e) {
 			System.out.println(e.getMessage());
-			//e.printStackTrace();
 			ManagerException.registraEccezione(e);
 		}
 		return -1;
+	}
+	public static ArrayList<KVResult<String,Object>> selectQuery(String query){
+		ArrayList<KVResult<String, Object>> result=new ArrayList<KVResult<String, Object>>();
+		try {
+			Statement stat=con.createStatement();
+			ResultSet rs=stat.executeQuery(query);
+			ResultSetMetaData meta=rs.getMetaData();
+			while(rs.next()){
+				KVResult<String, Object> res=new KVResult<String, Object>();
+				for(int i=1;i<=meta.getColumnCount();i++){
+					String key=meta.getColumnName(i);
+					Object value=rs.getObject(i);
+					res.addItem(new KVItem<String, Object>(key, value));
+				}
+				result.add(res);
+			}
+			rs.close();
+			stat.close();
+			return result;
+		}
+		catch(SQLException e){
+			System.out.println(e.getMessage());
+			ManagerException.registraEccezione(e);
+			return null;
+		}
 	}
 	public static boolean updateQuery(String query){
 		int ins_ok=0;

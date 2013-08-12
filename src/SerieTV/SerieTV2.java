@@ -5,7 +5,7 @@ public class SerieTV2 {
 	private ProviderSerieTV provider;
 	private String url_serie;
 	
-	private int id_db, id_itasa=0, id_subsfactory=0, id_tvdb=0, id_tvrage=0, id_subspedia=0;
+	private int id_db, id_itasa=0, id_subsfactory=0, id_tvdb=0, id_subspedia=0;
 	
 	private boolean conclusa, stop_search, inserita;
 	
@@ -78,14 +78,6 @@ public class SerieTV2 {
 
 	public void setIDTvdb(int id_tvdb) {
 		this.id_tvdb = id_tvdb;
-	}
-
-	public int getIDTvrage() {
-		return id_tvrage;
-	}
-
-	public void setIDTvrage(int id_tvrage) {
-		this.id_tvrage = id_tvrage;
 	}
 
 	public int getIDSubspedia() {

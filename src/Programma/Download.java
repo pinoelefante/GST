@@ -56,33 +56,28 @@ public class Download {
 	}
 	
 	public static void downloadMagnet(String url, String folder) throws IOException {
-
-		switch (Settings.getClient()) {
-			case 2:
-				Runtime.getRuntime().exec(Settings.getClientPath() + " " + url);
-			break;
-			case 1:
-				String directory_download = Settings.getDirectoryDownload();
-				if(Settings.isWindows()){
-					String[] cmd={
-						Settings.getClientPath(),
-						"/NOINSTALL",
-						"/DIRECTORY",
-						("\"" + directory_download + File.separator + folder + "\""),
-						url
-					};
-					Runtime.getRuntime().exec(cmd);
-					/*
-					Runtime.getRuntime().exec(Settings.getClientPath()
-							+ " /NOINSTALL /DIRECTORY " + "\"" + directory_download
-							+ File.separator + folder + "\"" + " " + url);
-					*/
-				}
-				else if(Settings.isLinux()){
-					Runtime.getRuntime().exec("wine "+Settings.getClientPath()
-							+ " /NOINSTALL /DIRECTORY " + "'T:"+File.separator +  folder + "'" + " " + url);
-				}
-			break;
+		String directory_download = Settings.getDirectoryDownload();
+		if(Settings.isWindows()){
+			String[] cmd={
+					Settings.getClientPath(),
+					"/NOINSTALL",
+					"/DIRECTORY",
+					("\"" + directory_download + File.separator + folder + "\""),
+					url
+			};
+			Runtime.getRuntime().exec(cmd);
+		}
+		else if(Settings.isLinux()){
+			String[] cmd={
+				"wine",
+				Settings.getClientPath(),
+				"/NOINSTALL",
+				"/DIRECTORY",
+				("\"" + directory_download + File.separator + folder + "\""),
+				url
+			};
+			Runtime.getRuntime().exec(cmd);
+			//Runtime.getRuntime().exec("wine "+Settings.getClientPath()+ " /NOINSTALL /DIRECTORY " + "'T:"+File.separator +  folder + "'" + " " + url);
 		}
 	}
 /*

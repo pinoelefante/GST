@@ -10,18 +10,18 @@ public class ControlloAggiornamenti {
 	private int versione_online;
 	
 	private void retrieveVersioneOnline(){
-		Download2 downloader=new Download2(URL_DB, "version.dat");
+		Download2 downloader=new Download2(URL_DB, Settings.getCurrentDir()+"version.dat");
 		downloader.avviaDownload();
 		try {
 			downloader.getDownloadThread().join();
-			FileReader f=new FileReader("version.dat");
+			FileReader f=new FileReader(Settings.getCurrentDir()+"version.dat");
 			Scanner file=new Scanner(f);
 			if(file.hasNextInt()){
 				versione_online=file.nextInt();
 			}
 			file.close();
 			f.close();
-			OperazioniFile.deleteFile("version.dat");
+			OperazioniFile.deleteFile(Settings.getCurrentDir()+"version.dat");
 		} 
 		catch (InterruptedException e) {
 			return;

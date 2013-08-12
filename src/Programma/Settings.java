@@ -3,21 +3,16 @@ package Programma;
 import java.io.File;
 import java.util.ArrayList;
 
+import Database.Database2;
+import StruttureDati.KVResult;
+
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.WinReg;
-
-import Database.Database;
-import Database.SQLParameter;
-import SerieTV.GestioneSerieTV;
 
 public class Settings {
 	private static int 			GUI									= 2;
 	private static final int	VersioneSoftware					= 100;
-	private static final boolean beta								= false;
-	private static final int	beta_versione						= 1;
-	private static int			Client								= 1;
 	public static final String	IndirizzoDonazioni					= "http://pinoelefante.altervista.org/donazioni/donazione_gst.html";
-	private static final String	NomeEseguibile						= "GestioneSerieTV5.exe";
 	private static String		current_dir							= "";
 	private static String		DirectoryDownload					= "";
 	private static String		ClientPath							= "";
@@ -29,12 +24,10 @@ public class Settings {
 	private static int			MinRicerca							= 480;
 	private static int			MinRicercaMilli						= MinRicerca * 60 * 1000;
 	private static String		SistemaOperativo					= "";
-	private static int			Lingua								= 1;
 	private static boolean		canStartDownloadAutomatico			= false;
 	
 	private static boolean		NewUpdate							= true;
 	private static int			LastVersion							= 0;
-	private static int			numero_avvii						= 0;
 	private static boolean		RicercaSottotitoli					= true;
 	private static boolean 		alwaysontop							= true;
 	private static String		VLCPath								= "";
@@ -42,27 +35,24 @@ public class Settings {
 	private static String		Itasa_Password						= "";
 	private static boolean		mostraPreair						= true;
 	private static boolean		mostra720p							= true;
-	private static String		ClientID = "";
-	private static boolean		downloadPreair						= false;
-	private static boolean		download720p						= false;
-	private static boolean 		lettore_nascondi_ignore				= false;
-	private static boolean 		lettore_nascondi_rimosso			= false;
-	private static int			last_check							= 0; //ultimo controllo dei file
-	private static boolean		hidden_on_play						= true;
+	private static String		ClientID 							= "";
+	private static boolean		download_auto_preair				= false;
+	private static boolean		download_auto_hd					= false;
+	private static boolean 		lettore_nascondi_ignore				= true;
+	private static boolean 		lettore_nascondi_rimosso			= true;
+	
+	private static boolean 		extenal_VLC							= false;
+	private static boolean 		enableITASA							= false;
+	private static boolean 		lettore_nascondi_viste				= true;
+	private static int			lettore_ordine						= 0;
+	
+	
 	
 	public static int getVersioneSoftware() {
 		return VersioneSoftware;
 	}
-	public static int getClient() {
-		return Client;
-	}
-	public static void setClient(int client) {
-		Client = client;
-		AggiornaDB();
-	}
-	public static String getNomeeseguibile() {
-		return NomeEseguibile;
-	}
+	
+	
 	public static String getCurrentDir() {
 		return current_dir;
 	}
@@ -135,13 +125,7 @@ public class Settings {
 		SistemaOperativo = sistemaOperativo;
 		AggiornaDB();
 	}
-	public static int getLingua() {
-		return Lingua;
-	}
-	public static void setLingua(int lingua) {
-		Lingua = lingua;
-		AggiornaDB();
-	}
+	
 	public static boolean isCanStartDownloadAutomatico() {
 		return canStartDownloadAutomatico;
 	}
@@ -163,13 +147,7 @@ public class Settings {
 		LastVersion = lastVersion;
 		AggiornaDB();
 	}
-	public static int getNumeroAvvii() {
-		return numero_avvii;
-	}
-	public static void setNumeroAvvii(int numero_avvii) {
-		Settings.numero_avvii = numero_avvii;
-		AggiornaDB();
-	}
+	
 	public static boolean isRicercaSottotitoli() {
 		return RicercaSottotitoli;
 	}
@@ -253,12 +231,10 @@ public class Settings {
 		setMinRicerca(480);
 		setRicercaSottotitoli(true);
 		setAlwaysOnTop(true);
-		setLingua(1);
 		setMostraPreair(true);
 		setMostra720p(true);
 		setDownloadPreair(false);
 		setDownload720p(false);
-		setHiddenOnPlay(true);
 	}
 
 	public static void baseSettings(){
@@ -271,74 +247,71 @@ public class Settings {
 		
 		DirectoryDownload=current_dir+"Download";
 	}
+	public static void main(String[] args){
+		
+	}
+	/* Tabelle database
+    "download_path"
+    "utorrent"
+	"vlc"
+    "itasa_user"
+    "itasa_pass"
+    "client_id"
+    "tray_on_icon"
+    "start_hidden"
+    "ask_on_close"
+    "always_on_top"
+    "autostart"
+    "download_auto"
+    "min_download_auto"
+    "new_update"
+    "last_version"
+    "download_sottotitoli"
+    "mostra_preair"
+    "mostra_hd"
+    "download_auto_preair"
+    "download_auto_hd"
+    "external_vlc"
+    "itasa"
+    "hide_viste"
+    "hide_ignorate"
+    "hide_rimosse"
+    "ordine_lettore"
+    */
 	public static void CaricaSetting(){
-		ArrayList<SQLParameter[]> res=Database.select(Database.TABLE_SETTINGS, null, "AND", "==");
-		for (int i=0;i<res.size();i++){
-			SQLParameter[] par=res.get(i);
-			for(int j=0;j<par.length;j++){
-				switch(par[j].ptype()){
-					case SQLParameter.INTEGER:
-						int p=(Integer)par[j].pvalue();
-						switch(par[j].getField()){
-							case "tray_on_icon" : setTrayOnIcon(p==0?false:true); break;
-							case "start_hidden" : setStartHidden(p==0?false:true); break;
-							case "ask_on_close" : setAskOnClose(p==0?false:true); break;
-							case "always_on_top" : setAlwaysOnTop(p==0?false:true); break;
-							case "start_win" : setAutostart(p==0?false:true); break;
-							case "ricerca_auto" : setDownloadAutomatico(p==0?false:true); break;
-							case "min_ricerca" : setMinRicerca(p); break;
-							case "lingua" : setLingua(p); break;
-							case "new_update" : setNewUpdate(p==0?false:true); break;
-							case "last_version" : setLastVersion(p); break;
-							case "numero_avvii" : setNumeroAvvii(p+1); break;
-							case "ricerca_sub" : setRicercaSottotitoli(p==0?false:true); break;
-							case "mostra_preair" : setMostraPreair(p==0?false:true); break;
-							case "mostra_720p" : setMostra720p(p==0?false:true); break;
-							case "download_preair": setDownloadPreair(p==0?false:true); break;
-							case "download_720p": setDownload720p(p==0?false:true); break;
-							case "check_episodi": 
-								if(p==0)
-									GestioneSerieTV.controlloStatoEpisodi();
-								setLastCheckFiles(p+1); 
-								break;
-							case "hidden_on_play": setHiddenOnPlay(p==0?false:true); break;
-						}
-						break;
-					case SQLParameter.TEXT:
-						String s=(String)par[j].pvalue();
-						switch(par[j].getField()){
-							case "dir_download" :
-								if(s.isEmpty() || !(new File(s)).exists()){
-									setDirectoryDownload(getCurrentDir()+"Download"+File.separator);
-									new File(getCurrentDir()+"Download"+File.separator).mkdir();
-								}
-								else{
-									if(!s.endsWith(File.separator))
-										s+=File.separator;
-									setDirectoryDownload(s);
-								}
-								break;
-							case "dir_client" :
-								if (s.trim().isEmpty() || !OperazioniFile.fileExists(s)){
-									s=rilevaUtorrent();
-								}
-								setClientPath(s); 
-								break;
-							case "dir_vlc" : 
-								if(s.trim().isEmpty() || !OperazioniFile.fileExists(s)){
-									s=rilevaVLC();
-								}
-								setVLCPath(s); 
-								break;
-							case "itasa_id" : setItasaUsername(s); break;
-							case "itasa_pass" : setItasaPassword(s); break;
-							case "client_id" : setClientID(s); break;
-						}
-						break;
-				}
-			}
+		String query="SELECT * FROM "+Database2.TABLE_SETTINGS;
+		ArrayList<KVResult<String, Object>> opzioni=Database2.selectQuery(query);
+		for(int i=0;i<opzioni.size();i++){
+			KVResult<String, Object> res=opzioni.get(i);
+			
+			setDirectoryDownload(res.getValueByKey("download_path")!=null?(String)res.getValueByKey("download_path"):DirectoryDownload);
+			setClientPath((String) res.getValueByKey("utorrent"));
+			setVLCPath((String) res.getValueByKey("vlc"));
+			setItasaUsername((String) res.getValueByKey("itasa_user"));
+			setItasaPassword((String) res.getValueByKey("itasa_pass"));
+			setClientID((String) res.getValueByKey("client_id"));
+			setTrayOnIcon(((int) res.getValueByKey("tray_on_icon"))==1?true:false);
+			setStartHidden(((int) res.getValueByKey("start_hidden"))==1?true:false);
+			setAskOnClose(((int) res.getValueByKey("ask_on_close"))==1?true:false);
+			setAlwaysOnTop(((int) res.getValueByKey("always_on_top"))==1?true:false);
+            setAutostart(((int) res.getValueByKey("autostart"))==1?true:false);
+            setDownloadAutomatico(((int) res.getValueByKey("download_auto"))==1?true:false);
+            setMinRicerca((int) res.getValueByKey("min_download_auto"));
+            setNewUpdate(((int) res.getValueByKey("new_update"))==1?true:false);
+            setLastVersion((int) res.getValueByKey("last_version"));
+            setRicercaSottotitoli(((int) res.getValueByKey("download_sottotitoli"))==1?true:false);
+            setMostraPreair(((int) res.getValueByKey("mostra_preair"))==1?true:false);
+            setMostra720p(((int) res.getValueByKey("mostra_hd"))==1?true:false);
+            setDownloadPreair(((int) res.getValueByKey("download_auto_preair"))==1?true:false);
+            setDownload720p(((int) res.getValueByKey("download_auto_hd"))==1?true:false);
+            setExtenalVLC(((int) res.getValueByKey("external_vlc"))==1?true:false);
+            setEnableITASA(((int) res.getValueByKey("itasa"))==1?true:false);
+            setLettoreNascondiViste(((int) res.getValueByKey("hide_viste"))==1?true:false);
+            setLettoreNascondiIgnore(((int) res.getValueByKey("hide_ignorate"))==1?true:false);
+            setLettoreNascondiRimosso(((int) res.getValueByKey("hide_rimosse"))==1?true:false);
+            setLettoreOrdine((int) res.getValueByKey("ordine_lettore"));
 		}
-		AggiornaDB();
+		
 	}
 
 	public static void createAutoStart() {
@@ -370,33 +343,35 @@ public class Settings {
 		return true;
 	}
 	private static void AggiornaDB() {
-		SQLParameter[] par=new SQLParameter[22];
-		int i=0;
-		par[i++]=new SQLParameter(SQLParameter.TEXT, getDirectoryDownload(), "dir_download");
-		par[i++]=new SQLParameter(SQLParameter.TEXT, getClientPath(), "dir_client");
-		par[i++]=new SQLParameter(SQLParameter.TEXT, getVLCPath(), "dir_vlc");
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, isTrayOnIcon()?1:0, "tray_on_icon");
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, isStartHidden()?1:0, "start_hidden");
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, isAskOnClose()?1:0, "ask_on_close");
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, isAlwaysOnTop()?1:0, "always_on_top");
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, isAutostart()?1:0, "start_win");
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, isDownloadAutomatico()?1:0, "ricerca_auto");
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, getMinRicerca(), "min_ricerca");
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, getLingua(), "lingua");
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, isNewUpdate()?1:0, "new_update");
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, getLastVersion(), "last_version");
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, getNumeroAvvii(), "numero_avvii");
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, isRicercaSottotitoli()?1:0, "ricerca_sub");
-		par[i++]=new SQLParameter(SQLParameter.TEXT, getItasaUsername(), "itasa_id");
-		par[i++]=new SQLParameter(SQLParameter.TEXT, getItasaPassword(), "itasa_pass");
-		par[i++]=new SQLParameter(SQLParameter.TEXT, getClientID(), "client_id");
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, isMostraPreair()?1:0, "mostra_preair");
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, isMostra720p()?1:0, "mostra_720p");
-		if(getVersioneSoftware()>=92){
-			par[i++]=new SQLParameter(SQLParameter.INTEGER, getLastCheckFiles(), "check_episodi");
-			par[i++]=new SQLParameter(SQLParameter.INTEGER, getLastCheckFiles(), "hidden_on_play");
-		}
-		Database.update(Database.TABLE_SETTINGS, par, null, "AND", "=");
+		String query="UPDATE "+Database2.TABLE_SETTINGS+" SET "+
+				"always_on_top="+(isAlwaysOnTop()?1:0)+","+
+				"download_path="+"\""+getDirectoryDownload()+"\","+
+                "utorrent="+"\""+getClientPath()+"\","+
+				"vlc="+"\""+getVLCPath()+"\","+
+                "itasa_user="+"\""+getItasaUsername()+"\","+
+                "itasa_pass="+"\""+getItasaPassword()+"\","+
+                "client_id="+"\""+getClientID()+"\","+
+                "tray_on_icon="+(isTrayOnIcon()?1:0)+","+
+                "start_hidden="+(isStartHidden()?1:0)+","+
+                "ask_on_close="+(isAskOnClose()?1:0)+","+
+                "always_on_top="+(isAlwaysOnTop()?1:0)+","+
+                "autostart="+(isAutostart()?1:0)+","+
+                "download_auto="+(isDownloadAutomatico()?1:0)+","+
+                "min_download_auto="+getMinRicerca()+","+
+                "new_update="+(isNewUpdate()?1:0)+","+
+                "last_version="+getLastVersion()+","+
+                "download_sottotitoli="+(isRicercaSottotitoli()?1:0)+","+
+                "mostra_preair="+(isMostraPreair()?1:0)+","+
+                "mostra_hd="+(isMostra720p()?1:0)+","+
+                "download_auto_preair="+(isDownloadPreair()?1:0)+","+
+                "download_auto_hd="+(isDownload720p()?1:0)+","+
+                "external_vlc="+(isExtenalVLC()?1:0)+","+
+                "itasa="+(isEnableITASA()?1:0)+","+
+                "hide_viste="+(isLettoreNascondiViste()?1:0)+","+
+                "hide_ignorate="+(isLettoreNascondiIgnore()?1:0)+","+
+                "hide_rimosse="+(isLettoreNascondiRimosso()?1:0)+","+
+                "ordine_lettore="+getLettoreOrdine();
+		Database2.updateQuery(query);
 	}
 	public static boolean isWindows(){
 		return getSistemaOperativo().contains("Windows");
@@ -408,25 +383,20 @@ public class Settings {
 		return getSistemaOperativo().contains("Mac");
 	}
 	public static boolean isDownloadPreair() {
-		return downloadPreair;
+		return download_auto_preair;
 	}
 	public static void setDownloadPreair(boolean downloadPreair) {
-		Settings.downloadPreair = downloadPreair;
+		Settings.download_auto_preair = downloadPreair;
 		AggiornaDB();
 	}
 	public static boolean isDownload720p() {
-		return download720p;
+		return download_auto_hd;
 	}
 	public static void setDownload720p(boolean download720p) {
-		Settings.download720p = download720p;
+		Settings.download_auto_hd = download720p;
 		AggiornaDB();
 	}
-	public static boolean isBeta() {
-		return beta;
-	}
-	public static int getBetaVersione() {
-		return beta_versione;
-	}
+	
 	//TODO completare rilevamento vlc
 	public static String rilevaVLC(){
 		if(isWindows()){
@@ -469,20 +439,7 @@ public class Settings {
 		}
 		return "";
 	}
-	public static int getLastCheckFiles() {
-		return last_check;
-	}
-	public static void setLastCheckFiles(int last_check) {
-		Settings.last_check = last_check==10?0:last_check;
-		AggiornaDB();
-	}
-	public static boolean isHiddenOnPlay() {
-		return hidden_on_play;
-	}
-	public static void setHiddenOnPlay(boolean hidden_on_play) {
-		Settings.hidden_on_play = hidden_on_play;
-		AggiornaDB();
-	}
+	
 	public static boolean isVLC(){
 		String path=getVLCPath();
 		if(path.isEmpty())
@@ -527,5 +484,49 @@ public class Settings {
 			return "i386";
 		else
 			return "amd64";
+	}
+
+
+	public static boolean isExtenalVLC() {
+		return extenal_VLC;
+	}
+
+
+	public static void setExtenalVLC(boolean extenal_VLC) {
+		Settings.extenal_VLC = extenal_VLC;
+		AggiornaDB();
+	}
+
+
+	public static boolean isEnableITASA() {
+		return enableITASA;
+	}
+
+
+	public static void setEnableITASA(boolean enableITASA) {
+		Settings.enableITASA = enableITASA;
+		AggiornaDB();
+	}
+
+
+	public static boolean isLettoreNascondiViste() {
+		return lettore_nascondi_viste;
+	}
+
+
+	public static void setLettoreNascondiViste(boolean lettore_nascondi_viste) {
+		Settings.lettore_nascondi_viste = lettore_nascondi_viste;
+		AggiornaDB();
+	}
+
+
+	public static int getLettoreOrdine() {
+		return lettore_ordine;
+	}
+
+
+	public static void setLettoreOrdine(int lettore_ordine) {
+		Settings.lettore_ordine = lettore_ordine;
+		AggiornaDB();
 	}
 }

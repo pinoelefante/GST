@@ -6,24 +6,22 @@ import javax.swing.UIManager;
 import SerieTV.GestioneSerieTV;
 import SerieTV.GestioneSerieTV2;
 import SerieTV.ThreadRicercaAutomatica;
-import Database.Database;
 import Database.Database2;
 import GUI.FrameLoading;
-import GUI.Interfaccia;
 import GUI.Interfaccia2;
 
 public class Main {
-	public static Interfaccia					frame;
 	//public static ThreadAggiornamentiSoftware	thread_update		= new ThreadAggiornamentiSoftware(false);
-	public static ThreadRicercaAutomatica		thread_autosearch	= new ThreadRicercaAutomatica();
+	//public static ThreadRicercaAutomatica		thread_autosearch	= new ThreadRicercaAutomatica();
 	public static FrameLoading 					fl;
-	
+	/*
 	public static void avviaThreadRicercaAutomatica() {
 		if (!thread_autosearch.isAlive()) {
 			thread_autosearch = new ThreadRicercaAutomatica();
 			thread_autosearch.start();
 		}
 	}
+	*/
 	static Interfaccia2 frame2;
 	private static Interfaccia2 GUIframe;
 	public static void main(String[] args) {
@@ -53,19 +51,13 @@ public class Main {
 			
 			
 			fl.settext("Connessione al database");
-			Database.Connect();
+			Database2.Connect();
 			fl.setprog(++i);
 			
 			
 			fl.settext("Caricamento impostazioni");
 			Settings.CaricaSetting();
 			fl.setprog(++i);
-			
-			/*
-			fl.settext("Impostando la lingua");
-			Language.setLanguage(Settings.getLingua());
-			fl.setprog(++i);
-			*/
 		
 			fl.settext("Eliminazione dump files");
 			OperazioniFile.dumpfileclean();
@@ -90,31 +82,27 @@ public class Main {
 			fl.settext("Avvio interfaccia grafica");
 			fl.setprog(++i);
 			
+			/*
 			if (Settings.isDownloadAutomatico()) {
 				avviaThreadRicercaAutomatica();
 			}
+			*/
 			
 			fl.chiudi();
 			
-			if(Settings.getGUI()==1){
-				Interfaccia.createPanel();
-				if(Settings.getNumeroAvvii()>0 && (Settings.getNumeroAvvii()%30)==0)
-					Interfaccia.donazione_visualizza_frame();
-			}
-			
-			else{
-				GUIframe = new Interfaccia2();
-				GUIframe.setVisible(true);
-				GestioneSerieTV2.instance();
-				GestioneSerieTV2.carica_serie_database();
-				GUIframe.init();
-				GestioneSerieTV2.Showlist();
-				GUIframe.reloadSerieDisponibili();
-			}
+			GUIframe = new Interfaccia2();
+			GUIframe.setVisible(true);
+			GestioneSerieTV2.instance();
+			GestioneSerieTV2.carica_serie_database();
+			GUIframe.init();
+			GestioneSerieTV2.Showlist();
+			GUIframe.reloadSerieDisponibili();
 				
+			/*
 			if(Settings.isRicercaSottotitoli()){
-				GestioneSerieTV.getSubManager().avviaRicercaAutomatica();
+				GestioneSerieTV2.getSubManager().avviaRicercaAutomatica();
 			}
+			*/
 			
 		}
 		catch(Exception e){

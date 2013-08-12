@@ -17,8 +17,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import Database.SQLParameter;
-import Database.Database;
 import Naming.Renamer;
 import Programma.Download;
 import Programma.ManagerException;
@@ -186,6 +184,8 @@ public class Subsfactory implements ProviderSottotitoli {
 		}
 	}
 	private boolean isSubInDB(String path){
+		return false;
+		/*
 		SQLParameter[] cond=new SQLParameter[1];
 		cond[0]=new SQLParameter(SQLParameter.TEXT, path, "path");
 		ArrayList<SQLParameter[]> res=Database.select(Database.TABLE_SUBSFACTORY, cond, "", "=");
@@ -196,8 +196,10 @@ public class Subsfactory implements ProviderSottotitoli {
 			System.out.println();
 		}
 		return res.size()>0;
+		*/
 	}
 	private void inserisciSubInDB(String path, SottotitoloSubsfactory sub, boolean completa){
+		/*
 		SQLParameter[] parametri=new SQLParameter[6];
 		int i=0;
 		parametri[i++]=new SQLParameter(SQLParameter.TEXT, path, "path");
@@ -214,6 +216,7 @@ public class Subsfactory implements ProviderSottotitoli {
 		parametri[i++]=new SQLParameter(SQLParameter.INTEGER, tipo, "tipo");
 		parametri[i++]=new SQLParameter(SQLParameter.INTEGER, completa?1:0, "is_completa");
 		Database.insert(Database.TABLE_SUBSFACTORY, parametri);
+		*/
 	}
 	private String cercaSubInDB(String id_serie, Torrent t){
 		ArrayList<SottotitoloSubsfactoryDB> subs=caricaSubDaDB(id_serie);
@@ -239,6 +242,7 @@ public class Subsfactory implements ProviderSottotitoli {
 		return "";
 	}
 	private ArrayList<SottotitoloSubsfactoryDB> caricaSubDaDB(String id_serie){
+		/*
 		ArrayList<SottotitoloSubsfactoryDB> subs=new ArrayList<SottotitoloSubsfactoryDB>();
 		SQLParameter[] par=new SQLParameter[1];
 		par[0]=new SQLParameter(SQLParameter.TEXT, id_serie, "id_serie");
@@ -273,6 +277,8 @@ public class Subsfactory implements ProviderSottotitoli {
 			subs.add(new SottotitoloSubsfactoryDB(tipo, url, seas, ep, compl, id_s));
 		}
 		return subs;
+		*/
+		return null;
 	}
 	public static void main(String[] args){	}
 

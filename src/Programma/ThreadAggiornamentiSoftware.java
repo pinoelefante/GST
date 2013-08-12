@@ -6,9 +6,6 @@ import java.io.IOException;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
 
-import GUI.Interfaccia;
-import GUI.Language;
-
 public class ThreadAggiornamentiSoftware extends Thread {
 	private boolean	negative;
 
@@ -23,7 +20,7 @@ public class ThreadAggiornamentiSoftware extends Thread {
 			file_r = new FileReader(Settings.getCurrentDir()+"version.dat");
 		}
 		catch (IOException e1) {
-			JOptionPane.showMessageDialog(null, Language.DIALOGUE_ERROR_UPDATE);
+			JOptionPane.showMessageDialog(null, "Impossibile verificare la versione online");
 			ManagerException.registraEccezione(e1);
 			return;
 		}
@@ -35,7 +32,7 @@ public class ThreadAggiornamentiSoftware extends Thread {
 		file_v.delete();
 		//TODO aggiungere aggiornamento versione beta
 		//TODO Modificare per versione Linux e Mac
-		if (versione > Settings.getVersioneSoftware() || (Settings.isBeta() && versione==Settings.getVersioneSoftware())) {
+		if (versione > Settings.getVersioneSoftware() ) {
 			OperazioniFile.copyfile("GestioneSerieTV5.exe", "GestioneSerieTV5.exe_back");
 			try {
 				Download.downloadFromUrl("http://pinoelefante.altervista.org/software/GST/GestioneSerieTV5.exe", Settings.getCurrentDir()+"GestioneSerieTV5.exe");
@@ -49,11 +46,11 @@ public class ThreadAggiornamentiSoftware extends Thread {
 			catch (IOException e1) {
 				OperazioniFile.copyfile(Settings.getCurrentDir()+"GestioneSerieTV5.exe_back", Settings.getCurrentDir()+"GestioneSerieTV5.exe");
 				ManagerException.registraEccezione(e1);
-				JOptionPane.showMessageDialog(Interfaccia.frame, Language.DIALOGUE_UPDATE_ERROR_DOWNLOAD);
+				JOptionPane.showMessageDialog(null, "Errore durante il download dell'aggiornamento");
 			}
 		}
 		else if (this.negative) {
-			JOptionPane.showMessageDialog(Interfaccia.frame, Language.DIALOGUE_UPDATE_ULTIMA_VERSIONE);
+			JOptionPane.showMessageDialog(null, "Nessun aggiornamento disponibile");
 		}
 	}
 }
