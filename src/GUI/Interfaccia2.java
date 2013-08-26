@@ -6,10 +6,10 @@ import Programma.ControlloAggiornamenti;
 import Programma.OperazioniFile;
 import Programma.Settings;
 import LettoreVideo.Player;
-import SerieTV.EZTV;
 import SerieTV.GestioneSerieTV2;
 import SerieTV.SerieTV2;
-import SerieTV.Torrent2;
+import Sottotitoli.ProviderSottotitoli;
+import Sottotitoli.SerieSub;
 import StruttureDati.serietv.Episodio;
 
 import javax.swing.JTabbedPane;
@@ -104,7 +104,9 @@ public class Interfaccia2 extends JFrame {
 	private JLabel imgVolume;
 	private JSlider slider_time;
 	private JPanel panel_scroll_download;
+	private JButton btnAggiorna;
 
+	@SuppressWarnings("serial")
 	public Interfaccia2(){
 		super("Gestione Serie TV rel."+Settings.getVersioneSoftware()+" by pinoelefante");
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Interfaccia2.class.getResource("/GUI/res/icona32.png")));
@@ -181,7 +183,7 @@ public class Interfaccia2 extends JFrame {
 		panel_9.add(txt_cerca_serie_inserite);
 		txt_cerca_serie_inserite.setColumns(10);
 		
-		cmb_serie_aggiunte = new JComboBox();
+		cmb_serie_aggiunte = new JComboBox<SerieTV2>();
 		cmb_serie_aggiunte.setBounds(315, 68, 159, 20);
 		panel_9.add(cmb_serie_aggiunte);
 		
@@ -211,7 +213,7 @@ public class Interfaccia2 extends JFrame {
 		lblSerie_2.setBounds(12, 38, 40, 16);
 		panel_10.add(lblSerie_2);
 		
-		cmb_serie_aggiunte_add_episodio = new JComboBox();
+		cmb_serie_aggiunte_add_episodio = new JComboBox<SerieTV2>();
 		cmb_serie_aggiunte_add_episodio.setBounds(57, 36, 150, 20);
 		panel_10.add(cmb_serie_aggiunte_add_episodio);
 		
@@ -284,7 +286,7 @@ public class Interfaccia2 extends JFrame {
 		JButton btnTest = new JButton("test");
 		panel_info_episodio.add(btnTest);
 		
-		JButton btnAggiorna = new JButton("Aggiorna");
+		btnAggiorna = new JButton("Aggiorna");
 		
 		btnAggiorna.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/aggiorna.png")));
 		btnAggiorna.setBounds(10, 228, 105, 23);
@@ -334,7 +336,7 @@ public class Interfaccia2 extends JFrame {
 		lblSerieTV.setBounds(172, 24, 46, 14);
 		panel.add(lblSerieTV);
 		
-		cmb_serie_sottotitoli = new JComboBox();
+		cmb_serie_sottotitoli = new JComboBox<SerieTV2>();
 		cmb_serie_sottotitoli.setBounds(228, 21, 238, 20);
 		panel.add(cmb_serie_sottotitoli);
 		
@@ -387,7 +389,7 @@ public class Interfaccia2 extends JFrame {
 		panel.add(txt_itasa_cerca);
 		txt_itasa_cerca.setColumns(20);
 		
-		JComboBox cmb_itasa_serie = new JComboBox();
+		JComboBox<SerieSub> cmb_itasa_serie = new JComboBox<SerieSub>();
 		cmb_itasa_serie.setBounds(10, 125, 208, 20);
 		panel.add(cmb_itasa_serie);
 		
@@ -416,7 +418,7 @@ public class Interfaccia2 extends JFrame {
 		panel.add(txt_subsfactory_cerca);
 		txt_subsfactory_cerca.setColumns(20);
 		
-		JComboBox cmb_subsfactory_serie = new JComboBox();
+		JComboBox<SerieSub> cmb_subsfactory_serie = new JComboBox<SerieSub>();
 		cmb_subsfactory_serie.setBounds(258, 125, 208, 20);
 		panel.add(cmb_subsfactory_serie);
 		
@@ -505,7 +507,7 @@ public class Interfaccia2 extends JFrame {
 		lblProvider.setBounds(12, 25, 55, 16);
 		panel_8.add(lblProvider);
 		
-		JComboBox comboBox_provider = new JComboBox();
+		JComboBox<ProviderSottotitoli> comboBox_provider = new JComboBox<ProviderSottotitoli>();
 		comboBox_provider.setBounds(72, 21, 200, 20);
 		panel_8.add(comboBox_provider);
 		
@@ -513,7 +515,7 @@ public class Interfaccia2 extends JFrame {
 		lblSerie_1.setBounds(12, 53, 55, 16);
 		panel_8.add(lblSerie_1);
 		
-		JComboBox cmb_serie_provider = new JComboBox();
+		JComboBox<SerieSub> cmb_serie_provider = new JComboBox<SerieSub>();
 		cmb_serie_provider.setBounds(72, 75, 200, 20);
 		panel_8.add(cmb_serie_provider);
 		
@@ -571,7 +573,7 @@ public class Interfaccia2 extends JFrame {
 		btnVLCInstance.setBounds(165, 115, 100, 25);
 		LettorePanel.add(btnVLCInstance);
 		
-		cmb_serie_lettore = new JComboBox();
+		cmb_serie_lettore = new JComboBox<SerieTV2>();
 		cmb_serie_lettore.setBounds(45, 263, 260, 20);
 		LettorePanel.add(cmb_serie_lettore);
 		
@@ -952,7 +954,7 @@ public class Interfaccia2 extends JFrame {
 							btnCercaAggiornamenti.setEnabled(true);
 							lblRisultatoAggiornamenti.setText("<html>Versione online: "+versione+"<br><font color='blue'><u>Clicca qui per scaricarla</u></font></html>");
 							lblRisultatoAggiornamenti.setToolTipText("Clicca per aggiornare");
-							System.out.println(lblRisultatoAggiornamenti.getMouseListeners().length);
+							//System.out.println(lblRisultatoAggiornamenti.getMouseListeners().length);
 							rimuoviListener();
 							lblRisultatoAggiornamenti.addMouseListener(new MouseListener() {
 								public void mouseReleased(MouseEvent arg0) {}
@@ -1140,7 +1142,7 @@ public class Interfaccia2 extends JFrame {
 				if(s!=null){
 					if(GestioneSerieTV2.aggiungiSeriePreferita(s)){
 						reloadSeriePreferite();
-						s.aggiornaEpisodiOnline();
+						//s.aggiornaEpisodiOnline(); //TODO eseguire in un thread separato
 						
 						//TODO aggiungere altro (caricare episodi, cercare id su tvdb, id itasa, id subsfactory, id )
 					}
@@ -1161,9 +1163,16 @@ public class Interfaccia2 extends JFrame {
 				panel_scroll_download.removeAll();
 				class UpdateEpisodes extends Thread {
 					public void run(){
-						ArrayList<Episodio> eps=GestioneSerieTV2.cericaEpisodiDaScaricare();
-						for(int i=0;i<eps.size();i++){
-							panel_scroll_download.add(new PanelEpisodioDownload(eps.get(i)));
+						btnAggiorna.setEnabled(false);
+						try {
+    						ArrayList<Episodio> eps=GestioneSerieTV2.caricaEpisodiDaScaricare();
+    						for(int i=0;i<eps.size();i++){
+    							panel_scroll_download.add(new PanelEpisodioDownload(eps.get(i)));
+    						}
+    						btnAggiorna.setEnabled(true);
+						}
+						catch(Exception e){
+							btnAggiorna.setEnabled(true);
 						}
 					}
 				}
@@ -1209,6 +1218,8 @@ public class Interfaccia2 extends JFrame {
 		/** inizializza i campi che contengono le serie tv inserite*/
 		reloadSeriePreferite();
 		reloadSerieDisponibili();
+		
+		inizializzaDownloadScroll();
 	}
 	public void reloadSeriePreferite() {
 		ArrayList<SerieTV2> st=GestioneSerieTV2.getElencoSerieInserite();
@@ -1238,5 +1249,21 @@ public class Interfaccia2 extends JFrame {
 			}
 		}
 		st=null;
+	}
+	public void inizializzaDownloadScroll() {
+		panel_scroll_download.removeAll();
+		class UpdateEpisodes extends Thread {
+			public void run(){
+				btnAggiorna.setEnabled(false);
+				ArrayList<Episodio> eps=GestioneSerieTV2.caricaEpisodiDaScaricareOffline();
+				for(int i=0;i<eps.size();i++){
+					panel_scroll_download.add(new PanelEpisodioDownload(eps.get(i)));
+				}
+				btnAggiorna.setEnabled(true);
+			}
+		}
+		Thread t=new UpdateEpisodes();
+		t.setName("update episodi");
+		t.start();
 	}
 }

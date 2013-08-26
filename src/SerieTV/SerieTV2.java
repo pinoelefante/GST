@@ -1,6 +1,8 @@
 package SerieTV;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import Database.Database2;
 import StruttureDati.db.KVResult;
@@ -118,16 +120,24 @@ public class SerieTV2 {
 		if(formattato.contains(", The")){
 			formattato="The "+formattato.replace(", The", "").trim();
 		}
-		//TODO Pattern anno
-		
+		String pattern_anno="\\([0-9]{4}\\)";
+		Pattern p_anno=Pattern.compile(pattern_anno);
+		Matcher m = p_anno.matcher(formattato);
+		if(m.find()){
+			formattato=formattato.replace(m.group(), "");
+		}
+		formattato=formattato.trim();
 		return formattato;
 	}
 	public void addEpisodio(Torrent2 episodio){
 		episodi.aggiungiLink(episodio);
 	}
+	public void addEpisodioDB(Torrent2 e){
+		episodi.aggiungiLinkDB(e);
+	}
 	public void aggiornaEpisodiOnline(){
 		provider.caricaEpisodiOnline(this);
-		episodi.stampaElenco();
+		//episodi.stampaElenco();
 	}
 	public int getNumEpisodi(){
 		return episodi.size();
@@ -150,8 +160,9 @@ public class SerieTV2 {
 
 	public void setSubsfactoryDirectory(String id) {
 		SubsfactoryOnlineDirectory=id;
-		//TODO salvataggio in db
-		
 	}
-	
+	public boolean rimuoviSerie(){
+		setStopSearch(false, false);
+		return getProvider().rimuoviSerieDaDB(this);
+	}
 }

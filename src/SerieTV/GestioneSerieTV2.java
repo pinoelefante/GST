@@ -14,7 +14,7 @@ public class GestioneSerieTV2 {
 	public static void instance(){
 		if(!instanced){
 			providers=new ArrayList<ProviderSerieTV>(1);
-    		//submanager=new GestoreSottotitoli(); TODO rimuovere commento dopo aver fixato la classe
+    		submanager=new GestoreSottotitoli(); //TODO rimuovere commento dopo aver fixato la classe
     		providers.add(new EZTV());
     		instanced=true;
 		}
@@ -62,12 +62,22 @@ public class GestioneSerieTV2 {
 	public static GestoreSottotitoli getSubManager(){
 		return submanager;
 	}
-	public static ArrayList<Episodio> cericaEpisodiDaScaricare(){
+	public static ArrayList<Episodio> caricaEpisodiDaScaricare(){
 		ArrayList<Episodio> episodi=new ArrayList<Episodio>();
 		for(int i=0;i<providers.size();i++){
 			ProviderSerieTV p=providers.get(i);
 			for(int j=0;j<p.getPreferiteSerieCount();j++){
 				p.getPreferiteSerieAt(j).aggiornaEpisodiOnline();
+				episodi.addAll(p.nuoviEpisodi(p.getPreferiteSerieAt(j)));
+			}
+		}
+		return episodi;
+	}
+	public static ArrayList<Episodio> caricaEpisodiDaScaricareOffline(){
+		ArrayList<Episodio> episodi=new ArrayList<Episodio>();
+		for(int i=0;i<providers.size();i++){
+			ProviderSerieTV p=providers.get(i);
+			for(int j=0;j<p.getPreferiteSerieCount();j++){
 				episodi.addAll(p.nuoviEpisodi(p.getPreferiteSerieAt(j)));
 			}
 		}

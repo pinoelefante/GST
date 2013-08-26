@@ -4,7 +4,6 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import SerieTV.GestioneSerieTV2;
-import SerieTV.ThreadRicercaAutomatica;
 import Database.Database2;
 import GUI.FrameLoading;
 import GUI.Interfaccia2;

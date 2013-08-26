@@ -88,7 +88,7 @@ public class Subsfactory implements ProviderSottotitoli {
 			if(url.length()>0){
 				url=url.replace(" ", "%20");
 				if(scaricaSub(url, Renamer.generaNomeDownload(t), t.getNomeSerieFolder())){
-					t.setSubDownload(false, true);
+					t.setSubDownload(false);
 					return true;
 				}
 			}

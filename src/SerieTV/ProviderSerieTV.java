@@ -73,6 +73,7 @@ public abstract class ProviderSerieTV {
 					s.setInserita(true);
 					salvaSerieInDB(s);
 					inserita=true;
+					break;
 				}
 			}
 			if(!inserita){
@@ -88,7 +89,7 @@ public abstract class ProviderSerieTV {
 		if(s.isInserita()){
 			preferite.remove(s);
 			s.setInserita(false);
-			salvaSerieInDB(s);
+			rimuoviSerieDaDB(s);
 		}
 	}
 	public SerieTV2 getNuoveSerieAt(int i){
@@ -109,10 +110,11 @@ public abstract class ProviderSerieTV {
 	public abstract String getBaseURL();
 	public abstract void aggiornaElencoSerie();
 	public abstract ArrayList<Episodio> nuoviEpisodi(SerieTV2 serie);
-	public abstract ArrayList<Torrent2> caricaEpisodiDB(SerieTV2 serie);
+	public abstract void caricaEpisodiDB(SerieTV2 serie);
 	public abstract void caricaSerieDB();
 	protected abstract void salvaSerieInDB(SerieTV2 s);
 	protected abstract void salvaEpisodioInDB(Torrent2 t);
 	public abstract int getProviderID();
 	public abstract void caricaEpisodiOnline(SerieTV2 serie);
+	protected abstract boolean rimuoviSerieDaDB(SerieTV2 serie);
 }

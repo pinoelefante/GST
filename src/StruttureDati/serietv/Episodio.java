@@ -27,6 +27,26 @@ public class Episodio {
 			nome_serie=link.getNomeSerie();
 		
 		if(link.isPreAir()){
+			if(addLinkToList(ep_preair, link)){
+				link.updateTorrentInDB();
+			}
+		}
+		else if(link.is720p()){
+			if(addLinkToList(ep_hd, link)){
+				link.updateTorrentInDB();
+			}
+		}
+		else {
+			if(addLinkToList(ep_normali, link)){
+				link.updateTorrentInDB();
+			}
+		}
+	}
+	public void addLinkFromDB(Torrent2 link){
+		if(nome_serie==null)
+			nome_serie=link.getNomeSerie();
+		
+		if(link.isPreAir()){
 			addLinkToList(ep_preair, link);
 		}
 		else if(link.is720p()){
@@ -36,16 +56,17 @@ public class Episodio {
 			addLinkToList(ep_normali, link);
 		}
 	}
-	private void addLinkToList(ArrayList<Torrent2> elenco, Torrent2 link){
+	private boolean addLinkToList(ArrayList<Torrent2> elenco, Torrent2 link){
 		if(elenco.size()==0){
 			elenco.add(link);
+			return true;
 		}
 		else {
 			boolean inserito=false;
 			for(int i=0;i<elenco.size();i++){
 				Torrent2 t=elenco.get(i);
 				if(t.getUrl().compareTo(link.getUrl())==0)
-					return;
+					return false;
 				else {
 					if(link.getStats().compare(t.getStats())>0){
 						elenco.add(i, link);
@@ -57,6 +78,7 @@ public class Episodio {
 			if(!inserito){
 				elenco.add(link);
 			}
+			return true;
 		}
 	}
 	public boolean isScaricato(){
@@ -92,26 +114,26 @@ public class Episodio {
 	public void scaricaLink(Torrent2 link){
 		for(int i=0;i<ep_hd.size();i++){
 			if(ep_hd.get(i)==link){
-				link.setScaricato(Torrent2.SCARICATO, true);
+				link.setScaricato(Torrent2.SCARICATO);
 			}
 			else if(!ep_hd.get(i).isScaricato()){
-				ep_hd.get(i).setScaricato(Torrent2.IGNORATO, true);
+				ep_hd.get(i).setScaricato(Torrent2.IGNORATO);
 			}
 		}
 		for(int i=0;i<ep_normali.size();i++){
 			if(ep_normali.get(i)==link){
-				link.setScaricato(Torrent2.SCARICATO, true);
+				link.setScaricato(Torrent2.SCARICATO);
 			}
 			else if(!ep_normali.get(i).isScaricato()){
-				ep_normali.get(i).setScaricato(Torrent2.IGNORATO, true);
+				ep_normali.get(i).setScaricato(Torrent2.IGNORATO);
 			}
 		}
 		for(int i=0;i<ep_preair.size();i++){
 			if(ep_preair.get(i)==link){
-				link.setScaricato(Torrent2.SCARICATO, true);
+				link.setScaricato(Torrent2.SCARICATO);
 			}
 			else if(!ep_preair.get(i).isScaricato()){
-				ep_preair.get(i).setScaricato(Torrent2.IGNORATO, true);
+				ep_preair.get(i).setScaricato(Torrent2.IGNORATO);
 			}
 		}
 	}

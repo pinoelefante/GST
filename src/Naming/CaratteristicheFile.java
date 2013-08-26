@@ -60,6 +60,9 @@ public class CaratteristicheFile {
 			val+=PROPER;
 		return val;
 	}
+	public int value(){
+		return value(this);
+	}
 	public boolean isDVDRip() {
 		return dvdrip;
 	}
@@ -68,15 +71,15 @@ public class CaratteristicheFile {
 	}
 	public void setStatsFromValue(int v){
 		int val=v&1;
-		System.out.println("Value: "+v+" AND: "+val);
+		//System.out.println("Value: "+v+" AND: "+val);
 		setProper(val==1?true:false);
 		v=v>>1;
 		val=v&1;
-		System.out.println("Value: "+v+" AND: "+val);
+		//System.out.println("Value: "+v+" AND: "+val);
 		setRepack(val==1?true:false);
 		v=v>>1;
 		val=v&1;
-		System.out.println("Value: "+v+" AND: "+val);
+		//System.out.println("Value: "+v+" AND: "+val);
 		set720p(val==1?true:false);
 	}
 	public static void main(String[] args){

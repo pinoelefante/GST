@@ -1,8 +1,6 @@
 package SerieTV;
 
-import Database.*;
 import Naming.CaratteristicheFile;
-import Programma.ManagerException;
 
 public class Torrent2 {
 	public final static int SCARICARE=0, SCARICATO=1, VISTO=2, RIMOSSO=3, IGNORATO=4; 
@@ -12,7 +10,7 @@ public class Torrent2 {
 	private boolean sub_down; //true se è da scaricare, false non scaricare
 	private CaratteristicheFile prop_torrent;
 	private SerieTV2 serietv;
-	private int id_db;
+	private int id_db, id_tvdb;
 
 	public Torrent2(SerieTV2 st, String url, int stato_t) {
 		this.url=url;
@@ -41,12 +39,6 @@ public class Torrent2 {
 	public void setScaricato(int visto) {
 		this.stato = visto;
 		updateTorrentInDB();
-	}
-	public void setScaricato(int visto, boolean update){
-		this.stato = visto;
-		if(update){
-			updateTorrentInDB();
-		}
 	}
 
 	public boolean is720p() {
@@ -89,67 +81,31 @@ public class Torrent2 {
 	public String getNomeSerieFolder() {
 		return serietv.getFolderSerie();
 	}
-	/* TODO aggiornare
-	public void setSottotitolo(boolean stato, boolean update) {
-		sub_down=stato;
-		if(stato)
-			GestioneSerieTV2.getSubManager().aggiungiEpisodio(this);
-		else
-			GestioneSerieTV2.getSubManager().rimuoviEpisodio(this);
-		if(update)
-			update();
-	}
-	*/
+	
 	public boolean isSottotitolo(){
 		return sub_down;
 	}
-	public void setSubDownload(boolean stat, boolean db_update){
+	public void setSubDownload(boolean stat){
 		sub_down=stat;
-		if(db_update){
-			getSerieTV().getProvider().salvaEpisodioInDB(this);
+		
+		/* TODO aggiornare
+		public void setSottotitolo(boolean stato, boolean update) {
+			sub_down=stato;
+			if(stato)
+				GestioneSerieTV2.getSubManager().aggiungiEpisodio(this);
+			else
+				GestioneSerieTV2.getSubManager().rimuoviEpisodio(this);
+			if(update)
+				update();
 		}
+		*/
 	}
 	
 	public void setPreair(boolean stato) {
 		preair=stato;
 	}
-	
-	public void insert(){
-		String query="INSERT INTO "+Database2.TABLE_EPISODI+" "+"(magnet, id_serie, vista, serie, episodio, HD720p, repack, preair, proper, sottotitolo) VALUES ("+
-				"\""+getUrl()+"\","+
-				serietv.getIDDb()+","+
-				stato+","+
-				getStagione()+","+
-				getEpisodio()+","+
-				(is720p()?1:0)+","+
-				(isRepack()?1:0)+","+
-				(isPreAir()?1:0)+","+
-				(isPROPER()?1:0)+","+
-				(isSottotitolo()?1:0)+")";
-		if(Database2.updateQuery(query)==false)
-			ManagerException.registraEccezione(getClass().getName()+ "\nMetodo insert()\nQuery:"+query+"\n");
-		
-	}
 	public void updateTorrentInDB(){
 		getSerieTV().getProvider().salvaEpisodioInDB(this);
-		/*
-		int i=0;
-		SQLParameter[] par=new SQLParameter[9];
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, serietv.getIDDb(), "id_serie");
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, getScaricato(), "vista");
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, getStagione(), "serie");
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, getEpisodio(), "episodio");
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, is720p()?1:0, "HD720p");
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, isRepack()?1:0, "repack");
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, isPreAir()?1:0, "preair");
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, isPROPER()?1:0, "proper");
-		par[i++]=new SQLParameter(SQLParameter.INTEGER, isSottotitolo()?1:0, "sottotitolo");
-		
-		SQLParameter[] con=new SQLParameter[1];
-		con[0]=new SQLParameter(SQLParameter.TEXT, getUrl(), "magnet");
-		
-		Database.update(Database.TABLE_TORRENT, par, con, "AND", "=");
-		*/
 	}
 	public String toString(){
 		if(isMagnetLink())
@@ -189,5 +145,11 @@ public class Torrent2 {
 	}
 	public void setIDDB(int id_db) {
 		this.id_db = id_db;
+	}
+	public int getIDTVDB() {
+		return id_tvdb;
+	}
+	public void setIDTVDB(int id_tvdb) {
+		this.id_tvdb = id_tvdb;
 	}
 }

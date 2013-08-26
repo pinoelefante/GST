@@ -8,18 +8,29 @@ import javax.swing.JCheckBox;
 import javax.swing.SwingConstants;
 
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.border.EtchedBorder;
 
+import Programma.Download2;
+import Programma.ManagerException;
+import Programma.Settings;
+import SerieTV.Torrent2;
 import StruttureDati.serietv.Episodio;
 
 public class PanelEpisodioDownload extends JPanel {
 	
 	private static final long serialVersionUID = 1L;
 	private Episodio ep;
+	private JButton btnHd;
+	private JButton btnSd;
+	private JButton btnPreair;
+	private JButton btnInfo;
 	
 	public PanelEpisodioDownload(Episodio e) {
 		ep=e;
@@ -44,20 +55,23 @@ public class PanelEpisodioDownload extends JPanel {
 		JPanel panel_3 = new JPanel();
 		panel_1.add(panel_3, BorderLayout.EAST);
 		
-		JButton btnInfo = new JButton("");
+		btnInfo = new JButton("");
 		btnInfo.setIcon(new ImageIcon(PanelEpisodioDownload.class.getResource("/GUI/res/info.png")));
 		panel_3.add(btnInfo);
 		
 		JPanel panel_2 = new JPanel();
 		panel_1.add(panel_2, BorderLayout.CENTER);
 		
-		JButton btnHd = new JButton("HD");
+		btnHd = new JButton("HD");
+		btnHd.setEnabled(ep.getLinkHD()==null?false:true);
 		panel_2.add(btnHd);
 		
-		JButton btnSd = new JButton("SD");
+		btnSd = new JButton("SD");
+		btnSd.setEnabled(ep.getLinkNormale()==null?false:true);
 		panel_2.add(btnSd);
 		
-		JButton btnPreair = new JButton("PreAir");
+		btnPreair = new JButton("PreAir");
+		btnPreair.setEnabled(ep.getLinkPreair()==null?false:true);
 		panel_2.add(btnPreair);
 		
 		JPanel panel_4 = new JPanel();
@@ -74,6 +88,72 @@ public class PanelEpisodioDownload extends JPanel {
 		
 		JLabel lblEpisode = new JLabel("<html><b>"+ep.getEpisodio()+"</html></b>");
 		panel_4.add(lblEpisode);
+		
+		addListener();
 	}
-
+	private void addListener(){
+		btnHd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Torrent2 link=ep.getLinkHD();
+				if(link!=null){
+					try {
+						Download2.downloadMagnet(link.getUrl(), link.getSerieTV().getFolderSerie());
+						if(Settings.isRicercaSottotitoli()){
+							link.setSubDownload(true);
+						}
+						ep.scaricaLink(link);
+						PanelEpisodioDownload.this.getParent().remove(PanelEpisodioDownload.this);
+					}
+					catch (IOException e1) {
+						ManagerException.registraEccezione(e1);
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
+		btnSd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Torrent2 link=ep.getLinkNormale();
+				if(link!=null){
+					try {
+						Download2.downloadMagnet(link.getUrl(), link.getSerieTV().getFolderSerie());
+						if(Settings.isRicercaSottotitoli()){
+							link.setSubDownload(true);
+						}
+						ep.scaricaLink(link);
+						PanelEpisodioDownload.this.getParent().remove(PanelEpisodioDownload.this);
+					}
+					catch (IOException e1) {
+						ManagerException.registraEccezione(e1);
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
+		btnPreair.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Torrent2 link=ep.getLinkPreair();
+				if(link!=null){
+					try {
+						Download2.downloadMagnet(link.getUrl(), link.getSerieTV().getFolderSerie());
+						if(Settings.isRicercaSottotitoli()){
+							link.setSubDownload(true);
+						}
+						ep.scaricaLink(link);
+						PanelEpisodioDownload.this.getParent().remove(PanelEpisodioDownload.this);
+					}
+					catch (IOException e1) {
+						ManagerException.registraEccezione(e1);
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
+		btnInfo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+	}
 }

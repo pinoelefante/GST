@@ -22,8 +22,7 @@ public class Karmorra extends ProviderSerieTV {
 
 	@Override
 	public String getProviderName() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Karmorra";
 	}
 
 	@Override
@@ -45,9 +44,8 @@ public class Karmorra extends ProviderSerieTV {
 	}
 
 	@Override
-	public ArrayList<Torrent2> caricaEpisodiDB(SerieTV2 serie) {
+	public void caricaEpisodiDB(SerieTV2 serie) {
 		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -157,6 +155,13 @@ public class Karmorra extends ProviderSerieTV {
 	 * webClient.closeAllWindows(); webClient.getCache().clear();
 	 * page_login.cleanUp(); } catch (FailingHttpStatusCodeException |
 	 * IOException e) { e.printStackTrace();
-	 * ManagerException.registraEccezione(e); } }
+	 * ManagerException.registraEccezione(e); } 
+	 * }
 	 */
+
+	@Override
+	protected boolean rimuoviSerieDaDB(SerieTV2 serie) {
+		// TODO Auto-generated method stub
+		return false;
+	}
 }

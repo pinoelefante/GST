@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 import Database.Database2;
+import Naming.CaratteristicheFile;
 import Programma.Download2;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
@@ -123,6 +124,7 @@ public class EZTV extends ProviderSerieTV{
 			st.setIDTvdb(id_tvdb);
 			st.setStopSearch(stop_search, false);
 			addSerieFromDB(st);
+			caricaEpisodiDB(st);
 		}
 		System.out.println("Caricate "+res.size()+" serietv dal database - EZTV.it");
 	}
@@ -167,14 +169,52 @@ public class EZTV extends ProviderSerieTV{
 		
 	}
 	@Override
-	public ArrayList<Torrent2> caricaEpisodiDB(SerieTV2 serie) {
-		// TODO Auto-generated method stub
-		return null;
+	public void caricaEpisodiDB(SerieTV2 serie) {
+		String query="SELECT * FROM "+Database2.TABLE_EPISODI+" WHERE id_serie="+serie.getIDDb();
+		ArrayList<KVResult<String, Object>> res=Database2.selectQuery(query);
+		for(int i=0;i<res.size();i++){
+			KVResult<String, Object> r=res.get(i);
+			//(id, id_serie,url,vista,stagione,episodio,tags,preair,sottotitolo,id_tvdb_ep)
+			int id=(int) r.getValueByKey("id");
+			String url=(String) r.getValueByKey("url");
+			int stato=(int) r.getValueByKey("vista");
+			int stagione=(int) r.getValueByKey("stagione");
+			int episodio=(int) r.getValueByKey("episodio");
+			int tags=(int) r.getValueByKey("tags");
+			boolean preair=((int)r.getValueByKey("preair"))==1?true:false;
+			boolean sub=((int)r.getValueByKey("sottotitolo"))==1?true:false;
+			int id_tvdb=(int)r.getValueByKey("id_tvdb_ep");
+			CaratteristicheFile stat=new CaratteristicheFile();
+			stat.setStatsFromValue(tags);
+			Torrent2 t=new Torrent2(serie, url, stato, stat);
+			t.setStagione(stagione);
+			t.setEpisodio(episodio);
+			t.setIDDB(id);
+			t.setPreair(preair);
+			t.setSubDownload(sub);
+			t.setIDTVDB(id_tvdb);
+			serie.addEpisodioDB(t);
+			//System.out.println(t);
+		}
 	}
 	@Override
 	protected void salvaEpisodioInDB(Torrent2 t) {
-		// TODO Auto-generated method stub
-		
+		if(t.getIDDB()==0){
+			String query="INSERT INTO "+Database2.TABLE_EPISODI+" (id_serie,url,vista,stagione,episodio,tags,preair,sottotitolo,id_tvdb_ep) VALUES ("
+				+t.getSerieTV().getIDDb()+","
+				+"\""+t.getUrl()+"\","
+				+t.getScaricato()+","
+				+t.getStagione()+","+t.getEpisodio()+","+t.getStats().value()+","+(t.isPreAir()?1:0)+","+(t.isSottotitolo()?1:0)+","+t.getIDTVDB()+")";
+			//System.out.println(query);
+			Database2.updateQuery(query);
+		}
+		else {
+			String query="UPDATE "+Database2.TABLE_EPISODI+" SET id_serie="+t.getSerieTV().getIDDb()+", url=\""+t.getUrl()+"\", vista="+t.getScaricato()+", stagione="+t.getStagione()+","
+					+"episodio="+t.getEpisodio()+", tags="+t.getStats().value()+", preair="+(t.isPreAir()?1:0)+", sottotitolo="+(t.isSottotitolo()?1:0)+", id_tvdb_ep="+t.getIDTVDB()+" "+
+					"WHERE rowid="+t.getIDDB();
+			//System.out.println(query);
+			Database2.updateQuery(query);
+		}
 	}
 	@Override
 	public int getProviderID() {
@@ -226,6 +266,11 @@ public class EZTV extends ProviderSerieTV{
 			e.printStackTrace();
 			ManagerException.registraEccezione(e);
 		}
-		
+	}
+
+	@Override
+	protected boolean rimuoviSerieDaDB(SerieTV2 serie) {
+		String query="UPDATE "+Database2.TABLE_SERIETV+" SET inserita=0, stop_search=0 WHERE provider="+getProviderID()+" AND rowid="+serie.getIDDb();
+		return Database2.updateQuery(query);
 	}
 }

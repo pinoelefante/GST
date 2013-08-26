@@ -17,6 +17,14 @@ public class ElencoEpisodi {
 		}
 		ep.addLink(t);
 	}
+	public void aggiungiLinkDB(Torrent2 t){
+		Episodio ep=cercaEpisodio(t.getStagione(), t.getEpisodio());
+		if(ep==null){
+			ep=aggiungiEpisodio(t.getStagione(), t.getEpisodio());
+		}
+		ep.addLinkFromDB(t);
+	}
+	
 	private Episodio aggiungiEpisodio(int stagione, int episodio){
 		Episodio daInserire=new Episodio(stagione, episodio);
 		int i;
@@ -40,7 +48,7 @@ public class ElencoEpisodi {
     		}
     		if(!inserita){
     			episodi.add(daInserire);
-    			System.out.println("Inserimento all'esterno del for");
+    			//System.out.println("Inserimento all'esterno del for");
     		}
 		}
 		return daInserire;
@@ -73,6 +81,8 @@ public class ElencoEpisodi {
 		}
 	}
 	public void ottimizzaSpazio(){
-		
+		for(int i=0;i<episodi.size();i++){
+			episodi.get(i).ottimizzaSpazio();
+		}
 	}
 }

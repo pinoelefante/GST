@@ -38,7 +38,7 @@ public class Subspedia implements ProviderSottotitoli {
 		else {
 			link=link.replace(" ", "%20");
 			if(scaricaSub(link, Renamer.generaNomeDownload(t), t.getNomeSerieFolder())){
-				t.setSubDownload(false, true);
+				t.setSubDownload(false);
 				return true;
 			}
 			return false;
