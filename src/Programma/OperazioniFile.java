@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import SerieTV.Torrent;
+import SerieTV.Torrent2;
 
 public class OperazioniFile {
 	public static boolean DeleteDirectory(File dir) {
@@ -115,7 +115,7 @@ public class OperazioniFile {
 		else
 			return false;
 	}
-	public static String cercavideofile(Torrent t) throws FileNotFoundException{
+	public static String cercavideofile(Torrent2 t) throws FileNotFoundException{
 		String path_download=Settings.getDirectoryDownload()+(Settings.getDirectoryDownload().endsWith(File.separator)?"":File.separator)+t.getNomeSerieFolder();
 		File cartella_download=new File(path_download);
 		if(!cartella_download.exists())
@@ -135,7 +135,7 @@ public class OperazioniFile {
 			if(lista[i].contains("REPACK")!=t.isRepack())
 				continue;
 			
-			if(lista[i].contains(t.getName()))
+			if(lista[i].contains(t.getNameFromMagnet()))
 				return lista[i];
 			
 			int index_serie=lista[i].indexOf(serie_s);

@@ -83,7 +83,7 @@ public class Naming {
 		Pattern p=patterns.get(pattern[current_pattern]);
 		Matcher m = p.matcher(toParse);
 		if(m.find()){
-			System.out.println("Match trovato con pattern: "+p.pattern()+"\nEstratto: "+m.group());
+			//System.out.println("Match trovato con pattern: "+p.pattern()+"\nEstratto: "+m.group());
 		}
 		else {
 			parse(toParse, pattern, current_pattern+1, stats);
@@ -136,7 +136,7 @@ public class Naming {
 		}
 		
 		try {
-			System.out.println("dati[0]="+dati[0]);
+			//System.out.println("dati[0]="+dati[0]);
 			stats.setStagione(Integer.parseInt(dati[0]));
 		}
 		catch(NumberFormatException | NullPointerException e){
@@ -145,7 +145,7 @@ public class Naming {
 			stats.setStagione(0);
 		}
 		try {
-			System.out.println("dati[1]="+dati[1]);
+			//System.out.println("dati[1]="+dati[1]);
 			stats.setEpisodio(Integer.parseInt(dati[1]));
 		}
 		catch(NumberFormatException | NullPointerException e){

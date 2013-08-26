@@ -1,4 +1,4 @@
-package StruttureDati;
+package StruttureDati.db;
 
 public class KVItem<K, V> {
 	private K key;

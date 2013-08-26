@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import Database.Database2;
-import StruttureDati.KVResult;
+import StruttureDati.db.KVResult;
 
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.WinReg;

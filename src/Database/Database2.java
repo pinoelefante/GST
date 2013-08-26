@@ -15,8 +15,8 @@ import org.sqlite.SQLiteConfig.SynchronousMode;
 
 import Programma.ManagerException;
 import Programma.Settings;
-import StruttureDati.KVItem;
-import StruttureDati.KVResult;
+import StruttureDati.db.KVItem;
+import StruttureDati.db.KVResult;
 
 public class Database2 {
 	private static Connection con;
@@ -72,7 +72,12 @@ public class Database2 {
 			Statement stat = con.createStatement();
 			
 			stat.executeUpdate("CREATE TABLE IF NOT EXISTS "+TABLE_SERIETV+" (" +
-					"id INTEGER PRIMARY KEY AUTOINCREMENT)");
+					//"id INTEGER,"+
+					"url TEXT PRIMARY KEY)");
+			/*
+			String autoincrement_q="ALTER TABLE id AUTOINCREMENT=1";
+			stat.executeUpdate(autoincrement_q);
+			*/
 			
 			stat.executeUpdate("CREATE TABLE IF NOT EXISTS "+TABLE_EPISODI+" (" +
 					"id INTEGER PRIMARY KEY AUTOINCREMENT)");
@@ -117,9 +122,12 @@ public class Database2 {
 		creaDB();
 		
 		/** SERIETV */
+		/*
 		if(!checkColumn(TABLE_SERIETV, "id")){
 			alter_aggiungicampo(TABLE_SERIETV, "id", "INTEGER PRIMARY KEY AUTOINCREMENT", "");
 		}
+		*/
+		//al posto di id viene usato rowid
 		if(!checkColumn(TABLE_SERIETV, "nome")){
 			alter_aggiungicampo(TABLE_SERIETV, "nome", "TEXT", "");
 		}
@@ -416,6 +424,7 @@ public class Database2 {
 		catch (SQLException e) {
 			e.printStackTrace();
 			ManagerException.registraEccezione(e);
+			e.printStackTrace();
 		}
 		return false;
 	}

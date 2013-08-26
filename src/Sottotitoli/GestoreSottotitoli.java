@@ -4,17 +4,17 @@ import java.util.ArrayList;
 
 import Naming.Renamer;
 import Programma.ManagerException;
-import SerieTV.GestioneSerieTV;
-import SerieTV.SerieTV;
-import SerieTV.Torrent;
+import SerieTV.GestioneSerieTV2;
+import SerieTV.SerieTV2;
+import SerieTV.Torrent2;
 
 public class GestoreSottotitoli {
 	class AssociatoreAutomatico extends Thread {
 		public void run(){
 			System.out.println("Avvio associatore");
-			ArrayList<SerieTV> st=GestioneSerieTV.getElencoSerieInserite();
+			ArrayList<SerieTV2> st=GestioneSerieTV2.getElencoSerieInserite();
 			for(int i=0;i<st.size();i++){
-				SerieTV s=st.get(i);
+				SerieTV2 s=st.get(i);
 				associaSerie(s);
 			}
 		}
@@ -42,7 +42,7 @@ public class GestoreSottotitoli {
 			
 			do{
 				for(int i=0;i<sottotitoli_da_scaricare.size();){
-					Torrent t=sottotitoli_da_scaricare.get(i);
+					Torrent2 t=sottotitoli_da_scaricare.get(i);
 					if(t==null)
 						continue;
 					System.out.println("Thread sottotitolo - Cercando "+t);
@@ -67,10 +67,10 @@ public class GestoreSottotitoli {
 	private ProviderSottotitoli subsfactory;
 	private ProviderSottotitoli subspedia;
 	
-	private ArrayList<Torrent> sottotitoli_da_scaricare;
+	private ArrayList<Torrent2> sottotitoli_da_scaricare;
 	
 	public GestoreSottotitoli(){
-		sottotitoli_da_scaricare=new ArrayList<Torrent>();
+		sottotitoli_da_scaricare=new ArrayList<Torrent2>();
 		itasa=new ItalianSubs();
 		subsfactory=new Subsfactory();
 		subspedia=new Subspedia();
@@ -89,20 +89,20 @@ public class GestoreSottotitoli {
 			ricerca_automatica=null;
 		}
 	}
-	public ArrayList<Torrent> getSottotitoliDaScaricare(){
+	public ArrayList<Torrent2> getSottotitoliDaScaricare(){
 		return sottotitoli_da_scaricare;
 	}
 	public void cercaAssociazioniSub(){
-		ArrayList<SerieTV> elenco_serie=GestioneSerieTV.getElencoSerieCompleto();
+		ArrayList<SerieTV2> elenco_serie=GestioneSerieTV2.getElencoSerieCompleto();
 		for(int i=0;i<elenco_serie.size();i++){
-			SerieTV s=elenco_serie.get(i);
+			SerieTV2 s=elenco_serie.get(i);
 			associaSerie(s);
 		}
 		elenco_serie.clear();
 		elenco_serie.trimToSize();
 		elenco_serie=null;
 	}
-	public void aggiungiLogEntry(Torrent t, ProviderSottotitoli provider){
+	public void aggiungiLogEntry(Torrent2 t, ProviderSottotitoli provider){
 		/*
 		SQLParameter[] p=new SQLParameter[4];
 		p[0]=new SQLParameter(SQLParameter.TEXT, t.getNomeSerie(), "nome_serie");
@@ -113,24 +113,24 @@ public class GestoreSottotitoli {
 		Interfaccia.addEntryLogSottotitoli(t, provider.getProviderName());
 		*/
 	}
-	public void aggiungiEpisodio(Torrent t){
+	public void aggiungiEpisodio(Torrent2 t){
 		for(int i=0;i<sottotitoli_da_scaricare.size();i++){
-			Torrent t1=sottotitoli_da_scaricare.get(i);
+			Torrent2 t1=sottotitoli_da_scaricare.get(i);
 			if(t.getUrl().compareToIgnoreCase(t1.getUrl())==0)
 				return;
 		}
 		sottotitoli_da_scaricare.add(t);
 	}
 
-	public void rimuoviEpisodio(Torrent torrent) {
+	public void rimuoviEpisodio(Torrent2 torrent) {
 		sottotitoli_da_scaricare.remove(torrent);
 	}
-	public boolean associaSerie(SerieTV s){
+	public boolean associaSerie(SerieTV2 s){
 		boolean itasa_assoc=false, it_al=false, subs_assoc=false, subs_al=false;
-		if(s.getItasaID()<=0){
+		if(s.getIDItasa()<=0){
 			String id=itasa.getIDSerieAssociata(s.getNomeSerie());
 			if(id!=null){
-				s.setItasaID(Integer.parseInt(id));
+				s.setIDItasa(Integer.parseInt(id));
 				itasa_assoc=true;
 			}
 		}
@@ -141,7 +141,7 @@ public class GestoreSottotitoli {
 		if(s.getSubsfactoryDirectory().isEmpty()){
 			String id=subsfactory.getIDSerieAssociata(s.getNomeSerie());
 			if(id!=null){
-				s.setSubsfactoryID(id);
+				s.setSubsfactoryDirectory(id);
 				subs_assoc=true;
 			}
 		}
@@ -149,18 +149,18 @@ public class GestoreSottotitoli {
 			subs_al=true;
 		
 		if(itasa_assoc || subs_assoc)
-			s.UpdateDB();
+			s.aggiornaDB();
 		
 		return (itasa_assoc || subs_assoc) || (it_al || subs_al);
 	}
-	public boolean cercaSottotitolo(Torrent t){
+	public boolean cercaSottotitolo(Torrent2 t){
 		boolean itasa, subsfactory, subspedia;
 		itasa=this.itasa.cercaSottotitolo(t);
 		subsfactory=this.subsfactory.cercaSottotitolo(t);
 		subspedia=this.subspedia.cercaSottotitolo(t);
 		return (itasa || subsfactory || subspedia);
 	}
-	public boolean scaricaSottotitolo(Torrent t){
+	public boolean scaricaSottotitolo(Torrent2 t){
 		if(itasa.scaricaSottotitolo(t)){
 			aggiungiLogEntry(t, this.itasa);
 		}

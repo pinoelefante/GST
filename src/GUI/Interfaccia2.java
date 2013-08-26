@@ -10,6 +10,7 @@ import SerieTV.EZTV;
 import SerieTV.GestioneSerieTV2;
 import SerieTV.SerieTV2;
 import SerieTV.Torrent2;
+import StruttureDati.serietv.Episodio;
 
 import javax.swing.JTabbedPane;
 
@@ -284,6 +285,7 @@ public class Interfaccia2 extends JFrame {
 		panel_info_episodio.add(btnTest);
 		
 		JButton btnAggiorna = new JButton("Aggiorna");
+		
 		btnAggiorna.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/aggiorna.png")));
 		btnAggiorna.setBounds(10, 228, 105, 23);
 		DownloadPanel.add(btnAggiorna);
@@ -1136,28 +1138,51 @@ public class Interfaccia2 extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				SerieTV2 s=(SerieTV2) cmb_serie_tutte.getSelectedItem();
 				if(s!=null){
-					if(!s.isInserita()){
-    	    			s.setInserita(true);
-    	    			s.aggiornaDB();;
-    	    			//TODO aggiungere altro XD
-    	    			reloadSeriePreferite();
+					if(GestioneSerieTV2.aggiungiSeriePreferita(s)){
+						reloadSeriePreferite();
+						s.aggiornaEpisodiOnline();
+						
+						//TODO aggiungere altro (caricare episodi, cercare id su tvdb, id itasa, id subsfactory, id )
 					}
 				}
 			}
 		});
+		btnRimuovi.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				SerieTV2 s=(SerieTV2) cmb_serie_aggiunte.getSelectedItem();
+				if(s!=null){
+					GestioneSerieTV2.rimuoviSeriePreferita(s);
+					reloadSeriePreferite();
+				}
+			}
+		});
+		btnAggiorna.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				panel_scroll_download.removeAll();
+				class UpdateEpisodes extends Thread {
+					public void run(){
+						ArrayList<Episodio> eps=GestioneSerieTV2.cericaEpisodiDaScaricare();
+						for(int i=0;i<eps.size();i++){
+							panel_scroll_download.add(new PanelEpisodioDownload(eps.get(i)));
+						}
+					}
+				}
+				Thread t=new UpdateEpisodes();
+				t.setName("update episodi");
+				t.start();
+				
+			}
+		});
 		btnTest.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Torrent2 t=new Torrent2(new SerieTV2(new EZTV(), "Anger Management", ""), "magnet:?xt=urn:btih:CESZGU2HYDQ3V7PMARB3MXELSZ3AMDWU&dn=Anger.Management.S02E31.HDTV.x264-ASAP&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80",Torrent2.SCARICARE);
-				t.parseMagnet();
-				PanelEpisodioDownload p=new PanelEpisodioDownload(t);
-				panel_scroll_download.add(p);
+			
 			}
 		});
 		panel_scroll_download.addContainerListener(new ContainerListener() {
 			public void componentRemoved(ContainerEvent arg0) {
 				GridLayout l=(GridLayout) panel_scroll_download.getLayout();
-				if(panel_scroll_download.getComponentCount()<=3)
-					l.setRows(3);
+				if(panel_scroll_download.getComponentCount()<=2)
+					l.setRows(2);
 				else
 					l.setRows(l.getRows()-1);
 				panel_scroll_download.revalidate();
@@ -1165,8 +1190,8 @@ public class Interfaccia2 extends JFrame {
 			}
 			public void componentAdded(ContainerEvent arg0) {
 				GridLayout l=(GridLayout) panel_scroll_download.getLayout();
-				if(panel_scroll_download.getComponentCount()<=3)
-					l.setRows(3);
+				if(panel_scroll_download.getComponentCount()<=2)
+					l.setRows(2);
 				else
 					l.setRows(l.getRows()+1);
 				panel_scroll_download.revalidate();
@@ -1175,31 +1200,25 @@ public class Interfaccia2 extends JFrame {
 		});
 		buttonReloadSerie.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				GestioneSerieTV2.Showlist();
+				GestioneSerieTV2.caricaElencoSerieOnline();
 				reloadSerieDisponibili();
 			}
 		});
 	}
 	public void init(){
 		/** inizializza i campi che contengono le serie tv inserite*/
-		ArrayList<SerieTV2> st=GestioneSerieTV2.getElencoSerieInserite();
-		if(st!=null){
-    		for(int i=0;i<st.size();i++){
-    			cmb_serie_aggiunte.addItem(st.get(i));
-    			cmb_serie_aggiunte_add_episodio.addItem(st.get(i));
-    			cmb_serie_lettore.addItem(st.get(i));
-    			cmb_serie_sottotitoli.addItem(st.get(i));
-    		}
-		}
-		st=null;
+		reloadSeriePreferite();
+		reloadSerieDisponibili();
 	}
 	public void reloadSeriePreferite() {
 		ArrayList<SerieTV2> st=GestioneSerieTV2.getElencoSerieInserite();
+		
+		cmb_serie_aggiunte.removeAllItems();
+		cmb_serie_aggiunte_add_episodio.removeAllItems();
+		cmb_serie_lettore.removeAllItems();
+		cmb_serie_sottotitoli.removeAllItems();
+		
 		if(st!=null){
-    		cmb_serie_aggiunte.removeAllItems();
-    		cmb_serie_aggiunte_add_episodio.removeAllItems();
-    		cmb_serie_lettore.removeAllItems();
-    		cmb_serie_sottotitoli.removeAllItems();
     		for(int i=0;i<st.size();i++){
         		cmb_serie_aggiunte.addItem(st.get(i));
         		cmb_serie_aggiunte_add_episodio.addItem(st.get(i));

@@ -1,4 +1,4 @@
-package StruttureDati;
+package StruttureDati.db;
 
 import java.util.ArrayList;
 
@@ -20,5 +20,7 @@ public class KVResult<K, V> {
 		}
 		return null;
 	}
-	
+	public int size(){
+		return items.size();
+	}
 }

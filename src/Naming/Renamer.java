@@ -9,18 +9,18 @@ import java.util.ArrayList;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
-import SerieTV.Torrent;
+import SerieTV.Torrent2;
 
 public class Renamer {
 	public Renamer(){}
 	
-	public static String generaNomeDownload(Torrent t){
+	public static String generaNomeDownload(Torrent2 t){
 		if(t!=null){
 			return t.getNomeSerie().replace(" ", "_")+"_S"+t.getStagione()+"_E"+t.getEpisodio()+"_sub"+".zip";
 		}
 		throw new InvalidParameterException("E' stato passato un parametro non valido");
 	}
-	public static boolean rinominaSottotitolo(Torrent t){
+	public static boolean rinominaSottotitolo(Torrent2 t){
 		String nome_file="";
 		try {
 			nome_file=OperazioniFile.cercavideofile(t);
@@ -49,7 +49,7 @@ public class Renamer {
 						String estensione="";
 						if(files.get(i).contains("."))
 							estensione=files.get(i).substring(files.get(i).lastIndexOf("."));
-						if(OperazioniFile.copyfile(f.getAbsolutePath(), dir_dest+t.getName()+"."+(i+1)+estensione))
+						if(OperazioniFile.copyfile(f.getAbsolutePath(), dir_dest+t.getNameFromMagnet()+"."+(i+1)+estensione))
 							OperazioniFile.deleteFile(files.get(i));
 					}
 				}

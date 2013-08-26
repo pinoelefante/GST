@@ -16,7 +16,6 @@ import javax.swing.border.EtchedBorder;
 
 import SerieTV.EZTV;
 import SerieTV.SerieTV2;
-import SerieTV.Torrent;
 import SerieTV.Torrent2;
 
 public class PanelEpisodioLettore extends JPanel {
@@ -159,7 +158,7 @@ public class PanelEpisodioLettore extends JPanel {
 		frame.setSize(750, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new BorderLayout());
-		Torrent2 t=new Torrent2(new SerieTV2(new EZTV(), "Anger Management", ""), "magnet:?xt=urn:btih:CESZGU2HYDQ3V7PMARB3MXELSZ3AMDWU&dn=Anger.Management.S02E31.HDTV.x264-ASAP&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80",Torrent.SCARICARE);
+		Torrent2 t=new Torrent2(new SerieTV2(new EZTV(), "Anger Management", ""), "magnet:?xt=urn:btih:CESZGU2HYDQ3V7PMARB3MXELSZ3AMDWU&dn=Anger.Management.S02E31.HDTV.x264-ASAP&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80",Torrent2.SCARICARE);
 		t.parseMagnet();
 		
 		JPlaylist playlist=new JPlaylist();

@@ -30,12 +30,11 @@ import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 
 import Naming.Renamer;
-import Programma.Download;
+import Programma.Download2;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
-import SerieTV.GestioneSerieTV;
-import SerieTV.Torrent;
+import SerieTV.Torrent2;
 
 public class ItalianSubs implements ProviderSottotitoli{
 	public final static int HDTV = 0,	
@@ -86,14 +85,14 @@ public class ItalianSubs implements ProviderSottotitoli{
 		}
 	}
 	
-	public boolean scaricaSottotitolo(Torrent t) {
-		int id_itasa=GestioneSerieTV.getSerieFromName(GestioneSerieTV.getElencoSerieInserite(), t.getNomeSerie()).getItasaID();
+	public boolean scaricaSottotitolo(Torrent2 t) {
+		int id_itasa=t.getSerieTV().getIDItasa();
 		try {
 			if(id_itasa<=0)
 				return false;
 			int id=cercaIDSottotitoloFromAPI(id_itasa, t.getStagione(), t.getEpisodio(), t.is720p()?HD720p:HDTV);
 			scaricaSub(id, Renamer.generaNomeDownload(t), t.getNomeSerieFolder());
-			t.setSottotitolo(false, true);
+			t.setSubDownload(false, true);
 			return true;
 		}
 		catch (ItasaSubNotFound e) {
@@ -103,7 +102,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 				return false;
 			try {
 				scaricaSub(id_s, Renamer.generaNomeDownload(t), t.getNomeSerieFolder());
-				t.setSottotitolo(false, true);
+				t.setSubDownload(false, true);
 			}
 			catch (FailedLoginException | FailingHttpStatusCodeException | IOException e1) {
 				e1.printStackTrace();
@@ -133,7 +132,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 		}
 		
 	}
-	private int cercaFeed(int iditasa, Torrent t){
+	private int cercaFeed(int iditasa, Torrent2 t){
 		if(verificaTempo(update_time_rss, RSS_UltimoAggiornamento)){
 			System.out.println("Aggiornando il feed RSS - Italiansubs.net");
 			aggiornaFeedRSS();
@@ -158,7 +157,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 		RSS_UltimoAggiornamento=new GregorianCalendar();
 		feed_rss.clear();
 		try {
-			Download.downloadFromUrl("http://feeds.feedburner.com/ITASA-Ultimi-Sottotitoli", Settings.getCurrentDir()+"feed_itasa");
+			Download2.downloadFromUrl("http://feeds.feedburner.com/ITASA-Ultimi-Sottotitoli", Settings.getCurrentDir()+"feed_itasa");
 			FileReader f_r=new FileReader(Settings.getCurrentDir()+"feed_itasa");
 			Scanner file=new Scanner(f_r);
 			while(file.hasNextLine()){
@@ -220,7 +219,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 				id_r=download_corrente;
 				download_corrente++;
 			}
-			Download.downloadFromUrl(url_query, Settings.getCurrentDir()+"response_sub_"+id_r);
+			Download2.downloadFromUrl(url_query, Settings.getCurrentDir()+"response_sub_"+id_r);
 			f_r = new FileReader(Settings.getCurrentDir()+"response_sub_"+id_r);
 			file = new Scanner(f_r);
 			while (file.hasNextLine()) {
@@ -250,7 +249,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 	public void caricaElencoSerie(){
 		ArrayList<SerieSub> elenco=new ArrayList<SerieSub>();
 		try {
-			Download.downloadFromUrl(API_SHOWLIST, Settings.getCurrentDir()+"response_itasa");
+			Download2.downloadFromUrl(API_SHOWLIST, Settings.getCurrentDir()+"response_itasa");
 			FileReader f_r=new FileReader(Settings.getCurrentDir()+"response_itasa");
 			Scanner file=new Scanner(f_r);
 			while(file.hasNextLine()){
@@ -290,7 +289,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 		FileReader f_r=null;
 		Scanner file=null;
 		try {
-			Download.downloadFromUrl(url_login, Settings.getCurrentDir()+"response_login");
+			Download2.downloadFromUrl(url_login, Settings.getCurrentDir()+"response_login");
 			f_r=new FileReader(Settings.getCurrentDir()+"response_login");
 			file=new Scanner(f_r);
 			while(file.hasNextLine()){
@@ -595,9 +594,9 @@ public class ItalianSubs implements ProviderSottotitoli{
 	}
 
 	@Override
-	public boolean cercaSottotitolo(Torrent t) {
+	public boolean cercaSottotitolo(Torrent2 t) {
 		System.out.println("ITASA "+t.toString());
-		int id_itasa=GestioneSerieTV.getSerieFromName(GestioneSerieTV.getElencoSerieInserite(), t.getNomeSerie()).getItasaID();
+		int id_itasa=t.getSerieTV().getIDItasa();
 		if(id_itasa>0){
 			int api_search=-1;
 			int feed_search=-1;

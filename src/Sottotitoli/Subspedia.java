@@ -15,11 +15,11 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import Naming.Renamer;
-import Programma.Download;
+import Programma.Download2;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
-import SerieTV.Torrent;
+import SerieTV.Torrent2;
 
 public class Subspedia implements ProviderSottotitoli {
 	private final String URLFeedRSS="http://subspedia.weebly.com/1/feed";
@@ -31,14 +31,14 @@ public class Subspedia implements ProviderSottotitoli {
 		rss=new ArrayList<SubspediaRSSItem>();
 	}
 	
-	public boolean scaricaSottotitolo(Torrent t) {
+	public boolean scaricaSottotitolo(Torrent2 t) {
 		String link=cercaSottotitolo(t, false);
 		if(link==null)
 			return false;
 		else {
 			link=link.replace(" ", "%20");
 			if(scaricaSub(link, Renamer.generaNomeDownload(t), t.getNomeSerieFolder())){
-				t.setSottotitolo(false, true);
+				t.setSubDownload(false, true);
 				return true;
 			}
 			return false;
@@ -47,14 +47,9 @@ public class Subspedia implements ProviderSottotitoli {
 	private boolean scaricaSub(String url, String nome, String folder){
 		String dir_s=Settings.getDirectoryDownload()+(Settings.getDirectoryDownload().endsWith(File.pathSeparator)?folder:(File.separator+folder));
 		String destinazione=dir_s+File.separator+nome;
-		File dir=new File(dir_s);
-		if(!dir.exists()){
-			if(!dir.mkdir())
-				ManagerException.registraEccezione(new Exception("Impossibile creare la cartella della serie"));
-				return false;
-		}
 		try {
-			Download.downloadFromUrl(url, destinazione);
+			Download2.downloadFromUrl(url, destinazione);
+			
 			return true;
 		}
 		catch (IOException e) {
@@ -64,7 +59,7 @@ public class Subspedia implements ProviderSottotitoli {
 		}
 	}
 	public String getIDSerieAssociata(String nome_serie) {return null;}
-	public boolean cercaSottotitolo(Torrent t) {
+	public boolean cercaSottotitolo(Torrent2 t) {
 		scaricaFeed();
 		for(int i=0;i<rss.size();i++){
 			SubspediaRSSItem item=rss.get(i);
@@ -77,7 +72,7 @@ public class Subspedia implements ProviderSottotitoli {
 		}
 		return false;
 	}
-	private String cercaSottotitolo(Torrent t,boolean b) {
+	private String cercaSottotitolo(Torrent2 t,boolean b) {
 		scaricaFeed();
 		for(int i=0;i<rss.size();i++){
 			SubspediaRSSItem item=rss.get(i);
@@ -103,7 +98,7 @@ public class Subspedia implements ProviderSottotitoli {
 		
 		last_update=System.currentTimeMillis();
 		try {
-			Download.downloadFromUrl(URLFeedRSS, Settings.getCurrentDir()+"feed_subspedia");
+			Download2.downloadFromUrl(URLFeedRSS, Settings.getCurrentDir()+"feed_subspedia");
 			rss.clear();
 			
 			DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();

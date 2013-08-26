@@ -12,6 +12,7 @@ public class Torrent2 {
 	private boolean sub_down; //true se è da scaricare, false non scaricare
 	private CaratteristicheFile prop_torrent;
 	private SerieTV2 serietv;
+	private int id_db;
 
 	public Torrent2(SerieTV2 st, String url, int stato_t) {
 		this.url=url;
@@ -39,12 +40,12 @@ public class Torrent2 {
 	
 	public void setScaricato(int visto) {
 		this.stato = visto;
-		update();
+		updateTorrentInDB();
 	}
 	public void setScaricato(int visto, boolean update){
 		this.stato = visto;
 		if(update){
-			update();
+			updateTorrentInDB();
 		}
 	}
 
@@ -68,7 +69,7 @@ public class Torrent2 {
 		return prop_torrent.isRepack();
 	}
 
-	public String getName() {
+	public String getNameFromMagnet() {
 		String nome = this.url.substring(this.url.indexOf("&dn"), this.url.indexOf("&tr"));
 		nome = nome.substring(nome.indexOf("=") + 1);
 		return nome;
@@ -82,19 +83,19 @@ public class Torrent2 {
 				Naming.Naming.PATTERN_Part_dotnofn,
 				Naming.Naming.PATTERN_nofn
 		};
-		prop_torrent=Naming.Naming.parse(getName(), patt);
+		prop_torrent=Naming.Naming.parse(getNameFromMagnet(), patt);
 	}
 	
 	public String getNomeSerieFolder() {
 		return serietv.getFolderSerie();
 	}
-	/*
+	/* TODO aggiornare
 	public void setSottotitolo(boolean stato, boolean update) {
 		sub_down=stato;
 		if(stato)
-			GestioneSerieTV.getSubManager().aggiungiEpisodio(this);
+			GestioneSerieTV2.getSubManager().aggiungiEpisodio(this);
 		else
-			GestioneSerieTV.getSubManager().rimuoviEpisodio(this);
+			GestioneSerieTV2.getSubManager().rimuoviEpisodio(this);
 		if(update)
 			update();
 	}
@@ -102,11 +103,17 @@ public class Torrent2 {
 	public boolean isSottotitolo(){
 		return sub_down;
 	}
-	/*
+	public void setSubDownload(boolean stat, boolean db_update){
+		sub_down=stat;
+		if(db_update){
+			getSerieTV().getProvider().salvaEpisodioInDB(this);
+		}
+	}
+	
 	public void setPreair(boolean stato) {
 		preair=stato;
 	}
-	*/
+	
 	public void insert(){
 		String query="INSERT INTO "+Database2.TABLE_EPISODI+" "+"(magnet, id_serie, vista, serie, episodio, HD720p, repack, preair, proper, sottotitolo) VALUES ("+
 				"\""+getUrl()+"\","+
@@ -123,7 +130,8 @@ public class Torrent2 {
 			ManagerException.registraEccezione(getClass().getName()+ "\nMetodo insert()\nQuery:"+query+"\n");
 		
 	}
-	public void update(){
+	public void updateTorrentInDB(){
+		getSerieTV().getProvider().salvaEpisodioInDB(this);
 		/*
 		int i=0;
 		SQLParameter[] par=new SQLParameter[9];
@@ -169,5 +177,17 @@ public class Torrent2 {
 	public String getFilePath(){
 		//TODO ricerca file
 		return "";
+	}
+	public CaratteristicheFile getStats(){
+		return prop_torrent;
+	}
+	public SerieTV2 getSerieTV(){
+		return serietv;
+	}
+	public int getIDDB() {
+		return id_db;
+	}
+	public void setIDDB(int id_db) {
+		this.id_db = id_db;
 	}
 }

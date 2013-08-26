@@ -22,12 +22,12 @@ public class Prerequisiti {
 					System.out.println(d.getNome()+": "+file.length()+"/"+d.getSize());
 					if(file.length()!=d.getSize()){
 						System.out.println("Scaricando: "+d.getNome());
-						Download.downloadFromUrl(d.getUrl(), Settings.getCurrentDir()+"lib"+File.separator+d.getNomeDest());
+						Download2.downloadFromUrl(d.getUrl(), Settings.getCurrentDir()+"lib"+File.separator+d.getNomeDest());
 					}
 				}
 				else {
 					System.out.println("Scaricando: "+d.getNome());
-					Download.downloadFromUrl(d.getUrl(), Settings.getCurrentDir()+"lib"+File.separator+d.getNomeDest());
+					Download2.downloadFromUrl(d.getUrl(), Settings.getCurrentDir()+"lib"+File.separator+d.getNomeDest());
 				}
 			}
 		}
@@ -56,7 +56,7 @@ public class Prerequisiti {
 					
 					try {
 						System.out.println("Scaricando: "+d.getNome());
-						Download.downloadFromUrl(d.getUrl(), destinazione+dest_nome);
+						Download2.downloadFromUrl(d.getUrl(), destinazione+dest_nome);
 						ArchiviZip.estrai_tutto(destinazione+dest_nome, destinazione);
 						OperazioniFile.deleteFile(destinazione+dest_nome);
 					}
@@ -70,7 +70,7 @@ public class Prerequisiti {
 				String dest_nome=d.getUrl().substring(d.getUrl().lastIndexOf("/"));
 				try {
 					System.out.println("Scaricando: "+d.getNome());
-					Download.downloadFromUrl(d.getUrl(), destinazione+dest_nome);
+					Download2.downloadFromUrl(d.getUrl(), destinazione+dest_nome);
 					ArchiviZip.estrai_tutto(destinazione+dest_nome, destinazione);
 					OperazioniFile.deleteFile(destinazione+dest_nome);
 				}

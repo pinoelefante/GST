@@ -136,7 +136,7 @@ public class Download2 {
 		 * Download del file
 		 */
 		public void run(){
-			String userAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
+			String userAgent = "GestioneSerieTV release "+Settings.getVersioneSoftware()+" ("+System.getProperty("os.name")+")";
 			URL url = null;
 			try {
 				url = new URL(url_download);
@@ -152,6 +152,13 @@ public class Download2 {
 					urlConn.setRequestProperty("User-Agent", userAgent);
 				}
 				is = urlConn.getInputStream();
+				
+				if(path_destinazione.contains(File.separator)){
+					String path=path_destinazione.substring(0, path_destinazione.lastIndexOf(File.separator));
+					File f=new File(path);
+					f.mkdirs();
+				}
+				
 				fos = new FileOutputStream(path_destinazione);
 				d_finale=urlConn.getContentLengthLong();
 
@@ -166,6 +173,7 @@ public class Download2 {
 			} 
 			catch (IOException e) {
 				clean();
+				e.printStackTrace();
 			}
 			catch (NullPointerException e){
 				clean();
@@ -189,6 +197,42 @@ public class Download2 {
 					}
 				}
 			}
+		}
+	}
+	public static void downloadMagnet(String magnet_url, String folder) throws IOException {
+		String directory_download = Settings.getDirectoryDownload();
+		if(Settings.isWindows()){
+			String[] cmd={
+					Settings.getClientPath(),
+					"/NOINSTALL",
+					"/DIRECTORY",
+					("\"" + directory_download + File.separator + folder + "\""),
+					magnet_url
+			};
+			Runtime.getRuntime().exec(cmd);
+		}
+		else if(Settings.isLinux()){
+			String[] cmd={
+				"wine",
+				Settings.getClientPath(),
+				"/NOINSTALL",
+				"/DIRECTORY",
+				("\"" + directory_download + File.separator + folder + "\""),
+				magnet_url
+			};
+			Runtime.getRuntime().exec(cmd);
+			//Runtime.getRuntime().exec("wine "+Settings.getClientPath()+ " /NOINSTALL /DIRECTORY " + "'T:"+File.separator +  folder + "'" + " " + url);
+		}
+	}
+	public static void downloadFromUrl(String url_download, String localFilename) throws IOException{
+		Download2 download=new Download2(url_download, localFilename);
+		download.avviaDownload();
+		try {
+			download.getDownloadThread().join();
+		}
+		catch (InterruptedException e) {
+			e.printStackTrace();
+			throw new IOException("Il download non è stato completato");
 		}
 	}
 }

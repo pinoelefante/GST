@@ -5,11 +5,12 @@ import java.util.ArrayList;
 import javax.swing.JOptionPane;
 
 //import GUI.Interfaccia;
-import Programma.Download;
 import Programma.ManagerException;
 import Programma.Settings;
 
-public class ThreadRicercaAutomatica extends Thread {
+//TODO RIFARE LA CLASSE
+
+public class ThreadRicercaAutomatica extends Thread {/*
 	public void run() {
 		if ((!Settings.isStartHidden())) {
 			while (!Settings.isCanStartDownloadAutomatico()) {
@@ -79,4 +80,5 @@ public class ThreadRicercaAutomatica extends Thread {
 			}
 		}
 	}
+	*/
 }
