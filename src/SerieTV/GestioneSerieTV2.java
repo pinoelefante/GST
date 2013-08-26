@@ -37,6 +37,7 @@ public class GestioneSerieTV2 {
 		return res;
 	}
 	public static boolean aggiungiSeriePreferita(SerieTV2 serie){
+		//TODO aggiungere altro (caricare episodi, cercare id su tvdb, id itasa, id subsfactory, id )
 		return serie.getProvider().addSeriePreferita(serie);
 	}
 	public static ArrayList<SerieTV2> getElencoSerieInserite(){
@@ -82,5 +83,15 @@ public class GestioneSerieTV2 {
 			}
 		}
 		return episodi;
+	}
+	public static ArrayList<SerieTV2> getElencoNuoveSerie(){
+		ArrayList<SerieTV2> newseries=new ArrayList<SerieTV2>(5);
+		for(int i=0;i<providers.size();i++){
+			ProviderSerieTV p=providers.get(i);
+			for(int j=0;j<p.getNuoveSerieCount();j++){
+				newseries.add(p.getNuoveSerieAt(j));
+			}
+		}
+		return newseries;
 	}
 }

@@ -32,6 +32,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import javax.swing.ButtonGroup;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.ImageIcon;
@@ -67,8 +68,11 @@ import java.awt.GridLayout;
 
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.CompoundBorder;
+import javax.swing.JRadioButton;
+import java.awt.FlowLayout;
 
 public class Interfaccia2 extends JFrame {
+	private static Interfaccia2 thisframe;
 	private static final long serialVersionUID = 1L;
 	private JPanel InfoPanel;
 	private JTextField textField;
@@ -105,10 +109,12 @@ public class Interfaccia2 extends JFrame {
 	private JSlider slider_time;
 	private JPanel panel_scroll_download;
 	private JButton btnAggiorna;
+	private JPanel panel_nuove_serie;
 
 	@SuppressWarnings("serial")
 	public Interfaccia2(){
 		super("Gestione Serie TV rel."+Settings.getVersioneSoftware()+" by pinoelefante");
+		thisframe=this;
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Interfaccia2.class.getResource("/GUI/res/icona32.png")));
 		
 		setResizable(false);
@@ -134,7 +140,8 @@ public class Interfaccia2 extends JFrame {
 		scrollPane.setBounds(485, 0, 254, 223);
 		DownloadPanel.add(scrollPane);
 		
-		JPanel panel_nuove_serie = new JPanel();
+		panel_nuove_serie = new JPanel();
+		panel_nuove_serie.setLayout(new GridLayout(1, 1));
 		scrollPane.setViewportView(panel_nuove_serie);
 		
 		JPanel panel_9 = new JPanel();
@@ -301,6 +308,32 @@ public class Interfaccia2 extends JFrame {
 		btnIgnora.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/remove.png")));
 		btnIgnora.setBounds(253, 228, 97, 23);
 		DownloadPanel.add(btnIgnora);
+		
+		JPanel PreferenzeSeriePanel = new JPanel();
+		tab.addTab("Preferenze Serie", new ImageIcon(Interfaccia2.class.getResource("/GUI/res/preferiti.png")), PreferenzeSeriePanel, null);
+		PreferenzeSeriePanel.setLayout(new BorderLayout(0, 0));
+		
+		JPanel panel_11 = new JPanel();
+		FlowLayout flowLayout = (FlowLayout) panel_11.getLayout();
+		PreferenzeSeriePanel.add(panel_11, BorderLayout.NORTH);
+		
+		JRadioButton rdbtnScaricaTutto = new JRadioButton("Scarica tutto");
+		panel_11.add(rdbtnScaricaTutto);
+		
+		JRadioButton rdbtnImpostaRegole = new JRadioButton("Imposta regole");
+		panel_11.add(rdbtnImpostaRegole);
+		
+		ButtonGroup group_regole=new ButtonGroup();
+		group_regole.add(rdbtnImpostaRegole);
+		group_regole.add(rdbtnScaricaTutto);
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		PreferenzeSeriePanel.add(scrollPane_1, BorderLayout.CENTER);
+		
+		JPanel panel_preferenze_scroll = new JPanel();
+		scrollPane_1.setViewportView(panel_preferenze_scroll);
+		panel_preferenze_scroll.setLayout(new GridLayout(1, 0, 0, 0));
+		group_regole.setSelected(rdbtnImpostaRegole.getModel(), true);
 		
 		JPanel SottotitoliPanel = new JPanel();
 		tab.addTab("Sottotitoli", new ImageIcon(Interfaccia2.class.getResource("/GUI/res/sottotitoli.png")), SottotitoliPanel, null);
@@ -1144,7 +1177,7 @@ public class Interfaccia2 extends JFrame {
 						reloadSeriePreferite();
 						//s.aggiornaEpisodiOnline(); //TODO eseguire in un thread separato
 						
-						//TODO aggiungere altro (caricare episodi, cercare id su tvdb, id itasa, id subsfactory, id )
+						
 					}
 				}
 			}
@@ -1207,10 +1240,40 @@ public class Interfaccia2 extends JFrame {
 				panel_scroll_download.repaint();
 			}
 		});
+		panel_nuove_serie.addContainerListener(new ContainerListener() {
+			public void componentRemoved(ContainerEvent arg0) {
+				GridLayout lay=(GridLayout) panel_nuove_serie.getLayout();
+				if(panel_nuove_serie.getComponentCount()<=3){
+					lay.setRows(3);
+				}
+				else
+					lay.setRows(lay.getRows()-1);
+				panel_nuove_serie.revalidate();
+				panel_nuove_serie.repaint();
+			}
+			public void componentAdded(ContainerEvent arg0) {
+				GridLayout lay=(GridLayout) panel_nuove_serie.getLayout();
+				if(panel_nuove_serie.getComponentCount()<=3){
+					lay.setRows(3);
+				}
+				else
+					lay.setRows(lay.getRows()+1);
+				panel_nuove_serie.revalidate();
+				panel_nuove_serie.repaint();	
+			}
+		});
 		buttonReloadSerie.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				GestioneSerieTV2.caricaElencoSerieOnline();
+				ArrayList<SerieTV2> newseries=GestioneSerieTV2.getElencoNuoveSerie();
+				if(newseries.size()>0){
+					panel_nuove_serie.removeAll();
+					for(int i=0;i<newseries.size();i++){
+						panel_nuove_serie.add(new PanelNewSerie(newseries.get(i)));
+					}
+				}
 				reloadSerieDisponibili();
+				
 			}
 		});
 	}
@@ -1265,5 +1328,8 @@ public class Interfaccia2 extends JFrame {
 		Thread t=new UpdateEpisodes();
 		t.setName("update episodi");
 		t.start();
+	}
+	public static Interfaccia2 getInterfaccia(){
+		return thisframe;
 	}
 }
