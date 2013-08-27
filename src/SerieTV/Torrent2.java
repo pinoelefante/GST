@@ -1,6 +1,11 @@
 package SerieTV;
 
+import java.io.File;
+import java.util.ArrayList;
+
+import Database.Database2;
 import Naming.CaratteristicheFile;
+import Programma.Settings;
 
 public class Torrent2 {
 	public final static int SCARICARE=0, SCARICATO=1, VISTO=2, RIMOSSO=3, IGNORATO=4; 
@@ -16,6 +21,7 @@ public class Torrent2 {
 		this.url=url;
 		stato=stato_t;
 		serietv=st;
+		prop_torrent=new CaratteristicheFile();
 	}
 	public Torrent2(SerieTV2 st, String url, int stato_t, CaratteristicheFile f){
 		this.url=url;
@@ -87,18 +93,10 @@ public class Torrent2 {
 	}
 	public void setSubDownload(boolean stat){
 		sub_down=stat;
-		
-		/* TODO aggiornare
-		public void setSottotitolo(boolean stato, boolean update) {
-			sub_down=stato;
-			if(stato)
-				GestioneSerieTV2.getSubManager().aggiungiEpisodio(this);
-			else
-				GestioneSerieTV2.getSubManager().rimuoviEpisodio(this);
-			if(update)
-				update();
-		}
-		*/
+		if(stat)
+			GestioneSerieTV2.getSubManager().aggiungiEpisodio(this);
+		else
+			GestioneSerieTV2.getSubManager().rimuoviEpisodio(this);
 	}
 	
 	public void setPreair(boolean stato) {
@@ -130,9 +128,59 @@ public class Torrent2 {
 	public void setStagione(int nuovo) {
 		prop_torrent.setStagione(nuovo);
 	}
+	private static final String[] estensione_video={".avi", ".mkv", ".mp4", ".m4v", ".mpg", ".mpeg", ".webm", ".ogv"};
 	public String getFilePath(){
-		//TODO ricerca file
+		String cartella=Settings.getDirectoryDownload()+File.separator+getSerieTV().getFolderSerie();
+		File dir=new File(cartella);
+		if(dir.exists() && dir.isDirectory()){
+			String[] list_c=dir.list();
+			ArrayList<String> list=new ArrayList<String>();
+			for(int i=0;i<list_c.length;i++){
+				list.add(dir.getAbsolutePath()+File.separator+list_c[i]);
+			}
+			
+			for(int i=0;i<list.size();i++){
+				File f=new File(list.get(i));
+				if(f.isDirectory()){
+					String[] list_d=f.list();
+					for(int j=0;j<list_d.length;j++){
+						list.add(f.getAbsolutePath()+File.separator+list_d[j]);
+					}
+				}
+				else {
+					String[] patt=new String[]{
+							Naming.Naming.PATTERN_SnEn,
+							Naming.Naming.PATTERN_SxE,
+							Naming.Naming.PATTERN_Part_dotnofn,
+							Naming.Naming.PATTERN_nofn
+					};
+					String toParse=list.get(i);
+					if(toParse.contains(File.separator)){
+						toParse=toParse.substring(toParse.lastIndexOf(File.separator));
+					}
+					CaratteristicheFile stat=Naming.Naming.parse(toParse, patt);
+					if(stat!=null){
+						if(stat.compareStats(getStats())==0){
+							if(stat.getStagione()==getStagione() && stat.getEpisodio()==getEpisodio()){
+								for(int j=0;j<estensione_video.length;j++){
+									if(toParse.toLowerCase().endsWith(estensione_video[j]))
+										return list.get(i);
+								}
+							}
+						}
+					}
+				}
+				System.out.println(list.get(i));
+			}
+		}
 		return "";
+	}
+	public static void main(String[] args){
+		Settings.baseSettings();Database2.Connect();Settings.CaricaSetting();
+		Torrent2 t=new Torrent2(new SerieTV2(new EZTV(), "Nomeserie", ""), "", SCARICATO);
+		t.setStagione(1);
+		t.setEpisodio(1);
+		System.out.println("File trovato: "+t.getFilePath());
 	}
 	public CaratteristicheFile getStats(){
 		return prop_torrent;

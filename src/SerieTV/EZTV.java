@@ -99,12 +99,12 @@ public class EZTV extends ProviderSerieTV{
 
 	@Override
 	public void caricaSerieDB() {
-		String query="SELECT rowid,* FROM "+Database2.TABLE_SERIETV+ " WHERE provider="+PROVIDER_EZTV+" ORDER BY nome ASC";
+		String query="SELECT * FROM "+Database2.TABLE_SERIETV+ " WHERE provider="+PROVIDER_EZTV+" ORDER BY nome ASC";
 		elenco_serie.clear();
 		ArrayList<KVResult<String, Object>> res=Database2.selectQuery(query);
 		for(int i=0;i<res.size();i++){
 			KVResult<String, Object> riga=res.get(i);
-			int id_db=(int) riga.getValueByKey("rowid");
+			int id_db=(int) riga.getValueByKey("id");
 			String url=(String) riga.getValueByKey("url");
 			String nome=(String) riga.getValueByKey("nome");
 			boolean inserita=((int)riga.getValueByKey("inserita")==0?false:true);
@@ -144,11 +144,11 @@ public class EZTV extends ProviderSerieTV{
 					s.getIDTvdb()+")";
 			Database2.updateQuery(query);
 			
-			String query_id="SELECT rowid FROM "+Database2.TABLE_SERIETV+" WHERE url=\""+s.getUrl()+"\"";
+			String query_id="SELECT id FROM "+Database2.TABLE_SERIETV+" WHERE url=\""+s.getUrl()+"\"";
 			ArrayList<KVResult<String, Object>> res=Database2.selectQuery(query_id);
 			if(res.size()==1){
 				KVResult<String, Object> row=res.get(0);
-				int id_db=(int) row.getValueByKey("rowid");
+				int id_db=(int) row.getValueByKey("id");
 				s.setIDDb(id_db);
 			}
 		}
@@ -163,7 +163,7 @@ public class EZTV extends ProviderSerieTV{
 					", id_subsfactory="+s.getIDDBSubsfactory()+
 					", id_subspedia="+s.getIDSubspedia()+
 					", id_tvdb="+s.getIDTvdb()+
-					" WHERE rowid="+s.getIDDb();
+					" WHERE id="+s.getIDDb();
 			Database2.updateQuery(query);
 		}
 		
@@ -211,7 +211,7 @@ public class EZTV extends ProviderSerieTV{
 		else {
 			String query="UPDATE "+Database2.TABLE_EPISODI+" SET id_serie="+t.getSerieTV().getIDDb()+", url=\""+t.getUrl()+"\", vista="+t.getScaricato()+", stagione="+t.getStagione()+","
 					+"episodio="+t.getEpisodio()+", tags="+t.getStats().value()+", preair="+(t.isPreAir()?1:0)+", sottotitolo="+(t.isSottotitolo()?1:0)+", id_tvdb_ep="+t.getIDTVDB()+" "+
-					"WHERE rowid="+t.getIDDB();
+					"WHERE id="+t.getIDDB();
 			//System.out.println(query);
 			Database2.updateQuery(query);
 		}
@@ -270,7 +270,7 @@ public class EZTV extends ProviderSerieTV{
 
 	@Override
 	protected boolean rimuoviSerieDaDB(SerieTV2 serie) {
-		String query="UPDATE "+Database2.TABLE_SERIETV+" SET inserita=0, stop_search=0 WHERE provider="+getProviderID()+" AND rowid="+serie.getIDDb();
+		String query="UPDATE "+Database2.TABLE_SERIETV+" SET inserita=0, stop_search=0 WHERE provider="+getProviderID()+" AND id="+serie.getIDDb();
 		return Database2.updateQuery(query);
 	}
 }

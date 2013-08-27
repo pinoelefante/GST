@@ -6,6 +6,7 @@ import javax.swing.border.EtchedBorder;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JLabel;
 import javax.swing.JButton;
@@ -28,7 +29,18 @@ public class PanelNewSerie extends JPanel {
 		JPanel panel = new JPanel();
 		add(panel, BorderLayout.NORTH);
 		
-		JLabel lblnomeSerie = new JLabel("<html><b>"+serie.getNomeSerie()+"</b></html>");
+		String nomeserie=serie.getNomeSerie();
+		if(nomeserie.length()>25){
+			ArrayList<Integer> index_space=new ArrayList<Integer>(2);
+			for(int i=0;i<nomeserie.length();i++){
+				if(nomeserie.charAt(i)==' '){
+					index_space.add(i);
+				}
+			}
+			int split_index=index_space.get(index_space.size()/2);
+			nomeserie=nomeserie.substring(0, split_index)+"<br>"+nomeserie.substring(split_index);
+		}
+		JLabel lblnomeSerie = new JLabel("<html><b>"+nomeserie+"</b></html>");
 		panel.add(lblnomeSerie);
 		
 		JPanel panel_1 = new JPanel();

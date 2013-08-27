@@ -40,7 +40,7 @@ public class CaratteristicheFile {
 		return "Season: "+stagione+" Episode: "+episodio+"\n720p: "+hd720+"\nrepack: "+repack+"\nproper: "+proper;
 	}
 	private final static int HD=4, REPACK=2, PROPER=1;
-	public int compare(CaratteristicheFile s){
+	public int compareStats(CaratteristicheFile s){
 		int val_this=value(this);
 		int val_comp=value(s);
 		if(val_this>val_comp)

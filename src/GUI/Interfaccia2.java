@@ -3,11 +3,13 @@ package GUI;
 import javax.swing.JFrame;
 
 import Programma.ControlloAggiornamenti;
+import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
 import LettoreVideo.Player;
 import SerieTV.GestioneSerieTV2;
 import SerieTV.SerieTV2;
+import SerieTV.Torrent2;
 import Sottotitoli.ProviderSottotitoli;
 import Sottotitoli.SerieSub;
 import StruttureDati.serietv.Episodio;
@@ -39,6 +41,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
+import javax.swing.SwingUtilities;
 
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
@@ -69,7 +72,6 @@ import java.awt.GridLayout;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.CompoundBorder;
 import javax.swing.JRadioButton;
-import java.awt.FlowLayout;
 
 public class Interfaccia2 extends JFrame {
 	private static Interfaccia2 thisframe;
@@ -93,9 +95,9 @@ public class Interfaccia2 extends JFrame {
 	private JTextField txt_destinazione_provider;
 	private JTextField txt_cerca_serie_tutte;
 	private JTextField txt_cerca_serie_inserite;
-	private JTextField textField_6;
-	private JTextField textField_7;
-	private JTextField textField_8;
+	private JTextField txt_add_episodio_stagione;
+	private JTextField txt_add_episodio_episodio;
+	private JTextField txt_add_episodio_link;
 	private JPlaylist playlist;
 	private JComboBox<SerieTV2> cmb_serie_aggiunte;
 	private JComboBox<SerieTV2> cmb_serie_aggiunte_add_episodio;
@@ -110,6 +112,7 @@ public class Interfaccia2 extends JFrame {
 	private JPanel panel_scroll_download;
 	private JButton btnAggiorna;
 	private JPanel panel_nuove_serie;
+	private JButton buttonReloadSerie;
 
 	@SuppressWarnings("serial")
 	public Interfaccia2(){
@@ -204,7 +207,7 @@ public class Interfaccia2 extends JFrame {
 		btnRimuovi.setBounds(335, 95, 103, 26);
 		panel_9.add(btnRimuovi);
 		
-		JButton buttonReloadSerie = new JButton("");
+		buttonReloadSerie = new JButton("");
 		buttonReloadSerie.setToolTipText("Ricarica elenco serie");
 		buttonReloadSerie.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/aggiorna.png")));
 		buttonReloadSerie.setBounds(197, 15, 33, 23);
@@ -228,38 +231,38 @@ public class Interfaccia2 extends JFrame {
 		lblStagione_2.setBounds(225, 25, 55, 16);
 		panel_10.add(lblStagione_2);
 		
-		textField_6 = new JTextField();
-		textField_6.addKeyListener(new TextListenerOnlyNumber(textField_6));
-		textField_6.setBounds(280, 23, 30, 20);
-		panel_10.add(textField_6);
-		textField_6.setColumns(3);
+		txt_add_episodio_stagione = new JTextField();
+		txt_add_episodio_stagione.addKeyListener(new TextListenerOnlyNumber(txt_add_episodio_stagione));
+		txt_add_episodio_stagione.setBounds(280, 23, 30, 20);
+		panel_10.add(txt_add_episodio_stagione);
+		txt_add_episodio_stagione.setColumns(3);
 		
 		JLabel lblEpisodio_1 = new JLabel("Episodio");
 		lblEpisodio_1.setBounds(325, 25, 55, 16);
 		panel_10.add(lblEpisodio_1);
 		
-		textField_7 = new JTextField();
-		textField_7.addKeyListener(new TextListenerOnlyNumber(textField_7));
-		textField_7.setBounds(380, 23, 30, 20);
-		panel_10.add(textField_7);
-		textField_7.setColumns(3);
+		txt_add_episodio_episodio = new JTextField();
+		txt_add_episodio_episodio.addKeyListener(new TextListenerOnlyNumber(txt_add_episodio_episodio));
+		txt_add_episodio_episodio.setBounds(380, 23, 30, 20);
+		panel_10.add(txt_add_episodio_episodio);
+		txt_add_episodio_episodio.setColumns(3);
 		
 		JLabel lblLink = new JLabel("Link");
 		lblLink.setBounds(225, 52, 40, 16);
 		panel_10.add(lblLink);
 		
-		textField_8 = new JTextField();
-		textField_8.addMouseListener(new MouseAdapter() {
+		txt_add_episodio_link = new JTextField();
+		txt_add_episodio_link.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				if(e.getButton()==MouseEvent.BUTTON3 || e.getButton()==MouseEvent.BUTTON2){
-					textField_8.setText("");
+					txt_add_episodio_link.setText("");
 					Clipboard clip=Toolkit.getDefaultToolkit().getSystemClipboard();
 					Transferable contents = clip.getContents(null);
 					boolean hasTransferableText = (contents != null) && contents.isDataFlavorSupported(DataFlavor.stringFlavor);
 					if (hasTransferableText) {
 						try {
 							String result = (String) contents.getTransferData(DataFlavor.stringFlavor);
-							textField_8.setText(result.trim());
+							txt_add_episodio_link.setText(result.trim());
 						}
 						catch(Exception e1){
 							e1.printStackTrace();
@@ -268,11 +271,54 @@ public class Interfaccia2 extends JFrame {
 				}
 			}
 		});
-		textField_8.setBounds(266, 50, 144, 20);
-		panel_10.add(textField_8);
-		textField_8.setColumns(10);
+		txt_add_episodio_link.setBounds(266, 50, 144, 20);
+		txt_add_episodio_link.setToolTipText("Incolla il testo copiato cliccando il tasto destro del mouse");
+		panel_10.add(txt_add_episodio_link);
+		txt_add_episodio_link.setColumns(10);
 		
 		JButton btnAggiungiTorrent = new JButton("");
+		btnAggiungiTorrent.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				SerieTV2 serie=(SerieTV2) cmb_serie_aggiunte_add_episodio.getSelectedItem();
+				int stagione=0, episodio=0;
+				try {
+					stagione=Integer.parseInt(txt_add_episodio_stagione.getText());
+					episodio=Integer.parseInt(txt_add_episodio_episodio.getText());
+				}
+				catch(NumberFormatException e){
+					ManagerException.registraEccezione(e);
+					JOptionPane.showMessageDialog(Interfaccia2.this, "Stagione e/o episodio non possono contenere lettere");
+					return;
+				}
+				String link=txt_add_episodio_link.getText();
+				
+				if(serie!=null){
+					if(stagione<=0 || episodio<0){
+						System.out.println("S/E <= 0");
+						return;
+					}
+					if(link.isEmpty()){
+						System.out.println("Link vuoto");
+						return;
+					}
+					if(link.endsWith(".torrent") || link.startsWith("magnet:")){
+						System.out.println("Link valido");
+						//return;
+					}
+					else {
+						System.out.println("Link non valido");
+						return;
+					}
+					Torrent2 t=new Torrent2(serie, link, Torrent2.SCARICARE);
+					t.setStagione(stagione);
+					t.setEpisodio(episodio);
+					serie.addEpisodio(t);
+					
+					inizializzaDownloadScroll();
+					JOptionPane.showMessageDialog(thisframe, serie.getNomeSerie()+" - Link aggiunto");
+				}
+			}
+		});
 		btnAggiungiTorrent.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/add.png")));
 		btnAggiungiTorrent.setBounds(428, 30, 40, 26);
 		panel_10.add(btnAggiungiTorrent);
@@ -314,7 +360,6 @@ public class Interfaccia2 extends JFrame {
 		PreferenzeSeriePanel.setLayout(new BorderLayout(0, 0));
 		
 		JPanel panel_11 = new JPanel();
-		FlowLayout flowLayout = (FlowLayout) panel_11.getLayout();
 		PreferenzeSeriePanel.add(panel_11, BorderLayout.NORTH);
 		
 		JRadioButton rdbtnScaricaTutto = new JRadioButton("Scarica tutto");
@@ -645,6 +690,7 @@ public class Interfaccia2 extends JFrame {
 		LettorePanel.add(chckbxNascondiRimosse);
 		
 		playlist = new JPlaylist();
+		PanelEpisodioLettore.setPlaylist(playlist);
 		playlist.setBorder(new TitledBorder(null, "Playlist", TitledBorder.LEADING, TitledBorder.BOTTOM, null, null));
 		playlist.setBounds(469, 0, 226, 210);
 		LettorePanel.add(playlist);
@@ -920,8 +966,8 @@ public class Interfaccia2 extends JFrame {
 		btnAggiornaAds.setBounds(696, 372, 33, 23);
 		InfoPanel.add(btnAggiornaAds);
 		
-		/**TODO decommentare per la distribuzione*/   /*
-		SwingUtilities.invokeLater(new Runnable() {@Override
+		/**TODO decommentare per la distribuzione*/ /*   
+		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
     			if(!NativeInterface.isOpen())
     				NativeInterface.open();
@@ -1032,53 +1078,62 @@ public class Interfaccia2 extends JFrame {
 			}
 		});
 		
-		
-		
 		btnVLCInstance.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				VLCPanel=new Player(LettorePanel, playlist.getPlaylist());
-				if(VLCPanel.isLinked()){
-					VLCPanel.setBounds(10, 0, 417, 235);
-					LettorePanel.add(VLCPanel.getPlayerPane());
-					LettorePanel.remove((JButton)arg0.getSource());
-					
-					slider_time = VLCPanel.getProgressSlider();
-					slider_time.setBounds(11, 237, 368, 16);
-					LettorePanel.add(slider_time);
-					
-					slider_volume = VLCPanel.getVolumeSlider();
-					slider_volume.setOrientation(SwingConstants.VERTICAL);
-					slider_volume.setBounds(433, 130, 26, 86);
-					LettorePanel.add(slider_volume);
-					
-					lblTimer = VLCPanel.getCurrentTimeLabel();
-					lblTimer.setHorizontalAlignment(SwingConstants.CENTER);
-					lblTimer.setBounds(377, 237, 50, 16);
-					LettorePanel.add(lblTimer);
-					
-					imgVolume = new JLabel("");
-					imgVolume.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/volume.png")));
-					imgVolume.setBounds(433, 215, 26, 26);
-					LettorePanel.add(imgVolume);
-					
-					VLCPanel.addListener();
-					
-					LettorePanel.revalidate();
-					LettorePanel.repaint();
-					playlist.setPlayer(VLCPanel);
-					/**TODO rimuovere per la build*/
-					if(Settings.isWindows()){
-    					playlist.addItem("D:\\SerieTV\\Alcatraz\\Alcatraz.S01E01.HDTV.XviD-LOL.[VTV].avi");
-    					playlist.addItem("D:\\SerieTV\\How I met your mother\\How.I.Met.Your.Mother.S08E24.HDTV.x264-LOL.mp4");
-    					playlist.addItem("D:\\SerieTV\\Hunted\\Hunted.1x01.Mort.HDTV.x264-FoV.mp4");
-    					playlist.addItem("D:\\SerieTV\\Monk\\Monk - Stagione 8\\Detective Monk.8x01.Il Sig. Monk E Il Clan Dei Cooper.ITA.avi");
+				class VLCLoader extends Thread {
+					private JButton source;
+					public VLCLoader (JButton s){
+						source=s;
 					}
-					else if(Settings.isLinux()){
-						playlist.addItem("lost.1x01.pilota._parte.1_.ita.dvdrip.avi");
-						playlist.addItem("./Grover Washington Jr. Featuring Bill Withers - Just the Two .flv");
+					public void run(){
+						source.setEnabled(false);
+						source.setText("Loading...");
+						VLCPanel=new Player(LettorePanel, playlist.getPlaylist());
+						if(VLCPanel.isLinked()){
+							VLCPanel.setBounds(10, 0, 417, 235);
+							LettorePanel.add(VLCPanel.getPlayerPane());
+							LettorePanel.remove(source);
+							
+							slider_time = VLCPanel.getProgressSlider();
+							slider_time.setBounds(11, 237, 368, 16);
+							LettorePanel.add(slider_time);
+							
+							slider_volume = VLCPanel.getVolumeSlider();
+							slider_volume.setOrientation(SwingConstants.VERTICAL);
+							slider_volume.setBounds(433, 130, 26, 86);
+							LettorePanel.add(slider_volume);
+							
+							lblTimer = VLCPanel.getCurrentTimeLabel();
+							lblTimer.setHorizontalAlignment(SwingConstants.CENTER);
+							lblTimer.setBounds(377, 237, 50, 16);
+							LettorePanel.add(lblTimer);
+							
+							imgVolume = new JLabel("");
+							imgVolume.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/volume.png")));
+							imgVolume.setBounds(433, 215, 26, 26);
+							LettorePanel.add(imgVolume);
+							
+							VLCPanel.addListener();
+							
+							LettorePanel.revalidate();
+							LettorePanel.repaint();
+							playlist.setPlayer(VLCPanel);
+							/**TODO rimuovere per la build*/
+							if(Settings.isWindows()){
+		    					playlist.addItem("D:\\SerieTV\\Alcatraz\\Alcatraz.S01E01.HDTV.XviD-LOL.[VTV].avi");
+		    					playlist.addItem("D:\\SerieTV\\How I met your mother\\How.I.Met.Your.Mother.S08E24.HDTV.x264-LOL.mp4");
+		    					playlist.addItem("D:\\SerieTV\\Hunted\\Hunted.1x01.Mort.HDTV.x264-FoV.mp4");
+		    					playlist.addItem("D:\\SerieTV\\Monk\\Monk - Stagione 8\\Detective Monk.8x01.Il Sig. Monk E Il Clan Dei Cooper.ITA.avi");
+							}
+							else if(Settings.isLinux()){
+								playlist.addItem("lost.1x01.pilota._parte.1_.ita.dvdrip.avi");
+								playlist.addItem("./Grover Washington Jr. Featuring Bill Withers - Just the Two .flv");
+							}
+						}
 					}
 				}
-				
+				Thread t=new VLCLoader((JButton) arg0.getSource());
+				t.start();
 			}
 		});
 		
@@ -1188,17 +1243,19 @@ public class Interfaccia2 extends JFrame {
 				if(s!=null){
 					GestioneSerieTV2.rimuoviSeriePreferita(s);
 					reloadSeriePreferite();
+					inizializzaDownloadScroll();
 				}
 			}
 		});
 		btnAggiorna.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				panel_scroll_download.removeAll();
 				class UpdateEpisodes extends Thread {
 					public void run(){
 						btnAggiorna.setEnabled(false);
 						try {
     						ArrayList<Episodio> eps=GestioneSerieTV2.caricaEpisodiDaScaricare();
+    						panel_scroll_download.removeAll();
+    						Runtime.getRuntime().gc();
     						for(int i=0;i<eps.size();i++){
     							panel_scroll_download.add(new PanelEpisodioDownload(eps.get(i)));
     						}
@@ -1264,16 +1321,29 @@ public class Interfaccia2 extends JFrame {
 		});
 		buttonReloadSerie.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				GestioneSerieTV2.caricaElencoSerieOnline();
-				ArrayList<SerieTV2> newseries=GestioneSerieTV2.getElencoNuoveSerie();
-				if(newseries.size()>0){
-					panel_nuove_serie.removeAll();
-					for(int i=0;i<newseries.size();i++){
-						panel_nuove_serie.add(new PanelNewSerie(newseries.get(i)));
+				class updateSeries extends Thread {
+					public void run(){
+						buttonReloadSerie.setEnabled(false);
+						try {
+							GestioneSerieTV2.caricaElencoSerieOnline();
+							buttonReloadSerie.setEnabled(true);
+						}
+						catch(Exception e){
+							e.printStackTrace();
+							buttonReloadSerie.setEnabled(true);
+						}
+						reloadSerieDisponibili();
+						ArrayList<SerieTV2> newseries=GestioneSerieTV2.getElencoNuoveSerie();
+						if(newseries.size()>0){
+							panel_nuove_serie.removeAll();
+							for(int i=0;i<newseries.size();i++){
+								panel_nuove_serie.add(new PanelNewSerie(newseries.get(i)));
+							}
+						}
 					}
 				}
-				reloadSerieDisponibili();
-				
+				Thread t=new updateSeries();
+				t.start();
 			}
 		});
 	}
@@ -1283,6 +1353,10 @@ public class Interfaccia2 extends JFrame {
 		reloadSerieDisponibili();
 		
 		inizializzaDownloadScroll();
+		
+		buttonReloadSerie.doClick();
+		
+		btnAggiorna.doClick();
 	}
 	public void reloadSeriePreferite() {
 		ArrayList<SerieTV2> st=GestioneSerieTV2.getElencoSerieInserite();

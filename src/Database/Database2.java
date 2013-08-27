@@ -72,8 +72,9 @@ public class Database2 {
 			Statement stat = con.createStatement();
 			
 			stat.executeUpdate("CREATE TABLE IF NOT EXISTS "+TABLE_SERIETV+" (" +
-					//"id INTEGER,"+
-					"url TEXT PRIMARY KEY)");
+					"id INTEGER PRIMARY KEY AUTOINCREMENT, "+
+					"url TEXT NOT NULL"
+					+ ")");
 			/*
 			String autoincrement_q="ALTER TABLE id AUTOINCREMENT=1";
 			stat.executeUpdate(autoincrement_q);
@@ -122,12 +123,9 @@ public class Database2 {
 		creaDB();
 		
 		/** SERIETV */
-		/*
 		if(!checkColumn(TABLE_SERIETV, "id")){
 			alter_aggiungicampo(TABLE_SERIETV, "id", "INTEGER PRIMARY KEY AUTOINCREMENT", "");
 		}
-		*/
-		//al posto di id viene usato rowid
 		if(!checkColumn(TABLE_SERIETV, "nome")){
 			alter_aggiungicampo(TABLE_SERIETV, "nome", "TEXT", "");
 		}
@@ -487,5 +485,18 @@ public class Database2 {
 			ManagerException.registraEccezione(e);
 		}
 		return (ins_ok==0?false:true);
+	}
+	public static void rebuildDB(){
+		System.out.println("ottimizzazione db in corso...");
+		Statement st;
+		try {
+			st = con.createStatement();
+			st.execute("VACUUM");
+			st.close();
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 	}
 }

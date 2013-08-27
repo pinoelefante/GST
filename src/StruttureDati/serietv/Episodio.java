@@ -68,7 +68,7 @@ public class Episodio {
 				if(t.getUrl().compareTo(link.getUrl())==0)
 					return false;
 				else {
-					if(link.getStats().compare(t.getStats())>0){
+					if(link.getStats().compareStats(t.getStats())>0){
 						elenco.add(i, link);
 						inserito=true;
 						break;

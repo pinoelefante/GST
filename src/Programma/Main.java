@@ -51,6 +51,11 @@ public class Main {
 			fl.settext("Connessione al database");
 			Database2.Connect();
 			fl.setprog(++i);
+			Runtime.getRuntime().addShutdownHook(new Thread(){
+				public void run(){
+					Database2.rebuildDB();
+				}
+			});
 			
 			
 			fl.settext("Caricamento impostazioni");
@@ -106,6 +111,7 @@ public class Main {
 				GestioneSerieTV2.getSubManager().avviaRicercaAutomatica();
 			}
 			*/
+			
 			
 		}
 		catch(Exception e){
