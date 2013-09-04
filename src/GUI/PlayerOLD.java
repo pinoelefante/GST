@@ -25,7 +25,8 @@ public class PlayerOLD {
 						cmd[1]="-f"; 					//fullscreen
 						cmd[2]="--disable-screensaver"; //disabilita lo screen saver
 						cmd[3]="--no-video-title-show";	//non mostra il nome del file all'inizio
-						cmd[4]=file_r;					//percorso file
+						cmd[4]="--one-instance";		//una sola instanza del player
+						cmd[5]=file_r;					//percorso file
 					}
 					else {
 						cmd=new String[2];

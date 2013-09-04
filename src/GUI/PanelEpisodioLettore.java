@@ -14,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.border.EtchedBorder;
 
+import LettoreVideo.PlaylistItem;
 import SerieTV.EZTV;
 import SerieTV.SerieTV2;
 import SerieTV.Torrent2;
@@ -129,7 +130,7 @@ public class PanelEpisodioLettore extends JPanel {
 					}
 				}
 				if(playlist!=null){
-					playlist.addItem(torrent.toString()/* TODO rimuovere commento torrent.getFilePath()*/);
+					playlist.addItem(new PlaylistItem(torrent.getFilePath(), torrent.getStats(), torrent.getNomeSerie()));
 				}
 			}
 		});

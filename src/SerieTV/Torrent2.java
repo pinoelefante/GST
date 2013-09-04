@@ -170,13 +170,16 @@ public class Torrent2 {
 						}
 					}
 				}
-				System.out.println(list.get(i));
+				//System.out.println(list.get(i));
 			}
 		}
 		return "";
 	}
 	public static void main(String[] args){
-		Settings.baseSettings();Database2.Connect();Settings.CaricaSetting();
+		Settings.baseSettings();
+		Database2.Connect();
+		Settings.CaricaSetting();
+		GestioneSerieTV2.instance();
 		Torrent2 t=new Torrent2(new SerieTV2(new EZTV(), "Nomeserie", ""), "", SCARICATO);
 		t.setStagione(1);
 		t.setEpisodio(1);
