@@ -3,7 +3,7 @@ package Programma;
 import java.io.File;
 import java.util.ArrayList;
 
-import Database.Database2;
+import Database.Database;
 import StruttureDati.db.KVResult;
 
 import com.sun.jna.platform.win32.Advapi32Util;
@@ -279,8 +279,8 @@ public class Settings {
     "ordine_lettore"
     */
 	public static void CaricaSetting(){
-		String query="SELECT * FROM "+Database2.TABLE_SETTINGS;
-		ArrayList<KVResult<String, Object>> opzioni=Database2.selectQuery(query);
+		String query="SELECT * FROM "+Database.TABLE_SETTINGS;
+		ArrayList<KVResult<String, Object>> opzioni=Database.selectQuery(query);
 		for(int i=0;i<opzioni.size();i++){
 			KVResult<String, Object> res=opzioni.get(i);
 			
@@ -343,7 +343,7 @@ public class Settings {
 		return true;
 	}
 	private static void AggiornaDB() {
-		String query="UPDATE "+Database2.TABLE_SETTINGS+" SET "+
+		String query="UPDATE "+Database.TABLE_SETTINGS+" SET "+
 				"always_on_top="+(isAlwaysOnTop()?1:0)+","+
 				"download_path="+"\""+getDirectoryDownload()+"\","+
                 "utorrent="+"\""+getClientPath()+"\","+
@@ -371,7 +371,7 @@ public class Settings {
                 "hide_ignorate="+(isLettoreNascondiIgnore()?1:0)+","+
                 "hide_rimosse="+(isLettoreNascondiRimosso()?1:0)+","+
                 "ordine_lettore="+getLettoreOrdine();
-		Database2.updateQuery(query);
+		Database.updateQuery(query);
 	}
 	public static boolean isWindows(){
 		return getSistemaOperativo().contains("Windows");

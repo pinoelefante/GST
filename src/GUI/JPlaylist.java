@@ -112,4 +112,7 @@ public class JPlaylist extends JScrollPane {
 	public void setPlayer(Player p){
 		player=p;
 	}
+	public Player getPlayer(){
+		return player;
+	}
 }

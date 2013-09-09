@@ -7,26 +7,26 @@ import StruttureDati.serietv.Episodio;
 public abstract class ProviderSerieTV {
 	protected final static int PROVIDER_EZTV=1;
 	
-	protected ArrayList<SerieTV2> elenco_serie, nuove_serie, preferite;
+	protected ArrayList<SerieTV> elenco_serie, nuove_serie, preferite;
 	
 	public ProviderSerieTV(){
-		elenco_serie=new ArrayList<SerieTV2>();
-		preferite=new ArrayList<SerieTV2>();
-		nuove_serie=new ArrayList<SerieTV2>();
+		elenco_serie=new ArrayList<SerieTV>();
+		preferite=new ArrayList<SerieTV>();
+		nuove_serie=new ArrayList<SerieTV>();
 		
 		caricaSerieDB();
 	}
-	protected ArrayList<SerieTV2> getElencoSerie(){
+	protected ArrayList<SerieTV> getElencoSerie(){
 		return elenco_serie;
 	}
-	protected SerieTV2 addSerieFromOnline(SerieTV2 s){
-		SerieTV2 s2;
+	protected SerieTV addSerieFromOnline(SerieTV s){
+		SerieTV s2;
 		if((s2=cercaSerie(s))!=null){
 			s2.setConclusa(s.isConclusa());
 			return s2;
 		}
 		for(int i=0;i<getSeriesCount();i++){
-			SerieTV2 st=elenco_serie.get(i);
+			SerieTV st=elenco_serie.get(i);
 			if(s.compareTo(st)<0){
 				elenco_serie.add(i,s);
 				nuove_serie.add(s);
@@ -37,7 +37,7 @@ public abstract class ProviderSerieTV {
 		nuove_serie.add(s);
 		return null;
 	}
-	protected void addSerieFromDB(SerieTV2 s){
+	protected void addSerieFromDB(SerieTV s){
 		elenco_serie.add(s);
 		if(s.isInserita())
 			preferite.add(s);
@@ -45,7 +45,7 @@ public abstract class ProviderSerieTV {
 	public int getSeriesCount(){
 		return elenco_serie.size();
 	}
-	public SerieTV2 getSerieAt(int i){
+	public SerieTV getSerieAt(int i){
 		if(i<0 || i>=getSeriesCount())
 			return null;
 		return elenco_serie.get(i);
@@ -53,9 +53,9 @@ public abstract class ProviderSerieTV {
 	public int getNuoveSerieCount(){
 		return nuove_serie.size();
 	}
-	private SerieTV2 cercaSerie(SerieTV2 daCercare){
+	private SerieTV cercaSerie(SerieTV daCercare){
 		for(int i=0;i<elenco_serie.size();i++){
-			SerieTV2 s=elenco_serie.get(i);
+			SerieTV s=elenco_serie.get(i);
 			if(daCercare.getUrl().compareToIgnoreCase(s.getUrl())==0){
 				return s;
 			}
@@ -63,11 +63,11 @@ public abstract class ProviderSerieTV {
 		return null;
 	}
 	
-	public boolean addSeriePreferita(SerieTV2 s){
+	public boolean addSeriePreferita(SerieTV s){
 		if(!s.isInserita()){
 			boolean inserita=false;
 			for(int i=0;i<getPreferiteSerieCount();i++){
-				SerieTV2 s2=getPreferiteSerieAt(i);
+				SerieTV s2=getPreferiteSerieAt(i);
 				if(s.compareTo(s2)<0){
 					preferite.add(i, s);
 					s.setInserita(true);
@@ -85,14 +85,14 @@ public abstract class ProviderSerieTV {
 		}
 		return false;
 	}
-	public void rimuoviSeriePreferita(SerieTV2 s){
+	public void rimuoviSeriePreferita(SerieTV s){
 		if(s.isInserita()){
 			preferite.remove(s);
 			s.setInserita(false);
 			rimuoviSerieDaDB(s);
 		}
 	}
-	public SerieTV2 getNuoveSerieAt(int i){
+	public SerieTV getNuoveSerieAt(int i){
 		if(i<0 || i>=getNuoveSerieCount())
 			return null;
 		return nuove_serie.get(i);
@@ -100,7 +100,7 @@ public abstract class ProviderSerieTV {
 	public int getPreferiteSerieCount(){
 		return preferite.size();
 	}
-	public SerieTV2 getPreferiteSerieAt(int i){
+	public SerieTV getPreferiteSerieAt(int i){
 		if(i<0 || i>=getPreferiteSerieCount())
 			return null;
 		return preferite.get(i);
@@ -109,12 +109,12 @@ public abstract class ProviderSerieTV {
 	public abstract String getProviderName();
 	public abstract String getBaseURL();
 	public abstract void aggiornaElencoSerie();
-	public abstract ArrayList<Episodio> nuoviEpisodi(SerieTV2 serie);
-	public abstract void caricaEpisodiDB(SerieTV2 serie);
+	public abstract ArrayList<Episodio> nuoviEpisodi(SerieTV serie);
+	public abstract void caricaEpisodiDB(SerieTV serie);
 	public abstract void caricaSerieDB();
-	protected abstract void salvaSerieInDB(SerieTV2 s);
-	protected abstract void salvaEpisodioInDB(Torrent2 t);
+	protected abstract void salvaSerieInDB(SerieTV s);
+	protected abstract void salvaEpisodioInDB(Torrent t);
 	public abstract int getProviderID();
-	public abstract void caricaEpisodiOnline(SerieTV2 serie);
-	protected abstract boolean rimuoviSerieDaDB(SerieTV2 serie);
+	public abstract void caricaEpisodiOnline(SerieTV serie);
+	protected abstract boolean rimuoviSerieDaDB(SerieTV serie);
 }

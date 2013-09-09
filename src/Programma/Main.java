@@ -3,10 +3,10 @@ package Programma;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
-import SerieTV.GestioneSerieTV2;
-import Database.Database2;
+import SerieTV.GestioneSerieTV;
+import Database.Database;
 import GUI.FrameLoading;
-import GUI.Interfaccia2;
+import GUI.Interfaccia;
 
 public class Main {
 	//public static ThreadAggiornamentiSoftware	thread_update		= new ThreadAggiornamentiSoftware(false);
@@ -20,8 +20,8 @@ public class Main {
 		}
 	}
 	*/
-	static Interfaccia2 frame2;
-	private static Interfaccia2 GUIframe;
+	static Interfaccia frame2;
+	private static Interfaccia GUIframe;
 	public static void main(String[] args) {
 		
 		try{			
@@ -49,11 +49,11 @@ public class Main {
 			
 			
 			fl.settext("Connessione al database");
-			Database2.Connect();
+			Database.Connect();
 			fl.setprog(++i);
 			Runtime.getRuntime().addShutdownHook(new Thread(){
 				public void run(){
-					Database2.rebuildDB();
+					Database.rebuildDB();
 				}
 			});
 			
@@ -74,7 +74,7 @@ public class Main {
 			
 			fl.settext("Caricando serie dal database");
 			fl.setprog(++i);
-			GestioneSerieTV2.instance();
+			GestioneSerieTV.instance();
 			//GestioneSerieTV2.carica_serie_database();
 			
 			
@@ -100,7 +100,7 @@ public class Main {
 			
 			fl.chiudi();
 			
-			GUIframe = new Interfaccia2();
+			GUIframe = new Interfaccia();
 			GUIframe.setVisible(true);
 			GUIframe.init();
 			//GestioneSerieTV2.caricaElencoSerieOnline();

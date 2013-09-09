@@ -3,6 +3,7 @@ package LettoreVideo;
 import java.io.File;
 
 import Naming.CaratteristicheFile;
+import SerieTV.Torrent;
 
 public class PlaylistItem {
 	private String path_file;
@@ -25,6 +26,11 @@ public class PlaylistItem {
 		path_file=path;
 		proprieta=f;
 		nomeItem=nome;
+	}
+	public PlaylistItem(Torrent torrent){
+		path_file=torrent.getFilePath();
+		proprieta=torrent.getStats();
+		nomeItem=torrent.getNomeSerie();
 	}
 	public void setProprieta(CaratteristicheFile f){
 		proprieta=f;

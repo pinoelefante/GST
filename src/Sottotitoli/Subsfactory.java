@@ -18,12 +18,12 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import Naming.Renamer;
-import Programma.Download2;
+import Programma.Download;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
-import SerieTV.SerieTV2;
-import SerieTV.Torrent2;
+import SerieTV.SerieTV;
+import SerieTV.Torrent;
 
 public class Subsfactory implements ProviderSottotitoli {
 	private final static String URL_ELENCO_SERIE="http://subsfactory.it/subtitle/index.php?&direction=0&order=nom";
@@ -41,10 +41,10 @@ public class Subsfactory implements ProviderSottotitoli {
 	}
 
 	@Override
-	public boolean scaricaSottotitolo(Torrent2 t) {
+	public boolean scaricaSottotitolo(Torrent t) {
 		if(t==null)
 			return false;
-		SerieTV2 st=t.getSerieTV();
+		SerieTV st=t.getSerieTV();
 		if(st==null)
 			return false;
 		String id_subsfactory=st.getSubsfactoryDirectory();
@@ -99,7 +99,7 @@ public class Subsfactory implements ProviderSottotitoli {
 		String cartella_destinazione=Settings.getDirectoryDownload()+(Settings.getDirectoryDownload().endsWith(File.pathSeparator)?folder:(File.separator+folder));
 		String destinazione=cartella_destinazione+File.separator+nome;
 		try {
-			Download2.downloadFromUrl(url, destinazione);
+			Download.downloadFromUrl(url, destinazione);
 			return true;
 		}
 		catch (IOException e) {
@@ -117,9 +117,9 @@ public class Subsfactory implements ProviderSottotitoli {
 	}
 
 	@Override
-	public boolean cercaSottotitolo(Torrent2 t) {
+	public boolean cercaSottotitolo(Torrent t) {
 		System.out.println("Subsfactory.it - "+t.getNomeSerie());
-		SerieTV2 st=t.getSerieTV();
+		SerieTV st=t.getSerieTV();
 		
 		//cerca in database
 		String url=cercaSubInDB(st.getSubsfactoryDirectory(), t);
@@ -146,7 +146,7 @@ public class Subsfactory implements ProviderSottotitoli {
 		try {
 			//String path=url.substring(url.indexOf("directory=")+"directory=".length());
 			int id_download=download_corrente++;
-			Download2.downloadFromUrl(url, Settings.getCurrentDir()+"subsf_response_"+id_download);
+			Download.downloadFromUrl(url, Settings.getCurrentDir()+"subsf_response_"+id_download);
 			FileReader f=new FileReader(Settings.getCurrentDir()+"subsf_response_"+id_download);
 			Scanner file=new Scanner(f);
 			while(file.hasNextLine()){
@@ -217,7 +217,7 @@ public class Subsfactory implements ProviderSottotitoli {
 		Database.insert(Database.TABLE_SUBSFACTORY, parametri);
 		*/
 	}
-	private String cercaSubInDB(String id_serie, Torrent2 t){
+	private String cercaSubInDB(String id_serie, Torrent t){
 		ArrayList<SottotitoloSubsfactoryDB> subs=caricaSubDaDB(id_serie);
 		
 		for(int i=0;i<subs.size();i++){
@@ -295,7 +295,7 @@ public class Subsfactory implements ProviderSottotitoli {
 	public void caricaElencoSerie() {
 		FileReader f_r;
 		try {
-			Download2.downloadFromUrl(URL_ELENCO_SERIE, Settings.getCurrentDir()+"response_subs");
+			Download.downloadFromUrl(URL_ELENCO_SERIE, Settings.getCurrentDir()+"response_subs");
 			f_r=new FileReader(Settings.getCurrentDir()+"response_subs");
 		}
 		catch (IOException e) {
@@ -352,7 +352,7 @@ public class Subsfactory implements ProviderSottotitoli {
 			elenco_serie.add(i, s);
 		}
 	}
-	private String cercaFeed(String id_subs, Torrent2 t){
+	private String cercaFeed(String id_subs, Torrent t){
 		if(verificaTempo(update_time_rss, RSS_UltimoAggiornamento)){
 			System.out.println("Aggiornando il feed RSS - Subsfactory.it");
 			aggiornaFeedRSS();
@@ -381,7 +381,7 @@ public class Subsfactory implements ProviderSottotitoli {
 		RSS_UltimoAggiornamento=new GregorianCalendar();
 		feed_rss.clear();
 		try {
-			Download2.downloadFromUrl(URL_FEED_RSS, Settings.getCurrentDir()+"feed_subs");
+			Download.downloadFromUrl(URL_FEED_RSS, Settings.getCurrentDir()+"feed_subs");
 			
 			DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder domparser = dbfactory.newDocumentBuilder();

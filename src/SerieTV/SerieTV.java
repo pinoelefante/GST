@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import Database.Database2;
+import Database.Database;
 import StruttureDati.db.KVResult;
 import StruttureDati.serietv.ElencoEpisodi;
 import StruttureDati.serietv.Episodio;
 
-public class SerieTV2 {
+public class SerieTV {
 	private String titolo;
 	private ProviderSerieTV provider;
 	private String url_serie;
@@ -17,7 +17,7 @@ public class SerieTV2 {
 	private boolean conclusa, stop_search, inserita;
 	private ElencoEpisodi episodi;
 	
-	public SerieTV2(ProviderSerieTV provider, String nomeserie, String url) {
+	public SerieTV(ProviderSerieTV provider, String nomeserie, String url) {
 		episodi=new ElencoEpisodi();
 		this.provider=provider;
 		titolo=formattaNome(nomeserie);
@@ -105,7 +105,7 @@ public class SerieTV2 {
 	public void setIDSubspedia(int id_subspedia) {
 		this.id_subspedia = id_subspedia;
 	}
-	public int compareTo(SerieTV2 s2){
+	public int compareTo(SerieTV s2){
 		return this.getNomeSerie().trim().toLowerCase().compareTo(s2.getNomeSerie().trim().toLowerCase());
 	}
 	
@@ -129,10 +129,10 @@ public class SerieTV2 {
 		formattato=formattato.trim();
 		return formattato;
 	}
-	public void addEpisodio(Torrent2 episodio){
+	public void addEpisodio(Torrent episodio){
 		episodi.aggiungiLink(episodio);
 	}
-	public void addEpisodioDB(Torrent2 e){
+	public void addEpisodioDB(Torrent e){
 		episodi.aggiungiLinkDB(e);
 	}
 	public void aggiornaEpisodiOnline(){
@@ -149,8 +149,8 @@ public class SerieTV2 {
 	
 	public String getSubsfactoryDirectory(){
 		if(SubsfactoryOnlineDirectory.isEmpty()){
-			String query="SELECT directory FROM "+Database2.TABLE_SUBSFACTORY+" WHERE id="+getIDDBSubsfactory();
-			ArrayList<KVResult<String, Object>> res=Database2.selectQuery(query);
+			String query="SELECT directory FROM "+Database.TABLE_SUBSFACTORY+" WHERE id="+getIDDBSubsfactory();
+			ArrayList<KVResult<String, Object>> res=Database.selectQuery(query);
 			if(res.size()==1){
 				SubsfactoryOnlineDirectory=(String) res.get(0).getValueByKey("directory");
 			}

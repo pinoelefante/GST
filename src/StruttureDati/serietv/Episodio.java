@@ -2,27 +2,27 @@ package StruttureDati.serietv;
 
 import java.util.ArrayList;
 
-import SerieTV.Torrent2;
+import SerieTV.Torrent;
 
 public class Episodio {
 	private int episodio, stagione;
 	private String nome_serie=null;
 	
-	private ArrayList<Torrent2> ep_hd, ep_normali, ep_preair;
+	private ArrayList<Torrent> ep_hd, ep_normali, ep_preair;
 	
 	public Episodio(int stagione, int episodio){
 		this.stagione=stagione;
 		this.episodio=episodio;
-		ep_hd=new ArrayList<Torrent2>(1);
-		ep_normali=new ArrayList<Torrent2>(1);
-		ep_preair=new ArrayList<Torrent2>(1);
+		ep_hd=new ArrayList<Torrent>(1);
+		ep_normali=new ArrayList<Torrent>(1);
+		ep_preair=new ArrayList<Torrent>(1);
 	}
 	
 	public int getEpisodio(){
 		return episodio;
 	}
 	
-	public void addLink(Torrent2 link){
+	public void addLink(Torrent link){
 		if(nome_serie==null)
 			nome_serie=link.getNomeSerie();
 		
@@ -42,7 +42,7 @@ public class Episodio {
 			}
 		}
 	}
-	public void addLinkFromDB(Torrent2 link){
+	public void addLinkFromDB(Torrent link){
 		if(nome_serie==null)
 			nome_serie=link.getNomeSerie();
 		
@@ -56,7 +56,7 @@ public class Episodio {
 			addLinkToList(ep_normali, link);
 		}
 	}
-	private boolean addLinkToList(ArrayList<Torrent2> elenco, Torrent2 link){
+	private boolean addLinkToList(ArrayList<Torrent> elenco, Torrent link){
 		if(elenco.size()==0){
 			elenco.add(link);
 			return true;
@@ -64,7 +64,7 @@ public class Episodio {
 		else {
 			boolean inserito=false;
 			for(int i=0;i<elenco.size();i++){
-				Torrent2 t=elenco.get(i);
+				Torrent t=elenco.get(i);
 				if(t.getUrl().compareTo(link.getUrl())==0)
 					return false;
 				else {
@@ -96,44 +96,44 @@ public class Episodio {
 		}
 		return false;
 	}
-	public Torrent2 getLinkHD(){
+	public Torrent getLinkHD(){
 		if(ep_hd.size()>0)
 			return ep_hd.get(0);
 		return null;
 	}
-	public Torrent2 getLinkNormale(){
+	public Torrent getLinkNormale(){
 		if(ep_normali.size()>0)
 			return ep_normali.get(0);
 		return null;
 	}
-	public Torrent2 getLinkPreair(){
+	public Torrent getLinkPreair(){
 		if(ep_preair.size()>0)
 			return ep_preair.get(0);
 		return null;
 	}
-	public void scaricaLink(Torrent2 link){
+	public void scaricaLink(Torrent link){
 		for(int i=0;i<ep_hd.size();i++){
 			if(ep_hd.get(i)==link){
-				link.setScaricato(Torrent2.SCARICATO);
+				link.setScaricato(Torrent.SCARICATO);
 			}
 			else if(!ep_hd.get(i).isScaricato()){
-				ep_hd.get(i).setScaricato(Torrent2.IGNORATO);
+				ep_hd.get(i).setScaricato(Torrent.IGNORATO);
 			}
 		}
 		for(int i=0;i<ep_normali.size();i++){
 			if(ep_normali.get(i)==link){
-				link.setScaricato(Torrent2.SCARICATO);
+				link.setScaricato(Torrent.SCARICATO);
 			}
 			else if(!ep_normali.get(i).isScaricato()){
-				ep_normali.get(i).setScaricato(Torrent2.IGNORATO);
+				ep_normali.get(i).setScaricato(Torrent.IGNORATO);
 			}
 		}
 		for(int i=0;i<ep_preair.size();i++){
 			if(ep_preair.get(i)==link){
-				link.setScaricato(Torrent2.SCARICATO);
+				link.setScaricato(Torrent.SCARICATO);
 			}
 			else if(!ep_preair.get(i).isScaricato()){
-				ep_preair.get(i).setScaricato(Torrent2.IGNORATO);
+				ep_preair.get(i).setScaricato(Torrent.IGNORATO);
 			}
 		}
 	}
@@ -154,7 +154,7 @@ public class Episodio {
 	public void ottimizzaSpazio(){
 		for(int i=0;i<ep_hd.size();){
 			switch(ep_hd.get(i).getScaricato()){
-				case Torrent2.IGNORATO:
+				case Torrent.IGNORATO:
 					ep_hd.remove(ep_hd.get(i));
 					break;
 				default:
@@ -163,7 +163,7 @@ public class Episodio {
 		}
 		for(int i=0;i<ep_normali.size();){
 			switch(ep_normali.get(i).getScaricato()){
-				case Torrent2.IGNORATO:
+				case Torrent.IGNORATO:
 					ep_normali.remove(ep_hd.get(i));
 					break;
 				default:
@@ -172,7 +172,7 @@ public class Episodio {
 		}
 		for(int i=0;i<ep_preair.size();){
 			switch(ep_preair.get(i).getScaricato()){
-				case Torrent2.IGNORATO:
+				case Torrent.IGNORATO:
 					ep_preair.remove(ep_hd.get(i));
 					break;
 				default:

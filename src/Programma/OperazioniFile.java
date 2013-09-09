@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import SerieTV.Torrent2;
+import SerieTV.Torrent;
 
 public class OperazioniFile {
 	public static boolean DeleteDirectory(File dir) {
@@ -115,7 +115,7 @@ public class OperazioniFile {
 		else
 			return false;
 	}
-	public static String cercavideofile(Torrent2 t) throws FileNotFoundException{
+	public static String cercavideofile(Torrent t) throws FileNotFoundException{
 		String path_download=Settings.getDirectoryDownload()+(Settings.getDirectoryDownload().endsWith(File.separator)?"":File.separator)+t.getNomeSerieFolder();
 		File cartella_download=new File(path_download);
 		if(!cartella_download.exists())

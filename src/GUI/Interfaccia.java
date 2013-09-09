@@ -7,9 +7,9 @@ import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
 import LettoreVideo.Player;
-import SerieTV.GestioneSerieTV2;
-import SerieTV.SerieTV2;
-import SerieTV.Torrent2;
+import SerieTV.GestioneSerieTV;
+import SerieTV.SerieTV;
+import SerieTV.Torrent;
 import Sottotitoli.ProviderSottotitoli;
 import Sottotitoli.SerieSub;
 import StruttureDati.serietv.Episodio;
@@ -73,8 +73,8 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.CompoundBorder;
 import javax.swing.JRadioButton;
 
-public class Interfaccia2 extends JFrame {
-	private static Interfaccia2 thisframe;
+public class Interfaccia extends JFrame {
+	private static Interfaccia thisframe;
 	private static final long serialVersionUID = 1L;
 	private JPanel InfoPanel;
 	private JTextField textField;
@@ -99,11 +99,11 @@ public class Interfaccia2 extends JFrame {
 	private JTextField txt_add_episodio_episodio;
 	private JTextField txt_add_episodio_link;
 	private JPlaylist playlist;
-	private JComboBox<SerieTV2> cmb_serie_aggiunte;
-	private JComboBox<SerieTV2> cmb_serie_aggiunte_add_episodio;
-	private JComboBox<SerieTV2> cmb_serie_lettore;
-	private JComboBox<SerieTV2> cmb_serie_sottotitoli;
-	private JComboBox<SerieTV2> cmb_serie_tutte;
+	private JComboBox<SerieTV> cmb_serie_aggiunte;
+	private JComboBox<SerieTV> cmb_serie_aggiunte_add_episodio;
+	private JComboBox<SerieTV> cmb_serie_lettore;
+	private JComboBox<SerieTV> cmb_serie_sottotitoli;
+	private JComboBox<SerieTV> cmb_serie_tutte;
 	
 	private JSlider slider_volume;
 	private JLabel lblTimer;
@@ -115,10 +115,10 @@ public class Interfaccia2 extends JFrame {
 	private JButton buttonReloadSerie;
 
 	@SuppressWarnings("serial")
-	public Interfaccia2(){
+	public Interfaccia(){
 		super("Gestione Serie TV rel."+Settings.getVersioneSoftware()+" by pinoelefante");
 		thisframe=this;
-		setIconImage(Toolkit.getDefaultToolkit().getImage(Interfaccia2.class.getResource("/GUI/res/icona32.png")));
+		setIconImage(Toolkit.getDefaultToolkit().getImage(Interfaccia.class.getResource("/GUI/res/icona32.png")));
 		
 		setResizable(false);
 		setAlwaysOnTop(true);
@@ -134,7 +134,7 @@ public class Interfaccia2 extends JFrame {
 		getContentPane().add(tab, BorderLayout.CENTER);
 		
 		JPanel DownloadPanel = new JPanel();
-		tab.addTab("Download", new ImageIcon(Interfaccia2.class.getResource("/GUI/res/download.png")), DownloadPanel, null);
+		tab.addTab("Download", new ImageIcon(Interfaccia.class.getResource("/GUI/res/download.png")), DownloadPanel, null);
 		tab.setEnabledAt(0, true);
 		DownloadPanel.setLayout(null);
 		
@@ -167,7 +167,7 @@ public class Interfaccia2 extends JFrame {
 		panel_9.add(txt_cerca_serie_tutte);
 		txt_cerca_serie_tutte.setColumns(20);
 		
-		cmb_serie_tutte = new JComboBox<SerieTV2>();
+		cmb_serie_tutte = new JComboBox<SerieTV>();
 		cmb_serie_tutte.setBounds(73, 68, 159, 20);
 		panel_9.add(cmb_serie_tutte);
 		
@@ -193,23 +193,23 @@ public class Interfaccia2 extends JFrame {
 		panel_9.add(txt_cerca_serie_inserite);
 		txt_cerca_serie_inserite.setColumns(10);
 		
-		cmb_serie_aggiunte = new JComboBox<SerieTV2>();
+		cmb_serie_aggiunte = new JComboBox<SerieTV>();
 		cmb_serie_aggiunte.setBounds(315, 68, 159, 20);
 		panel_9.add(cmb_serie_aggiunte);
 		
 		JButton btnAggiungi = new JButton("Aggiungi");
-		btnAggiungi.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/add.png")));
+		btnAggiungi.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/add.png")));
 		btnAggiungi.setBounds(95, 95, 103, 26);
 		panel_9.add(btnAggiungi);
 		
 		JButton btnRimuovi = new JButton("Rimuovi");
-		btnRimuovi.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/remove.png")));
+		btnRimuovi.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/remove.png")));
 		btnRimuovi.setBounds(335, 95, 103, 26);
 		panel_9.add(btnRimuovi);
 		
 		buttonReloadSerie = new JButton("");
 		buttonReloadSerie.setToolTipText("Ricarica elenco serie");
-		buttonReloadSerie.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/aggiorna.png")));
+		buttonReloadSerie.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/aggiorna.png")));
 		buttonReloadSerie.setBounds(197, 15, 33, 23);
 		panel_9.add(buttonReloadSerie);
 		
@@ -223,7 +223,7 @@ public class Interfaccia2 extends JFrame {
 		lblSerie_2.setBounds(12, 38, 40, 16);
 		panel_10.add(lblSerie_2);
 		
-		cmb_serie_aggiunte_add_episodio = new JComboBox<SerieTV2>();
+		cmb_serie_aggiunte_add_episodio = new JComboBox<SerieTV>();
 		cmb_serie_aggiunte_add_episodio.setBounds(57, 36, 150, 20);
 		panel_10.add(cmb_serie_aggiunte_add_episodio);
 		
@@ -279,7 +279,7 @@ public class Interfaccia2 extends JFrame {
 		JButton btnAggiungiTorrent = new JButton("");
 		btnAggiungiTorrent.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				SerieTV2 serie=(SerieTV2) cmb_serie_aggiunte_add_episodio.getSelectedItem();
+				SerieTV serie=(SerieTV) cmb_serie_aggiunte_add_episodio.getSelectedItem();
 				int stagione=0, episodio=0;
 				try {
 					stagione=Integer.parseInt(txt_add_episodio_stagione.getText());
@@ -287,7 +287,7 @@ public class Interfaccia2 extends JFrame {
 				}
 				catch(NumberFormatException e){
 					ManagerException.registraEccezione(e);
-					JOptionPane.showMessageDialog(Interfaccia2.this, "Stagione e/o episodio non possono contenere lettere");
+					JOptionPane.showMessageDialog(Interfaccia.this, "Stagione e/o episodio non possono contenere lettere");
 					return;
 				}
 				String link=txt_add_episodio_link.getText();
@@ -309,7 +309,7 @@ public class Interfaccia2 extends JFrame {
 						System.out.println("Link non valido");
 						return;
 					}
-					Torrent2 t=new Torrent2(serie, link, Torrent2.SCARICARE);
+					Torrent t=new Torrent(serie, link, Torrent.SCARICARE);
 					t.setStagione(stagione);
 					t.setEpisodio(episodio);
 					serie.addEpisodio(t);
@@ -319,7 +319,7 @@ public class Interfaccia2 extends JFrame {
 				}
 			}
 		});
-		btnAggiungiTorrent.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/add.png")));
+		btnAggiungiTorrent.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/add.png")));
 		btnAggiungiTorrent.setBounds(428, 30, 40, 26);
 		panel_10.add(btnAggiungiTorrent);
 		
@@ -341,22 +341,22 @@ public class Interfaccia2 extends JFrame {
 		
 		btnAggiorna = new JButton("Aggiorna");
 		
-		btnAggiorna.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/aggiorna.png")));
+		btnAggiorna.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/aggiorna.png")));
 		btnAggiorna.setBounds(10, 228, 105, 23);
 		DownloadPanel.add(btnAggiorna);
 		
 		JButton btnScarica = new JButton("Scarica");
-		btnScarica.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/download.png")));
+		btnScarica.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/download.png")));
 		btnScarica.setBounds(127, 228, 114, 23);
 		DownloadPanel.add(btnScarica);
 		
 		JButton btnIgnora = new JButton("Ignora");
-		btnIgnora.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/remove.png")));
+		btnIgnora.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/remove.png")));
 		btnIgnora.setBounds(253, 228, 97, 23);
 		DownloadPanel.add(btnIgnora);
 		
 		JPanel PreferenzeSeriePanel = new JPanel();
-		tab.addTab("Preferenze Serie", new ImageIcon(Interfaccia2.class.getResource("/GUI/res/preferiti.png")), PreferenzeSeriePanel, null);
+		tab.addTab("Regole", new ImageIcon(Interfaccia.class.getResource("/GUI/res/preferiti.png")), PreferenzeSeriePanel, null);
 		PreferenzeSeriePanel.setLayout(new BorderLayout(0, 0));
 		
 		JPanel panel_11 = new JPanel();
@@ -381,7 +381,7 @@ public class Interfaccia2 extends JFrame {
 		group_regole.setSelected(rdbtnImpostaRegole.getModel(), true);
 		
 		JPanel SottotitoliPanel = new JPanel();
-		tab.addTab("Sottotitoli", new ImageIcon(Interfaccia2.class.getResource("/GUI/res/sottotitoli.png")), SottotitoliPanel, null);
+		tab.addTab("Sottotitoli", new ImageIcon(Interfaccia.class.getResource("/GUI/res/sottotitoli.png")), SottotitoliPanel, null);
 		SottotitoliPanel.setLayout(null);
 		
 		JPanel panel = new JPanel();
@@ -402,7 +402,7 @@ public class Interfaccia2 extends JFrame {
 				}
 			}
 		});
-		imgItasaLogo.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/itasa.png")));
+		imgItasaLogo.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/itasa.png")));
 		imgItasaLogo.setBounds(10, 49, 208, 37);
 		panel.add(imgItasaLogo);
 		
@@ -414,7 +414,7 @@ public class Interfaccia2 extends JFrame {
 		lblSerieTV.setBounds(172, 24, 46, 14);
 		panel.add(lblSerieTV);
 		
-		cmb_serie_sottotitoli = new JComboBox<SerieTV2>();
+		cmb_serie_sottotitoli = new JComboBox<SerieTV>();
 		cmb_serie_sottotitoli.setBounds(228, 21, 238, 20);
 		panel.add(cmb_serie_sottotitoli);
 		
@@ -430,7 +430,7 @@ public class Interfaccia2 extends JFrame {
 				}
 			}
 		});
-		imgSubsfactoryLogo.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/subsfactory.jpg")));
+		imgSubsfactoryLogo.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/subsfactory.jpg")));
 		imgSubsfactoryLogo.setBounds(258, 49, 208, 37);
 		panel.add(imgSubsfactoryLogo);
 		
@@ -450,7 +450,7 @@ public class Interfaccia2 extends JFrame {
 				}
 			}
 		});
-		imgSubspediaLogo.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/subspedia.png")));
+		imgSubspediaLogo.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/subspedia.png")));
 		imgSubspediaLogo.setBounds(505, 49, 208, 37);
 		panel.add(imgSubspediaLogo);
 		
@@ -634,24 +634,24 @@ public class Interfaccia2 extends JFrame {
 		txt_destinazione_provider.setColumns(10);
 		
 		JButton btnSfoglia_provider = new JButton("Sfoglia");
-		btnSfoglia_provider.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/cartella.png")));
+		btnSfoglia_provider.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/cartella.png")));
 		btnSfoglia_provider.setBounds(645, 20, 91, 24);
 		panel_8.add(btnSfoglia_provider);
 		
 		JButton btnScarica_provider = new JButton("Scarica");
-		btnScarica_provider.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/download.png")));
+		btnScarica_provider.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/download.png")));
 		btnScarica_provider.setBounds(525, 65, 120, 26);
 		panel_8.add(btnScarica_provider);
 		
 		LettorePanel = new JPanel();
-		tab.addTab("Lettore", new ImageIcon(Interfaccia2.class.getResource("/GUI/res/player.png")), LettorePanel, null);
+		tab.addTab("Lettore", new ImageIcon(Interfaccia.class.getResource("/GUI/res/player.png")), LettorePanel, null);
 		LettorePanel.setLayout(null);
 		
 		JButton btnVLCInstance=new JButton("Carica VLC");
 		btnVLCInstance.setBounds(165, 115, 100, 25);
 		LettorePanel.add(btnVLCInstance);
 		
-		cmb_serie_lettore = new JComboBox<SerieTV2>();
+		cmb_serie_lettore = new JComboBox<SerieTV>();
 		cmb_serie_lettore.setBounds(45, 263, 260, 20);
 		LettorePanel.add(cmb_serie_lettore);
 		
@@ -697,7 +697,7 @@ public class Interfaccia2 extends JFrame {
 		
 		JButton btnVLCFullscreen = new JButton("");
 		btnVLCFullscreen.setToolTipText("Schermo intero");
-		btnVLCFullscreen.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/fullscreen.png")));
+		btnVLCFullscreen.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/fullscreen.png")));
 		btnVLCFullscreen.setBounds(433, 104, 26, 26);
 		LettorePanel.add(btnVLCFullscreen);
 		
@@ -712,45 +712,48 @@ public class Interfaccia2 extends JFrame {
 		
 		final JButton buttonVLCPlay = new JButton("");
 		buttonVLCPlay.setToolTipText("Play");
-		buttonVLCPlay.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/play_pause.png")));
+		buttonVLCPlay.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/play_pause.png")));
 		buttonVLCPlay.setBounds(433, 0, 26, 26);
 		LettorePanel.add(buttonVLCPlay);
 		
 		JButton buttonVLCStop = new JButton("");
 		buttonVLCStop.setToolTipText("Stop");
-		buttonVLCStop.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/stop.png")));
+		buttonVLCStop.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/stop.png")));
 		buttonVLCStop.setBounds(433, 26, 26, 26);
 		LettorePanel.add(buttonVLCStop);
 		
 		JButton buttonPlaylistRimuovi = playlist.getButtonDel();
 		buttonPlaylistRimuovi.setToolTipText("Rimuovi dalla playlist");
-		buttonPlaylistRimuovi.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/cestino.png")));
+		buttonPlaylistRimuovi.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/cestino.png")));
 		buttonPlaylistRimuovi.setBounds(701, 172, 26, 26);
 		LettorePanel.add(buttonPlaylistRimuovi);
 		
 		JButton buttonPlaylistDown = playlist.getButtonDown();
-		buttonPlaylistDown.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/down.png")));
+		buttonPlaylistDown.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/down.png")));
 		buttonPlaylistDown.setBounds(701, 107, 26, 26);
 		LettorePanel.add(buttonPlaylistDown);
 		
 		JButton buttonPlaylistUp = playlist.getButtonUp();
-		buttonPlaylistUp.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/up.png")));
+		buttonPlaylistUp.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/up.png")));
 		buttonPlaylistUp.setBounds(701, 76, 26, 26);
 		LettorePanel.add(buttonPlaylistUp);
 		
 		JButton btnVLCPrec = new JButton("");
-		btnVLCPrec.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/prev.png")));
+		btnVLCPrec.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/prev.png")));
 		btnVLCPrec.setBounds(433, 52, 26, 26);
 		LettorePanel.add(btnVLCPrec);
 		
 		JButton btnVLCNext = new JButton("");
-		btnVLCNext.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/nextt.png")));
+		btnVLCNext.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/nextt.png")));
 		btnVLCNext.setBounds(433, 78, 26, 26);
 		LettorePanel.add(btnVLCNext);
 		
+		JPanel ManagerCopie = new JPanel();
+		tab.addTab("File Manager", new ImageIcon(Interfaccia.class.getResource("/GUI/res/salva.png")), ManagerCopie, null);
+		
 		JPanel OpzioniPanel = new JPanel();
 		OpzioniPanel.setBorder(new CompoundBorder());
-		tab.addTab("Opzioni", new ImageIcon(Interfaccia2.class.getResource("/GUI/res/opzioni.png")), OpzioniPanel, null);
+		tab.addTab("Opzioni", new ImageIcon(Interfaccia.class.getResource("/GUI/res/opzioni.png")), OpzioniPanel, null);
 		OpzioniPanel.setLayout(null);
 		
 		JPanel panel_1 = new JPanel();
@@ -898,17 +901,17 @@ public class Interfaccia2 extends JFrame {
 		textField_3.setColumns(10);
 		
 		JButton btnSfoglia = new JButton("Sfoglia");
-		btnSfoglia.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/utorrent.png")));
+		btnSfoglia.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/utorrent.png")));
 		btnSfoglia.setBounds(397, 27, 98, 26);
 		panel_5.add(btnSfoglia);
 		
 		JButton btnSfoglia_1 = new JButton("Sfoglia");
-		btnSfoglia_1.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/cartella.png")));
+		btnSfoglia_1.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/cartella.png")));
 		btnSfoglia_1.setBounds(397, 55, 98, 26);
 		panel_5.add(btnSfoglia_1);
 		
 		JButton btnSfoglia_2 = new JButton("Sfoglia");
-		btnSfoglia_2.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/vlc.png")));
+		btnSfoglia_2.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/vlc.png")));
 		btnSfoglia_2.setBounds(397, 83, 98, 26);
 		panel_5.add(btnSfoglia_2);
 		
@@ -918,19 +921,19 @@ public class Interfaccia2 extends JFrame {
 		OpzioniPanel.add(panel_6);
 		
 		JButton btnSalva = new JButton("Salva");
-		btnSalva.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/salva.png")));
+		btnSalva.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/salva.png")));
 		panel_6.add(btnSalva);
 		
 		JButton btnPredefiniti = new JButton("Predefiniti");
-		btnPredefiniti.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/reset.png")));
+		btnPredefiniti.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/reset.png")));
 		panel_6.add(btnPredefiniti);
 		
 		InfoPanel = new JPanel();
-		tab.addTab("Info  ", new ImageIcon(Interfaccia2.class.getResource("/GUI/res/info.png")), InfoPanel, null);
+		tab.addTab("Info  ", new ImageIcon(Interfaccia.class.getResource("/GUI/res/info.png")), InfoPanel, null);
 		InfoPanel.setLayout(null);
 		
 		JLabel imgLogo = new JLabel("");
-		imgLogo.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/logo.png")));
+		imgLogo.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/logo.png")));
 		imgLogo.setBounds(10, 11, 350, 350);
 		InfoPanel.add(imgLogo);
 		
@@ -945,7 +948,7 @@ public class Interfaccia2 extends JFrame {
 		InfoPanel.add(lblVersioneAttuale);
 		
 		final JButton btnCercaAggiornamenti = new JButton("Cerca aggiornamenti");
-		btnCercaAggiornamenti.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/update.png")));
+		btnCercaAggiornamenti.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/update.png")));
 		btnCercaAggiornamenti.setBounds(380, 223, 152, 44);
 		InfoPanel.add(btnCercaAggiornamenti);
 		
@@ -956,13 +959,13 @@ public class Interfaccia2 extends JFrame {
 		JLabel lblDona = new JLabel("<html>Se il programma \u00E8 di tua utilit\u00E0, potresti pensare di effettua una donazione (tramite PayPal) cliccando sull'immagine. Un tuo piccolo gesto pu\u00F2 essere uno grande per me</html>");
 		lblDona.setToolTipText("Clicca per effettuare una donazione");
 		lblDona.setVerticalAlignment(SwingConstants.TOP);
-		lblDona.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/dona.png")));
+		lblDona.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/dona.png")));
 		lblDona.setBounds(381, 291, 337, 70);
 		InfoPanel.add(lblDona);
 		
 		final JButton btnAggiornaAds = new JButton("");
 		btnAggiornaAds.setToolTipText("Aggiorna pubblicit\u00E0");
-		btnAggiornaAds.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/aggiorna.png")));
+		btnAggiornaAds.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/aggiorna.png")));
 		btnAggiornaAds.setBounds(696, 372, 33, 23);
 		InfoPanel.add(btnAggiornaAds);
 		
@@ -982,7 +985,7 @@ public class Interfaccia2 extends JFrame {
 		/**/
 		
 		final JButton btnChiudiADS = new JButton("");
-		btnChiudiADS.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/remove.png")));
+		btnChiudiADS.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/remove.png")));
 		btnChiudiADS.setToolTipText("Chiudi pubblicit\u00E0");
 		btnChiudiADS.setBounds(696, 492, 33, 23);
 		InfoPanel.add(btnChiudiADS);
@@ -1006,12 +1009,12 @@ public class Interfaccia2 extends JFrame {
 					OperazioniFile.esploraWeb(URL_DONAZIONE);
 				} 
 				catch (Exception e) {
-					int s=JOptionPane.showConfirmDialog(Interfaccia2.this, "Non è stato possibibile aprire il browser di sistema.\nVuoi copiare l'indirizzo da visitare negli appunti?", "Sito donazione", JOptionPane.YES_NO_OPTION);
+					int s=JOptionPane.showConfirmDialog(Interfaccia.this, "Non è stato possibibile aprire il browser di sistema.\nVuoi copiare l'indirizzo da visitare negli appunti?", "Sito donazione", JOptionPane.YES_NO_OPTION);
 					if(s==JOptionPane.YES_OPTION){
 						Clipboard clip=Toolkit.getDefaultToolkit().getSystemClipboard();
 						StringSelection toCopy=new StringSelection(URL_DONAZIONE);
 						clip.setContents(toCopy, toCopy);
-						JOptionPane.showMessageDialog(Interfaccia2.this, "Indirizzo copiato!");
+						JOptionPane.showMessageDialog(Interfaccia.this, "Indirizzo copiato!");
 					}
 				}
 			}
@@ -1041,7 +1044,7 @@ public class Interfaccia2 extends JFrame {
 								public void mouseExited(MouseEvent arg0) {}
 								public void mouseEntered(MouseEvent arg0) {}
 								public void mouseClicked(MouseEvent arg0) {
-									JOptionPane.showMessageDialog(Interfaccia2.this, "Prova");
+									JOptionPane.showMessageDialog(Interfaccia.this, "Prova");
 								}
 							});
 						}
@@ -1109,7 +1112,7 @@ public class Interfaccia2 extends JFrame {
 							LettorePanel.add(lblTimer);
 							
 							imgVolume = new JLabel("");
-							imgVolume.setIcon(new ImageIcon(Interfaccia2.class.getResource("/GUI/res/volume.png")));
+							imgVolume.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/volume.png")));
 							imgVolume.setBounds(433, 215, 26, 26);
 							LettorePanel.add(imgVolume);
 							
@@ -1187,16 +1190,16 @@ public class Interfaccia2 extends JFrame {
 				String text=txt_cerca_serie_tutte.getText().trim().toLowerCase();
 				if(text.isEmpty()){
 					cmb_serie_tutte.removeAllItems();
-					ArrayList<SerieTV2> t=GestioneSerieTV2.getElencoSerieCompleto();
+					ArrayList<SerieTV> t=GestioneSerieTV.getElencoSerieCompleto();
 					for(int i=0;i<t.size();i++){
 						cmb_serie_tutte.addItem(t.get(i));
 					}
 				}
 				else {
 					cmb_serie_tutte.removeAllItems();
-					ArrayList<SerieTV2> t=GestioneSerieTV2.getElencoSerieCompleto();
+					ArrayList<SerieTV> t=GestioneSerieTV.getElencoSerieCompleto();
 					for(int i=0;i<t.size();i++){
-						SerieTV2 s=t.get(i);
+						SerieTV s=t.get(i);
 						if(s.getNomeSerie().toLowerCase().contains(text))
 							cmb_serie_tutte.addItem(s);
 					}
@@ -1208,16 +1211,16 @@ public class Interfaccia2 extends JFrame {
 				String text=txt_cerca_serie_inserite.getText().trim().toLowerCase();
 				if(text.isEmpty()){
 					cmb_serie_aggiunte.removeAllItems();
-					ArrayList<SerieTV2> t=GestioneSerieTV2.getElencoSerieInserite();
+					ArrayList<SerieTV> t=GestioneSerieTV.getElencoSerieInserite();
 					for(int i=0;i<t.size();i++){
 						cmb_serie_aggiunte.addItem(t.get(i));
 					}
 				}
 				else {
 					cmb_serie_aggiunte.removeAllItems();
-					ArrayList<SerieTV2> t=GestioneSerieTV2.getElencoSerieInserite();
+					ArrayList<SerieTV> t=GestioneSerieTV.getElencoSerieInserite();
 					for(int i=0;i<t.size();i++){
-						SerieTV2 s=t.get(i);
+						SerieTV s=t.get(i);
 						if(s.getNomeSerie().toLowerCase().contains(text))
 							cmb_serie_aggiunte.addItem(t.get(i));
 					}
@@ -1226,9 +1229,9 @@ public class Interfaccia2 extends JFrame {
 		});
 		btnAggiungi.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				SerieTV2 s=(SerieTV2) cmb_serie_tutte.getSelectedItem();
+				SerieTV s=(SerieTV) cmb_serie_tutte.getSelectedItem();
 				if(s!=null){
-					if(GestioneSerieTV2.aggiungiSeriePreferita(s)){
+					if(GestioneSerieTV.aggiungiSeriePreferita(s)){
 						reloadSeriePreferite();
 						//s.aggiornaEpisodiOnline(); //TODO eseguire in un thread separato
 						
@@ -1239,9 +1242,9 @@ public class Interfaccia2 extends JFrame {
 		});
 		btnRimuovi.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				SerieTV2 s=(SerieTV2) cmb_serie_aggiunte.getSelectedItem();
+				SerieTV s=(SerieTV) cmb_serie_aggiunte.getSelectedItem();
 				if(s!=null){
-					GestioneSerieTV2.rimuoviSeriePreferita(s);
+					GestioneSerieTV.rimuoviSeriePreferita(s);
 					reloadSeriePreferite();
 					inizializzaDownloadScroll();
 				}
@@ -1253,7 +1256,7 @@ public class Interfaccia2 extends JFrame {
 					public void run(){
 						btnAggiorna.setEnabled(false);
 						try {
-    						ArrayList<Episodio> eps=GestioneSerieTV2.caricaEpisodiDaScaricare();
+    						ArrayList<Episodio> eps=GestioneSerieTV.caricaEpisodiDaScaricare();
     						panel_scroll_download.removeAll();
     						Runtime.getRuntime().gc();
     						for(int i=0;i<eps.size();i++){
@@ -1325,7 +1328,7 @@ public class Interfaccia2 extends JFrame {
 					public void run(){
 						buttonReloadSerie.setEnabled(false);
 						try {
-							GestioneSerieTV2.caricaElencoSerieOnline();
+							GestioneSerieTV.caricaElencoSerieOnline();
 							buttonReloadSerie.setEnabled(true);
 						}
 						catch(Exception e){
@@ -1333,7 +1336,7 @@ public class Interfaccia2 extends JFrame {
 							buttonReloadSerie.setEnabled(true);
 						}
 						reloadSerieDisponibili();
-						ArrayList<SerieTV2> newseries=GestioneSerieTV2.getElencoNuoveSerie();
+						ArrayList<SerieTV> newseries=GestioneSerieTV.getElencoNuoveSerie();
 						if(newseries.size()>0){
 							panel_nuove_serie.removeAll();
 							for(int i=0;i<newseries.size();i++){
@@ -1359,7 +1362,7 @@ public class Interfaccia2 extends JFrame {
 		btnAggiorna.doClick();
 	}
 	public void reloadSeriePreferite() {
-		ArrayList<SerieTV2> st=GestioneSerieTV2.getElencoSerieInserite();
+		ArrayList<SerieTV> st=GestioneSerieTV.getElencoSerieInserite();
 		
 		cmb_serie_aggiunte.removeAllItems();
 		cmb_serie_aggiunte_add_episodio.removeAllItems();
@@ -1378,7 +1381,7 @@ public class Interfaccia2 extends JFrame {
 	}
 	public void reloadSerieDisponibili() {
 		/** inizializza il campo che contiene tutte le serie disponibili*/
-		ArrayList<SerieTV2> st=GestioneSerieTV2.getElencoSerieCompleto();
+		ArrayList<SerieTV> st=GestioneSerieTV.getElencoSerieCompleto();
 		if(st!=null){
 			cmb_serie_tutte.removeAllItems();
 			for(int i=0;i<st.size();i++){
@@ -1392,7 +1395,7 @@ public class Interfaccia2 extends JFrame {
 		class UpdateEpisodes extends Thread {
 			public void run(){
 				btnAggiorna.setEnabled(false);
-				ArrayList<Episodio> eps=GestioneSerieTV2.caricaEpisodiDaScaricareOffline();
+				ArrayList<Episodio> eps=GestioneSerieTV.caricaEpisodiDaScaricareOffline();
 				for(int i=0;i<eps.size();i++){
 					panel_scroll_download.add(new PanelEpisodioDownload(eps.get(i)));
 				}
@@ -1403,7 +1406,7 @@ public class Interfaccia2 extends JFrame {
 		t.setName("update episodi");
 		t.start();
 	}
-	public static Interfaccia2 getInterfaccia(){
+	public static Interfaccia getInterfaccia(){
 		return thisframe;
 	}
 }

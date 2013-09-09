@@ -8,18 +8,18 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 
-public class Download2 {
+public class Download {
 	private long d_corrente, d_finale;
 	private String url_download, path_destinazione;
 	private Thread download;
 	private boolean complete=false, toStart=true;
 	
-	public Download2(String url, String path){
+	public Download(String url, String path){
 		this.url_download=url;
 		this.path_destinazione=path;
 		download=new Downloader();
 	}
-	public Download2(String url, String path, boolean toStart){
+	public Download(String url, String path, boolean toStart){
 		this.url_download=url;
 		this.path_destinazione=path;
 		this.toStart=toStart;
@@ -229,7 +229,7 @@ public class Download2 {
 		}
 	}
 	public static void downloadFromUrl(String url_download, String localFilename) throws IOException{
-		Download2 download=new Download2(url_download, localFilename);
+		Download download=new Download(url_download, localFilename);
 		download.avviaDownload();
 		try {
 			download.getDownloadThread().join();

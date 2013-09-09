@@ -38,13 +38,13 @@ public class Karmorra extends ProviderSerieTV {
 	}
 
 	@Override
-	public ArrayList<Episodio> nuoviEpisodi(SerieTV2 serie) {
+	public ArrayList<Episodio> nuoviEpisodi(SerieTV serie) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public void caricaEpisodiDB(SerieTV2 serie) {
+	public void caricaEpisodiDB(SerieTV serie) {
 		// TODO Auto-generated method stub
 	}
 
@@ -55,13 +55,13 @@ public class Karmorra extends ProviderSerieTV {
 	}
 
 	@Override
-	protected void salvaSerieInDB(SerieTV2 s) {
+	protected void salvaSerieInDB(SerieTV s) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	protected void salvaEpisodioInDB(Torrent2 t) {
+	protected void salvaEpisodioInDB(Torrent t) {
 		// TODO Auto-generated method stub
 
 	}
@@ -73,7 +73,7 @@ public class Karmorra extends ProviderSerieTV {
 	}
 
 	@Override
-	public void caricaEpisodiOnline(SerieTV2 serie) {
+	public void caricaEpisodiOnline(SerieTV serie) {
 		// TODO Auto-generated method stub
 
 	}
@@ -160,7 +160,7 @@ public class Karmorra extends ProviderSerieTV {
 	 */
 
 	@Override
-	protected boolean rimuoviSerieDaDB(SerieTV2 serie) {
+	protected boolean rimuoviSerieDaDB(SerieTV serie) {
 		// TODO Auto-generated method stub
 		return false;
 	}

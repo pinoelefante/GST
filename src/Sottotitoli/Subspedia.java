@@ -15,11 +15,11 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import Naming.Renamer;
-import Programma.Download2;
+import Programma.Download;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
-import SerieTV.Torrent2;
+import SerieTV.Torrent;
 
 public class Subspedia implements ProviderSottotitoli {
 	private final String URLFeedRSS="http://subspedia.weebly.com/1/feed";
@@ -31,7 +31,7 @@ public class Subspedia implements ProviderSottotitoli {
 		rss=new ArrayList<SubspediaRSSItem>();
 	}
 	
-	public boolean scaricaSottotitolo(Torrent2 t) {
+	public boolean scaricaSottotitolo(Torrent t) {
 		String link=cercaSottotitolo(t, false);
 		if(link==null)
 			return false;
@@ -48,7 +48,7 @@ public class Subspedia implements ProviderSottotitoli {
 		String dir_s=Settings.getDirectoryDownload()+(Settings.getDirectoryDownload().endsWith(File.pathSeparator)?folder:(File.separator+folder));
 		String destinazione=dir_s+File.separator+nome;
 		try {
-			Download2.downloadFromUrl(url, destinazione);
+			Download.downloadFromUrl(url, destinazione);
 			
 			return true;
 		}
@@ -59,7 +59,7 @@ public class Subspedia implements ProviderSottotitoli {
 		}
 	}
 	public String getIDSerieAssociata(String nome_serie) {return null;}
-	public boolean cercaSottotitolo(Torrent2 t) {
+	public boolean cercaSottotitolo(Torrent t) {
 		scaricaFeed();
 		for(int i=0;i<rss.size();i++){
 			SubspediaRSSItem item=rss.get(i);
@@ -72,7 +72,7 @@ public class Subspedia implements ProviderSottotitoli {
 		}
 		return false;
 	}
-	private String cercaSottotitolo(Torrent2 t,boolean b) {
+	private String cercaSottotitolo(Torrent t,boolean b) {
 		scaricaFeed();
 		for(int i=0;i<rss.size();i++){
 			SubspediaRSSItem item=rss.get(i);
@@ -98,7 +98,7 @@ public class Subspedia implements ProviderSottotitoli {
 		
 		last_update=System.currentTimeMillis();
 		try {
-			Download2.downloadFromUrl(URLFeedRSS, Settings.getCurrentDir()+"feed_subspedia");
+			Download.downloadFromUrl(URLFeedRSS, Settings.getCurrentDir()+"feed_subspedia");
 			rss.clear();
 			
 			DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();

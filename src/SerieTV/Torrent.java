@@ -3,27 +3,27 @@ package SerieTV;
 import java.io.File;
 import java.util.ArrayList;
 
-import Database.Database2;
+import Database.Database;
 import Naming.CaratteristicheFile;
 import Programma.Settings;
 
-public class Torrent2 {
+public class Torrent {
 	public final static int SCARICARE=0, SCARICATO=1, VISTO=2, RIMOSSO=3, IGNORATO=4; 
 	private String	url;
 	private int		stato; //0 non scaricato - 1 scaricato - 2 visto - 3 rimosso - 4 ignorato
 	private boolean preair;
 	private boolean sub_down; //true se è da scaricare, false non scaricare
 	private CaratteristicheFile prop_torrent;
-	private SerieTV2 serietv;
+	private SerieTV serietv;
 	private int id_db, id_tvdb;
 
-	public Torrent2(SerieTV2 st, String url, int stato_t) {
+	public Torrent(SerieTV st, String url, int stato_t) {
 		this.url=url;
 		stato=stato_t;
 		serietv=st;
 		prop_torrent=new CaratteristicheFile();
 	}
-	public Torrent2(SerieTV2 st, String url, int stato_t, CaratteristicheFile f){
+	public Torrent(SerieTV st, String url, int stato_t, CaratteristicheFile f){
 		this.url=url;
 		stato=stato_t;
 		serietv=st;
@@ -94,9 +94,9 @@ public class Torrent2 {
 	public void setSubDownload(boolean stat){
 		sub_down=stat;
 		if(stat)
-			GestioneSerieTV2.getSubManager().aggiungiEpisodio(this);
+			GestioneSerieTV.getSubManager().aggiungiEpisodio(this);
 		else
-			GestioneSerieTV2.getSubManager().rimuoviEpisodio(this);
+			GestioneSerieTV.getSubManager().rimuoviEpisodio(this);
 	}
 	
 	public void setPreair(boolean stato) {
@@ -112,6 +112,9 @@ public class Torrent2 {
 			return url.substring(url.lastIndexOf("/")+1);
 		else
 			return serietv.getNomeSerie()+" S"+getStagione()+"E"+getEpisodio();
+	}
+	public String getFormattedName(){
+		return serietv.getNomeSerie()+" S"+(getStagione()<10?"0"+getStagione():getStagione())+"E"+(getEpisodio()<10?"0"+getEpisodio():getEpisodio());
 	}
 	public int getScaricato(){
 		return stato;
@@ -177,10 +180,10 @@ public class Torrent2 {
 	}
 	public static void main(String[] args){
 		Settings.baseSettings();
-		Database2.Connect();
+		Database.Connect();
 		Settings.CaricaSetting();
-		GestioneSerieTV2.instance();
-		Torrent2 t=new Torrent2(new SerieTV2(new EZTV(), "Nomeserie", ""), "", SCARICATO);
+		GestioneSerieTV.instance();
+		Torrent t=new Torrent(new SerieTV(new EZTV(), "Nomeserie", ""), "", SCARICATO);
 		t.setStagione(1);
 		t.setEpisodio(1);
 		System.out.println("File trovato: "+t.getFilePath());
@@ -188,7 +191,7 @@ public class Torrent2 {
 	public CaratteristicheFile getStats(){
 		return prop_torrent;
 	}
-	public SerieTV2 getSerieTV(){
+	public SerieTV getSerieTV(){
 		return serietv;
 	}
 	public int getIDDB() {

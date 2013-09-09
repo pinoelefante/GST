@@ -12,15 +12,15 @@ import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 
-import SerieTV.GestioneSerieTV2;
-import SerieTV.SerieTV2;
+import SerieTV.GestioneSerieTV;
+import SerieTV.SerieTV;
 
 public class PanelNewSerie extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private JButton btnInserisci;
-	private SerieTV2 st;
+	private SerieTV st;
 	
-	public PanelNewSerie(SerieTV2 serie) {
+	public PanelNewSerie(SerieTV serie) {
 		st=serie;
 		setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		setSize(250, 70);
@@ -55,8 +55,8 @@ public class PanelNewSerie extends JPanel {
 	private void addListener(){
 		btnInserisci.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if(GestioneSerieTV2.aggiungiSeriePreferita(st)){
-					Interfaccia2.getInterfaccia().reloadSeriePreferite();
+				if(GestioneSerieTV.aggiungiSeriePreferita(st)){
+					Interfaccia.getInterfaccia().reloadSeriePreferite();
 				}
 			}
 		});

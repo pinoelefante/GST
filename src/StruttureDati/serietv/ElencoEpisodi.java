@@ -2,7 +2,7 @@ package StruttureDati.serietv;
 
 import java.util.ArrayList;
 
-import SerieTV.Torrent2;
+import SerieTV.Torrent;
 
 public class ElencoEpisodi {
 	private ArrayList<Episodio> episodi;
@@ -10,14 +10,14 @@ public class ElencoEpisodi {
 	public ElencoEpisodi(){
 		episodi=new ArrayList<Episodio>();
 	}
-	public void aggiungiLink(Torrent2 t){
+	public void aggiungiLink(Torrent t){
 		Episodio ep=cercaEpisodio(t.getStagione(), t.getEpisodio());
 		if(ep==null){
 			ep=aggiungiEpisodio(t.getStagione(), t.getEpisodio());
 		}
 		ep.addLink(t);
 	}
-	public void aggiungiLinkDB(Torrent2 t){
+	public void aggiungiLinkDB(Torrent t){
 		Episodio ep=cercaEpisodio(t.getStagione(), t.getEpisodio());
 		if(ep==null){
 			ep=aggiungiEpisodio(t.getStagione(), t.getEpisodio());

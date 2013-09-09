@@ -17,10 +17,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.border.EtchedBorder;
 
-import Programma.Download2;
+import Programma.Download;
 import Programma.ManagerException;
 import Programma.Settings;
-import SerieTV.Torrent2;
+import SerieTV.Torrent;
 import StruttureDati.serietv.Episodio;
 
 public class PanelEpisodioDownload extends JPanel {
@@ -94,10 +94,10 @@ public class PanelEpisodioDownload extends JPanel {
 	private void addListener(){
 		btnHd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Torrent2 link=ep.getLinkHD();
+				Torrent link=ep.getLinkHD();
 				if(link!=null){
 					try {
-						Download2.downloadMagnet(link.getUrl(), link.getSerieTV().getFolderSerie());
+						Download.downloadMagnet(link.getUrl(), link.getSerieTV().getFolderSerie());
 						if(Settings.isRicercaSottotitoli()){
 							link.setSubDownload(true);
 						}
@@ -113,10 +113,10 @@ public class PanelEpisodioDownload extends JPanel {
 		});
 		btnSd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Torrent2 link=ep.getLinkNormale();
+				Torrent link=ep.getLinkNormale();
 				if(link!=null){
 					try {
-						Download2.downloadMagnet(link.getUrl(), link.getSerieTV().getFolderSerie());
+						Download.downloadMagnet(link.getUrl(), link.getSerieTV().getFolderSerie());
 						if(Settings.isRicercaSottotitoli()){
 							link.setSubDownload(true);
 						}
@@ -132,10 +132,10 @@ public class PanelEpisodioDownload extends JPanel {
 		});
 		btnPreair.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Torrent2 link=ep.getLinkPreair();
+				Torrent link=ep.getLinkPreair();
 				if(link!=null){
 					try {
-						Download2.downloadMagnet(link.getUrl(), link.getSerieTV().getFolderSerie());
+						Download.downloadMagnet(link.getUrl(), link.getSerieTV().getFolderSerie());
 						if(Settings.isRicercaSottotitoli()){
 							link.setSubDownload(true);
 						}

@@ -12,21 +12,30 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.border.EtchedBorder;
 
+import LettoreVideo.Player;
 import LettoreVideo.PlaylistItem;
+import Programma.OperazioniFile;
+import Programma.Settings;
 import SerieTV.EZTV;
-import SerieTV.SerieTV2;
-import SerieTV.Torrent2;
+import SerieTV.SerieTV;
+import SerieTV.Torrent;
 
 public class PanelEpisodioLettore extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private static JPlaylist playlist;
-	private Torrent2 torrent;
+	private Torrent torrent;
 	private JComboBox<String> cmb_stato_episodio;
 	private JButton btnPlaylist;
+	private JButton btnScarica;
+	private JButton btnSottotitolo;
+	private JButton btnCancellaFile;
+	private JButton btnCopiaSuDispositivo;
+	private JButton btnPlay;
 	
-	public PanelEpisodioLettore(Torrent2 ep) {
+	public PanelEpisodioLettore(Torrent ep) {
 		torrent=ep;
 		
 		setSize(750, 130);
@@ -43,27 +52,27 @@ public class PanelEpisodioLettore extends JPanel {
 		btnPlaylist.setBounds(623, 27, 49, 32);
 		panel.add(btnPlaylist);
 		
-		JButton btnScarica = new JButton("Scarica");
+		btnScarica = new JButton("Scarica");
 		btnScarica.setIcon(new ImageIcon(PanelEpisodioLettore.class.getResource("/GUI/res/utorrent.png")));
 		btnScarica.setBounds(64, 66, 98, 23);
 		panel.add(btnScarica);
 		
-		JButton btnSottotitolo = new JButton("Sottotitolo");
+		btnSottotitolo = new JButton("Sottotitolo");
 		btnSottotitolo.setIcon(new ImageIcon(PanelEpisodioLettore.class.getResource("/GUI/res/sub16.png")));
 		btnSottotitolo.setBounds(172, 66, 112, 23);
 		panel.add(btnSottotitolo);
 		
-		JButton btnCancellaFile = new JButton("Cancella");
+		btnCancellaFile = new JButton("Cancella");
 		btnCancellaFile.setIcon(new ImageIcon(PanelEpisodioLettore.class.getResource("/GUI/res/cestino.png")));
 		btnCancellaFile.setBounds(294, 66, 112, 23);
 		panel.add(btnCancellaFile);
 		
-		JButton btnCopiaSuDispositivo = new JButton("Copia su...");
+		btnCopiaSuDispositivo = new JButton("Copia su...");
 		btnCopiaSuDispositivo.setIcon(new ImageIcon(PanelEpisodioLettore.class.getResource("/GUI/res/cartella.png")));
 		btnCopiaSuDispositivo.setBounds(416, 66, 112, 23);
 		panel.add(btnCopiaSuDispositivo);
 		
-		JButton btnPlay = new JButton("Play");
+		btnPlay = new JButton("Play");
 		btnPlay.setIcon(new ImageIcon(PanelEpisodioLettore.class.getResource("/GUI/res/vlc.png")));
 		btnPlay.setBounds(603, 66, 89, 23);
 		panel.add(btnPlay);
@@ -123,6 +132,7 @@ public class PanelEpisodioLettore extends JPanel {
 				if(playlist==null){
 					playlist=cercaPlaylist(PanelEpisodioLettore.this);
 					if(playlist!=null){
+						playlist.addItem(new PlaylistItem(torrent));
 						System.out.println("Playlist trovata");
 					}
 					else {
@@ -130,7 +140,45 @@ public class PanelEpisodioLettore extends JPanel {
 					}
 				}
 				if(playlist!=null){
-					playlist.addItem(new PlaylistItem(torrent.getFilePath(), torrent.getStats(), torrent.getNomeSerie()));
+					playlist.addItem(new PlaylistItem(torrent));
+				}
+			}
+		});
+		btnPlay.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(Settings.isExtenalVLC()){
+					String filepath=torrent.getFilePath();
+					if(filepath.length()>0)
+						PlayerOLD.play(filepath);
+				}
+				else {
+					playlist.addItem(new PlaylistItem(torrent));
+					Player player=playlist.getPlayer();
+					String filepath=torrent.getFilePath();
+					if(filepath.length()>0){
+						if(player!=null){
+							player.play(filepath);
+						}
+						else {
+							PlayerOLD.play(filepath);
+						}
+					}
+				}
+			}
+		});
+		btnCancellaFile.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int r=JOptionPane.showConfirmDialog(PanelEpisodioLettore.this.getParent(), "Sei sicuro di voler cancellare:\n"+torrent.getFormattedName(), "Conferma cancellazione", JOptionPane.YES_NO_OPTION);
+				if(r==JOptionPane.YES_OPTION){
+					String file=torrent.getFilePath();
+					if(OperazioniFile.deleteFile(file)){
+						torrent.setScaricato(Torrent.RIMOSSO);
+						torrent.updateTorrentInDB();
+						cmb_stato_episodio.setSelectedIndex(Torrent.RIMOSSO);
+					}
+					else {
+						JOptionPane.showMessageDialog(PanelEpisodioLettore.this.getParent(), "Non è stato possibile eliminare il file. Potrebbe essere in uso da un altro processo.\nSe sei sicuro che il file non esiste, imposta manualmente lo stato RIMOSSO");
+					}
 				}
 			}
 		});
@@ -159,7 +207,7 @@ public class PanelEpisodioLettore extends JPanel {
 		frame.setSize(750, 500);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new BorderLayout());
-		Torrent2 t=new Torrent2(new SerieTV2(new EZTV(), "Anger Management", ""), "magnet:?xt=urn:btih:CESZGU2HYDQ3V7PMARB3MXELSZ3AMDWU&dn=Anger.Management.S02E31.HDTV.x264-ASAP&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80",Torrent2.SCARICARE);
+		Torrent t=new Torrent(new SerieTV(new EZTV(), "Anger Management", ""), "magnet:?xt=urn:btih:CESZGU2HYDQ3V7PMARB3MXELSZ3AMDWU&dn=Anger.Management.S02E31.HDTV.x264-ASAP&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80",Torrent.SCARICARE);
 		t.parseMagnet();
 		
 		JPlaylist playlist=new JPlaylist();

@@ -10,7 +10,7 @@ public class ControlloAggiornamenti {
 	private int versione_online;
 	
 	private void retrieveVersioneOnline(){
-		Download2 downloader=new Download2(URL_DB, Settings.getCurrentDir()+"version.dat");
+		Download downloader=new Download(URL_DB, Settings.getCurrentDir()+"version.dat");
 		downloader.avviaDownload();
 		try {
 			downloader.getDownloadThread().join();

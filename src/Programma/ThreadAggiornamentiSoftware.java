@@ -16,7 +16,7 @@ public class ThreadAggiornamentiSoftware extends Thread {
 	public void run() {
 		FileReader file_r = null;
 		try {
-			Download2.downloadFromUrl("http://pinoelefante.altervista.org/software/GST/version.dat", Settings.getCurrentDir()+"version.dat");
+			Download.downloadFromUrl("http://pinoelefante.altervista.org/software/GST/version.dat", Settings.getCurrentDir()+"version.dat");
 			file_r = new FileReader(Settings.getCurrentDir()+"version.dat");
 		}
 		catch (IOException e1) {
@@ -35,7 +35,7 @@ public class ThreadAggiornamentiSoftware extends Thread {
 		if (versione > Settings.getVersioneSoftware() ) {
 			OperazioniFile.copyfile("GestioneSerieTV5.exe", "GestioneSerieTV5.exe_back");
 			try {
-				Download2.downloadFromUrl("http://pinoelefante.altervista.org/software/GST/GestioneSerieTV5.exe", Settings.getCurrentDir()+"GestioneSerieTV5.exe");
+				Download.downloadFromUrl("http://pinoelefante.altervista.org/software/GST/GestioneSerieTV5.exe", Settings.getCurrentDir()+"GestioneSerieTV5.exe");
 				File f=new File(Settings.getCurrentDir()+"GestioneSerieTV5.exe_back");
 				f.delete();
 				Settings.setNewUpdate(true);

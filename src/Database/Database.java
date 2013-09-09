@@ -18,7 +18,7 @@ import Programma.Settings;
 import StruttureDati.db.KVItem;
 import StruttureDati.db.KVResult;
 
-public class Database2 {
+public class Database {
 	private static Connection con;
 	
 	public final static String TABLE_SERIETV="serietv";
