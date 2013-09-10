@@ -1103,6 +1103,7 @@ public class Interfaccia extends JFrame {
 						}
 						catch (Exception e) {
 							e.printStackTrace();
+							JOptionPane.showMessageDialog(thisframe, "Errore durante il caricamento di VLC");
 							source.setText("Carica VLC");
 							source.setEnabled(true);
 							return;
