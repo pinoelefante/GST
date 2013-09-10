@@ -9,7 +9,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -19,13 +18,14 @@ import LettoreVideo.Player;
 import LettoreVideo.PlaylistItem;
 import Programma.OperazioniFile;
 import Programma.Settings;
-import SerieTV.EZTV;
-import SerieTV.SerieTV;
 import SerieTV.Torrent;
+import StruttureDati.serietv.Episodio;
+import java.awt.FlowLayout;
 
 public class PanelEpisodioLettore extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private static JPlaylist playlist;
+	private Episodio episodio;
 	private Torrent torrent;
 	private JComboBox<String> cmb_stato_episodio;
 	private JButton btnPlaylist;
@@ -35,90 +35,66 @@ public class PanelEpisodioLettore extends JPanel {
 	private JButton btnCopiaSuDispositivo;
 	private JButton btnPlay;
 	
-	public PanelEpisodioLettore(Torrent ep) {
-		torrent=ep;
+	public PanelEpisodioLettore(Episodio ep) {
+		episodio=ep;
+		torrent=ep.getLink();
 		
-		setSize(750, 130);
+		setSize(750, 100);
 		setLayout(new BorderLayout(0, 0));
 		setBorder(new EtchedBorder(EtchedBorder.RAISED));
+		JLabel lblNomeFile = new JLabel("<html><br>&nbsp;&nbsp;Nome file: "+torrent.getFilePath()+"</html>");
+		add(lblNomeFile, BorderLayout.SOUTH);
 		
+		JPanel panel_n = new JPanel();
+		add(panel_n, BorderLayout.NORTH);
+		panel_n.setLayout(new BorderLayout(0, 0));
+				
 		JPanel panel = new JPanel();
-		add(panel, BorderLayout.CENTER);
-		panel.setLayout(null);
+		panel_n.add(panel, BorderLayout.WEST);
+				
+		JLabel lblnomeserie = new JLabel("<html><b>"+episodio.getNomeSerie()+"</b>&nbsp;&nbsp;Stagione: <b>"+episodio.getStagione()+"</b> Episodio: <b>"+episodio.getEpisodio()+"</b></html>");
+		panel.add(lblnomeserie);
 		
+		cmb_stato_episodio = new JComboBox<String>();
+		panel_n.add(cmb_stato_episodio, BorderLayout.EAST);
+		cmb_stato_episodio.addItem("SCARICARE");
+		cmb_stato_episodio.addItem("SCARICATO");
+		cmb_stato_episodio.addItem("VISTO");
+		cmb_stato_episodio.addItem("RIMOSSO");
+		cmb_stato_episodio.addItem("IGNORATO");
+		
+		JPanel panel_e = new JPanel();
+		add(panel_e, BorderLayout.EAST);
+		panel_e.setLayout(new BorderLayout(0, 0));
+		JPanel p_e_c=new JPanel();
+		panel_e.add(p_e_c, BorderLayout.CENTER);
 		btnPlaylist = new JButton("");
 		btnPlaylist.setToolTipText("Aggiungi alla playlist");
 		btnPlaylist.setIcon(new ImageIcon(PanelEpisodioLettore.class.getResource("/GUI/res/add.png")));
-		btnPlaylist.setBounds(623, 27, 49, 32);
-		panel.add(btnPlaylist);
+		p_e_c.add(btnPlaylist);
 		
+		JPanel panel_c = new JPanel();
+		add(panel_c, BorderLayout.CENTER);
 		btnScarica = new JButton("Scarica");
 		btnScarica.setIcon(new ImageIcon(PanelEpisodioLettore.class.getResource("/GUI/res/utorrent.png")));
-		btnScarica.setBounds(64, 66, 98, 23);
-		panel.add(btnScarica);
+		panel_c.add(btnScarica);
 		
 		btnSottotitolo = new JButton("Sottotitolo");
 		btnSottotitolo.setIcon(new ImageIcon(PanelEpisodioLettore.class.getResource("/GUI/res/sub16.png")));
-		btnSottotitolo.setBounds(172, 66, 112, 23);
-		panel.add(btnSottotitolo);
+		panel_c.add(btnSottotitolo);
 		
 		btnCancellaFile = new JButton("Cancella");
-		btnCancellaFile.setIcon(new ImageIcon(PanelEpisodioLettore.class.getResource("/GUI/res/cestino.png")));
-		btnCancellaFile.setBounds(294, 66, 112, 23);
-		panel.add(btnCancellaFile);
+		btnCancellaFile.setIcon(new ImageIcon(PanelEpisodioLettore.class.getResource("/GUI/res/cestino16.png")));
+		panel_c.add(btnCancellaFile);
 		
 		btnCopiaSuDispositivo = new JButton("Copia su...");
 		btnCopiaSuDispositivo.setIcon(new ImageIcon(PanelEpisodioLettore.class.getResource("/GUI/res/cartella.png")));
-		btnCopiaSuDispositivo.setBounds(416, 66, 112, 23);
-		panel.add(btnCopiaSuDispositivo);
-		
+		panel_c.add(btnCopiaSuDispositivo);
 		btnPlay = new JButton("Play");
+		panel_c.add(btnPlay);
 		btnPlay.setIcon(new ImageIcon(PanelEpisodioLettore.class.getResource("/GUI/res/vlc.png")));
 		btnPlay.setBounds(603, 66, 89, 23);
-		panel.add(btnPlay);
 		
-		JLabel lblnomeserie = new JLabel("<html><b>"+torrent.getNomeSerie()+"</b></html>");
-		lblnomeserie.setBounds(64, 12, 342, 16);
-		panel.add(lblnomeserie);
-		
-		JLabel lblStagione = new JLabel("Stagione:");
-		lblStagione.setBounds(64, 38, 64, 16);
-		panel.add(lblStagione);
-		
-		JLabel label_stagione = new JLabel("<html><b>"+torrent.getStagione()+"</b></html>");
-		label_stagione.setBounds(130, 38, 28, 16);
-		panel.add(label_stagione);
-		
-		JLabel lblEpisodio = new JLabel("Episodio:");
-		lblEpisodio.setBounds(160, 38, 55, 16);
-		panel.add(lblEpisodio);
-		
-		JLabel label_episodio = new JLabel("<html><b>"+torrent.getEpisodio()+"</b></html>");
-		label_episodio.setBounds(219, 38, 28, 16);
-		panel.add(label_episodio);
-		
-		cmb_stato_episodio = new JComboBox<String>();
-		cmb_stato_episodio.setBounds(64, 99, 144, 20);
-		panel.add(cmb_stato_episodio);
-		cmb_stato_episodio.addItem("Scaricare");
-		cmb_stato_episodio.addItem("Scaricato");
-		cmb_stato_episodio.addItem("Visto");
-		cmb_stato_episodio.addItem("Rimosso");
-		cmb_stato_episodio.addItem("Ignorato");
-		
-		JLabel lblNomeFile = new JLabel("Nome file:");
-		lblNomeFile.setBounds(218, 105, 66, 14);
-		panel.add(lblNomeFile);
-		
-		JLabel lblfilename = new JLabel(torrent.getFilePath());
-		lblfilename.setBounds(282, 104, 245, 16);
-		panel.add(lblfilename);
-		
-		String tags=""+(torrent.is720p()?"720p":"")+" "+(torrent.isPROPER()?"PROPER":"")+" "+(torrent.isRepack()?"REPACK":"")+" "+(torrent.isPreAir()?"PREAIR":"").trim();
-		JLabel lbltags = new JLabel("<html><b>"+tags+"</b></html>");
-		lbltags.setBounds(603, 102, 133, 14);
-		panel.add(lbltags);
-
 		addListener();
 	}
 	private void addListener(){
@@ -157,7 +133,8 @@ public class PanelEpisodioLettore extends JPanel {
 					String filepath=torrent.getFilePath();
 					if(filepath.length()>0){
 						if(player!=null){
-							player.play(filepath);
+							if(player.isLinked())
+								player.play(filepath);
 						}
 						else {
 							PlayerOLD.play(filepath);
@@ -200,22 +177,5 @@ public class PanelEpisodioLettore extends JPanel {
 	}
 	public static void setPlaylist(JPlaylist p){
 		playlist=p;
-	}
-	
-	public static void main(String[] args){
-		JFrame frame=new JFrame("Prova");
-		frame.setSize(750, 500);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(new BorderLayout());
-		Torrent t=new Torrent(new SerieTV(new EZTV(), "Anger Management", ""), "magnet:?xt=urn:btih:CESZGU2HYDQ3V7PMARB3MXELSZ3AMDWU&dn=Anger.Management.S02E31.HDTV.x264-ASAP&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80",Torrent.SCARICARE);
-		t.parseMagnet();
-		
-		JPlaylist playlist=new JPlaylist();
-		frame.getContentPane().add(playlist, BorderLayout.NORTH);
-		
-		PanelEpisodioLettore p=new PanelEpisodioLettore(t);
-		frame.getContentPane().add(p);
-		
-		frame.setVisible(true);
 	}
 }

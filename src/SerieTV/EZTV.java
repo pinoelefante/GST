@@ -12,6 +12,7 @@ import Programma.Download;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
+import Programma.WebProxyManager;
 import StruttureDati.db.KVResult;
 import StruttureDati.serietv.Episodio;
 
@@ -30,7 +31,9 @@ public class EZTV extends ProviderSerieTV{
 	@Override
 	public void aggiornaElencoSerie() {
 		System.out.println("EZTV.it - Aggiornando elenco serie tv");
-		Download downloader=new Download("http://eztv.it/showlist/", Settings.getCurrentDir()+"file.html");
+		String base_url=WebProxyManager.getUrlProxy()+getBaseURL();
+		System.out.println(base_url);
+		Download downloader=new Download(base_url+"/showlist/", Settings.getCurrentDir()+"file.html");
 		downloader.avviaDownload();
 		
 		try {
@@ -53,6 +56,7 @@ public class EZTV extends ProviderSerieTV{
 				if(linea.contains("\"thread_link\"")){
 					String nomeserie=linea.substring(linea.indexOf("class=\"thread_link\">")+"class=\"thread_link\">".length(), linea.indexOf("</a>")).trim();
 					String url=linea.substring(linea.indexOf("<a href=\"")+"<a href=\"".length(), linea.indexOf("\" class=\"thread_link\">")).trim();
+					url=url.replace(base_url, "");
 					String nextline=file.nextLine().trim();
 					int stato=0;
 					if(nextline.contains("ended"))
@@ -227,8 +231,9 @@ public class EZTV extends ProviderSerieTV{
 		System.out.println("Aggiornando i link di: "+serie.getNomeSerie());
 	
 		try{
-    		
-			Download download=new Download(getBaseURL()+serie.getUrl(), Settings.getCurrentDir()+serie.getNomeSerie());
+    		String base_url=WebProxyManager.getUrlProxy()+getBaseURL();
+    		System.out.println(base_url);
+			Download download=new Download(base_url+serie.getUrl(), Settings.getCurrentDir()+serie.getNomeSerie());
     		download.avviaDownload();
     		download.getDownloadThread().join();
     		

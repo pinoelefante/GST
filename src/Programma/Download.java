@@ -136,7 +136,7 @@ public class Download {
 		 * Download del file
 		 */
 		public void run(){
-			String userAgent = "GestioneSerieTV release "+Settings.getVersioneSoftware()+" ("+System.getProperty("os.name")+")";
+			String userAgent = "GestioneSerieTV/rel."+Settings.getVersioneSoftware()+" ("+System.getProperty("os.name")+")";
 			URL url = null;
 			try {
 				url = new URL(url_download);

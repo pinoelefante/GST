@@ -184,4 +184,72 @@ public class Episodio {
 		ep_preair.trimToSize();
 		Runtime.getRuntime().gc();
 	}
+	public Torrent getLink(){ //TODO get link in base alle preferenze e se scaricato
+		//al momento cerca il link scaricato e se non trovato, in ordine hd, normale, preair
+		for(int i=0;i<ep_hd.size();i++){
+			if(ep_hd.get(i).isScaricato())
+				return ep_hd.get(i);
+		}
+		for(int i=0;i<ep_normali.size();i++){
+			if(ep_normali.get(i).isScaricato())
+				return ep_normali.get(i);
+		}
+		for(int i=0;i<ep_preair.size();i++){
+			if(ep_preair.get(i).isScaricato())
+				return ep_preair.get(i);
+		}
+		if(getLinkHD()!=null)
+			return getLinkHD();
+		if(getLinkNormale()!=null)
+			return getLinkNormale();
+		if(getLinkPreair()!=null)
+			return getLinkPreair();
+		
+		return null;
+	}
+	public boolean isVisto(){
+		for(int i=0;i<ep_hd.size();i++){
+			if(ep_hd.get(i).getScaricato()==Torrent.VISTO)
+				return true;
+		}
+		for(int i=0;i<ep_normali.size();i++){
+			if(ep_normali.get(i).getScaricato()==Torrent.VISTO)
+				return true;
+		}
+		for(int i=0;i<ep_preair.size();i++){
+			if(ep_preair.get(i).getScaricato()==Torrent.VISTO)
+				return true;
+		}
+		return false;
+	}
+	public boolean isRimosso(){
+		for(int i=0;i<ep_hd.size();i++){
+			if(ep_hd.get(i).getScaricato()!=Torrent.RIMOSSO)
+				return false;
+		}
+		for(int i=0;i<ep_normali.size();i++){
+			if(ep_normali.get(i).getScaricato()==Torrent.RIMOSSO)
+				return false;
+		}
+		for(int i=0;i<ep_preair.size();i++){
+			if(ep_preair.get(i).getScaricato()==Torrent.RIMOSSO)
+				return false;
+		}
+		return true;
+	}
+	public boolean isIgnorato(){
+		for(int i=0;i<ep_hd.size();i++){
+			if(ep_hd.get(i).getScaricato()!=Torrent.IGNORATO)
+				return false;
+		}
+		for(int i=0;i<ep_normali.size();i++){
+			if(ep_normali.get(i).getScaricato()==Torrent.IGNORATO)
+				return false;
+		}
+		for(int i=0;i<ep_preair.size();i++){
+			if(ep_preair.get(i).getScaricato()==Torrent.IGNORATO)
+				return false;
+		}
+		return true;
+	}
 }

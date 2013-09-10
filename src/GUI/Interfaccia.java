@@ -113,6 +113,12 @@ public class Interfaccia extends JFrame {
 	private JButton btnAggiorna;
 	private JPanel panel_nuove_serie;
 	private JButton buttonReloadSerie;
+	private JComboBox<String> comboBoxLettoreOrdine;
+	private JComboBox<Integer> comboBoxLettoreStagione;
+	private JPanel panel_elenco_puntate_lettore;
+	private JCheckBox chckbxNascondiViste;
+	private JCheckBox chckbxNascondiIgnorate;
+	private JCheckBox chckbxNascondiRimosse;
 
 	@SuppressWarnings("serial")
 	public Interfaccia(){
@@ -663,7 +669,7 @@ public class Interfaccia extends JFrame {
 		lblStagione.setBounds(323, 265, 55, 16);
 		LettorePanel.add(lblStagione);
 		
-		JComboBox<Integer> comboBoxLettoreStagione = new JComboBox<Integer>();
+		comboBoxLettoreStagione = new JComboBox<Integer>();
 		comboBoxLettoreStagione.setBounds(377, 263, 45, 20);
 		LettorePanel.add(comboBoxLettoreStagione);
 		
@@ -671,20 +677,21 @@ public class Interfaccia extends JFrame {
 		scrollPaneLettoreEpisodi.setBounds(0, 285, 739, 210);
 		LettorePanel.add(scrollPaneLettoreEpisodi);
 		
-		JPanel panel_elenco_puntate = new JPanel();
-		scrollPaneLettoreEpisodi.setViewportView(panel_elenco_puntate);
+		panel_elenco_puntate_lettore = new JPanel();
+		scrollPaneLettoreEpisodi.setViewportView(panel_elenco_puntate_lettore);
+		panel_elenco_puntate_lettore.setLayout(new GridLayout(1, 0, 0, 0));
 		
-		JCheckBox chckbxNascondiViste = new JCheckBox("Nascondi viste");
+		chckbxNascondiViste = new JCheckBox("Nascondi viste");
 		chckbxNascondiViste.setSelected(true);
 		chckbxNascondiViste.setBounds(10, 497, 112, 24);
 		LettorePanel.add(chckbxNascondiViste);
 		
-		JCheckBox chckbxNascondiIgnorate = new JCheckBox("Nascondi ignorate");
+		chckbxNascondiIgnorate = new JCheckBox("Nascondi ignorate");
 		chckbxNascondiIgnorate.setSelected(true);
 		chckbxNascondiIgnorate.setBounds(134, 497, 135, 24);
 		LettorePanel.add(chckbxNascondiIgnorate);
 		
-		JCheckBox chckbxNascondiRimosse = new JCheckBox("Nascondi rimosse");
+		chckbxNascondiRimosse = new JCheckBox("Nascondi rimosse");
 		chckbxNascondiRimosse.setSelected(true);
 		chckbxNascondiRimosse.setBounds(277, 497, 140, 24);
 		LettorePanel.add(chckbxNascondiRimosse);
@@ -705,7 +712,7 @@ public class Interfaccia extends JFrame {
 		lblOrdine.setBounds(565, 265, 44, 16);
 		LettorePanel.add(lblOrdine);
 		
-		JComboBox<String> comboBoxLettoreOrdine = new JComboBox<String>();
+		comboBoxLettoreOrdine = new JComboBox<String>();
 		comboBoxLettoreOrdine.setModel(new DefaultComboBoxModel<String>(new String[] {"Crescente", "Decrescente"}));
 		comboBoxLettoreOrdine.setBounds(615, 263, 112, 20);
 		LettorePanel.add(comboBoxLettoreOrdine);
@@ -1229,13 +1236,18 @@ public class Interfaccia extends JFrame {
 		});
 		btnAggiungi.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				SerieTV s=(SerieTV) cmb_serie_tutte.getSelectedItem();
+				final SerieTV s=(SerieTV) cmb_serie_tutte.getSelectedItem();
 				if(s!=null){
 					if(GestioneSerieTV.aggiungiSeriePreferita(s)){
 						reloadSeriePreferite();
-						//s.aggiornaEpisodiOnline(); //TODO eseguire in un thread separato
-						
-						
+						class ThreadAggiungi extends Thread {
+							public void run(){
+								s.aggiornaEpisodiOnline();	
+								inizializzaDownloadScroll();
+							}
+						}
+						Thread t_aggiungi=new ThreadAggiungi();
+						t_aggiungi.start();
 					}
 				}
 			}
@@ -1349,6 +1361,84 @@ public class Interfaccia extends JFrame {
 				t.start();
 			}
 		});
+		cmb_serie_lettore.addActionListener(new ActionListener() { 
+			private SerieTV last_serie=null;
+			public void actionPerformed(ActionEvent arg0) {
+				if(cmb_serie_lettore.getSelectedItem()==null){
+					comboBoxLettoreStagione.removeAllItems();
+					panel_elenco_puntate_lettore.removeAll();
+					panel_elenco_puntate_lettore.revalidate();
+					panel_elenco_puntate_lettore.repaint();
+					return;
+				}
+				
+				if(cmb_serie_lettore.getSelectedItem()!=last_serie){
+					int index_stagione=comboBoxLettoreStagione.getSelectedIndex();
+					comboBoxLettoreStagione.removeAllItems();
+					SerieTV serie=(SerieTV) cmb_serie_lettore.getSelectedItem();
+					ArrayList<Integer> stagioni=new ArrayList<Integer>();
+					for(int i=0;i<serie.getNumEpisodi();i++){
+						int stagione=serie.getEpisodio(i).getStagione();
+						if(!stagioni.contains(stagione)){
+							stagioni.add(stagione);
+							comboBoxLettoreStagione.addItem(stagione);
+						}
+					}
+					if(stagioni.size()>0){
+						comboBoxLettoreStagione.setSelectedIndex(0);
+						if(index_stagione==0)
+							disegnaLettore();
+					}
+				}
+			}
+		});
+		comboBoxLettoreStagione.addActionListener(new ActionListener() {
+			private int last_season=-1;
+			public void actionPerformed(ActionEvent e) {
+				if(comboBoxLettoreStagione.getSelectedItem()!=null){
+					if((int)comboBoxLettoreStagione.getSelectedItem()!=last_season){
+						disegnaLettore();
+						last_season=comboBoxLettoreStagione.getSelectedItem()==null?-1:(int) comboBoxLettoreStagione.getSelectedItem();
+					}
+				}
+			}
+		});
+		comboBoxLettoreOrdine.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				disegnaLettore();
+			}
+		});
+		panel_elenco_puntate_lettore.addContainerListener(new ContainerListener() {
+			public void componentRemoved(ContainerEvent arg0) {
+				GridLayout layout=(GridLayout) panel_elenco_puntate_lettore.getLayout();
+				if(panel_elenco_puntate_lettore.getComponentCount()<=3)
+					layout.setRows(2);
+				else
+					layout.setRows(layout.getRows()-1);
+			}
+			public void componentAdded(ContainerEvent arg0) {
+				GridLayout layout=(GridLayout) panel_elenco_puntate_lettore.getLayout();
+				if(panel_elenco_puntate_lettore.getComponentCount()<=2)
+					layout.setRows(2);
+				else
+					layout.setRows(layout.getRows()+1);
+			}
+		});
+		chckbxNascondiViste.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				disegnaLettore();
+			}
+		});
+		chckbxNascondiIgnorate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				disegnaLettore();
+			}
+		});
+		chckbxNascondiRimosse.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				disegnaLettore();
+			}
+		});
 	}
 	public void init(){
 		/** inizializza i campi che contengono le serie tv inserite*/
@@ -1408,5 +1498,40 @@ public class Interfaccia extends JFrame {
 	}
 	public static Interfaccia getInterfaccia(){
 		return thisframe;
+	}
+	public void disegnaLettore(){
+		SerieTV serie=(SerieTV) cmb_serie_lettore.getSelectedItem();
+		if(serie!=null){
+			int stagione=(int) comboBoxLettoreStagione.getSelectedItem();
+			if(stagione>=0){
+				boolean ordine_crescente=comboBoxLettoreOrdine.getSelectedIndex()==0?true:false;
+				panel_elenco_puntate_lettore.removeAll();
+				
+				boolean hide_v=chckbxNascondiViste.isSelected(), //viste
+						hide_i=chckbxNascondiIgnorate.isSelected(), //ignorate
+						hide_r=chckbxNascondiRimosse.isSelected(); //rimosse
+				
+				for(int i=0;i<serie.getNumEpisodi();i++){
+					Episodio e=serie.getEpisodio(i);
+					if(e.getStagione()>stagione)
+						break;
+					else if(e.getStagione()==stagione){
+						if(hide_v && e.isVisto())
+							continue;
+						if(hide_i && e.isIgnorato())
+							continue;
+						if(hide_r && e.isRimosso())
+							continue;
+							
+						if(ordine_crescente)
+							panel_elenco_puntate_lettore.add(new PanelEpisodioLettore(e));
+						else
+							panel_elenco_puntate_lettore.add(new PanelEpisodioLettore(e), 0);
+					}
+				}
+				panel_elenco_puntate_lettore.revalidate();
+				panel_elenco_puntate_lettore.repaint();
+			}
+		}
 	}
 }
