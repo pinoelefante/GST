@@ -240,7 +240,7 @@ public class Settings {
 	public static void baseSettings(){
 		SistemaOperativo = System.getProperty("os.name");
 		current_dir = ClassLoader.getSystemClassLoader().getResource(".").getPath();
-		if(current_dir.startsWith("/")){
+		if(isWindows() && current_dir.startsWith("/")){
 			current_dir=current_dir.substring(1).replace("%20", " ").replace("\\", File.separator).replace("/", File.separator);
 		}
 		System.setProperty("user.dir", current_dir);

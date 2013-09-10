@@ -78,7 +78,7 @@ public class Main {
 			//GestioneSerieTV2.carica_serie_database();
 			
 			
-			/*
+			/* TODO
 			fl.settext("Controllo aggiornamenti");
 			thread_update.start();
 			fl.setprog(++i);

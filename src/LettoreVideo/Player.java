@@ -38,7 +38,7 @@ public class Player {
 	private boolean isFullscreen;
 	private Thread thread_play;
 	
-	public Player(JComponent f, Playlist p){
+	public Player(JComponent f, Playlist p) throws Exception{
 		default_parent=f;
 		playlist=p;
 		instance();
@@ -48,9 +48,10 @@ public class Player {
 	}
 	
 	private boolean search_path=false;
-	private void locateVLC() {
+	private void locateVLC() throws Exception{
 		System.out.println(DEFAULT_PATH);
 		if(!search_path){
+			//TODO modificare path per linux
 			if(Settings.isLinux()){
 				System.setProperty("VLC_PLUGIN_PATH", DEFAULT_PATH+File.separator+"vlc"+File.separator+"plugins");
 			}
@@ -64,6 +65,7 @@ public class Player {
 		catch(UnsatisfiedLinkError e){
 			e.printStackTrace();
 			ManagerException.registraEccezione(e.getMessage());
+			throw e;
 		}
 	}
 	public JSlider getProgressSlider(){
@@ -75,15 +77,14 @@ public class Player {
 	public JLabel getCurrentTimeLabel(){
 		return current_time_label;
 	}
-	public void instance(){		
+	public void instance() throws Exception{		
 		if(vlc==null){
 			try{
 				locateVLC();
 				vlc=new EmbeddedMediaPlayerComponent();
 			}
-			catch(RuntimeException e){
-				ManagerException.registraEccezione(e);
-				return;
+			catch(Exception e){
+				throw e;
 			}
 		}
 	}

@@ -1098,7 +1098,15 @@ public class Interfaccia extends JFrame {
 					public void run(){
 						source.setEnabled(false);
 						source.setText("Loading...");
-						VLCPanel=new Player(LettorePanel, playlist.getPlaylist());
+						try {
+							VLCPanel=new Player(LettorePanel, playlist.getPlaylist());
+						}
+						catch (Exception e) {
+							e.printStackTrace();
+							source.setText("Carica VLC");
+							source.setEnabled(true);
+							return;
+						}
 						if(VLCPanel.isLinked()){
 							VLCPanel.setBounds(10, 0, 417, 235);
 							LettorePanel.add(VLCPanel.getPlayerPane());
