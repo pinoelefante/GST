@@ -3,6 +3,7 @@ package GUI;
 import javax.swing.JFrame;
 
 import Programma.ControlloAggiornamenti;
+import Programma.FileManager;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
@@ -757,6 +758,8 @@ public class Interfaccia extends JFrame {
 		
 		JPanel ManagerCopie = new JPanel();
 		tab.addTab("File Manager", new ImageIcon(Interfaccia.class.getResource("/GUI/res/salva.png")), ManagerCopie, null);
+		ManagerCopie.setLayout(new BorderLayout(0, 0));
+		ManagerCopie.add(FileManager.getPanel(), BorderLayout.CENTER);
 		
 		JPanel OpzioniPanel = new JPanel();
 		OpzioniPanel.setBorder(new CompoundBorder());

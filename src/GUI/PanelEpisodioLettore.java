@@ -16,11 +16,11 @@ import javax.swing.border.EtchedBorder;
 
 import LettoreVideo.Player;
 import LettoreVideo.PlaylistItem;
+import Programma.Download;
 import Programma.OperazioniFile;
 import Programma.Settings;
 import SerieTV.Torrent;
 import StruttureDati.serietv.Episodio;
-import java.awt.FlowLayout;
 
 public class PanelEpisodioLettore extends JPanel {
 	private static final long serialVersionUID = 1L;
@@ -88,6 +88,7 @@ public class PanelEpisodioLettore extends JPanel {
 		panel_c.add(btnCancellaFile);
 		
 		btnCopiaSuDispositivo = new JButton("Copia su...");
+		
 		btnCopiaSuDispositivo.setIcon(new ImageIcon(PanelEpisodioLettore.class.getResource("/GUI/res/cartella.png")));
 		panel_c.add(btnCopiaSuDispositivo);
 		btnPlay = new JButton("Play");
@@ -157,6 +158,17 @@ public class PanelEpisodioLettore extends JPanel {
 						JOptionPane.showMessageDialog(PanelEpisodioLettore.this.getParent(), "Non è stato possibile eliminare il file. Potrebbe essere in uso da un altro processo.\nSe sei sicuro che il file non esiste, imposta manualmente lo stato RIMOSSO");
 					}
 				}
+			}
+		});
+		
+		btnCopiaSuDispositivo.addActionListener(new ActionListener() {
+			int i=0;
+			public void actionPerformed(ActionEvent arg0) {
+				//TODO completare con scelta del percorso
+				String filepath=torrent.getFilePath();
+				Download.copiaFile(/*filepath*/"D:\\SerieTV\\Alcatraz\\Alcatraz.S01E01.HDTV.XviD-LOL.[VTV].avi", "E:\\STCopied"+(i++));
+				
+				JOptionPane.showMessageDialog(PanelEpisodioLettore.this.getParent().getParent(), "Il file è stato aggiunto alla coda dei file da copiare.\nControlla la sezione File Manager per vedere lo stato della copia.");
 			}
 		});
 	}

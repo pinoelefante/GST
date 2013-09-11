@@ -100,6 +100,8 @@ public class Main {
 			
 			fl.chiudi();
 			
+			FileManager.instance();
+			
 			GUIframe = new Interfaccia();
 			GUIframe.setVisible(true);
 			GUIframe.init();

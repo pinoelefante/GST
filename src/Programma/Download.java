@@ -12,7 +12,7 @@ public class Download {
 	private long d_corrente, d_finale;
 	private String url_download, path_destinazione;
 	private Thread download;
-	private boolean complete=false, toStart=true;
+	private boolean complete=false, toStart=true, started=false;
 	
 	public Download(String url, String path){
 		this.url_download=url;
@@ -164,11 +164,11 @@ public class Download {
 
 				byte[] buffer = new byte[32768]; //32KB
 				int len;
+				setStarted(true);
 				while ((len = is.read(buffer)) > 0) {
 					fos.write(buffer, 0, len);
 					d_corrente+=len;
 				}
-				complete=true;
 				buffer=null;
 			} 
 			catch (IOException e) {
@@ -190,6 +190,7 @@ public class Download {
 					if (fos != null) {
 						try {
 							fos.close();
+							complete=true;
 						} 
 						catch (IOException e) {
 							e.printStackTrace();
@@ -238,5 +239,35 @@ public class Download {
 			e.printStackTrace();
 			throw new IOException("Il download non è stato completato");
 		}
+	}
+	public static void main(String[] args){
+		Download d=new Download("file:///D:\\SerieTV\\Alcatraz\\Alcatraz.S01E01.HDTV.XviD-LOL.[VTV].avi", "E:\\Multimedia\\a.avi");
+		d.avviaDownload();
+		try {
+			while(!d.isComplete()){
+				System.out.println(d.getFileSizeDowloaded()+"/"+d.getFileSize());
+				Thread.sleep(1000L);
+			}
+		}
+		catch(InterruptedException e){}
+	}
+	public static void copiaFile(String origine, String dir_destinazione){
+		if(!origine.startsWith("file:///")){
+			origine="file:///"+origine;
+		}
+		String nomefile="gst_file_destinazione_copia";
+		if(origine.contains(File.separator)){
+			nomefile=origine.substring(origine.lastIndexOf(File.separator)+1);
+		}
+		String destinazione=dir_destinazione+File.separator+nomefile;
+		Download d=new Download(origine, destinazione);
+		
+		FileManager.addDownloadFile(d);
+	}
+	public boolean isStarted() {
+		return started;
+	}
+	private void setStarted(boolean started) {
+		this.started = started;
 	}
 }
