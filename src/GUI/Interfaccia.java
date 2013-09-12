@@ -3,6 +3,7 @@ package GUI;
 import javax.swing.JFrame;
 
 import Programma.ControlloAggiornamenti;
+import Programma.Download;
 import Programma.FileManager;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
@@ -28,6 +29,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -69,20 +72,24 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.DefaultComboBoxModel;
 
 import java.awt.GridLayout;
+import java.io.File;
+import java.io.IOException;
 
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.CompoundBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.JRadioButton;
 
 public class Interfaccia extends JFrame {
 	private static Interfaccia thisframe;
 	private static final long serialVersionUID = 1L;
 	private JPanel InfoPanel;
-	private JTextField textField;
-	private JPasswordField passwordField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
+	private JTextField txt_itasa_user;
+	private JPasswordField txt_itasa_pass;
+	private JTextField txt_utorrent_path;
+	private JTextField txt_download_path;
+	private JTextField txt_vlc_path;
 	
 	private Player VLCPanel;
 	private JPanel LettorePanel;
@@ -120,6 +127,50 @@ public class Interfaccia extends JFrame {
 	private JCheckBox chckbxNascondiViste;
 	private JCheckBox chckbxNascondiIgnorate;
 	private JCheckBox chckbxNascondiRimosse;
+	private JComboBox<String> cmb_down_selezione;
+	private JCheckBox chckbxSempreInPrimo;
+	private JCheckBox chckbxChiediConfermaPrima;
+	private JCheckBox chckbxExternalVLC;
+	private JCheckBox chckbxAvviaConIl;
+	private JCheckBox chckbxAvviaRidottoA;
+	private JCheckBox chckbxTrayOnIcon;
+	private JCheckBox chckbxDownHD;
+	private JCheckBox chckbxDownPreair;
+	private JCheckBox chckbxAutoAbilita;
+	private JComboBox<Integer> comboBoxMinutiRicercaAutomatica;
+	private JCheckBox chckbxAutoHD;
+	private JCheckBox chckbxAutoPreair;
+	private JCheckBox chckbxAbilitaDownloadSottotitoli;
+	private JCheckBox chckbxAbilitaItaliansubsnet;
+	private JLabel lblItasaloginresult;
+	private JButton btnDirDownloadSfoglia;
+	private JButton btnUtorrentSfoglia;
+	private JButton btnVLCSfoglia;
+	private JButton btnOpzioniSalva;
+	private JButton btnAggiungiTorrent;
+	private JLabel imgItasaLogo;
+	private JLabel imgSubsfactoryLogo;
+	private JLabel imgSubspediaLogo;
+	private JButton btnAggiungi;
+	private JButton btnRimuovi;
+	private JButton btnScarica;
+	private JButton btnIgnora;
+	private JButton btnTest;
+	private JLabel lblDona;
+	private JButton btnCercaAggiornamenti;
+	private JButton btnAggiornaAds;
+	private JButton btnChiudiADS;
+	private JButton btnVLCInstance;
+	private JButton buttonVLCPlay;
+	private JButton buttonVLCStop;
+	private JButton btnVLCPrec;
+	private JButton btnVLCNext;
+	private JButton btnVLCFullscreen;
+	private JLabel lblRisultatoAggiornamenti;
+	private JLabel lblVersioneAttuale;
+	private JLabel lblRicercaOre;
+	private JTabbedPane tab;
+	private JPanel opzioniPanel;
 
 	@SuppressWarnings("serial")
 	public Interfaccia(){
@@ -137,7 +188,7 @@ public class Interfaccia extends JFrame {
 			setLocation(x_screen,10);
 		}
 		
-		JTabbedPane tab = new JTabbedPane(JTabbedPane.TOP);
+		tab = new JTabbedPane(JTabbedPane.TOP);
 		getContentPane().add(tab, BorderLayout.CENTER);
 		
 		JPanel DownloadPanel = new JPanel();
@@ -204,12 +255,12 @@ public class Interfaccia extends JFrame {
 		cmb_serie_aggiunte.setBounds(315, 68, 159, 20);
 		panel_9.add(cmb_serie_aggiunte);
 		
-		JButton btnAggiungi = new JButton("Aggiungi");
+		btnAggiungi = new JButton("Aggiungi");
 		btnAggiungi.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/add.png")));
 		btnAggiungi.setBounds(95, 95, 103, 26);
 		panel_9.add(btnAggiungi);
 		
-		JButton btnRimuovi = new JButton("Rimuovi");
+		btnRimuovi = new JButton("Rimuovi");
 		btnRimuovi.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/remove.png")));
 		btnRimuovi.setBounds(335, 95, 103, 26);
 		panel_9.add(btnRimuovi);
@@ -259,73 +310,12 @@ public class Interfaccia extends JFrame {
 		panel_10.add(lblLink);
 		
 		txt_add_episodio_link = new JTextField();
-		txt_add_episodio_link.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				if(e.getButton()==MouseEvent.BUTTON3 || e.getButton()==MouseEvent.BUTTON2){
-					txt_add_episodio_link.setText("");
-					Clipboard clip=Toolkit.getDefaultToolkit().getSystemClipboard();
-					Transferable contents = clip.getContents(null);
-					boolean hasTransferableText = (contents != null) && contents.isDataFlavorSupported(DataFlavor.stringFlavor);
-					if (hasTransferableText) {
-						try {
-							String result = (String) contents.getTransferData(DataFlavor.stringFlavor);
-							txt_add_episodio_link.setText(result.trim());
-						}
-						catch(Exception e1){
-							e1.printStackTrace();
-						}
-					}
-				}
-			}
-		});
 		txt_add_episodio_link.setBounds(266, 50, 144, 20);
 		txt_add_episodio_link.setToolTipText("Incolla il testo copiato cliccando il tasto destro del mouse");
 		panel_10.add(txt_add_episodio_link);
 		txt_add_episodio_link.setColumns(10);
 		
-		JButton btnAggiungiTorrent = new JButton("");
-		btnAggiungiTorrent.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				SerieTV serie=(SerieTV) cmb_serie_aggiunte_add_episodio.getSelectedItem();
-				int stagione=0, episodio=0;
-				try {
-					stagione=Integer.parseInt(txt_add_episodio_stagione.getText());
-					episodio=Integer.parseInt(txt_add_episodio_episodio.getText());
-				}
-				catch(NumberFormatException e){
-					ManagerException.registraEccezione(e);
-					JOptionPane.showMessageDialog(Interfaccia.this, "Stagione e/o episodio non possono contenere lettere");
-					return;
-				}
-				String link=txt_add_episodio_link.getText();
-				
-				if(serie!=null){
-					if(stagione<=0 || episodio<0){
-						System.out.println("S/E <= 0");
-						return;
-					}
-					if(link.isEmpty()){
-						System.out.println("Link vuoto");
-						return;
-					}
-					if(link.endsWith(".torrent") || link.startsWith("magnet:")){
-						System.out.println("Link valido");
-						//return;
-					}
-					else {
-						System.out.println("Link non valido");
-						return;
-					}
-					Torrent t=new Torrent(serie, link, Torrent.SCARICARE);
-					t.setStagione(stagione);
-					t.setEpisodio(episodio);
-					serie.addEpisodio(t);
-					
-					inizializzaDownloadScroll();
-					JOptionPane.showMessageDialog(thisframe, serie.getNomeSerie()+" - Link aggiunto");
-				}
-			}
-		});
+		btnAggiungiTorrent = new JButton("");
 		btnAggiungiTorrent.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/add.png")));
 		btnAggiungiTorrent.setBounds(428, 30, 40, 26);
 		panel_10.add(btnAggiungiTorrent);
@@ -343,7 +333,7 @@ public class Interfaccia extends JFrame {
 		panel_info_episodio.setBounds(385, 257, 344, 269);
 		DownloadPanel.add(panel_info_episodio);
 		
-		JButton btnTest = new JButton("test");
+		btnTest = new JButton("test");
 		panel_info_episodio.add(btnTest);
 		
 		btnAggiorna = new JButton("Aggiorna");
@@ -352,15 +342,25 @@ public class Interfaccia extends JFrame {
 		btnAggiorna.setBounds(10, 228, 105, 23);
 		DownloadPanel.add(btnAggiorna);
 		
-		JButton btnScarica = new JButton("Scarica");
+		btnScarica = new JButton("Scarica");
 		btnScarica.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/download.png")));
 		btnScarica.setBounds(127, 228, 114, 23);
 		DownloadPanel.add(btnScarica);
 		
-		JButton btnIgnora = new JButton("Ignora");
+		btnIgnora = new JButton("Ignora");
 		btnIgnora.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/remove.png")));
 		btnIgnora.setBounds(253, 228, 97, 23);
 		DownloadPanel.add(btnIgnora);
+		
+		JLabel lblselezione = new JLabel("<html>Selezione</html>");
+		lblselezione.setBounds(361, 232, 55, 16);
+		DownloadPanel.add(lblselezione);
+		
+		cmb_down_selezione = new JComboBox<String>();
+		cmb_down_selezione.setBounds(422, 228, 140, 24);
+		DownloadPanel.add(cmb_down_selezione);
+		cmb_down_selezione.addItem("Seleziona tutto");
+		cmb_down_selezione.addItem("Deseleziona tutto");
 		
 		JPanel PreferenzeSeriePanel = new JPanel();
 		tab.addTab("Regole", new ImageIcon(Interfaccia.class.getResource("/GUI/res/preferiti.png")), PreferenzeSeriePanel, null);
@@ -397,18 +397,8 @@ public class Interfaccia extends JFrame {
 		SottotitoliPanel.add(panel);
 		panel.setLayout(null);
 		
-		JLabel imgItasaLogo = new JLabel("");
+		imgItasaLogo = new JLabel("");
 		imgItasaLogo.setToolTipText("Clicca per visitare ItalianSubs");
-		imgItasaLogo.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent arg0) {
-				try {
-					OperazioniFile.esploraWeb("http://www.italiansubs.net");
-				}
-				catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
 		imgItasaLogo.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/itasa.png")));
 		imgItasaLogo.setBounds(10, 49, 208, 37);
 		panel.add(imgItasaLogo);
@@ -425,18 +415,8 @@ public class Interfaccia extends JFrame {
 		cmb_serie_sottotitoli.setBounds(228, 21, 238, 20);
 		panel.add(cmb_serie_sottotitoli);
 		
-		JLabel imgSubsfactoryLogo = new JLabel("");
+		imgSubsfactoryLogo = new JLabel("");
 		imgSubsfactoryLogo.setToolTipText("Clicca per visitare Subsfactory");
-		imgSubsfactoryLogo.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				try {
-					OperazioniFile.esploraWeb("http://www.subsfactory.it");
-				}
-				catch (Exception e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
 		imgSubsfactoryLogo.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/subsfactory.jpg")));
 		imgSubsfactoryLogo.setBounds(258, 49, 208, 37);
 		panel.add(imgSubsfactoryLogo);
@@ -445,18 +425,8 @@ public class Interfaccia extends JFrame {
 		lblsubsfactory.setBounds(313, 87, 82, 14);
 		panel.add(lblsubsfactory);
 		
-		JLabel imgSubspediaLogo = new JLabel("");
+		imgSubspediaLogo = new JLabel("");
 		imgSubspediaLogo.setToolTipText("Clicca per visitare Subspedia");
-		imgSubspediaLogo.addMouseListener(new MouseAdapter() {
-			public void mouseClicked(MouseEvent e) {
-				try {
-					OperazioniFile.esploraWeb("http://subspedia.weebly.com/");
-				}
-				catch (Exception e1) {
-					e1.printStackTrace();
-				}
-			}
-		});
 		imgSubspediaLogo.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/subspedia.png")));
 		imgSubspediaLogo.setBounds(505, 49, 208, 37);
 		panel.add(imgSubspediaLogo);
@@ -654,7 +624,7 @@ public class Interfaccia extends JFrame {
 		tab.addTab("Lettore", new ImageIcon(Interfaccia.class.getResource("/GUI/res/player.png")), LettorePanel, null);
 		LettorePanel.setLayout(null);
 		
-		JButton btnVLCInstance=new JButton("Carica VLC");
+		btnVLCInstance=new JButton("Carica VLC");
 		btnVLCInstance.setBounds(165, 115, 100, 25);
 		LettorePanel.add(btnVLCInstance);
 		
@@ -685,16 +655,19 @@ public class Interfaccia extends JFrame {
 		chckbxNascondiViste = new JCheckBox("Nascondi viste");
 		chckbxNascondiViste.setSelected(true);
 		chckbxNascondiViste.setBounds(10, 497, 112, 24);
+		chckbxNascondiViste.setSelected(Settings.isLettoreNascondiViste());
 		LettorePanel.add(chckbxNascondiViste);
 		
 		chckbxNascondiIgnorate = new JCheckBox("Nascondi ignorate");
 		chckbxNascondiIgnorate.setSelected(true);
 		chckbxNascondiIgnorate.setBounds(134, 497, 135, 24);
+		chckbxNascondiIgnorate.setSelected(Settings.isLettoreNascondiIgnore());
 		LettorePanel.add(chckbxNascondiIgnorate);
 		
 		chckbxNascondiRimosse = new JCheckBox("Nascondi rimosse");
 		chckbxNascondiRimosse.setSelected(true);
 		chckbxNascondiRimosse.setBounds(277, 497, 140, 24);
+		chckbxNascondiRimosse.setSelected(Settings.isLettoreNascondiRimosso());
 		LettorePanel.add(chckbxNascondiRimosse);
 		
 		playlist = new JPlaylist();
@@ -703,7 +676,7 @@ public class Interfaccia extends JFrame {
 		playlist.setBounds(469, 0, 226, 210);
 		LettorePanel.add(playlist);
 		
-		JButton btnVLCFullscreen = new JButton("");
+		btnVLCFullscreen = new JButton("");
 		btnVLCFullscreen.setToolTipText("Schermo intero");
 		btnVLCFullscreen.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/fullscreen.png")));
 		btnVLCFullscreen.setBounds(433, 104, 26, 26);
@@ -716,15 +689,16 @@ public class Interfaccia extends JFrame {
 		comboBoxLettoreOrdine = new JComboBox<String>();
 		comboBoxLettoreOrdine.setModel(new DefaultComboBoxModel<String>(new String[] {"Crescente", "Decrescente"}));
 		comboBoxLettoreOrdine.setBounds(615, 263, 112, 20);
+		comboBoxLettoreOrdine.setSelectedIndex(Settings.getLettoreOrdine());
 		LettorePanel.add(comboBoxLettoreOrdine);
 		
-		final JButton buttonVLCPlay = new JButton("");
+		buttonVLCPlay = new JButton("");
 		buttonVLCPlay.setToolTipText("Play");
 		buttonVLCPlay.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/play_pause.png")));
 		buttonVLCPlay.setBounds(433, 0, 26, 26);
 		LettorePanel.add(buttonVLCPlay);
 		
-		JButton buttonVLCStop = new JButton("");
+		buttonVLCStop = new JButton("");
 		buttonVLCStop.setToolTipText("Stop");
 		buttonVLCStop.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/stop.png")));
 		buttonVLCStop.setBounds(433, 26, 26, 26);
@@ -746,12 +720,12 @@ public class Interfaccia extends JFrame {
 		buttonPlaylistUp.setBounds(701, 76, 26, 26);
 		LettorePanel.add(buttonPlaylistUp);
 		
-		JButton btnVLCPrec = new JButton("");
+		btnVLCPrec = new JButton("");
 		btnVLCPrec.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/prev.png")));
 		btnVLCPrec.setBounds(433, 52, 26, 26);
 		LettorePanel.add(btnVLCPrec);
 		
-		JButton btnVLCNext = new JButton("");
+		btnVLCNext = new JButton("");
 		btnVLCNext.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/nextt.png")));
 		btnVLCNext.setBounds(433, 78, 26, 26);
 		LettorePanel.add(btnVLCNext);
@@ -761,66 +735,66 @@ public class Interfaccia extends JFrame {
 		ManagerCopie.setLayout(new BorderLayout(0, 0));
 		ManagerCopie.add(FileManager.getPanel(), BorderLayout.CENTER);
 		
-		JPanel OpzioniPanel = new JPanel();
-		OpzioniPanel.setBorder(new CompoundBorder());
-		tab.addTab("Opzioni", new ImageIcon(Interfaccia.class.getResource("/GUI/res/opzioni.png")), OpzioniPanel, null);
-		OpzioniPanel.setLayout(null);
+		opzioniPanel = new JPanel();
+		opzioniPanel.setBorder(new CompoundBorder());
+		tab.addTab("Opzioni", new ImageIcon(Interfaccia.class.getResource("/GUI/res/opzioni.png")), opzioniPanel, null);
+		opzioniPanel.setLayout(null);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "Aspetto", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 		panel_1.setBounds(10, 11, 350, 144);
-		OpzioniPanel.add(panel_1);
+		opzioniPanel.add(panel_1);
 		panel_1.setLayout(null);
 		
-		JCheckBox chckbxSempreInPrimo = new JCheckBox("Sempre in primo piano");
+		chckbxSempreInPrimo = new JCheckBox("Sempre in primo piano");
 		chckbxSempreInPrimo.setBounds(6, 19, 338, 23);
 		panel_1.add(chckbxSempreInPrimo);
 		
-		JCheckBox chckbxExternalVLC = new JCheckBox("Preferisci il player esterno");
+		chckbxExternalVLC = new JCheckBox("Preferisci il player esterno");
 		chckbxExternalVLC.setBounds(6, 70, 338, 23);
 		panel_1.add(chckbxExternalVLC);
 		
-		JCheckBox chckbxChiediConfermaPrima = new JCheckBox("Chiedi conferma prima di uscire");
+		chckbxChiediConfermaPrima = new JCheckBox("Chiedi conferma prima di uscire");
 		chckbxChiediConfermaPrima.setBounds(6, 44, 338, 23);
 		panel_1.add(chckbxChiediConfermaPrima);
 		
-		JCheckBox chckbxAvviaConIl = new JCheckBox("Avvia con il sistema operativo");
+		chckbxAvviaConIl = new JCheckBox("Avvia con il sistema operativo");
 		chckbxAvviaConIl.setBounds(6, 96, 196, 23);
 		panel_1.add(chckbxAvviaConIl);
 		
-		JCheckBox chckbxAvviaRidottoA = new JCheckBox("Avvia ridotto a icona");
+		chckbxAvviaRidottoA = new JCheckBox("Avvia ridotto a icona");
 		chckbxAvviaRidottoA.setBounds(204, 96, 140, 23);
 		panel_1.add(chckbxAvviaRidottoA);
 		
-		JCheckBox chckbxTrayOnIcon = new JCheckBox("Minimizza nella tray");
+		chckbxTrayOnIcon = new JCheckBox("Minimizza nella tray");
 		chckbxTrayOnIcon.setBounds(6, 117, 336, 24);
 		panel_1.add(chckbxTrayOnIcon);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new TitledBorder(null, "Download", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 		panel_2.setBounds(379, 11, 350, 57);
-		OpzioniPanel.add(panel_2);
+		opzioniPanel.add(panel_2);
 		panel_2.setLayout(null);
 		
-		JCheckBox chckbxMostraEpisodiIn = new JCheckBox("Mostra episodi in HD");
-		chckbxMostraEpisodiIn.setBounds(6, 18, 156, 23);
-		panel_2.add(chckbxMostraEpisodiIn);
+		chckbxDownHD = new JCheckBox("Mostra episodi in HD");
+		chckbxDownHD.setBounds(6, 18, 156, 23);
+		panel_2.add(chckbxDownHD);
 		
-		JCheckBox chckbxMostraEpisodiPre = new JCheckBox("Mostra episodi pre air");
-		chckbxMostraEpisodiPre.setBounds(164, 18, 180, 23);
-		panel_2.add(chckbxMostraEpisodiPre);
+		chckbxDownPreair = new JCheckBox("Mostra episodi pre air");
+		chckbxDownPreair.setBounds(164, 18, 180, 23);
+		panel_2.add(chckbxDownPreair);
 		
 		JPanel panel_3 = new JPanel();
 		panel_3.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Download automatico", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 		panel_3.setBounds(379, 65, 350, 87);
-		OpzioniPanel.add(panel_3);
+		opzioniPanel.add(panel_3);
 		panel_3.setLayout(null);
 		
-		JCheckBox chckbxAbilita = new JCheckBox("Abilita");
-		chckbxAbilita.setBounds(6, 9, 97, 23);
-		panel_3.add(chckbxAbilita);
+		chckbxAutoAbilita = new JCheckBox("Abilita");
+		chckbxAutoAbilita.setBounds(6, 9, 97, 23);
+		panel_3.add(chckbxAutoAbilita);
 		
-		final JComboBox<Integer> comboBoxMinutiRicercaAutomatica = new JComboBox<Integer>();
+		comboBoxMinutiRicercaAutomatica = new JComboBox<Integer>();
 		comboBoxMinutiRicercaAutomatica.addItem(60);
 		comboBoxMinutiRicercaAutomatica.addItem(240);
 		comboBoxMinutiRicercaAutomatica.addItem(480);
@@ -833,15 +807,15 @@ public class Interfaccia extends JFrame {
 		lblMinutiTraOgni.setBounds(83, 35, 157, 14);
 		panel_3.add(lblMinutiTraOgni);
 		
-		JCheckBox chckbxScaricaEpisodiIn = new JCheckBox("Scarica episodi in HD");
-		chckbxScaricaEpisodiIn.setBounds(6, 56, 157, 23);
-		panel_3.add(chckbxScaricaEpisodiIn);
+		chckbxAutoHD = new JCheckBox("Scarica episodi in HD");
+		chckbxAutoHD.setBounds(6, 56, 157, 23);
+		panel_3.add(chckbxAutoHD);
 		
-		JCheckBox chckbxScaricaEpisodiPre = new JCheckBox("Scarica episodi pre air");
-		chckbxScaricaEpisodiPre.setBounds(165, 56, 179, 23);
-		panel_3.add(chckbxScaricaEpisodiPre);
+		chckbxAutoPreair = new JCheckBox("Scarica episodi pre air");
+		chckbxAutoPreair.setBounds(165, 56, 179, 23);
+		panel_3.add(chckbxAutoPreair);
 		
-		final JLabel lblRicercaOre = new JLabel("");
+		lblRicercaOre = new JLabel("");
 		lblRicercaOre.setBounds(260, 35, 78, 16);
 		lblRicercaOre.setText("( 1 ora 0 min )");
 		panel_3.add(lblRicercaOre);
@@ -849,14 +823,14 @@ public class Interfaccia extends JFrame {
 		JPanel panel_4 = new JPanel();
 		panel_4.setBorder(new TitledBorder(null, "Sottotitoli", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 		panel_4.setBounds(10, 159, 717, 136);
-		OpzioniPanel.add(panel_4);
+		opzioniPanel.add(panel_4);
 		panel_4.setLayout(null);
 		
-		JCheckBox chckbxAbilitaDownloadSottotitoli = new JCheckBox("Abilita download sottotitoli");
+		chckbxAbilitaDownloadSottotitoli = new JCheckBox("Abilita download sottotitoli");
 		chckbxAbilitaDownloadSottotitoli.setBounds(6, 10, 190, 23);
 		panel_4.add(chckbxAbilitaDownloadSottotitoli);
 		
-		JCheckBox chckbxAbilitaItaliansubsnet = new JCheckBox("Abilita ItalianSubs.net");
+		chckbxAbilitaItaliansubsnet = new JCheckBox("Abilita ItalianSubs.net");
 		chckbxAbilitaItaliansubsnet.setBounds(6, 35, 150, 23);
 		panel_4.add(chckbxAbilitaItaliansubsnet);
 		
@@ -864,79 +838,90 @@ public class Interfaccia extends JFrame {
 		lblUsername.setBounds(6, 66, 91, 23);
 		panel_4.add(lblUsername);
 		
-		textField = new JTextField();
-		textField.setBounds(115, 66, 150, 20);
-		panel_4.add(textField);
-		textField.setColumns(10);
+		txt_itasa_user = new JTextField();
+		txt_itasa_user.setBounds(115, 66, 150, 20);
+		panel_4.add(txt_itasa_user);
+		txt_itasa_user.setColumns(10);
 		
 		JLabel lblPasswordItasa = new JLabel("<html>Password ItaSa</html>");
 		lblPasswordItasa.setBounds(6, 92, 98, 28);
 		panel_4.add(lblPasswordItasa);
 		
-		passwordField = new JPasswordField();
-		passwordField.setBounds(115, 98, 150, 20);
-		panel_4.add(passwordField);
+		txt_itasa_pass = new JPasswordField();
+		txt_itasa_pass.setBounds(115, 98, 150, 20);
+		panel_4.add(txt_itasa_pass);
+		
+		JButton btnItasaVerificaLogin = new JButton("Verifica login");
+		btnItasaVerificaLogin.setBounds(278, 64, 108, 26);
+		panel_4.add(btnItasaVerificaLogin);
+		
+		lblItasaloginresult = new JLabel("");
+		lblItasaloginresult.setBounds(278, 98, 108, 16);
+		panel_4.add(lblItasaloginresult);
 		
 		JPanel panel_5 = new JPanel();
 		panel_5.setBorder(new TitledBorder(null, "Programmi", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 		panel_5.setBounds(10, 307, 717, 125);
-		OpzioniPanel.add(panel_5);
+		opzioniPanel.add(panel_5);
 		panel_5.setLayout(null);
 		
 		JLabel lblPercorsoUtorrent = new JLabel("Percorso uTorrent");
 		lblPercorsoUtorrent.setBounds(12, 32, 115, 16);
 		panel_5.add(lblPercorsoUtorrent);
 		
-		textField_1 = new JTextField();
-		textField_1.setBounds(145, 30, 240, 20);
-		panel_5.add(textField_1);
-		textField_1.setColumns(10);
+		txt_utorrent_path = new JTextField();
+		txt_utorrent_path.setEditable(false);
+		txt_utorrent_path.setBounds(145, 30, 240, 20);
+		panel_5.add(txt_utorrent_path);
+		txt_utorrent_path.setColumns(10);
 		
 		JLabel lblPercorsoDownload = new JLabel("Percorso download");
 		lblPercorsoDownload.setBounds(12, 60, 115, 16);
 		panel_5.add(lblPercorsoDownload);
 		
-		textField_2 = new JTextField();
-		textField_2.setBounds(145, 58, 240, 20);
-		panel_5.add(textField_2);
-		textField_2.setColumns(10);
+		txt_download_path = new JTextField();
+		txt_download_path.setEditable(false);
+		txt_download_path.setBounds(145, 58, 240, 20);
+		panel_5.add(txt_download_path);
+		txt_download_path.setColumns(10);
 		
 		JLabel lblPercorsoVlc = new JLabel("Percorso VLC");
 		lblPercorsoVlc.setBounds(12, 88, 115, 16);
 		panel_5.add(lblPercorsoVlc);
 		
-		textField_3 = new JTextField();
-		textField_3.setBounds(145, 86, 240, 20);
-		panel_5.add(textField_3);
-		textField_3.setColumns(10);
+		txt_vlc_path = new JTextField();
+		txt_vlc_path.setEditable(false);
+		txt_vlc_path.setBounds(145, 86, 240, 20);
+		panel_5.add(txt_vlc_path);
+		txt_vlc_path.setColumns(10);
 		
-		JButton btnSfoglia = new JButton("Sfoglia");
-		btnSfoglia.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/utorrent.png")));
-		btnSfoglia.setBounds(397, 27, 98, 26);
-		panel_5.add(btnSfoglia);
+		btnUtorrentSfoglia = new JButton("Sfoglia");
+		btnUtorrentSfoglia.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/utorrent.png")));
+		btnUtorrentSfoglia.setBounds(397, 27, 98, 26);
+		panel_5.add(btnUtorrentSfoglia);
 		
-		JButton btnSfoglia_1 = new JButton("Sfoglia");
-		btnSfoglia_1.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/cartella.png")));
-		btnSfoglia_1.setBounds(397, 55, 98, 26);
-		panel_5.add(btnSfoglia_1);
+		btnDirDownloadSfoglia = new JButton("Sfoglia");
+		btnDirDownloadSfoglia.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/cartella.png")));
+		btnDirDownloadSfoglia.setBounds(397, 55, 98, 26);
+		panel_5.add(btnDirDownloadSfoglia);
 		
-		JButton btnSfoglia_2 = new JButton("Sfoglia");
-		btnSfoglia_2.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/vlc.png")));
-		btnSfoglia_2.setBounds(397, 83, 98, 26);
-		panel_5.add(btnSfoglia_2);
+		btnVLCSfoglia = new JButton("Sfoglia");
+		btnVLCSfoglia.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/vlc.png")));
+		btnVLCSfoglia.setBounds(397, 83, 98, 26);
+		panel_5.add(btnVLCSfoglia);
 		
 		JPanel panel_6 = new JPanel();
 		panel_6.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panel_6.setBounds(10, 480, 717, 37);
-		OpzioniPanel.add(panel_6);
+		opzioniPanel.add(panel_6);
 		
-		JButton btnSalva = new JButton("Salva");
-		btnSalva.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/salva.png")));
-		panel_6.add(btnSalva);
+		btnOpzioniSalva = new JButton("Salva");
+		btnOpzioniSalva.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/salva.png")));
+		panel_6.add(btnOpzioniSalva);
 		
-		JButton btnPredefiniti = new JButton("Predefiniti");
-		btnPredefiniti.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/reset.png")));
-		panel_6.add(btnPredefiniti);
+		JButton btnOpzioniPredefiniti = new JButton("Predefiniti");
+		btnOpzioniPredefiniti.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/reset.png")));
+		panel_6.add(btnOpzioniPredefiniti);
 		
 		InfoPanel = new JPanel();
 		tab.addTab("Info  ", new ImageIcon(Interfaccia.class.getResource("/GUI/res/info.png")), InfoPanel, null);
@@ -953,55 +938,263 @@ public class Interfaccia extends JFrame {
 		lblStoria.setBounds(381, 11, 337, 220);
 		InfoPanel.add(lblStoria);
 		
-		JLabel lblVersioneAttuale = new JLabel("Versione attuale: "+Settings.getVersioneSoftware());
+		lblVersioneAttuale = new JLabel("Versione attuale: "+Settings.getVersioneSoftware());
 		lblVersioneAttuale.setBounds(539, 223, 179, 20);
 		InfoPanel.add(lblVersioneAttuale);
 		
-		final JButton btnCercaAggiornamenti = new JButton("Cerca aggiornamenti");
+		btnCercaAggiornamenti = new JButton("Cerca aggiornamenti");
 		btnCercaAggiornamenti.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/update.png")));
 		btnCercaAggiornamenti.setBounds(380, 223, 152, 44);
 		InfoPanel.add(btnCercaAggiornamenti);
 		
-		final JLabel lblRisultatoAggiornamenti = new JLabel("Verifica disponibilit\u00E0 aggiornamenti");
+		lblRisultatoAggiornamenti = new JLabel("Verifica disponibilit\u00E0 aggiornamenti");
 		lblRisultatoAggiornamenti.setBounds(539, 242, 179, 35);
 		InfoPanel.add(lblRisultatoAggiornamenti);
 		
-		JLabel lblDona = new JLabel("<html>Se il programma \u00E8 di tua utilit\u00E0, potresti pensare di effettua una donazione (tramite PayPal) cliccando sull'immagine. Un tuo piccolo gesto pu\u00F2 essere uno grande per me</html>");
+		lblDona = new JLabel("<html>Se il programma \u00E8 di tua utilit\u00E0, potresti pensare di effettua una donazione (tramite PayPal) cliccando sull'immagine. Un tuo piccolo gesto pu\u00F2 essere uno grande per me</html>");
 		lblDona.setToolTipText("Clicca per effettuare una donazione");
 		lblDona.setVerticalAlignment(SwingConstants.TOP);
 		lblDona.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/dona.png")));
 		lblDona.setBounds(381, 291, 337, 70);
 		InfoPanel.add(lblDona);
 		
-		final JButton btnAggiornaAds = new JButton("");
+		btnAggiornaAds = new JButton("");
 		btnAggiornaAds.setToolTipText("Aggiorna pubblicit\u00E0");
 		btnAggiornaAds.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/aggiorna.png")));
 		btnAggiornaAds.setBounds(696, 372, 33, 23);
 		InfoPanel.add(btnAggiornaAds);
 		
-		/**TODO decommentare per la distribuzione*/ /*   
+		btnChiudiADS = new JButton("");
+		btnChiudiADS.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/remove.png")));
+		btnChiudiADS.setToolTipText("Chiudi pubblicit\u00E0");
+		btnChiudiADS.setBounds(696, 492, 33, 23);
+		InfoPanel.add(btnChiudiADS);	
+		
+		/**TODO decommentare per la distribuzione*/ /*
 		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-    			if(!NativeInterface.isOpen())
-    				NativeInterface.open();
-				advertising=new JWebBrowser(JWebBrowser.destroyOnFinalization());
-				advertising.setBarsVisible(false);
-				advertising.setStatusBarVisible(false);
-				advertising.setBounds(10, 372, 676, 143);
-				advertising.navigate("http://pinoelefante.altervista.org/ads.html");
-				InfoPanel.add(advertising);
+		public void run() {
+    		if(!NativeInterface.isOpen())
+        		NativeInterface.open();
+        		advertising=new JWebBrowser(JWebBrowser.destroyOnFinalization());
+        		advertising.setBarsVisible(false);
+        		advertising.setStatusBarVisible(false);
+        		advertising.setBounds(10, 372, 676, 143);
+        		advertising.navigate("http://pinoelefante.altervista.org/ads.html");
+        		InfoPanel.add(advertising);
 			}
 		});
 		/**/
 		
-		final JButton btnChiudiADS = new JButton("");
-		btnChiudiADS.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/remove.png")));
-		btnChiudiADS.setToolTipText("Chiudi pubblicit\u00E0");
-		btnChiudiADS.setBounds(696, 492, 33, 23);
-		InfoPanel.add(btnChiudiADS);
+		addListener();
+	}
+	public void init(){
+		/** inizializza i campi che contengono le serie tv inserite*/
+		reloadSeriePreferite();
+		reloadSerieDisponibili();
 		
-
+		inizializzaDownloadScroll();
 		
+		buttonReloadSerie.doClick();
+		
+		btnAggiorna.doClick();
+	}
+	public void reloadSeriePreferite() {
+		ArrayList<SerieTV> st=GestioneSerieTV.getElencoSerieInserite();
+		
+		cmb_serie_aggiunte.removeAllItems();
+		cmb_serie_aggiunte_add_episodio.removeAllItems();
+		cmb_serie_lettore.removeAllItems();
+		cmb_serie_sottotitoli.removeAllItems();
+		
+		if(st!=null){
+    		for(int i=0;i<st.size();i++){
+        		cmb_serie_aggiunte.addItem(st.get(i));
+        		cmb_serie_aggiunte_add_episodio.addItem(st.get(i));
+        		cmb_serie_lettore.addItem(st.get(i));
+        		cmb_serie_sottotitoli.addItem(st.get(i));
+       		}
+		}
+		st=null;
+	}
+	public void reloadSerieDisponibili() {
+		/** inizializza il campo che contiene tutte le serie disponibili*/
+		ArrayList<SerieTV> st=GestioneSerieTV.getElencoSerieCompleto();
+		if(st!=null){
+			cmb_serie_tutte.removeAllItems();
+			for(int i=0;i<st.size();i++){
+				cmb_serie_tutte.addItem(st.get(i));
+			}
+		}
+		st=null;
+	}
+	public void inizializzaDownloadScroll() {
+		panel_scroll_download.removeAll();
+		class UpdateEpisodes extends Thread {
+			public void run(){
+				btnAggiorna.setEnabled(false);
+				ArrayList<Episodio> eps=GestioneSerieTV.caricaEpisodiDaScaricareOffline();
+				for(int i=0;i<eps.size();i++){
+					panel_scroll_download.add(new PanelEpisodioDownload(eps.get(i)));
+				}
+				btnAggiorna.setEnabled(true);
+			}
+		}
+		Thread t=new UpdateEpisodes();
+		t.setName("update episodi");
+		t.start();
+	}
+	public static Interfaccia getInterfaccia(){
+		return thisframe;
+	}
+	public void disegnaLettore(){
+		SerieTV serie=(SerieTV) cmb_serie_lettore.getSelectedItem();
+		if(serie!=null){
+			int stagione=(int) comboBoxLettoreStagione.getSelectedItem();
+			if(stagione>=0){
+				boolean ordine_crescente=comboBoxLettoreOrdine.getSelectedIndex()==0?true:false;
+				panel_elenco_puntate_lettore.removeAll();
+				
+				boolean hide_v=chckbxNascondiViste.isSelected(), //viste
+						hide_i=chckbxNascondiIgnorate.isSelected(), //ignorate
+						hide_r=chckbxNascondiRimosse.isSelected(); //rimosse
+				
+				for(int i=0;i<serie.getNumEpisodi();i++){
+					Episodio e=serie.getEpisodio(i);
+					if(e.getStagione()>stagione)
+						break;
+					else if(e.getStagione()==stagione){
+						if(hide_v && e.isVisto())
+							continue;
+						if(hide_i && e.isIgnorato())
+							continue;
+						if(hide_r && e.isRimosso())
+							continue;
+							
+						if(ordine_crescente)
+							panel_elenco_puntate_lettore.add(new PanelEpisodioLettore(e));
+						else
+							panel_elenco_puntate_lettore.add(new PanelEpisodioLettore(e), 0);
+					}
+				}
+				panel_elenco_puntate_lettore.revalidate();
+				panel_elenco_puntate_lettore.repaint();
+			}
+		}
+	}
+	private void inizializzaOpzioni(){
+		chckbxSempreInPrimo.setSelected(Settings.isAlwaysOnTop());
+		//TODO completare inizializzazione opzioni
+		Settings.setAskOnClose(chckbxChiediConfermaPrima.isSelected());
+		Settings.setExtenalVLC(chckbxExternalVLC.isSelected());
+		Settings.setAutostart(chckbxAvviaConIl.isSelected());
+		Settings.setStartHidden(chckbxAvviaRidottoA.isSelected());
+		Settings.setTrayOnIcon(chckbxTrayOnIcon.isSelected());
+		Settings.setMostra720p(chckbxDownHD.isSelected());
+		Settings.setMostraPreair(chckbxDownPreair.isSelected());
+		Settings.setDownloadAutomatico(chckbxAutoAbilita.isSelected());
+		Settings.setMinRicerca((int) comboBoxMinutiRicercaAutomatica.getSelectedItem());
+		Settings.setDownload720p(chckbxAutoHD.isSelected());
+		Settings.setDownloadPreair(chckbxAutoPreair.isSelected());
+		Settings.setRicercaSottotitoli(chckbxAbilitaDownloadSottotitoli.isSelected());
+		Settings.setEnableITASA(chckbxAbilitaItaliansubsnet.isSelected());
+		Settings.setItasaUsername(txt_itasa_user.getText());
+		Settings.setItasaPassword(String.copyValueOf(txt_itasa_pass.getPassword()));
+		Settings.setClientPath(txt_utorrent_path.getText());
+		Settings.setDirectoryDownload(txt_download_path.getText());
+		Settings.setVLCPath(txt_vlc_path.getText());
+	}
+	private void addListener() {
+		txt_add_episodio_link.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				if(e.getButton()==MouseEvent.BUTTON3 || e.getButton()==MouseEvent.BUTTON2){
+					txt_add_episodio_link.setText("");
+					Clipboard clip=Toolkit.getDefaultToolkit().getSystemClipboard();
+					Transferable contents = clip.getContents(null);
+					boolean hasTransferableText = (contents != null) && contents.isDataFlavorSupported(DataFlavor.stringFlavor);
+					if (hasTransferableText) {
+						try {
+							String result = (String) contents.getTransferData(DataFlavor.stringFlavor);
+							txt_add_episodio_link.setText(result.trim());
+						}
+						catch(Exception e1){
+							e1.printStackTrace();
+						}
+					}
+				}
+			}
+		});
+		btnAggiungiTorrent.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				SerieTV serie=(SerieTV) cmb_serie_aggiunte_add_episodio.getSelectedItem();
+				int stagione=0, episodio=0;
+				try {
+					stagione=Integer.parseInt(txt_add_episodio_stagione.getText());
+					episodio=Integer.parseInt(txt_add_episodio_episodio.getText());
+				}
+				catch(NumberFormatException e){
+					ManagerException.registraEccezione(e);
+					JOptionPane.showMessageDialog(Interfaccia.this, "Stagione e/o episodio non possono contenere lettere");
+					return;
+				}
+				String link=txt_add_episodio_link.getText();
+				
+				if(serie!=null){
+					if(stagione<=0 || episodio<0){
+						System.out.println("S/E <= 0");
+						return;
+					}
+					if(link.isEmpty()){
+						System.out.println("Link vuoto");
+						return;
+					}
+					if(link.endsWith(".torrent") || link.startsWith("magnet:")){
+						System.out.println("Link valido");
+						//return;
+					}
+					else {
+						System.out.println("Link non valido");
+						return;
+					}
+					Torrent t=new Torrent(serie, link, Torrent.SCARICARE);
+					t.setStagione(stagione);
+					t.setEpisodio(episodio);
+					serie.addEpisodio(t);
+					
+					inizializzaDownloadScroll();
+					JOptionPane.showMessageDialog(thisframe, serie.getNomeSerie()+" - Link aggiunto");
+				}
+			}
+		});
+		imgItasaLogo.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent arg0) {
+				try {
+					OperazioniFile.esploraWeb("http://www.italiansubs.net");
+				}
+				catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		imgSubsfactoryLogo.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				try {
+					OperazioniFile.esploraWeb("http://www.subsfactory.it");
+				}
+				catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
+		imgSubspediaLogo.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				try {
+					OperazioniFile.esploraWeb("http://subspedia.weebly.com/");
+				}
+				catch (Exception e1) {
+					e1.printStackTrace();
+				}
+			}
+		});
 		btnAggiornaAds.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if(advertising!=null)
@@ -1417,6 +1610,7 @@ public class Interfaccia extends JFrame {
 		});
 		comboBoxLettoreOrdine.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Settings.setLettoreOrdine(comboBoxLettoreOrdine.getSelectedIndex());
 				disegnaLettore();
 			}
 		});
@@ -1438,112 +1632,97 @@ public class Interfaccia extends JFrame {
 		});
 		chckbxNascondiViste.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				Settings.setLettoreNascondiViste(chckbxNascondiViste.isSelected());
 				disegnaLettore();
 			}
 		});
 		chckbxNascondiIgnorate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				Settings.setLettoreNascondiIgnore(chckbxNascondiIgnorate.isSelected());
 				disegnaLettore();
 			}
 		});
 		chckbxNascondiRimosse.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				Settings.setLettoreNascondiRimosso(chckbxNascondiRimosse.isSelected());
 				disegnaLettore();
 			}
 		});
-	}
-	public void init(){
-		/** inizializza i campi che contengono le serie tv inserite*/
-		reloadSeriePreferite();
-		reloadSerieDisponibili();
-		
-		inizializzaDownloadScroll();
-		
-		buttonReloadSerie.doClick();
-		
-		btnAggiorna.doClick();
-	}
-	public void reloadSeriePreferite() {
-		ArrayList<SerieTV> st=GestioneSerieTV.getElencoSerieInserite();
-		
-		cmb_serie_aggiunte.removeAllItems();
-		cmb_serie_aggiunte_add_episodio.removeAllItems();
-		cmb_serie_lettore.removeAllItems();
-		cmb_serie_sottotitoli.removeAllItems();
-		
-		if(st!=null){
-    		for(int i=0;i<st.size();i++){
-        		cmb_serie_aggiunte.addItem(st.get(i));
-        		cmb_serie_aggiunte_add_episodio.addItem(st.get(i));
-        		cmb_serie_lettore.addItem(st.get(i));
-        		cmb_serie_sottotitoli.addItem(st.get(i));
-       		}
-		}
-		st=null;
-	}
-	public void reloadSerieDisponibili() {
-		/** inizializza il campo che contiene tutte le serie disponibili*/
-		ArrayList<SerieTV> st=GestioneSerieTV.getElencoSerieCompleto();
-		if(st!=null){
-			cmb_serie_tutte.removeAllItems();
-			for(int i=0;i<st.size();i++){
-				cmb_serie_tutte.addItem(st.get(i));
-			}
-		}
-		st=null;
-	}
-	public void inizializzaDownloadScroll() {
-		panel_scroll_download.removeAll();
-		class UpdateEpisodes extends Thread {
-			public void run(){
-				btnAggiorna.setEnabled(false);
-				ArrayList<Episodio> eps=GestioneSerieTV.caricaEpisodiDaScaricareOffline();
-				for(int i=0;i<eps.size();i++){
-					panel_scroll_download.add(new PanelEpisodioDownload(eps.get(i)));
-				}
-				btnAggiorna.setEnabled(true);
-			}
-		}
-		Thread t=new UpdateEpisodes();
-		t.setName("update episodi");
-		t.start();
-	}
-	public static Interfaccia getInterfaccia(){
-		return thisframe;
-	}
-	public void disegnaLettore(){
-		SerieTV serie=(SerieTV) cmb_serie_lettore.getSelectedItem();
-		if(serie!=null){
-			int stagione=(int) comboBoxLettoreStagione.getSelectedItem();
-			if(stagione>=0){
-				boolean ordine_crescente=comboBoxLettoreOrdine.getSelectedIndex()==0?true:false;
-				panel_elenco_puntate_lettore.removeAll();
-				
-				boolean hide_v=chckbxNascondiViste.isSelected(), //viste
-						hide_i=chckbxNascondiIgnorate.isSelected(), //ignorate
-						hide_r=chckbxNascondiRimosse.isSelected(); //rimosse
-				
-				for(int i=0;i<serie.getNumEpisodi();i++){
-					Episodio e=serie.getEpisodio(i);
-					if(e.getStagione()>stagione)
-						break;
-					else if(e.getStagione()==stagione){
-						if(hide_v && e.isVisto())
-							continue;
-						if(hide_i && e.isIgnorato())
-							continue;
-						if(hide_r && e.isRimosso())
-							continue;
-							
-						if(ordine_crescente)
-							panel_elenco_puntate_lettore.add(new PanelEpisodioLettore(e));
-						else
-							panel_elenco_puntate_lettore.add(new PanelEpisodioLettore(e), 0);
+		btnScarica.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				for(int i=0;i<panel_scroll_download.getComponentCount();i++){
+					if(panel_scroll_download.getComponent(i) instanceof PanelEpisodioDownload){
+						PanelEpisodioDownload p=(PanelEpisodioDownload) panel_scroll_download.getComponent(i);
+						if(p.isDownloadSelected()){
+							Torrent t=p.getLink();
+							if(t!=null){
+								try {
+									Download.downloadMagnet(t.getUrl(), Settings.getDirectoryDownload()+File.separator+t.getSerieTV().getFolderSerie());
+									panel_scroll_download.remove(p);
+								}
+								catch (IOException e) {
+									ManagerException.registraEccezione(e);				
+									e.printStackTrace();
+								}
+							}
+						}
 					}
 				}
-				panel_elenco_puntate_lettore.revalidate();
-				panel_elenco_puntate_lettore.repaint();
+				panel_scroll_download.revalidate();
+				panel_scroll_download.repaint();
 			}
-		}
+		});
+		cmb_down_selezione.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent arg0) {
+				switch(cmb_down_selezione.getSelectedIndex()){
+					case 0: //seleziona tutto
+						for(int i=0;i<panel_scroll_download.getComponentCount();i++){
+							if(panel_scroll_download.getComponent(i) instanceof PanelEpisodioDownload){
+								((PanelEpisodioDownload)panel_scroll_download.getComponent(i)).setSelected(true);
+							}
+						}
+						break;
+					case 1: //deseleziona tutto
+						for(int i=0;i<panel_scroll_download.getComponentCount();i++){
+							if(panel_scroll_download.getComponent(i) instanceof PanelEpisodioDownload){
+								((PanelEpisodioDownload)panel_scroll_download.getComponent(i)).setSelected(false);
+							}
+						}
+						break;
+				}
+			}
+		});
+		btnOpzioniSalva.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Settings.setAlwaysOnTop(chckbxSempreInPrimo.isSelected());
+				Settings.setAskOnClose(chckbxChiediConfermaPrima.isSelected());
+				Settings.setExtenalVLC(chckbxExternalVLC.isSelected());
+				Settings.setAutostart(chckbxAvviaConIl.isSelected());
+				Settings.setStartHidden(chckbxAvviaRidottoA.isSelected());
+				Settings.setTrayOnIcon(chckbxTrayOnIcon.isSelected());
+				Settings.setMostra720p(chckbxDownHD.isSelected());
+				Settings.setMostraPreair(chckbxDownPreair.isSelected());
+				Settings.setDownloadAutomatico(chckbxAutoAbilita.isSelected());
+				Settings.setMinRicerca((int) comboBoxMinutiRicercaAutomatica.getSelectedItem());
+				Settings.setDownload720p(chckbxAutoHD.isSelected());
+				Settings.setDownloadPreair(chckbxAutoPreair.isSelected());
+				Settings.setRicercaSottotitoli(chckbxAbilitaDownloadSottotitoli.isSelected());
+				Settings.setEnableITASA(chckbxAbilitaItaliansubsnet.isSelected());
+				Settings.setItasaUsername(txt_itasa_user.getText());
+				Settings.setItasaPassword(String.copyValueOf(txt_itasa_pass.getPassword()));
+				Settings.setClientPath(txt_utorrent_path.getText());
+				Settings.setDirectoryDownload(txt_download_path.getText());
+				Settings.setVLCPath(txt_vlc_path.getText());
+				Settings.AggiornaDB();
+			}
+		});
+		tab.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent arg0) {
+				if(tab.getSelectedComponent()==opzioniPanel){
+					inizializzaOpzioni();
+				}
+				
+			}
+		});
 	}
 }

@@ -31,6 +31,7 @@ public class PanelEpisodioDownload extends JPanel {
 	private JButton btnSd;
 	private JButton btnPreair;
 	private JButton btnInfo;
+	private JCheckBox chckbxnomeserie;
 	
 	public PanelEpisodioDownload(Episodio e) {
 		ep=e;
@@ -43,7 +44,7 @@ public class PanelEpisodioDownload extends JPanel {
 		flowLayout.setAlignment(FlowLayout.LEFT);
 		add(panel, BorderLayout.NORTH);
 		
-		JCheckBox chckbxnomeserie = new JCheckBox("<html><b>"+ep.getNomeSerie()+"</b></html>");
+		chckbxnomeserie = new JCheckBox("<html><b>"+ep.getNomeSerie()+"</b></html>");
 		chckbxnomeserie.setHorizontalAlignment(SwingConstants.CENTER);
 		chckbxnomeserie.setSelected(true);
 		panel.add(chckbxnomeserie);
@@ -90,6 +91,15 @@ public class PanelEpisodioDownload extends JPanel {
 		panel_4.add(lblEpisode);
 		
 		addListener();
+	}
+	public boolean isDownloadSelected(){
+		return chckbxnomeserie.isSelected();
+	}
+	public void setSelected(boolean state){
+		chckbxnomeserie.setSelected(state);
+	}
+	public Torrent getLink(){
+		return ep.getLink();
 	}
 	private void addListener(){
 		btnHd.addActionListener(new ActionListener() {

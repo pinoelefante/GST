@@ -46,26 +46,20 @@ public class Settings {
 	private static boolean 		lettore_nascondi_viste				= true;
 	private static int			lettore_ordine						= 0;
 	
-	
-	
 	public static int getVersioneSoftware() {
 		return VersioneSoftware;
 	}
-	
-	
 	public static String getCurrentDir() {
 		return current_dir;
 	}
 	public static void setCurrentDir(String current_dir) {
 		Settings.current_dir = current_dir;
-		AggiornaDB();
 	}
 	public static String getClientPath() {
 		return ClientPath;
 	}
 	public static void setClientPath(String clientPath) {
 		ClientPath = clientPath;
-		AggiornaDB();
 	}
 	public static String getDirectoryDownload() {
 		return DirectoryDownload+(DirectoryDownload.endsWith(File.separator)?"":File.separator);
@@ -75,28 +69,24 @@ public class Settings {
 		if(!f.exists())
 			f.mkdirs();
 		DirectoryDownload = directoryDownload;
-		AggiornaDB();
 	}
 	public static boolean isTrayOnIcon() {
 		return TrayOnIcon;
 	}
 	public static void setTrayOnIcon(boolean trayOnIcon) {
 		TrayOnIcon = trayOnIcon;
-		AggiornaDB();
 	}
 	public static boolean isAskOnClose() {
 		return AskOnClose;
 	}
 	public static void setAskOnClose(boolean askOnClose) {
 		AskOnClose = askOnClose;
-		AggiornaDB();
 	}
 	public static boolean isStartHidden() {
 		return StartHidden;
 	}
 	public static void setStartHidden(boolean startHidden) {
 		StartHidden = startHidden;
-		AggiornaDB();
 	}
 	public static boolean isAutostart() {
 		return Autostart;
@@ -116,22 +106,18 @@ public class Settings {
 	}
 	public static void setDownloadAutomatico(boolean downloadAutomatico) {
 		DownloadAutomatico = downloadAutomatico;
-		AggiornaDB();
 	}
 	public static String getSistemaOperativo() {
 		return SistemaOperativo;
 	}
 	public static void setSistemaOperativo(String sistemaOperativo) {
 		SistemaOperativo = sistemaOperativo;
-		AggiornaDB();
 	}
-	
 	public static boolean isCanStartDownloadAutomatico() {
 		return canStartDownloadAutomatico;
 	}
 	public static void setCanStartDownloadAutomatico(boolean canStartDownloadAutomatico) {
 		Settings.canStartDownloadAutomatico = canStartDownloadAutomatico;
-		AggiornaDB();
 	}
 	public static boolean isNewUpdate() {
 		return NewUpdate;
@@ -147,55 +133,47 @@ public class Settings {
 		LastVersion = lastVersion;
 		AggiornaDB();
 	}
-	
 	public static boolean isRicercaSottotitoli() {
 		return RicercaSottotitoli;
 	}
 	public static void setRicercaSottotitoli(boolean ricercaSottotitoli) {
 		RicercaSottotitoli = ricercaSottotitoli;
-		AggiornaDB();
 	}
 	public static boolean isAlwaysOnTop() {
 		return alwaysontop;
 	}
 	public static void setAlwaysOnTop(boolean alwaysontop) {
 		Settings.alwaysontop = alwaysontop;
-		AggiornaDB();
 	}
 	public static String getVLCPath() {
 		return VLCPath;
 	}
 	public static void setVLCPath(String vLCPath) {
 		VLCPath = vLCPath;
-		AggiornaDB();
 	}
 	public static String getItasaUsername() {
 		return Itasa_Username;
 	}
 	public static void setItasaUsername(String itasa_Username) {
 		Itasa_Username = itasa_Username;
-		AggiornaDB();
 	}
 	public static String getItasaPassword() {
 		return Itasa_Password;
 	}
 	public static void setItasaPassword(String itasa_Password) {
 		Itasa_Password = itasa_Password;
-		AggiornaDB();
 	}
 	public static boolean isMostraPreair() {
 		return mostraPreair;
 	}
 	public static void setMostraPreair(boolean mostraPreair) {
 		Settings.mostraPreair = mostraPreair;
-		AggiornaDB();
 	}
 	public static boolean isMostra720p() {
 		return mostra720p;
 	}
 	public static void setMostra720p(boolean mostra720p) {
 		Settings.mostra720p = mostra720p;
-		AggiornaDB();
 	}
 	public static int getMinRicerca() {
 		return MinRicerca;
@@ -203,14 +181,12 @@ public class Settings {
 	public static void setMinRicerca(int minRicerca) {
 		MinRicerca = minRicerca;
 		aggiornaMinRicercaMilli();
-		AggiornaDB();
 	}
 	public static void aggiornaMinRicercaMilli() {
 		setMinRicercaMilli(MinRicerca * 60 * 1000);
 	}
 	public static void setClientID(String id){
 		ClientID=id;
-		AggiornaDB();
 	}
 	public static String getClientID(){
 		return ClientID;
@@ -221,7 +197,7 @@ public class Settings {
 	public static void setMinRicercaMilli(int minRicercaMilli) {
 		MinRicercaMilli = minRicercaMilli;
 	}
-	
+	//TODO Settaggi default
 	public static void setDefault() {
 		setTrayOnIcon(true);
 		setAskOnClose(false);
@@ -319,10 +295,10 @@ public class Settings {
 			Advapi32Util.registrySetStringValue(WinReg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Run", "GestioneSerieTV", getCurrentDir()+"GestioneSerieTV5.exe");
 		}
 		else if(isLinux()){
-			
+			//TODO
 		}
 		else if(isMacOS()){
-			
+			//TODO
 		}
 	}
 	public static void removeAutostart() {
@@ -330,10 +306,10 @@ public class Settings {
 			Advapi32Util.registryDeleteValue(WinReg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Run", "GestioneSerieTV");
 		}
 		else if(isLinux()){
-			
+			//TODO
 		}
 		else if(isMacOS()){
-			
+			//TODO
 		}
 	}
 	public static boolean verificaUtorrent(){
@@ -342,7 +318,7 @@ public class Settings {
 			return false;
 		return true;
 	}
-	private static void AggiornaDB() {
+	public static void AggiornaDB() {
 		String query="UPDATE "+Database.TABLE_SETTINGS+" SET "+
 				"always_on_top="+(isAlwaysOnTop()?1:0)+","+
 				"download_path="+"\""+getDirectoryDownload()+"\","+
@@ -387,14 +363,12 @@ public class Settings {
 	}
 	public static void setDownloadPreair(boolean downloadPreair) {
 		Settings.download_auto_preair = downloadPreair;
-		AggiornaDB();
 	}
 	public static boolean isDownload720p() {
 		return download_auto_hd;
 	}
 	public static void setDownload720p(boolean download720p) {
 		Settings.download_auto_hd = download720p;
-		AggiornaDB();
 	}
 	
 	//TODO completare rilevamento vlc
@@ -416,12 +390,14 @@ public class Settings {
 	}
 	public static void setLettoreNascondiIgnore(boolean lettore_nascondi_ignore) {
 		Settings.lettore_nascondi_ignore = lettore_nascondi_ignore;
+		AggiornaDB();
 	}
 	public static boolean isLettoreNascondiRimosso() {
 		return lettore_nascondi_rimosso;
 	}
 	public static void setLettoreNascondiRimosso(boolean lettore_nascondi_rimosso) {
 		Settings.lettore_nascondi_rimosso = lettore_nascondi_rimosso;
+		AggiornaDB();
 	}
 	//TODO completare rilevamento client utorrent
 	public static String rilevaUtorrent(){
@@ -439,7 +415,6 @@ public class Settings {
 		}
 		return "";
 	}
-	
 	public static boolean isVLC(){
 		String path=getVLCPath();
 		if(path.isEmpty())
@@ -485,46 +460,28 @@ public class Settings {
 		else
 			return "amd64";
 	}
-
-
 	public static boolean isExtenalVLC() {
 		return extenal_VLC;
 	}
-
-
 	public static void setExtenalVLC(boolean extenal_VLC) {
 		Settings.extenal_VLC = extenal_VLC;
-		AggiornaDB();
 	}
-
-
 	public static boolean isEnableITASA() {
 		return enableITASA;
 	}
-
-
 	public static void setEnableITASA(boolean enableITASA) {
 		Settings.enableITASA = enableITASA;
-		AggiornaDB();
 	}
-
-
 	public static boolean isLettoreNascondiViste() {
 		return lettore_nascondi_viste;
 	}
-
-
 	public static void setLettoreNascondiViste(boolean lettore_nascondi_viste) {
 		Settings.lettore_nascondi_viste = lettore_nascondi_viste;
 		AggiornaDB();
 	}
-
-
 	public static int getLettoreOrdine() {
 		return lettore_ordine;
 	}
-
-
 	public static void setLettoreOrdine(int lettore_ordine) {
 		Settings.lettore_ordine = lettore_ordine;
 		AggiornaDB();

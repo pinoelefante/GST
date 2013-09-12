@@ -19,12 +19,14 @@ import Programma.Download;
 import Programma.FileManager;
 
 import javax.swing.border.EtchedBorder;
+
 import java.awt.GridLayout;
 
 public class PanelFileCopy extends JPanel {
 	private static final long serialVersionUID = 1L;
 	
 	private Download download;
+	private Thread t_pending;
 
 	public PanelFileCopy(Download d) {
 		setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
@@ -61,7 +63,7 @@ public class PanelFileCopy extends JPanel {
 		JLabel lblStato = new JLabel("Stato: ");
 		panel_6.add(lblStato);
 		
-		lblCurrentStatus = new JLabel("In Pausa");
+		lblCurrentStatus = new JLabel("In coda");
 		panel_6.add(lblCurrentStatus);
 		
 		JPanel panel_2 = new JPanel();
@@ -92,6 +94,9 @@ public class PanelFileCopy extends JPanel {
 		panel_4.add(btnAnnulla);
 		
 		addListener();
+		
+		t_pending=new threadCheckCopyStart();
+		t_pending.start();
 	}
 	private Thread t_update_bar;
 
@@ -106,6 +111,7 @@ public class PanelFileCopy extends JPanel {
 	private JLabel lblCurrentStatus;
 	public void avviaDownload(){
 		if(!download.isStarted()){
+			FileManager.downloadStarted();
 			lblCurrentStatus.setText("Copia in corso...");
 			btnAvvia.setEnabled(false);
 			download.avviaDownload();
@@ -124,12 +130,15 @@ public class PanelFileCopy extends JPanel {
 				while(!download.isComplete()){
 					int percentuale=(int) ((download.getFileSizeDowloaded()*100)/download.getFileSize());
 					progressBar.setValue(percentuale);
-					Thread.sleep(1000L);
+					Thread.sleep(500L);
 				}
 				progressBar.setValue(100);
 				lblCurrentStatus.setText("Copia completata");
+				FileManager.downloadStopped();
 			}
-			catch(InterruptedException e){}
+			catch(InterruptedException e){
+				FileManager.downloadStopped();
+			}
 		}
 	}
 	private void addListener() {
@@ -143,10 +152,19 @@ public class PanelFileCopy extends JPanel {
 			public void actionPerformed(ActionEvent arg0) {
 				if(download.isStarted() && !download.isComplete())
 					arrestaDownload();
-				FileManager.removeDownload(download);
 				FileManager.removePanel(PanelFileCopy.this);
 			}
 		});
 	}
-	//TODO thread che controlla la possibilità di poter scaricare un file
+	class threadCheckCopyStart extends Thread {
+		public void run(){
+			while(FileManager.isAnotherCopyNow()){
+				try {
+					sleep(1000);
+				}
+				catch (InterruptedException e) {}
+			}
+			avviaDownload();
+		}
+	}
 }

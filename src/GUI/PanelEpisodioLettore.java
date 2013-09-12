@@ -206,7 +206,10 @@ public class PanelEpisodioLettore extends JPanel {
 		});
 		
 		btnCopiaSuDispositivo.addActionListener(new ActionListener() {
+			int i=0;
 			public void actionPerformed(ActionEvent arg0) {
+				Download.copiaFile("D:\\SerieTV\\Alcatraz\\Alcatraz.S01E01.HDTV.XviD-LOL.[VTV].avi", "E:\\STCopied"+(i++));
+				
 				String origine_filepath=torrent.getFilePath();
 				String destinazione_path="";
 				JFileChooser chooser= new JFileChooser();
@@ -223,6 +226,18 @@ public class PanelEpisodioLettore extends JPanel {
     				Download.copiaFile(origine_filepath, destinazione_path);
     				JOptionPane.showMessageDialog(PanelEpisodioLettore.this.getParent().getParent(), "Il file è stato aggiunto alla coda dei file da copiare.\nControlla la sezione File Manager per vedere lo stato della copia.");
 				}
+			}
+		});
+		btnScarica.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO bottone scarica panel episodio lettore
+				
+			}
+		});
+		btnSottotitolo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// TODO bottone sottotitolo panel episodio lettore
+				
 			}
 		});
 	}

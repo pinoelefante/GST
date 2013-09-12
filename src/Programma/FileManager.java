@@ -3,7 +3,6 @@ package Programma;
 import java.awt.GridLayout;
 import java.awt.event.ContainerEvent;
 import java.awt.event.ContainerListener;
-import java.util.ArrayList;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -12,19 +11,15 @@ import javax.swing.JScrollPane;
 import GUI.PanelFileCopy;
 
 public class FileManager {
-	private static ArrayList<Download> file_queue;
-	private static ArrayList<PanelFileCopy> panel_list;
 	private static JPanel panel_download;
 	private static JScrollPane scroll;
-	private static int current_file;
+	private static int downloading_files;
 	
 	
 	public static void instance(){
 		panel_download=new JPanel();
 		panel_download.setLayout(new GridLayout(4, 1));
 		scroll=new JScrollPane(panel_download);
-		file_queue=new ArrayList<Download>(1);
-		panel_list=new ArrayList<PanelFileCopy>(1);
 		
 		addListener();
 	}
@@ -61,9 +56,7 @@ public class FileManager {
 
 	public static void addDownloadFile(Download d){
 		try {
-			file_queue.add(d);
 			PanelFileCopy p=new PanelFileCopy(d);
-			panel_list.add(p);
 			panel_download.add(p);
 		}
 		catch(NullPointerException e){
@@ -71,21 +64,22 @@ public class FileManager {
 			addDownloadFile(d);
 		}
 	}
-	public static void removeDownload(Download d){
-		if(!d.isComplete() && d.isStarted())
-			d.getDownloadThread().interrupt();
-		file_queue.remove(d);
-		
-	}
-	public static boolean isEmpty(){
-		if(current_file==file_queue.size())
-			return true;
-		return false;
-	}
 	public static JComponent getPanel(){
 		return scroll;
 	}
 	public static void removePanel(JPanel p){
 		panel_download.remove(p);
+	}
+	public static synchronized boolean isAnotherCopyNow(){
+		System.out.println("Download in corso:"+downloading_files);
+		if(downloading_files>0)
+			return true;
+		return false;
+	}
+	public static synchronized void downloadStarted(){
+		downloading_files++;
+	}
+	public static synchronized void downloadStopped(){
+		downloading_files--;
 	}
 }
