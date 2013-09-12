@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -97,11 +98,54 @@ public class PanelEpisodioLettore extends JPanel {
 		btnPlay.setBounds(603, 66, 89, 23);
 		
 		addListener();
+		cmb_stato_episodio.setSelectedIndex(torrent.getScaricato());
 	}
 	private void addListener(){
 		cmb_stato_episodio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				torrent.setScaricato(cmb_stato_episodio.getSelectedIndex());
+				switch((String)cmb_stato_episodio.getSelectedItem()){
+					case "SCARICARE":
+						btnPlaylist.setEnabled(false);
+						btnCancellaFile.setEnabled(false);
+						btnCopiaSuDispositivo.setEnabled(false);
+						btnPlay.setEnabled(false);
+						btnScarica.setEnabled(true);
+						btnSottotitolo.setEnabled(true);
+						break;
+					case "SCARICATO":
+						btnPlaylist.setEnabled(true);
+						btnCancellaFile.setEnabled(true);
+						btnCopiaSuDispositivo.setEnabled(true);
+						btnPlay.setEnabled(true);
+						btnScarica.setEnabled(true);
+						btnSottotitolo.setEnabled(true);
+						break;
+					case "VISTO":
+						btnPlaylist.setEnabled(true);
+						btnCancellaFile.setEnabled(true);
+						btnCopiaSuDispositivo.setEnabled(true);
+						btnPlay.setEnabled(true);
+						btnScarica.setEnabled(true);
+						btnSottotitolo.setEnabled(true);
+						break;
+					case "RIMOSSO":
+						btnPlaylist.setEnabled(false);
+						btnCancellaFile.setEnabled(false);
+						btnCopiaSuDispositivo.setEnabled(false);
+						btnPlay.setEnabled(false);
+						btnScarica.setEnabled(true);
+						btnSottotitolo.setEnabled(true);
+						break;
+					case "IGNORATO":
+						btnPlaylist.setEnabled(false);
+						btnCancellaFile.setEnabled(false);
+						btnCopiaSuDispositivo.setEnabled(false);
+						btnPlay.setEnabled(false);
+						btnScarica.setEnabled(true);
+						btnSottotitolo.setEnabled(true);
+						break;
+				}
 			}
 		});
 		btnPlaylist.addActionListener(new ActionListener() {
@@ -162,13 +206,23 @@ public class PanelEpisodioLettore extends JPanel {
 		});
 		
 		btnCopiaSuDispositivo.addActionListener(new ActionListener() {
-			int i=0;
 			public void actionPerformed(ActionEvent arg0) {
-				//TODO completare con scelta del percorso
-				String filepath=torrent.getFilePath();
-				Download.copiaFile(/*filepath*/"D:\\SerieTV\\Alcatraz\\Alcatraz.S01E01.HDTV.XviD-LOL.[VTV].avi", "E:\\STCopied"+(i++));
-				
-				JOptionPane.showMessageDialog(PanelEpisodioLettore.this.getParent().getParent(), "Il file è stato aggiunto alla coda dei file da copiare.\nControlla la sezione File Manager per vedere lo stato della copia.");
+				String origine_filepath=torrent.getFilePath();
+				String destinazione_path="";
+				JFileChooser chooser= new JFileChooser();
+				chooser.setDialogTitle("Cartella di destinazione");
+				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				chooser.setAcceptAllFileFilterUsed(false);
+				if(chooser.showOpenDialog(PanelEpisodioLettore.this.getParent().getParent().getParent()) == JFileChooser.APPROVE_OPTION){
+					destinazione_path=chooser.getSelectedFile().getAbsolutePath();
+				}
+				else {
+				      return;
+				}
+				if(!origine_filepath.isEmpty() & !destinazione_path.isEmpty()){
+    				Download.copiaFile(origine_filepath, destinazione_path);
+    				JOptionPane.showMessageDialog(PanelEpisodioLettore.this.getParent().getParent(), "Il file è stato aggiunto alla coda dei file da copiare.\nControlla la sezione File Manager per vedere lo stato della copia.");
+				}
 			}
 		});
 	}
