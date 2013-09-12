@@ -207,7 +207,7 @@ public class Download {
 					Settings.getClientPath(),
 					"/NOINSTALL",
 					"/DIRECTORY",
-					("\"" + directory_download + File.separator + folder + "\""),
+					("\"" + folder + "\""),
 					magnet_url
 			};
 			for(int i=0;i<cmd.length;i++){

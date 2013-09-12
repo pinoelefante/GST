@@ -1083,25 +1083,24 @@ public class Interfaccia extends JFrame {
 	}
 	private void inizializzaOpzioni(){
 		chckbxSempreInPrimo.setSelected(Settings.isAlwaysOnTop());
-		//TODO completare inizializzazione opzioni
-		Settings.setAskOnClose(chckbxChiediConfermaPrima.isSelected());
-		Settings.setExtenalVLC(chckbxExternalVLC.isSelected());
-		Settings.setAutostart(chckbxAvviaConIl.isSelected());
-		Settings.setStartHidden(chckbxAvviaRidottoA.isSelected());
-		Settings.setTrayOnIcon(chckbxTrayOnIcon.isSelected());
-		Settings.setMostra720p(chckbxDownHD.isSelected());
-		Settings.setMostraPreair(chckbxDownPreair.isSelected());
-		Settings.setDownloadAutomatico(chckbxAutoAbilita.isSelected());
-		Settings.setMinRicerca((int) comboBoxMinutiRicercaAutomatica.getSelectedItem());
-		Settings.setDownload720p(chckbxAutoHD.isSelected());
-		Settings.setDownloadPreair(chckbxAutoPreair.isSelected());
-		Settings.setRicercaSottotitoli(chckbxAbilitaDownloadSottotitoli.isSelected());
-		Settings.setEnableITASA(chckbxAbilitaItaliansubsnet.isSelected());
-		Settings.setItasaUsername(txt_itasa_user.getText());
-		Settings.setItasaPassword(String.copyValueOf(txt_itasa_pass.getPassword()));
-		Settings.setClientPath(txt_utorrent_path.getText());
-		Settings.setDirectoryDownload(txt_download_path.getText());
-		Settings.setVLCPath(txt_vlc_path.getText());
+		chckbxChiediConfermaPrima.setSelected(Settings.isAskOnClose());
+		chckbxExternalVLC.setSelected(Settings.isExtenalVLC());
+		chckbxAvviaConIl.setSelected(Settings.isAutostart());
+		chckbxAvviaRidottoA.setSelected(Settings.isStartHidden());
+		chckbxTrayOnIcon.setSelected(Settings.isTrayOnIcon());
+		chckbxDownHD.setSelected(Settings.isMostra720p());
+		chckbxDownPreair.setSelected(Settings.isMostraPreair());
+		chckbxAutoAbilita.setSelected(Settings.isDownloadAutomatico());
+		comboBoxMinutiRicercaAutomatica.setSelectedItem(Settings.getMinRicerca());
+		chckbxAutoHD.setSelected(Settings.isDownload720p());
+		chckbxAutoPreair.setSelected(Settings.isDownloadPreair());
+		chckbxAbilitaDownloadSottotitoli.setSelected(Settings.isRicercaSottotitoli());
+		chckbxAbilitaItaliansubsnet.setSelected(Settings.isEnableITASA());
+		txt_itasa_user.setText(Settings.getItasaUsername());
+		txt_itasa_pass.setText("");
+		txt_utorrent_path.setText(Settings.getClientPath());
+		txt_download_path.setText(Settings.getDirectoryDownload());
+		txt_vlc_path.setText(Settings.getVLCPath());
 	}
 	private void addListener() {
 		txt_add_episodio_link.addMouseListener(new MouseAdapter() {
@@ -1709,7 +1708,8 @@ public class Interfaccia extends JFrame {
 				Settings.setRicercaSottotitoli(chckbxAbilitaDownloadSottotitoli.isSelected());
 				Settings.setEnableITASA(chckbxAbilitaItaliansubsnet.isSelected());
 				Settings.setItasaUsername(txt_itasa_user.getText());
-				Settings.setItasaPassword(String.copyValueOf(txt_itasa_pass.getPassword()));
+				if(txt_itasa_pass.getPassword().length>0)
+					Settings.setItasaPassword(String.copyValueOf(txt_itasa_pass.getPassword()));
 				Settings.setClientPath(txt_utorrent_path.getText());
 				Settings.setDirectoryDownload(txt_download_path.getText());
 				Settings.setVLCPath(txt_vlc_path.getText());
@@ -1721,7 +1721,6 @@ public class Interfaccia extends JFrame {
 				if(tab.getSelectedComponent()==opzioniPanel){
 					inizializzaOpzioni();
 				}
-				
 			}
 		});
 	}
