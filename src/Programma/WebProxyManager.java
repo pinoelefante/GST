@@ -10,8 +10,8 @@ public class WebProxyManager {
 	public static void instance(){
 		proxies=new ArrayList<WebProxy>();
 		proxies.add(new WebProxy("Anonymouse", "http://anonymouse.org/anonwww.html", "http://anonymouse.org/cgi-bin/anon-www.cgi/"));
-		proxies.add(new WebProxy("Stealthy", "http://webproxy.stealthy.co/", "http://webproxy.stealthy.co/browse.php?u="));
-		proxies.add(new WebProxy("Webproxy.net", "http://webproxy.net/", "http://webproxy.net/view?q="));
+		//proxies.add(new WebProxy("Stealthy", "http://webproxy.stealthy.co/", "http://webproxy.stealthy.co/browse.php?u="));
+		//proxies.add(new WebProxy("Webproxy.net", "http://webproxy.net/", "http://webproxy.net/view?q="));
 		
 		/*
 		proxies.add(new WebProxy("", "", ""));

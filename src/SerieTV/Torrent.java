@@ -134,6 +134,7 @@ public class Torrent {
 	private static final String[] estensione_video={".avi", ".mkv", ".mp4", ".m4v", ".mpg", ".mpeg", ".webm", ".ogv"};
 	public String getFilePath(){
 		String cartella=Settings.getDirectoryDownload()+File.separator+getSerieTV().getFolderSerie();
+		System.out.println("Looking in: "+cartella);
 		File dir=new File(cartella);
 		if(dir.exists() && dir.isDirectory()){
 			String[] list_c=dir.list();

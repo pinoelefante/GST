@@ -116,7 +116,7 @@ public class Episodio {
 			if(ep_hd.get(i)==link){
 				link.setScaricato(Torrent.SCARICATO);
 			}
-			else if(!ep_hd.get(i).isScaricato()){
+			else if(ep_hd.get(i).getScaricato()==Torrent.SCARICARE){
 				ep_hd.get(i).setScaricato(Torrent.IGNORATO);
 			}
 		}
@@ -124,7 +124,7 @@ public class Episodio {
 			if(ep_normali.get(i)==link){
 				link.setScaricato(Torrent.SCARICATO);
 			}
-			else if(!ep_normali.get(i).isScaricato()){
+			else if(ep_normali.get(i).getScaricato()==Torrent.SCARICARE){
 				ep_normali.get(i).setScaricato(Torrent.IGNORATO);
 			}
 		}
@@ -132,7 +132,7 @@ public class Episodio {
 			if(ep_preair.get(i)==link){
 				link.setScaricato(Torrent.SCARICATO);
 			}
-			else if(!ep_preair.get(i).isScaricato()){
+			else if(ep_preair.get(i).getScaricato()==Torrent.SCARICARE){
 				ep_preair.get(i).setScaricato(Torrent.IGNORATO);
 			}
 		}

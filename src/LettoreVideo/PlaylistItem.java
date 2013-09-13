@@ -29,6 +29,7 @@ public class PlaylistItem {
 	}
 	public PlaylistItem(Torrent torrent){
 		path_file=torrent.getFilePath();
+		System.out.println(path_file);
 		proprieta=torrent.getStats();
 		nomeItem=torrent.getNomeSerie();
 	}

@@ -39,6 +39,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
 import javax.swing.ButtonGroup;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.ImageIcon;
@@ -79,6 +80,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.CompoundBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileFilter;
 import javax.swing.JRadioButton;
 
 public class Interfaccia extends JFrame {
@@ -1707,9 +1709,10 @@ public class Interfaccia extends JFrame {
 				Settings.setDownloadPreair(chckbxAutoPreair.isSelected());
 				Settings.setRicercaSottotitoli(chckbxAbilitaDownloadSottotitoli.isSelected());
 				Settings.setEnableITASA(chckbxAbilitaItaliansubsnet.isSelected());
-				Settings.setItasaUsername(txt_itasa_user.getText());
-				if(txt_itasa_pass.getPassword().length>0)
+				if(txt_itasa_pass.getPassword().length>0){
+					Settings.setItasaUsername(txt_itasa_user.getText());
 					Settings.setItasaPassword(String.copyValueOf(txt_itasa_pass.getPassword()));
+				}
 				Settings.setClientPath(txt_utorrent_path.getText());
 				Settings.setDirectoryDownload(txt_download_path.getText());
 				Settings.setVLCPath(txt_vlc_path.getText());
@@ -1721,6 +1724,62 @@ public class Interfaccia extends JFrame {
 				if(tab.getSelectedComponent()==opzioniPanel){
 					inizializzaOpzioni();
 				}
+			}
+		});
+		btnUtorrentSfoglia.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				String destinazione_path=Settings.getClientPath();
+				JFileChooser chooser=new JFileChooser(destinazione_path.isEmpty()?null:destinazione_path);
+				chooser.setDialogTitle("Percorso uTorrent");
+				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				chooser.setAcceptAllFileFilterUsed(false);
+				chooser.setFileHidingEnabled(false);
+				chooser.setFileFilter(new ClientFilter("uTorrent", "uTorrent.exe")); //TODO fare multi piattaforma
+				
+				if(chooser.showOpenDialog(Interfaccia.this) == JFileChooser.APPROVE_OPTION){
+					destinazione_path=chooser.getSelectedFile().getAbsolutePath();
+				}
+				else {
+				      return;
+				}
+				txt_utorrent_path.setText(destinazione_path);
+			}
+		});
+		btnVLCSfoglia.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String destinazione_path=Settings.getVLCPath();
+				JFileChooser chooser=new JFileChooser(destinazione_path.isEmpty()?null:destinazione_path);
+				chooser.setDialogTitle("Percorso VLC");
+				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+				chooser.setAcceptAllFileFilterUsed(false);
+				chooser.setFileHidingEnabled(false);
+				chooser.setFileFilter(new ClientFilter("VLC", "vlc.exe")); //TODO fare multi piattaforma
+				
+				if(chooser.showOpenDialog(Interfaccia.this) == JFileChooser.APPROVE_OPTION){
+					destinazione_path=chooser.getSelectedFile().getAbsolutePath();
+				}
+				else {
+				      return;
+				}
+				txt_vlc_path.setText(destinazione_path);
+			}
+		});
+		btnDirDownloadSfoglia.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String destinazione_path=Settings.getDirectoryDownload();
+				JFileChooser chooser=new JFileChooser(destinazione_path.isEmpty()?null:destinazione_path);
+				chooser.setDialogTitle("Cartella download");
+				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				chooser.setAcceptAllFileFilterUsed(false);
+				chooser.setFileHidingEnabled(false);
+				
+				if(chooser.showOpenDialog(Interfaccia.this) == JFileChooser.APPROVE_OPTION){
+					destinazione_path=chooser.getSelectedFile().getAbsolutePath();
+				}
+				else {
+				      return;
+				}
+				txt_download_path.setText(destinazione_path);
 			}
 		});
 	}

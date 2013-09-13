@@ -287,7 +287,6 @@ public class Settings {
             setLettoreNascondiRimosso(((int) res.getValueByKey("hide_rimosse"))==1?true:false);
             setLettoreOrdine((int) res.getValueByKey("ordine_lettore"));
 		}
-		
 	}
 
 	public static void createAutoStart() {

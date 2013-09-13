@@ -24,8 +24,10 @@ public class Main {
 	private static Interfaccia GUIframe;
 	public static void main(String[] args) {
 		
-		try{			
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+		Settings.baseSettings();
+		try{
+			if(Settings.isWindows())
+				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			
 			fl=new FrameLoading();
 			fl.start();
@@ -37,11 +39,6 @@ public class Main {
 				ManagerException.registraEccezione(e);
 			}
 			int i=0;
-			
-			fl.settext("Settaggi base");
-			Settings.baseSettings();
-			fl.setprog(++i);
-			
 			
 			fl.settext("Controllo dipendenze");
 			Prerequisiti.checkDipendenze();
@@ -113,8 +110,6 @@ public class Main {
 				GestioneSerieTV2.getSubManager().avviaRicercaAutomatica();
 			}
 			*/
-			
-			
 		}
 		catch(Exception e){
 			JOptionPane.showMessageDialog(GUIframe, e.getMessage());

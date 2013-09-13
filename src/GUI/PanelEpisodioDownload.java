@@ -10,6 +10,7 @@ import javax.swing.SwingConstants;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JButton;
@@ -107,7 +108,7 @@ public class PanelEpisodioDownload extends JPanel {
 				Torrent link=ep.getLinkHD();
 				if(link!=null){
 					try {
-						Download.downloadMagnet(link.getUrl(), link.getSerieTV().getFolderSerie());
+						Download.downloadMagnet(link.getUrl(), Settings.getDirectoryDownload()+File.separator+link.getSerieTV().getFolderSerie());
 						if(Settings.isRicercaSottotitoli()){
 							link.setSubDownload(true);
 						}
@@ -126,7 +127,7 @@ public class PanelEpisodioDownload extends JPanel {
 				Torrent link=ep.getLinkNormale();
 				if(link!=null){
 					try {
-						Download.downloadMagnet(link.getUrl(), link.getSerieTV().getFolderSerie());
+						Download.downloadMagnet(link.getUrl(), Settings.getDirectoryDownload()+File.separator+link.getSerieTV().getFolderSerie());
 						if(Settings.isRicercaSottotitoli()){
 							link.setSubDownload(true);
 						}
@@ -145,7 +146,7 @@ public class PanelEpisodioDownload extends JPanel {
 				Torrent link=ep.getLinkPreair();
 				if(link!=null){
 					try {
-						Download.downloadMagnet(link.getUrl(), link.getSerieTV().getFolderSerie());
+						Download.downloadMagnet(link.getUrl(), Settings.getDirectoryDownload()+File.separator+link.getSerieTV().getFolderSerie());
 						if(Settings.isRicercaSottotitoli()){
 							link.setSubDownload(true);
 						}
