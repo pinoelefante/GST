@@ -11,9 +11,11 @@ public class Playlist {
 	public Playlist(){
 		playlist=new ArrayList<PlaylistItem>(3);
 	}
+	/*
 	public void addItem(String file_path){
 		playlist.add(new PlaylistItem(file_path));
 	}
+	*/
 	public void addItem(PlaylistItem i){
 		playlist.add(i);
 	}
@@ -131,20 +133,20 @@ public class Playlist {
 		else
 			return true;
 	}
-	public String getNext(){
+	public PlaylistItem getNext(){
 		return getItem(currentItem);
 	}
-	public String getPrevious(){
+	public PlaylistItem getPrevious(){
 		return getItem(currentItem-2);
 	}
-	public String getItem(int i) throws RuntimeException{
+	public PlaylistItem getItem(int i) throws RuntimeException{
 		if(i<0)
 			i=playlist.size()-1;
 		if(i==playlist.size())
 			i=0;
 		if(i>=0 && i<playlist.size()){
 			currentItem=i;
-			return playlist.get(i++).getPath();
+			return playlist.get(i++);
 		}
 		RuntimeException e=new RuntimeException("Playlist - Indice non valido\nCurrentItem="+currentItem+"\n"+"Indice richiesto: "+i+"\nLunghezza playlist: "+playlist.size());
 		ManagerException.registraEccezione(e);

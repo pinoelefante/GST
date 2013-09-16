@@ -6,6 +6,8 @@ import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.IOException;
 
@@ -37,15 +39,22 @@ public class PanelEpisodioLettore extends JPanel {
 	private JButton btnCancellaFile;
 	private JButton btnCopiaSuDispositivo;
 	private JButton btnPlay;
+	private JLabel lblNomeFile;
+	private JLabel lblnomeserie;
+	private JComboBox<String> cmb_versione;
 	
 	public PanelEpisodioLettore(Episodio ep) {
 		episodio=ep;
-		torrent=ep.getLink();
+		torrent=ep.getLinkScaricato();
+		if(torrent==null){
+			torrent=ep.getLinkLettore();
+			//System.out.println("sono nell'if - "+(torrent.is720p()?"720p":"Normale"));
+		}
 		
 		setSize(750, 100);
 		setLayout(new BorderLayout(0, 0));
 		setBorder(new EtchedBorder(EtchedBorder.RAISED));
-		JLabel lblNomeFile = new JLabel("<html><br>&nbsp;&nbsp;Nome file: "+torrent.getFilePath()+"</html>");
+		lblNomeFile = new JLabel();
 		add(lblNomeFile, BorderLayout.SOUTH);
 		
 		JPanel panel_n = new JPanel();
@@ -54,8 +63,8 @@ public class PanelEpisodioLettore extends JPanel {
 				
 		JPanel panel = new JPanel();
 		panel_n.add(panel, BorderLayout.WEST);
-				
-		JLabel lblnomeserie = new JLabel("<html><b>"+episodio.getNomeSerie()+"</b>&nbsp;&nbsp;Stagione: <b>"+episodio.getStagione()+"</b> Episodio: <b>"+episodio.getEpisodio()+"</b></html>");
+		
+		lblnomeserie = new JLabel();
 		panel.add(lblnomeserie);
 		
 		cmb_stato_episodio = new JComboBox<String>();
@@ -99,15 +108,60 @@ public class PanelEpisodioLettore extends JPanel {
 		btnPlay.setIcon(new ImageIcon(PanelEpisodioLettore.class.getResource("/GUI/res/vlc.png")));
 		btnPlay.setBounds(603, 66, 89, 23);
 		
+		JPanel panel_1 = new JPanel();
+		add(panel_1, BorderLayout.WEST);
+		cmb_versione = new JComboBox<String>();
+		if(episodio.getLinkHD()!=null)
+			cmb_versione.addItem("HD");
+		if(episodio.getLinkNormale()!=null)
+			cmb_versione.addItem("SD");
+		if(episodio.getLinkPreair()!=null)
+			cmb_versione.addItem("Pre");
+		panel_1.add(cmb_versione);
+		
 		addListener();
+		
+		if(torrent.is720p())
+			cmb_versione.setSelectedItem("HD");
+		else if(torrent.isPreAir())
+			cmb_versione.setSelectedItem("Pre");
+		else
+			cmb_versione.setSelectedItem("SD");
+		
+		init();
+	}
+	private void init(){
+		lblNomeFile.setText("<html><br>&nbsp;&nbsp;Nome file: "+torrent.getFilePath()+"</html>");
+		String tag=torrent.is720p()?"720p":"Normale";
+		if(torrent.isPreAir())
+			tag+=" Preair";
+		lblnomeserie.setText("<html><b><dynamic></b>&nbsp;&nbsp;Stagione: <b>"+episodio.getStagione()+"</b> Episodio: <b>"+episodio.getEpisodio()+"</b> - "+tag+"</html>");
 		cmb_stato_episodio.setSelectedIndex(torrent.getScaricato());
 	}
 	private void addListener(){
+		cmb_versione.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent arg0) {
+				switch((String)cmb_versione.getSelectedItem()){
+					case "HD":
+						torrent=episodio.getLinkHD();
+						break;
+					case "SD":
+						torrent=episodio.getLinkNormale();
+						break;
+					case "Pre":
+						torrent=episodio.getLinkPreair();
+						break;
+				}
+				init();
+			}
+		});
 		cmb_stato_episodio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				torrent.setScaricato(cmb_stato_episodio.getSelectedIndex());
 				switch((String)cmb_stato_episodio.getSelectedItem()){
 					case "SCARICARE":
+					case "RIMOSSO":
+					case "IGNORATO":
 						btnPlaylist.setEnabled(false);
 						btnCancellaFile.setEnabled(false);
 						btnCopiaSuDispositivo.setEnabled(false);
@@ -116,34 +170,11 @@ public class PanelEpisodioLettore extends JPanel {
 						btnSottotitolo.setEnabled(true);
 						break;
 					case "SCARICATO":
-						btnPlaylist.setEnabled(true);
-						btnCancellaFile.setEnabled(true);
-						btnCopiaSuDispositivo.setEnabled(true);
-						btnPlay.setEnabled(true);
-						btnScarica.setEnabled(true);
-						btnSottotitolo.setEnabled(true);
-						break;
 					case "VISTO":
 						btnPlaylist.setEnabled(true);
 						btnCancellaFile.setEnabled(true);
 						btnCopiaSuDispositivo.setEnabled(true);
 						btnPlay.setEnabled(true);
-						btnScarica.setEnabled(true);
-						btnSottotitolo.setEnabled(true);
-						break;
-					case "RIMOSSO":
-						btnPlaylist.setEnabled(false);
-						btnCancellaFile.setEnabled(false);
-						btnCopiaSuDispositivo.setEnabled(false);
-						btnPlay.setEnabled(false);
-						btnScarica.setEnabled(true);
-						btnSottotitolo.setEnabled(true);
-						break;
-					case "IGNORATO":
-						btnPlaylist.setEnabled(false);
-						btnCancellaFile.setEnabled(false);
-						btnCopiaSuDispositivo.setEnabled(false);
-						btnPlay.setEnabled(false);
 						btnScarica.setEnabled(true);
 						btnSottotitolo.setEnabled(true);
 						break;
@@ -175,16 +206,19 @@ public class PanelEpisodioLettore extends JPanel {
 						PlayerOLD.play(filepath);
 				}
 				else {
-					playlist.addItem(new PlaylistItem(torrent));
 					Player player=playlist.getPlayer();
 					String filepath=torrent.getFilePath();
 					if(filepath.length()>0){
 						if(player!=null){
-							if(player.isLinked())
+							if(player.isLinked()){
+								playlist.addItem(new PlaylistItem(torrent));
 								player.play(filepath);
+								cmb_stato_episodio.setSelectedIndex(Torrent.VISTO);
+							}
 						}
 						else {
 							PlayerOLD.play(filepath);
+							cmb_stato_episodio.setSelectedIndex(Torrent.VISTO);
 						}
 					}
 				}
@@ -208,10 +242,7 @@ public class PanelEpisodioLettore extends JPanel {
 		});
 		
 		btnCopiaSuDispositivo.addActionListener(new ActionListener() {
-			int i=0;
 			public void actionPerformed(ActionEvent arg0) {
-				Download.copiaFile("D:\\SerieTV\\Alcatraz\\Alcatraz.S01E01.HDTV.XviD-LOL.[VTV].avi", "E:\\STCopied"+(i++));
-				
 				String origine_filepath=torrent.getFilePath();
 				String destinazione_path="";
 				JFileChooser chooser= new JFileChooser();
@@ -241,6 +272,7 @@ public class PanelEpisodioLettore extends JPanel {
 					cmb_stato_episodio.setSelectedIndex(Torrent.SCARICATO);
 				}
 				catch (IOException e) {
+					JOptionPane.showMessageDialog(PanelEpisodioLettore.this.getParent().getParent(), "Impossibile avvia il download.\nControllare il path di uTorrent");
 					e.printStackTrace();
 				}
 				

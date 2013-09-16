@@ -118,6 +118,7 @@ public class EZTV extends ProviderSerieTV{
 			int id_subsf=(int) riga.getValueByKey("id_subsfactory");
 			int id_subsp=(int) riga.getValueByKey("id_subspedia");
 			int id_tvdb=(int) riga.getValueByKey("id_tvdb");
+			int preferenze_d=(int)riga.getValueByKey("preferenze_download");
 			SerieTV st=new SerieTV(this, nome, url);
 			st.setIDDb(id_db);
 			st.setInserita(inserita);
@@ -127,6 +128,7 @@ public class EZTV extends ProviderSerieTV{
 			st.setIDSubspedia(id_subsp);
 			st.setIDTvdb(id_tvdb);
 			st.setStopSearch(stop_search, false);
+			st.setPreferenze(new Preferenze(preferenze_d));
 			addSerieFromDB(st);
 			caricaEpisodiDB(st);
 		}
@@ -135,7 +137,7 @@ public class EZTV extends ProviderSerieTV{
 	@Override
 	protected void salvaSerieInDB(SerieTV s) {
 		if(s.getIDDb()==0){
-			String query="INSERT INTO "+Database.TABLE_SERIETV+" (nome, url, inserita, conclusa, stop_search, provider, id_itasa, id_subsfactory, id_subspedia, id_tvdb) VALUES ("+
+			String query="INSERT INTO "+Database.TABLE_SERIETV+" (nome, url, inserita, conclusa, stop_search, provider, id_itasa, id_subsfactory, id_subspedia, id_tvdb, preferenze_download) VALUES ("+
 					"\""+s.getNomeSerie()+"\", "+
 					"\""+s.getUrl()+"\","+
 					(s.isInserita()?1:0)+","+
@@ -145,7 +147,8 @@ public class EZTV extends ProviderSerieTV{
 					s.getIDItasa()+","+
 					s.getIDDBSubsfactory()+","+
 					s.getIDSubspedia()+","+
-					s.getIDTvdb()+")";
+					s.getIDTvdb()+","+
+					s.getPreferenze().toValue()+")";
 			Database.updateQuery(query);
 			
 			String query_id="SELECT id FROM "+Database.TABLE_SERIETV+" WHERE url=\""+s.getUrl()+"\"";
@@ -167,6 +170,7 @@ public class EZTV extends ProviderSerieTV{
 					", id_subsfactory="+s.getIDDBSubsfactory()+
 					", id_subspedia="+s.getIDSubspedia()+
 					", id_tvdb="+s.getIDTvdb()+
+					", preferenze_download="+s.getPreferenze().toValue()+
 					" WHERE id="+s.getIDDb();
 			Database.updateQuery(query);
 		}

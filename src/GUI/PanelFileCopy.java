@@ -128,7 +128,10 @@ public class PanelFileCopy extends JPanel {
 			try {
 				Thread.sleep(500L);
 				while(!download.isComplete()){
-					int percentuale=(int) ((download.getFileSizeDowloaded()*100)/download.getFileSize());
+					long d_total=download.getFileSize();
+					long d_size=download.getFileSizeDowloaded();
+					
+					int percentuale=(int) ((d_size*100)/d_total);
 					progressBar.setValue(percentuale);
 					Thread.sleep(500L);
 				}
@@ -138,6 +141,10 @@ public class PanelFileCopy extends JPanel {
 			}
 			catch(InterruptedException e){
 				FileManager.downloadStopped();
+			}
+			catch(ArithmeticException e){
+				lblCurrentStatus.setText("Errore durante la copia");
+				interrupt();
 			}
 		}
 	}

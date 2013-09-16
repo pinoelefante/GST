@@ -65,15 +65,30 @@ public class PanelEpisodioDownload extends JPanel {
 		panel_1.add(panel_2, BorderLayout.CENTER);
 		
 		btnHd = new JButton("HD");
-		btnHd.setEnabled(ep.getLinkHD()==null?false:true);
+		Torrent t_hd=ep.getLinkHD();
+		if(t_hd!=null){
+			btnHd.setEnabled(t_hd.isScaricato()?false:true);
+		}
+		else
+			btnHd.setEnabled(false);
 		panel_2.add(btnHd);
 		
 		btnSd = new JButton("SD");
-		btnSd.setEnabled(ep.getLinkNormale()==null?false:true);
+		Torrent t_sd=ep.getLinkNormale();
+		if(t_sd!=null){
+			btnSd.setEnabled(t_sd.isScaricato()?false:true);
+		}
+		else
+			btnSd.setEnabled(false);
 		panel_2.add(btnSd);
 		
 		btnPreair = new JButton("PreAir");
-		btnPreair.setEnabled(ep.getLinkPreair()==null?false:true);
+		Torrent t_pre=ep.getLinkPreair();
+		if(t_pre!=null){
+			btnPreair.setEnabled(t_pre.isScaricato()?false:true);
+		}
+		else
+			btnPreair.setEnabled(false);
 		panel_2.add(btnPreair);
 		
 		JPanel panel_4 = new JPanel();
@@ -100,7 +115,7 @@ public class PanelEpisodioDownload extends JPanel {
 		chckbxnomeserie.setSelected(state);
 	}
 	public Torrent getLink(){
-		return ep.getLink();
+		return ep.getLinkDownload();
 	}
 	private void addListener(){
 		btnHd.addActionListener(new ActionListener() {

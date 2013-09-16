@@ -156,6 +156,9 @@ public class Database {
 		if(!checkColumn(TABLE_SERIETV, "id_tvdb")){
 			alter_aggiungicampo(TABLE_SERIETV, "id_tvdb", "INTEGER", "0");
 		}
+		if(!checkColumn(TABLE_SERIETV, "preferenze_download")){
+			alter_aggiungicampo(TABLE_SERIETV, "preferenze_download", "INTEGER", "0");
+		}
 		/** SERIETV - FINE*/
 		
 		/** ITASA*/

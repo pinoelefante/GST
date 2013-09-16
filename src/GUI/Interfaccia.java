@@ -80,7 +80,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.CompoundBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.filechooser.FileFilter;
 import javax.swing.JRadioButton;
 
 public class Interfaccia extends JFrame {
@@ -172,7 +171,15 @@ public class Interfaccia extends JFrame {
 	private JLabel lblVersioneAttuale;
 	private JLabel lblRicercaOre;
 	private JTabbedPane tab;
-	private JPanel opzioniPanel;
+	private JPanel OpzioniPanel;
+	private JButton btnLettoreUpdate;
+	private JPanel panel_12;
+	private JPanel panel_13;
+	private JButton btnAggiornaElencoRegole;
+	private JPanel panel_regole_scroll;
+	private JPanel PreferenzeSeriePanel;
+	private JPanel SottotitoliPanel;
+	private JPanel ManagerCopie;
 
 	@SuppressWarnings("serial")
 	public Interfaccia(){
@@ -201,6 +208,7 @@ public class Interfaccia extends JFrame {
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setViewportBorder(new TitledBorder(null, "Nuove serie", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		scrollPane.setBounds(485, 0, 254, 223);
+		scrollPane.getVerticalScrollBar().setUnitIncrement(5);
 		DownloadPanel.add(scrollPane);
 		
 		panel_nuove_serie = new JPanel();
@@ -324,6 +332,7 @@ public class Interfaccia extends JFrame {
 		
 		JScrollPane scrollPaneDownload = new JScrollPane();
 		scrollPaneDownload.setBounds(0, 257, 375, 269);
+		scrollPaneDownload.getVerticalScrollBar().setUnitIncrement(8);
 		DownloadPanel.add(scrollPaneDownload);
 		
 		panel_scroll_download = new JPanel();
@@ -364,32 +373,30 @@ public class Interfaccia extends JFrame {
 		cmb_down_selezione.addItem("Seleziona tutto");
 		cmb_down_selezione.addItem("Deseleziona tutto");
 		
-		JPanel PreferenzeSeriePanel = new JPanel();
+		PreferenzeSeriePanel = new JPanel();
 		tab.addTab("Regole", new ImageIcon(Interfaccia.class.getResource("/GUI/res/preferiti.png")), PreferenzeSeriePanel, null);
 		PreferenzeSeriePanel.setLayout(new BorderLayout(0, 0));
 		
-		JPanel panel_11 = new JPanel();
-		PreferenzeSeriePanel.add(panel_11, BorderLayout.NORTH);
+		panel_12 = new JPanel();
+		PreferenzeSeriePanel.add(panel_12, BorderLayout.NORTH);
+		panel_12.setLayout(new BorderLayout(0, 0));
 		
-		JRadioButton rdbtnScaricaTutto = new JRadioButton("Scarica tutto");
-		panel_11.add(rdbtnScaricaTutto);
+		panel_13 = new JPanel();
+		panel_12.add(panel_13, BorderLayout.EAST);
 		
-		JRadioButton rdbtnImpostaRegole = new JRadioButton("Imposta regole");
-		panel_11.add(rdbtnImpostaRegole);
-		
-		ButtonGroup group_regole=new ButtonGroup();
-		group_regole.add(rdbtnImpostaRegole);
-		group_regole.add(rdbtnScaricaTutto);
+		btnAggiornaElencoRegole = new JButton("");
+		btnAggiornaElencoRegole.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/aggiorna.png")));
+		panel_13.add(btnAggiornaElencoRegole);
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
+		scrollPane_1.getVerticalScrollBar().setUnitIncrement(5);
 		PreferenzeSeriePanel.add(scrollPane_1, BorderLayout.CENTER);
 		
-		JPanel panel_preferenze_scroll = new JPanel();
-		scrollPane_1.setViewportView(panel_preferenze_scroll);
-		panel_preferenze_scroll.setLayout(new GridLayout(1, 0, 0, 0));
-		group_regole.setSelected(rdbtnImpostaRegole.getModel(), true);
+		panel_regole_scroll = new JPanel();
+		scrollPane_1.setViewportView(panel_regole_scroll);
+		panel_regole_scroll.setLayout(new GridLayout(1, 0, 0, 0));
 		
-		JPanel SottotitoliPanel = new JPanel();
+		SottotitoliPanel = new JPanel();
 		tab.addTab("Sottotitoli", new ImageIcon(Interfaccia.class.getResource("/GUI/res/sottotitoli.png")), SottotitoliPanel, null);
 		SottotitoliPanel.setLayout(null);
 		
@@ -497,6 +504,7 @@ public class Interfaccia extends JFrame {
 		
 		JScrollPane scrollPane_subscaricare = new JScrollPane();
 		scrollPane_subscaricare.setBounds(0, 202, 370, 220);
+		scrollPane_subscaricare.getVerticalScrollBar().setUnitIncrement(5);
 		SottotitoliPanel.add(scrollPane_subscaricare);
 		
 		JLabel lblSottotitoliDaScaricare = new JLabel("Sottotitoli da scaricare");
@@ -507,6 +515,7 @@ public class Interfaccia extends JFrame {
 		
 		JScrollPane scrollPane_logsub = new JScrollPane();
 		scrollPane_logsub.setBounds(372, 202, 367, 220);
+		scrollPane_logsub.getVerticalScrollBar().setUnitIncrement(5);
 		SottotitoliPanel.add(scrollPane_logsub);
 		
 		table = new JTable();
@@ -648,6 +657,7 @@ public class Interfaccia extends JFrame {
 		
 		JScrollPane scrollPaneLettoreEpisodi = new JScrollPane();
 		scrollPaneLettoreEpisodi.setBounds(0, 285, 739, 210);
+		scrollPaneLettoreEpisodi.getVerticalScrollBar().setUnitIncrement(8);
 		LettorePanel.add(scrollPaneLettoreEpisodi);
 		
 		panel_elenco_puntate_lettore = new JPanel();
@@ -685,12 +695,12 @@ public class Interfaccia extends JFrame {
 		LettorePanel.add(btnVLCFullscreen);
 		
 		JLabel lblOrdine = new JLabel("Ordine");
-		lblOrdine.setBounds(565, 265, 44, 16);
+		lblOrdine.setBounds(450, 265, 44, 16);
 		LettorePanel.add(lblOrdine);
 		
 		comboBoxLettoreOrdine = new JComboBox<String>();
 		comboBoxLettoreOrdine.setModel(new DefaultComboBoxModel<String>(new String[] {"Crescente", "Decrescente"}));
-		comboBoxLettoreOrdine.setBounds(615, 263, 112, 20);
+		comboBoxLettoreOrdine.setBounds(500, 263, 112, 20);
 		comboBoxLettoreOrdine.setSelectedIndex(Settings.getLettoreOrdine());
 		LettorePanel.add(comboBoxLettoreOrdine);
 		
@@ -732,20 +742,25 @@ public class Interfaccia extends JFrame {
 		btnVLCNext.setBounds(433, 78, 26, 26);
 		LettorePanel.add(btnVLCNext);
 		
-		JPanel ManagerCopie = new JPanel();
+		btnLettoreUpdate = new JButton("");
+		btnLettoreUpdate.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/aggiorna.png")));
+		btnLettoreUpdate.setBounds(701, 260, 26, 26);
+		LettorePanel.add(btnLettoreUpdate);
+		
+		ManagerCopie = new JPanel();
 		tab.addTab("File Manager", new ImageIcon(Interfaccia.class.getResource("/GUI/res/salva.png")), ManagerCopie, null);
 		ManagerCopie.setLayout(new BorderLayout(0, 0));
 		ManagerCopie.add(FileManager.getPanel(), BorderLayout.CENTER);
 		
-		opzioniPanel = new JPanel();
-		opzioniPanel.setBorder(new CompoundBorder());
-		tab.addTab("Opzioni", new ImageIcon(Interfaccia.class.getResource("/GUI/res/opzioni.png")), opzioniPanel, null);
-		opzioniPanel.setLayout(null);
+		OpzioniPanel = new JPanel();
+		OpzioniPanel.setBorder(new CompoundBorder());
+		tab.addTab("Opzioni", new ImageIcon(Interfaccia.class.getResource("/GUI/res/opzioni.png")), OpzioniPanel, null);
+		OpzioniPanel.setLayout(null);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "Aspetto", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 		panel_1.setBounds(10, 11, 350, 144);
-		opzioniPanel.add(panel_1);
+		OpzioniPanel.add(panel_1);
 		panel_1.setLayout(null);
 		
 		chckbxSempreInPrimo = new JCheckBox("Sempre in primo piano");
@@ -775,7 +790,7 @@ public class Interfaccia extends JFrame {
 		JPanel panel_2 = new JPanel();
 		panel_2.setBorder(new TitledBorder(null, "Download", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 		panel_2.setBounds(379, 11, 350, 57);
-		opzioniPanel.add(panel_2);
+		OpzioniPanel.add(panel_2);
 		panel_2.setLayout(null);
 		
 		chckbxDownHD = new JCheckBox("Mostra episodi in HD");
@@ -789,7 +804,7 @@ public class Interfaccia extends JFrame {
 		JPanel panel_3 = new JPanel();
 		panel_3.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Download automatico", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 		panel_3.setBounds(379, 65, 350, 87);
-		opzioniPanel.add(panel_3);
+		OpzioniPanel.add(panel_3);
 		panel_3.setLayout(null);
 		
 		chckbxAutoAbilita = new JCheckBox("Abilita");
@@ -825,7 +840,7 @@ public class Interfaccia extends JFrame {
 		JPanel panel_4 = new JPanel();
 		panel_4.setBorder(new TitledBorder(null, "Sottotitoli", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 		panel_4.setBounds(10, 159, 717, 136);
-		opzioniPanel.add(panel_4);
+		OpzioniPanel.add(panel_4);
 		panel_4.setLayout(null);
 		
 		chckbxAbilitaDownloadSottotitoli = new JCheckBox("Abilita download sottotitoli");
@@ -864,7 +879,7 @@ public class Interfaccia extends JFrame {
 		JPanel panel_5 = new JPanel();
 		panel_5.setBorder(new TitledBorder(null, "Programmi", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 		panel_5.setBounds(10, 307, 717, 125);
-		opzioniPanel.add(panel_5);
+		OpzioniPanel.add(panel_5);
 		panel_5.setLayout(null);
 		
 		JLabel lblPercorsoUtorrent = new JLabel("Percorso uTorrent");
@@ -915,7 +930,7 @@ public class Interfaccia extends JFrame {
 		JPanel panel_6 = new JPanel();
 		panel_6.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		panel_6.setBounds(10, 480, 717, 37);
-		opzioniPanel.add(panel_6);
+		OpzioniPanel.add(panel_6);
 		
 		btnOpzioniSalva = new JButton("Salva");
 		btnOpzioniSalva.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/salva.png")));
@@ -1015,6 +1030,7 @@ public class Interfaccia extends JFrame {
         		cmb_serie_lettore.addItem(st.get(i));
         		cmb_serie_sottotitoli.addItem(st.get(i));
        		}
+    		cmb_serie_lettore.getActionListeners()[0].actionPerformed(new ActionEvent(cmb_serie_lettore, 0, "", 0));
 		}
 		st=null;
 	}
@@ -1334,17 +1350,6 @@ public class Interfaccia extends JFrame {
 							LettorePanel.revalidate();
 							LettorePanel.repaint();
 							playlist.setPlayer(VLCPanel);
-							/**TODO rimuovere per la build*/
-							if(Settings.isWindows()){
-		    					playlist.addItem("D:\\SerieTV\\Alcatraz\\Alcatraz.S01E01.HDTV.XviD-LOL.[VTV].avi");
-		    					playlist.addItem("D:\\SerieTV\\How I met your mother\\How.I.Met.Your.Mother.S08E24.HDTV.x264-LOL.mp4");
-		    					playlist.addItem("D:\\SerieTV\\Hunted\\Hunted.1x01.Mort.HDTV.x264-FoV.mp4");
-		    					playlist.addItem("D:\\SerieTV\\Monk\\Monk - Stagione 8\\Detective Monk.8x01.Il Sig. Monk E Il Clan Dei Cooper.ITA.avi");
-							}
-							else if(Settings.isLinux()){
-								playlist.addItem("lost.1x01.pilota._parte.1_.ita.dvdrip.avi");
-								playlist.addItem("./Grover Washington Jr. Featuring Bill Withers - Just the Two .flv");
-							}
 						}
 					}
 				}
@@ -1721,9 +1726,12 @@ public class Interfaccia extends JFrame {
 		});
 		tab.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent arg0) {
-				if(tab.getSelectedComponent()==opzioniPanel){
+				if(tab.getSelectedComponent()==OpzioniPanel)
 					inizializzaOpzioni();
-				}
+				else if(tab.getSelectedComponent()==PreferenzeSeriePanel)
+					btnAggiornaElencoRegole.getActionListeners()[0].actionPerformed(new ActionEvent(btnAggiornaElencoRegole, 0, ""));
+				else if(tab.getSelectedComponent()==LettorePanel)
+					disegnaLettore();
 			}
 		});
 		btnUtorrentSfoglia.addActionListener(new ActionListener() {
@@ -1782,5 +1790,45 @@ public class Interfaccia extends JFrame {
 				txt_download_path.setText(destinazione_path);
 			}
 		});
+		btnLettoreUpdate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				disegnaLettore();
+			}
+		});
+		btnAggiornaElencoRegole.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				panel_regole_scroll.removeAll();
+				ArrayList<SerieTV> st=GestioneSerieTV.getElencoSerieInserite();
+				if(st!=null){
+					for(int i=0;i<st.size();i++){
+						panel_regole_scroll.add(new PanelPreferenze(st.get(i)));
+					}
+				}
+			}
+		});
+		panel_regole_scroll.addContainerListener(new ContainerListener() {
+			public void componentRemoved(ContainerEvent arg0) {
+				GridLayout l=(GridLayout) panel_regole_scroll.getLayout();
+				if(panel_regole_scroll.getComponentCount()<=3)
+					l.setRows(3);
+				else
+					l.setRows(l.getRows()-1);
+				panel_regole_scroll.revalidate();
+				panel_regole_scroll.repaint();
+				
+			}
+			public void componentAdded(ContainerEvent arg0) {
+				GridLayout l=(GridLayout) panel_regole_scroll.getLayout();
+				if(panel_regole_scroll.getComponentCount()<=3)
+					l.setRows(3);
+				else
+					l.setRows(l.getRows()+1);
+				panel_regole_scroll.revalidate();
+				panel_regole_scroll.repaint();
+			}
+		});
+	}
+	public void addEntrySottotitolo(){
+		//TODO entry sottotitolo
 	}
 }

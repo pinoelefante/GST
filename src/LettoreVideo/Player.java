@@ -112,7 +112,9 @@ public class Player {
 			}
 		}
 		else {
-			play(playlist.getNext());
+			PlaylistItem pi=playlist.getNext();
+			play(pi.getPath());
+			pi.setPlayed();
 		}
 	}
 	public void play(String s){
@@ -215,9 +217,11 @@ public class Player {
 		vlc.getMediaPlayer().setPosition(last_seen);
 		isFullscreen=false;
 	}
+	/*
 	public void addToPlaylist(String p){
 		playlist.addItem(p);
 	}
+	*/
 	public boolean isFullscreen(){
 		return isFullscreen;
 	}
@@ -227,10 +231,14 @@ public class Player {
 			return;
 		stop();
 		if(vlc.getMediaPlayer().isPlaying()){
-			play(playlist.getItem(playlist.getCurrentItem()));
+			PlaylistItem pi=playlist.getItem(playlist.getCurrentItem());
+			play(pi.getPath());
+			pi.setPlayed();
 		}
 		else {
-			play(playlist.getItem(playlist.getCurrentItem()+1));
+			PlaylistItem pi=playlist.getItem(playlist.getCurrentItem()+1);
+			play(pi.getPath());
+			pi.setPlayed();
 		}
 	}
 	public void prev(){
@@ -241,14 +249,17 @@ public class Player {
 			int index=playlist.getCurrentItem()-2;
 			if(index<0)
 				index=playlist.getLastItem();
-			play(playlist.getItem(index));
+			PlaylistItem pi=playlist.getItem(index);
+			play(pi.getPath());
+			pi.setPlayed();
 		}
 		else {
 			int index=playlist.getCurrentItem()-1;
 			if(index<0)
 				index=playlist.getLastItem();
-			play(playlist.getItem(index));
-			
+			PlaylistItem pi=playlist.getItem(index);
+			play(pi.getPath());
+			pi.setPlayed();
 		}
 	}
 	public Playlist getPlaylist() {

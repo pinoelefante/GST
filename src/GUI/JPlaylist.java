@@ -39,10 +39,6 @@ public class JPlaylist extends JScrollPane {
 		playlist.addItem(s);
 		ridisegna();
 	}
-	public void addItem(String path_file){
-		playlist.addItem(path_file);
-		ridisegna();
-	}
 	public JButton getButtonUp(){
 		return b_up;
 	}
@@ -91,7 +87,9 @@ public class JPlaylist extends JScrollPane {
 		            int index = list.locationToIndex(evt.getPoint());
 		            if(index>=0){
 		            	if(player!=null){
-		            		player.play(playlist.getItem(index));
+		            		PlaylistItem pi=playlist.getItem(index);
+		            		player.play(pi.getPath());
+		            		pi.setPlayed();
 		            	}
 		            }
 		        }

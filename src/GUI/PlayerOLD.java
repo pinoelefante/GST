@@ -16,11 +16,11 @@ public class PlayerOLD {
 		
 		class PlayerVideo extends Thread{
 			public void run(){
-				String file_r=Settings.getDirectoryDownload()+File.separator+stringa;
+				String file_r=stringa;
 				try {
 					String[] cmd = null;
 					if(Settings.isVLC()){
-						cmd=new String[5];
+						cmd=new String[6];
 						cmd[0]=Settings.getVLCPath();	//path di vlc
 						cmd[1]="-f"; 					//fullscreen
 						cmd[2]="--disable-screensaver"; //disabilita lo screen saver

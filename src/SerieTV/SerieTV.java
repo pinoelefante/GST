@@ -16,6 +16,7 @@ public class SerieTV {
 	private int id_db, id_itasa=0, id_subsfactory=0, id_tvdb=0, id_subspedia=0;
 	private boolean conclusa, stop_search, inserita;
 	private ElencoEpisodi episodi;
+	private Preferenze preferenze_download;
 	
 	public SerieTV(ProviderSerieTV provider, String nomeserie, String url) {
 		episodi=new ElencoEpisodi();
@@ -32,6 +33,14 @@ public class SerieTV {
 		if(conclusa!=stato){
 			conclusa=stato;
 		}
+	}
+	public void setPreferenze(Preferenze p){
+		preferenze_download=p;
+	}
+	public Preferenze getPreferenze(){
+		if(preferenze_download==null)
+			preferenze_download=new Preferenze(0);
+		return preferenze_download;
 	}
 	public boolean isConclusa(){
 		return conclusa;
@@ -130,14 +139,21 @@ public class SerieTV {
 		return formattato;
 	}
 	public void addEpisodio(Torrent episodio){
+		if(episodio.is720p() && episodio.getScaricato()==Torrent.SCARICARE && !getPreferenze().isPreferisciHD())
+			episodio.setScaricato(Torrent.IGNORATO);
+		if(episodio.isPreAir() && episodio.getScaricato()==Torrent.SCARICARE && !getPreferenze().isDownloadPreair())
+			episodio.setScaricato(Torrent.IGNORATO);
 		episodi.aggiungiLink(episodio);
 	}
-	public void addEpisodioDB(Torrent e){
-		episodi.aggiungiLinkDB(e);
+	public void addEpisodioDB(Torrent episodio){
+		if(episodio.is720p() && episodio.getScaricato()==Torrent.SCARICARE && !getPreferenze().isPreferisciHD())
+			episodio.setScaricato(Torrent.IGNORATO);
+		if(episodio.isPreAir() && episodio.getScaricato()==Torrent.SCARICARE && !getPreferenze().isDownloadPreair())
+			episodio.setScaricato(Torrent.IGNORATO);
+		episodi.aggiungiLinkDB(episodio);
 	}
 	public void aggiornaEpisodiOnline(){
 		provider.caricaEpisodiOnline(this);
-		//episodi.stampaElenco();
 	}
 	public int getNumEpisodi(){
 		return episodi.size();
