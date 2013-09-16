@@ -10,10 +10,12 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
@@ -42,6 +44,7 @@ public class PanelEpisodioLettore extends JPanel {
 	private JLabel lblNomeFile;
 	private JLabel lblnomeserie;
 	private JComboBox<String> cmb_versione;
+	private JButton btnMostra;
 	
 	public PanelEpisodioLettore(Episodio ep) {
 		episodio=ep;
@@ -107,6 +110,9 @@ public class PanelEpisodioLettore extends JPanel {
 		panel_c.add(btnPlay);
 		btnPlay.setIcon(new ImageIcon(PanelEpisodioLettore.class.getResource("/GUI/res/vlc.png")));
 		btnPlay.setBounds(603, 66, 89, 23);
+		
+		btnMostra = new JButton("Mostra");
+		panel_c.add(btnMostra);
 		
 		JPanel panel_1 = new JPanel();
 		add(panel_1, BorderLayout.WEST);
@@ -282,6 +288,24 @@ public class PanelEpisodioLettore extends JPanel {
 			public void actionPerformed(ActionEvent e) {
 				// TODO bottone sottotitolo panel episodio lettore
 				
+			}
+		});
+		btnMostra.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				JFrame frame=new JFrame("Link - "+episodio.getNomeSerie()+" "+episodio.getStagione()+" "+episodio.getEpisodio());
+				frame.setAlwaysOnTop(true);
+				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+				frame.setSize(800, 200);
+				
+				ArrayList<Torrent> t=episodio.getAll();
+				JLabel lbl=new JLabel("<html>");
+				for(int i=0;i<t.size();i++){
+					Torrent t1=t.get(i);
+					lbl.setText(lbl.getText()+t1.getUrl()+" - "+t1.getScaricato()+"<br>");
+				}
+				lbl.setText(lbl.getText()+"</html>");
+				frame.add(lbl);
+				frame.setVisible(true);
 			}
 		});
 	}

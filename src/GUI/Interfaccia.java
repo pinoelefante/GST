@@ -180,6 +180,7 @@ public class Interfaccia extends JFrame {
 	private JPanel PreferenzeSeriePanel;
 	private JPanel SottotitoliPanel;
 	private JPanel ManagerCopie;
+	private JButton btnOffline;
 
 	@SuppressWarnings("serial")
 	public Interfaccia(){
@@ -370,6 +371,11 @@ public class Interfaccia extends JFrame {
 		cmb_down_selezione = new JComboBox<String>();
 		cmb_down_selezione.setBounds(422, 228, 140, 24);
 		DownloadPanel.add(cmb_down_selezione);
+		
+		btnOffline = new JButton("");
+		btnOffline.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/offline.png")));
+		btnOffline.setBounds(703, 228, 26, 26);
+		DownloadPanel.add(btnOffline);
 		cmb_down_selezione.addItem("Seleziona tutto");
 		cmb_down_selezione.addItem("Deseleziona tutto");
 		
@@ -1664,6 +1670,7 @@ public class Interfaccia extends JFrame {
 							if(t!=null){
 								try {
 									Download.downloadMagnet(t.getUrl(), Settings.getDirectoryDownload()+File.separator+t.getSerieTV().getFolderSerie());
+									p.scarica(t);
 									panel_scroll_download.remove(p);
 								}
 								catch (IOException e) {
@@ -1825,6 +1832,11 @@ public class Interfaccia extends JFrame {
 					l.setRows(l.getRows()+1);
 				panel_regole_scroll.revalidate();
 				panel_regole_scroll.repaint();
+			}
+		});
+		btnOffline.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				inizializzaDownloadScroll();
 			}
 		});
 	}

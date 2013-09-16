@@ -85,24 +85,19 @@ public class Episodio {
 	}
 	public boolean isScaricato(){
 		boolean hd = false, sd = false,pre = false;
-		for(int i=0;i<ep_hd.size();i++){
-			if(ep_hd.get(i).isScaricato()){
-				//System.out.println("HD - scaricato: stato "+ep_hd.get(i).getScaricato());
-				hd=true;
-			}
-		}
-		for(int i=0;i<ep_normali.size();i++){
-			if(ep_normali.get(i).isScaricato()){
-				//System.out.println("SD - scaricato: stato "+ep_normali.get(i).getScaricato());
-				sd=true;
-			}
-		}
-		for(int i=0;i<ep_preair.size();i++){
-			if(ep_preair.get(i).isScaricato()){
-				//System.out.println("PRE - scaricato: stato "+ep_preair.get(i).getScaricato());
-				pre=true;
-			}
-		}
+		
+		Torrent t_hd=getLinkHD();
+		if(t_hd==null || t_hd.isScaricato())
+			hd=true;
+		
+		Torrent t_sd=getLinkNormale();
+		if(t_sd==null || t_sd.isScaricato())
+			sd=true;
+		
+		Torrent t_pre=getLinkPreair();
+		if(t_pre==null || t_pre.isScaricato())
+			pre=true;
+		
 		return hd&&sd&&pre;
 	}
 	public Torrent getLinkHD(){
@@ -354,5 +349,12 @@ public class Episodio {
 				break;
 			}
 		}
+	}
+	public ArrayList<Torrent> getAll(){
+		ArrayList<Torrent> r=new ArrayList<Torrent>(ep_hd.size()+ep_normali.size()+ep_preair.size());
+		r.addAll(ep_hd);
+		r.addAll(ep_normali);
+		r.addAll(ep_preair);
+		return r;
 	}
 }

@@ -117,6 +117,9 @@ public class PanelEpisodioDownload extends JPanel {
 	public Torrent getLink(){
 		return ep.getLinkDownload();
 	}
+	public void scarica(Torrent link){
+		ep.scaricaLink(link);
+	}
 	private void addListener(){
 		btnHd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
