@@ -118,9 +118,9 @@ public class GestoreSottotitoli {
 		Interfaccia.getInterfaccia().addEntrySottotitolo(serie, stagione,episodio, getProvider(provider).getProviderName());
 	}
 	public void loadLast10(){
-		String query="SELECT * FROM "+Database.TABLE_LOGSUB+" LIMIT 10";
+		String query="SELECT * FROM "+Database.TABLE_LOGSUB+" ORDER BY id DESC LIMIT 10";
 		ArrayList<KVResult<String, Object>> res=Database.selectQuery(query);
-		for(int i=res.size();i>=0;i--){
+		for(int i=res.size()-1;i>=0;i--){
 			KVResult<String, Object> r=res.get(i);
 			String nomeserie=(String) r.getValueByKey("serie");
 			int stagione=(int) r.getValueByKey("stagione");
