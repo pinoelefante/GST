@@ -68,11 +68,9 @@ public class Main {
 			Update.start();
 			fl.setprog(++i);
 			
-			
 			fl.settext("Caricando serie dal database");
 			fl.setprog(++i);
 			GestioneSerieTV.instance();
-			//GestioneSerieTV2.carica_serie_database();
 			
 			
 			/* TODO
@@ -81,11 +79,7 @@ public class Main {
 			fl.setprog(++i);
 			thread_update.join();
 			*/
-			/*
-			fl.settext("Scaricando lista serie");
-			GestioneSerieTV.Showlist();
-			fl.setprog(++i);
-			*/
+			
 			fl.settext("Avvio interfaccia grafica");
 			fl.setprog(++i);
 			
@@ -101,15 +95,12 @@ public class Main {
 			
 			GUIframe = new Interfaccia();
 			GUIframe.setVisible(true);
-			GUIframe.init();
-			//GestioneSerieTV2.caricaElencoSerieOnline();
-			//GUIframe.reloadSerieDisponibili();
-				
-			/*
+			GUIframe.init();	
+			
 			if(Settings.isRicercaSottotitoli()){
-				GestioneSerieTV2.getSubManager().avviaRicercaAutomatica();
+				GestioneSerieTV.getSubManager().avviaRicercaAutomatica();
 			}
-			*/
+			
 		}
 		catch(Exception e){
 			JOptionPane.showMessageDialog(GUIframe, e.getMessage());
