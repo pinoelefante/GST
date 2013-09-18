@@ -98,6 +98,15 @@ public class Torrent {
 		else
 			GestioneSerieTV.getSubManager().rimuoviEpisodio(this);
 	}
+	public void setSubDownload(boolean stat, boolean update_db){
+		sub_down=stat;
+		if(stat)
+			GestioneSerieTV.getSubManager().aggiungiEpisodio(this);
+		else
+			GestioneSerieTV.getSubManager().rimuoviEpisodio(this);
+		if(update_db)
+			updateTorrentInDB();
+	}
 	
 	public void setPreair(boolean stato) {
 		preair=stato;

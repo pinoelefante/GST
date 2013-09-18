@@ -2,12 +2,14 @@ package Sottotitoli;
 
 import java.util.ArrayList;
 
+import Database.Database;
 import GUI.Interfaccia;
 import Naming.Renamer;
 import Programma.ManagerException;
 import SerieTV.GestioneSerieTV;
 import SerieTV.SerieTV;
 import SerieTV.Torrent;
+import StruttureDati.db.KVResult;
 
 public class GestoreSottotitoli {
 	class AssociatoreAutomatico extends Thread {
@@ -104,17 +106,28 @@ public class GestoreSottotitoli {
 		elenco_serie=null;
 	}
 	public void aggiungiLogEntry(Torrent t, ProviderSottotitoli provider){
-		/*
-		SQLParameter[] p=new SQLParameter[4];
-		p[0]=new SQLParameter(SQLParameter.TEXT, t.getNomeSerie(), "nome_serie");
-		p[1]=new SQLParameter(SQLParameter.INTEGER, t.getStagione(), "serie");
-		p[2]=new SQLParameter(SQLParameter.INTEGER, t.getEpisodio(), "episodio");
-		p[3]=new SQLParameter(SQLParameter.TEXT, provider.getProviderName(), "provider");
-		Database.insert(Database.TABLE_LOGSUB, p);
-		Interfaccia.addEntryLogSottotitoli(t, provider.getProviderName());
-		*/
-		//TODO inserire nel database
+		String query="INSERT INTO "+Database.TABLE_LOGSUB+" (serie, stagione, episodio, id_provider) VALUES ("+
+				"\""+t.getSerieTV().getNomeSerie()+"\""+
+				","+t.getStagione()+
+				","+t.getEpisodio()+
+				","+provider.getProviderID()+")";
+		Database.updateQuery(query);
 		Interfaccia.getInterfaccia().addEntrySottotitolo(t.getNomeSerie(), t.getStagione(), t.getEpisodio(), provider.getProviderName());
+	}
+	private void aggiungiLogEntry(String serie, int stagione, int episodio, int provider){
+		Interfaccia.getInterfaccia().addEntrySottotitolo(serie, stagione,episodio, getProvider(provider).getProviderName());
+	}
+	public void loadLast10(){
+		String query="SELECT * FROM "+Database.TABLE_LOGSUB+" LIMIT 10";
+		ArrayList<KVResult<String, Object>> res=Database.selectQuery(query);
+		for(int i=res.size();i>=0;i--){
+			KVResult<String, Object> r=res.get(i);
+			String nomeserie=(String) r.getValueByKey("serie");
+			int stagione=(int) r.getValueByKey("stagione");
+			int episodio=(int) r.getValueByKey("episodio");
+			int id_provider=(int) r.getValueByKey("id_provider");
+			aggiungiLogEntry(nomeserie, stagione, episodio, id_provider);
+		}
 	}
 	public void aggiungiEpisodio(Torrent t){
 		for(int i=0;i<sottotitoli_da_scaricare.size();i++){

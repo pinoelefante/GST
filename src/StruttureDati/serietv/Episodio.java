@@ -2,6 +2,7 @@ package StruttureDati.serietv;
 
 import java.util.ArrayList;
 
+import Programma.Settings;
 import SerieTV.Torrent;
 
 public class Episodio {
@@ -140,6 +141,8 @@ public class Episodio {
 				ep_preair.get(i).setScaricato(Torrent.IGNORATO);
 			}
 		}
+		if(Settings.isRicercaSottotitoli())
+			link.setSubDownload(true, true);
 	}
 	public int getStagione(){
 		return stagione;

@@ -38,7 +38,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
-import javax.swing.ButtonGroup;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -80,7 +79,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.CompoundBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.JRadioButton;
 
 public class Interfaccia extends JFrame {
 	private static Interfaccia thisframe;
@@ -1000,6 +998,8 @@ public class Interfaccia extends JFrame {
 		buttonReloadSerie.doClick();
 
 		btnAggiorna.doClick();
+		
+		GestioneSerieTV.getSubManager().loadLast10();
 	}
 
 	public void reloadSeriePreferite() {
@@ -1869,7 +1869,8 @@ public class Interfaccia extends JFrame {
 					l.setRows(4);
 				else
 					l.setRows(l.getRows()-1);
-				
+				panel_SottotitoliDaScaricare.revalidate();
+				panel_SottotitoliDaScaricare.repaint();
 			}
 			public void componentAdded(ContainerEvent arg0) {
 				GridLayout l=(GridLayout) panel_SottotitoliDaScaricare.getLayout();
@@ -1877,13 +1878,15 @@ public class Interfaccia extends JFrame {
 					l.setRows(4);
 				else
 					l.setRows(l.getRows()+1);
+				panel_SottotitoliDaScaricare.revalidate();
+				panel_SottotitoliDaScaricare.repaint();
 			}
 		});
 	}
 
-	public void addEntrySottotitolo(String nome, int stagione, int ep, String provider) {
+	public void addEntrySottotitolo(String nomeserie, int stagione, int episodio, String provider) {
 		DefaultTableModel model = (DefaultTableModel) tableSubDownloaded.getModel();
-		model.addRow(new Object[] { nome, stagione, ep, provider });
+		model.addRow(new Object[] { nomeserie, stagione, episodio, provider });
 	}
 	public void inizializzaSubDownload(){
 		ArrayList<Torrent> subDown=GestioneSerieTV.getSubManager().getSottotitoliDaScaricare();

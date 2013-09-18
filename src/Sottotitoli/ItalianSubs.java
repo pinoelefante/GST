@@ -92,7 +92,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 				return false;
 			int id=cercaIDSottotitoloFromAPI(id_itasa, t.getStagione(), t.getEpisodio(), t.is720p()?HD720p:HDTV);
 			scaricaSub(id, Renamer.generaNomeDownload(t), t.getNomeSerieFolder());
-			t.setSubDownload(false);
+			t.setSubDownload(false, true);
 			return true;
 		}
 		catch (ItasaSubNotFound e) {
@@ -102,7 +102,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 				return false;
 			try {
 				scaricaSub(id_s, Renamer.generaNomeDownload(t), t.getNomeSerieFolder());
-				t.setSubDownload(false);
+				t.setSubDownload(false, true);
 			}
 			catch (FailedLoginException | FailingHttpStatusCodeException | IOException e1) {
 				e1.printStackTrace();
@@ -645,6 +645,10 @@ public class ItalianSubs implements ProviderSottotitoli{
 		if((time_now-time_last)>maxdif)
 			return true;
 		return false;
+	}
+	@Override
+	public int getProviderID() {
+		return GestoreSottotitoli.ITASA;
 	}
 }
 

@@ -127,9 +127,6 @@ public class PanelEpisodioDownload extends JPanel {
 				if(link!=null){
 					try {
 						Download.downloadMagnet(link.getUrl(), Settings.getDirectoryDownload()+File.separator+link.getSerieTV().getFolderSerie());
-						if(Settings.isRicercaSottotitoli()){
-							link.setSubDownload(true);
-						}
 						ep.scaricaLink(link);
 						PanelEpisodioDownload.this.getParent().remove(PanelEpisodioDownload.this);
 					}
@@ -146,9 +143,6 @@ public class PanelEpisodioDownload extends JPanel {
 				if(link!=null){
 					try {
 						Download.downloadMagnet(link.getUrl(), Settings.getDirectoryDownload()+File.separator+link.getSerieTV().getFolderSerie());
-						if(Settings.isRicercaSottotitoli()){
-							link.setSubDownload(true);
-						}
 						ep.scaricaLink(link);
 						PanelEpisodioDownload.this.getParent().remove(PanelEpisodioDownload.this);
 					}
@@ -165,9 +159,6 @@ public class PanelEpisodioDownload extends JPanel {
 				if(link!=null){
 					try {
 						Download.downloadMagnet(link.getUrl(), Settings.getDirectoryDownload()+File.separator+link.getSerieTV().getFolderSerie());
-						if(Settings.isRicercaSottotitoli()){
-							link.setSubDownload(true);
-						}
 						ep.scaricaLink(link);
 						PanelEpisodioDownload.this.getParent().remove(PanelEpisodioDownload.this);
 					}

@@ -198,8 +198,14 @@ public class Database {
 		if(!checkColumn(TABLE_LOGSUB, "id")){
 			alter_aggiungicampo(TABLE_LOGSUB, "id", "INTEGER PRIMARY KEY AUTOINCREMENT", "");
 		}
-		if(!checkColumn(TABLE_LOGSUB, "id_episodio")){
-			alter_aggiungicampo(TABLE_LOGSUB, "id_episodio", "INTEGER", "");
+		if(!checkColumn(TABLE_LOGSUB, "serie")){
+			alter_aggiungicampo(TABLE_LOGSUB, "serie", "TEXT", "");
+		}
+		if(!checkColumn(TABLE_LOGSUB, "stagione")){
+			alter_aggiungicampo(TABLE_LOGSUB, "stagione", "INTEGER", "");
+		}
+		if(!checkColumn(TABLE_LOGSUB, "episodio")){
+			alter_aggiungicampo(TABLE_LOGSUB, "episodio", "INTEGER", "");
 		}
 		if(!checkColumn(TABLE_LOGSUB, "id_provider")){
 			alter_aggiungicampo(TABLE_LOGSUB, "id_provider", "INTEGER", "");

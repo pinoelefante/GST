@@ -11,5 +11,5 @@ public abstract interface ProviderSottotitoli {
 	public ArrayList<SerieSub> getElencoSerie();
 	public String getProviderName();
 	public void caricaElencoSerie();
-	
+	public int getProviderID();
 }

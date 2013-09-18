@@ -38,7 +38,7 @@ public class Subspedia implements ProviderSottotitoli {
 		else {
 			link=link.replace(" ", "%20");
 			if(scaricaSub(link, Renamer.generaNomeDownload(t), t.getNomeSerieFolder())){
-				t.setSubDownload(false);
+				t.setSubDownload(false, true);
 				return true;
 			}
 			return false;
@@ -154,5 +154,10 @@ public class Subspedia implements ProviderSottotitoli {
 		}
 	}
 	*/
+
+	@Override
+	public int getProviderID() {
+		return GestoreSottotitoli.SUBSPEDIA;
+	}
 
 }

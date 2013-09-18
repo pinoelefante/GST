@@ -88,7 +88,7 @@ public class Subsfactory implements ProviderSottotitoli {
 			if(url.length()>0){
 				url=url.replace(" ", "%20");
 				if(scaricaSub(url, Renamer.generaNomeDownload(t), t.getNomeSerieFolder())){
-					t.setSubDownload(false);
+					t.setSubDownload(false, true);
 					return true;
 				}
 			}
@@ -442,5 +442,10 @@ public class Subsfactory implements ProviderSottotitoli {
 	public void stampa_feed(){
 		for(int i=0;i<feed_rss.size();i++)
 			System.out.println(feed_rss.get(i));
+	}
+
+	@Override
+	public int getProviderID() {
+		return GestoreSottotitoli.SUBSFACTORY;
 	}
 }
