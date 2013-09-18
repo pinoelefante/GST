@@ -2,6 +2,7 @@ package Sottotitoli;
 
 import java.util.ArrayList;
 
+import GUI.Interfaccia;
 import Naming.Renamer;
 import Programma.ManagerException;
 import SerieTV.GestioneSerieTV;
@@ -112,6 +113,8 @@ public class GestoreSottotitoli {
 		Database.insert(Database.TABLE_LOGSUB, p);
 		Interfaccia.addEntryLogSottotitoli(t, provider.getProviderName());
 		*/
+		//TODO inserire nel database
+		Interfaccia.getInterfaccia().addEntrySottotitolo(t.getNomeSerie(), t.getStagione(), t.getEpisodio(), provider.getProviderName());
 	}
 	public void aggiungiEpisodio(Torrent t){
 		for(int i=0;i<sottotitoli_da_scaricare.size();i++){
@@ -197,5 +200,9 @@ public class GestoreSottotitoli {
 				return subspedia;
 		}
 		return null;
+	}
+	public boolean localSearch(Torrent t){
+		//TODO ricerca locale del sottotitolo
+		return false;
 	}
 }

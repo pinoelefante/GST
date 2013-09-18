@@ -37,7 +37,9 @@ public class GestioneSerieTV {
 		return res;
 	}
 	public static boolean aggiungiSeriePreferita(SerieTV serie){
-		//TODO aggiungere altro (caricare episodi, cercare id su tvdb, id itasa, id subsfactory, id )
+		serie.getProvider().caricaEpisodiDB(serie);
+		getSubManager().associaSerie(serie);
+		//TODO aggiungere altro (cercare id su tvdb, id itasa, /*id numerico serie*/id subsfactory )
 		return serie.getProvider().addSeriePreferita(serie);
 	}
 	public static ArrayList<SerieTV> getElencoSerieInserite(){

@@ -144,13 +144,18 @@ public class SerieTV {
 		if(episodio.isPreAir() && episodio.getScaricato()==Torrent.SCARICARE && !getPreferenze().isDownloadPreair())
 			episodio.setScaricato(Torrent.IGNORATO);
 		episodi.aggiungiLink(episodio);
+		if(episodio.isSottotitolo())
+			GestioneSerieTV.getSubManager().aggiungiEpisodio(episodio);
 	}
 	public void addEpisodioDB(Torrent episodio){
+		System.out.println(getNomeSerie()+" "+episodio.getStagione()+"x"+episodio.getEpisodio());
 		if(episodio.is720p() && episodio.getScaricato()==Torrent.SCARICARE && !getPreferenze().isPreferisciHD())
 			episodio.setScaricato(Torrent.IGNORATO);
 		if(episodio.isPreAir() && episodio.getScaricato()==Torrent.SCARICARE && !getPreferenze().isDownloadPreair())
 			episodio.setScaricato(Torrent.IGNORATO);
 		episodi.aggiungiLinkDB(episodio);
+		if(episodio.isSottotitolo())
+			GestioneSerieTV.getSubManager().aggiungiEpisodio(episodio);
 	}
 	public void aggiornaEpisodiOnline(){
 		provider.caricaEpisodiOnline(this);

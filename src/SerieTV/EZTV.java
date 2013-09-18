@@ -130,7 +130,8 @@ public class EZTV extends ProviderSerieTV{
 			st.setStopSearch(stop_search, false);
 			st.setPreferenze(new Preferenze(preferenze_d));
 			addSerieFromDB(st);
-			caricaEpisodiDB(st);
+			if(st.isInserita())
+				caricaEpisodiDB(st);
 		}
 		System.out.println("Caricate "+res.size()+" serietv dal database - EZTV.it");
 	}

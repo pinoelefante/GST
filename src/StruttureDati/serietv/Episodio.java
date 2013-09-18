@@ -188,8 +188,7 @@ public class Episodio {
 		ep_preair.trimToSize();
 		Runtime.getRuntime().gc();
 	}
-	public Torrent getLinkLettore(){ //TODO get link in base alle preferenze e se scaricato
-		//al momento cerca il link scaricato e se non trovato, in ordine hd, normale, preair
+	public Torrent getLinkLettore(){ 
 		if(ep_hd.size()>0){
 			if(ep_hd.get(0).getSerieTV().getPreferenze().isPreferisciHD()){
 				for(int i=0;i<ep_hd.size();i++){
@@ -356,5 +355,9 @@ public class Episodio {
 		r.addAll(ep_normali);
 		r.addAll(ep_preair);
 		return r;
+	}
+	public ArrayList<Torrent> getLinkSubDownload(){
+		//TODO
+		return null;
 	}
 }
