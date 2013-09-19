@@ -359,8 +359,15 @@ public class Episodio {
 		r.addAll(ep_preair);
 		return r;
 	}
-	public ArrayList<Torrent> getLinkSubDownload(){
-		//TODO
-		return null;
+	public void ignoraEpisodio(){
+		ArrayList<Torrent> eps=new ArrayList<Torrent>(ep_hd.size()+ep_normali.size()+ep_preair.size());
+		eps.addAll(ep_hd);
+		eps.addAll(ep_normali);
+		eps.addAll(ep_preair);
+		for(int i=0;i<eps.size();i++){
+			Torrent t=eps.get(i);
+			if(t.getScaricato()==Torrent.SCARICARE)
+				t.setScaricato(Torrent.IGNORATO);
+		}
 	}
 }

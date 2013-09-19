@@ -1675,7 +1675,7 @@ public class Interfaccia extends JFrame {
 		});
 		btnScarica.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				for (int i = 0; i < panel_scroll_download.getComponentCount(); i++) {
+				for (int i = 0; i < panel_scroll_download.getComponentCount(); ) {
 					if (panel_scroll_download.getComponent(i) instanceof PanelEpisodioDownload) {
 						PanelEpisodioDownload p = (PanelEpisodioDownload) panel_scroll_download.getComponent(i);
 						if (p.isDownloadSelected()) {
@@ -1692,10 +1692,30 @@ public class Interfaccia extends JFrame {
 								}
 							}
 						}
+						else
+							i++;
 					}
 				}
 				panel_scroll_download.revalidate();
 				panel_scroll_download.repaint();
+			}
+		});
+		btnIgnora.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				for(int i=0;i<panel_scroll_download.getComponentCount();){
+					if(panel_scroll_download.getComponent(i) instanceof PanelEpisodioDownload){
+						PanelEpisodioDownload panel_e=(PanelEpisodioDownload) panel_scroll_download.getComponent(i);
+						if(panel_e.isDownloadSelected()){
+							Episodio ep=panel_e.getEpisodio();
+							ep.ignoraEpisodio();
+							panel_scroll_download.remove(panel_e);
+						}
+						else
+							i++;
+					}
+					else
+						i++;
+				}
 			}
 		});
 		cmb_down_selezione.addItemListener(new ItemListener() {
