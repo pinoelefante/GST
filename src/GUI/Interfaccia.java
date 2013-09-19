@@ -97,10 +97,10 @@ public class Interfaccia extends JFrame {
 	private JTextField		 txt_itasa_cerca;
 	private JTextField		 txt_subsfactory_cerca;
 	private JTable			 tableSubDownloaded;
-	private JTextField		 txt_serie_provider;
-	private JTextField		 txt_stagione_provider;
-	private JTextField		 txt_episodio_provider;
-	private JTextField		 txt_destinazione_provider;
+	private JTextField		 txt_sub_custom_serie;
+	private JTextField		 txt_sub_custom_stagione;
+	private JTextField		 txt_sub_custom_episodio;
+	private JTextField		 txt_sub_custom_destinazione;
 	private JTextField		 txt_cerca_serie_tutte;
 	private JTextField		 txt_cerca_serie_inserite;
 	private JTextField		 txt_add_episodio_stagione;
@@ -182,6 +182,8 @@ public class Interfaccia extends JFrame {
 	private JButton btnItasaAssocia;
 	private JButton btnSubsfactoryUpdate;
 	private JButton btnItasaUpdate;
+	private JLabel lblItasaSerieAss;
+	private JLabel lblSubsfactorySerieAss;
 
 	@SuppressWarnings("serial")
 	public Interfaccia() {
@@ -472,12 +474,12 @@ public class Interfaccia extends JFrame {
 		btnItasaRimuovi.setBounds(120, 163, 98, 26);
 		panel.add(btnItasaRimuovi);
 
-		JLabel lblAssociataA = new JLabel("Associata a: ");
-		lblAssociataA.setBounds(10, 145, 73, 16);
-		panel.add(lblAssociataA);
+		JLabel lblItasaAssociata = new JLabel("Associata a: ");
+		lblItasaAssociata.setBounds(10, 145, 73, 16);
+		panel.add(lblItasaAssociata);
 
-		JLabel lblItasaSerieAss = new JLabel("");
-		lblItasaSerieAss.setBounds(89, 145, 129, 16);
+		lblItasaSerieAss = new JLabel("");
+		lblItasaSerieAss.setBounds(82, 145, 164, 16);
 		panel.add(lblItasaSerieAss);
 
 		JLabel lblCerca_1 = new JLabel("Cerca");
@@ -493,13 +495,13 @@ public class Interfaccia extends JFrame {
 		cmb_subsfactory_serie.setBounds(258, 125, 208, 20);
 		panel.add(cmb_subsfactory_serie);
 
-		JLabel lblAssociataA_1 = new JLabel("Associata a:");
-		lblAssociataA_1.setBounds(258, 145, 73, 16);
-		panel.add(lblAssociataA_1);
+		JLabel lblSubsfactoryAssociata = new JLabel("Associata a:");
+		lblSubsfactoryAssociata.setBounds(258, 145, 73, 16);
+		panel.add(lblSubsfactoryAssociata);
 
-		JLabel label = new JLabel("");
-		label.setBounds(337, 145, 129, 16);
-		panel.add(label);
+		lblSubsfactorySerieAss = new JLabel("");
+		lblSubsfactorySerieAss.setBounds(330, 145, 164, 16);
+		panel.add(lblSubsfactorySerieAss);
 
 		JButton btnSubsfactoryAssocia = new JButton("Associa");
 		btnSubsfactoryAssocia.setBounds(258, 163, 98, 26);
@@ -572,62 +574,63 @@ public class Interfaccia extends JFrame {
 		lblProvider.setBounds(12, 25, 55, 16);
 		panel_8.add(lblProvider);
 
-		JComboBox<ProviderSottotitoli> comboBox_provider = new JComboBox<ProviderSottotitoli>();
-		comboBox_provider.setBounds(72, 21, 200, 20);
-		panel_8.add(comboBox_provider);
+		JComboBox<ProviderSottotitoli> cmb_sub_custom_provider = new JComboBox<ProviderSottotitoli>();
+		cmb_sub_custom_provider.setBounds(72, 21, 200, 20);
+		panel_8.add(cmb_sub_custom_provider);
 
 		JLabel lblSerie_1 = new JLabel("Serie");
 		lblSerie_1.setBounds(12, 53, 55, 16);
 		panel_8.add(lblSerie_1);
 
-		JComboBox<SerieSub> cmb_serie_provider = new JComboBox<SerieSub>();
-		cmb_serie_provider.setBounds(72, 75, 200, 20);
-		panel_8.add(cmb_serie_provider);
+		JComboBox<SerieSub> cmb_sub_custom_serie = new JComboBox<SerieSub>();
+		cmb_sub_custom_serie.setBounds(72, 75, 200, 20);
+		panel_8.add(cmb_sub_custom_serie);
 
-		txt_serie_provider = new JTextField();
-		txt_serie_provider.setBounds(72, 53, 200, 20);
-		panel_8.add(txt_serie_provider);
-		txt_serie_provider.setColumns(30);
+		txt_sub_custom_serie = new JTextField();
+		txt_sub_custom_serie.setBounds(72, 53, 200, 20);
+		panel_8.add(txt_sub_custom_serie);
+		txt_sub_custom_serie.setColumns(30);
 
 		JLabel lblStagione_1 = new JLabel("Stagione");
 		lblStagione_1.setBounds(291, 25, 55, 16);
 		panel_8.add(lblStagione_1);
 
-		txt_stagione_provider = new JTextField();
-		txt_stagione_provider.addKeyListener(new TextListenerOnlyNumber(txt_stagione_provider));
+		txt_sub_custom_stagione = new JTextField();
+		txt_sub_custom_stagione.addKeyListener(new TextListenerOnlyNumber(txt_sub_custom_stagione));
 
-		txt_stagione_provider.setBounds(345, 23, 40, 20);
-		panel_8.add(txt_stagione_provider);
-		txt_stagione_provider.setColumns(10);
+		txt_sub_custom_stagione.setBounds(345, 23, 40, 20);
+		panel_8.add(txt_sub_custom_stagione);
+		txt_sub_custom_stagione.setColumns(10);
 
 		JLabel lblEpisodio = new JLabel("Episodio");
 		lblEpisodio.setBounds(290, 53, 55, 16);
 		panel_8.add(lblEpisodio);
 
-		txt_episodio_provider = new JTextField();
-		txt_episodio_provider.addKeyListener(new TextListenerOnlyNumber(txt_episodio_provider));
-		txt_episodio_provider.setBounds(345, 51, 40, 20);
-		panel_8.add(txt_episodio_provider);
-		txt_episodio_provider.setColumns(10);
+		txt_sub_custom_episodio = new JTextField();
+		txt_sub_custom_episodio.addKeyListener(new TextListenerOnlyNumber(txt_sub_custom_episodio));
+		txt_sub_custom_episodio.setBounds(345, 51, 40, 20);
+		panel_8.add(txt_sub_custom_episodio);
+		txt_sub_custom_episodio.setColumns(10);
 
 		JLabel lblDestinazione = new JLabel("Destinazione");
-		lblDestinazione.setBounds(410, 25, 73, 16);
+		lblDestinazione.setBounds(394, 25, 73, 16);
 		panel_8.add(lblDestinazione);
 
-		txt_destinazione_provider = new JTextField();
-		txt_destinazione_provider.setBounds(485, 23, 160, 20);
-		panel_8.add(txt_destinazione_provider);
-		txt_destinazione_provider.setColumns(10);
+		txt_sub_custom_destinazione = new JTextField();
+		txt_sub_custom_destinazione.setEditable(false);
+		txt_sub_custom_destinazione.setBounds(473, 23, 160, 20);
+		panel_8.add(txt_sub_custom_destinazione);
+		txt_sub_custom_destinazione.setColumns(10);
 
-		JButton btnSfoglia_provider = new JButton("Sfoglia");
-		btnSfoglia_provider.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/cartella.png")));
-		btnSfoglia_provider.setBounds(645, 20, 91, 24);
-		panel_8.add(btnSfoglia_provider);
+		JButton btn_sub_custom_Sfoglia = new JButton("Sfoglia");
+		btn_sub_custom_Sfoglia.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/cartella.png")));
+		btn_sub_custom_Sfoglia.setBounds(636, 21, 93, 24);
+		panel_8.add(btn_sub_custom_Sfoglia);
 
-		JButton btnScarica_provider = new JButton("Scarica");
-		btnScarica_provider.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/download.png")));
-		btnScarica_provider.setBounds(525, 65, 120, 26);
-		panel_8.add(btnScarica_provider);
+		JButton btn_sub_custom_Scarica = new JButton("Scarica");
+		btn_sub_custom_Scarica.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/download.png")));
+		btn_sub_custom_Scarica.setBounds(500, 53, 120, 38);
+		panel_8.add(btn_sub_custom_Scarica);
 
 		LettorePanel = new JPanel();
 		tab.addTab("Lettore", new ImageIcon(Interfaccia.class.getResource("/GUI/res/player.png")), LettorePanel, null);
@@ -1936,7 +1939,39 @@ public class Interfaccia extends JFrame {
 		//TODO listener su serie sottotitoli in modo che selezioni le serie associate
 		//TODO download sottotitoli "personalizzati"
 		//TODO opzione per caricare VLC automaticamente
-
+		//TODO frame loading mostra progresso download dipendenze. chiudibile dopo aver scritto all'interno del db
+		cmb_serie_sottotitoli.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(cmb_serie_sottotitoli.getSelectedItem()!=null){
+					SerieTV st=(SerieTV) cmb_serie_sottotitoli.getSelectedItem();
+					ProviderSottotitoli itasa=GestioneSerieTV.getSubManager().getProvider(GestoreSottotitoli.ITASA);
+					ArrayList<SerieSub> serie_itasa=itasa.getElencoSerie();
+					lblItasaSerieAss.setText("Non associata");
+					for(int i=0;i<serie_itasa.size();i++){
+						SerieSub ss=serie_itasa.get(i);
+						if(((int)ss.getID())==st.getIDItasa()){
+							lblItasaSerieAss.setText("<html>"+ss.getNomeSerie()+"</html>");
+							cmb_itasa_serie.setSelectedItem(ss);
+							break;
+						}
+					}
+					
+					ProviderSottotitoli subsf=GestioneSerieTV.getSubManager().getProvider(GestoreSottotitoli.SUBSFACTORY);
+					ArrayList<SerieSub> serie_subsf=subsf.getElencoSerie();
+					lblSubsfactorySerieAss.setText("Non associata");
+					for(int i=0;i<serie_subsf.size();i++){
+						SerieSub ss=serie_subsf.get(i);
+						if(((String)ss.getID()).compareToIgnoreCase(st.getSubsfactoryDirectory())==0){
+							lblSubsfactorySerieAss.setText("<html>"+ss.getNomeSerie()+"</html>");
+							cmb_subsfactory_serie.setSelectedItem(ss);
+							break;
+						}
+					}
+					
+					//lblSubsfactorySerieAss
+				}
+			}
+		});
 	}
 
 	public void addEntrySottotitolo(String nomeserie, int stagione, int episodio, String provider) {
