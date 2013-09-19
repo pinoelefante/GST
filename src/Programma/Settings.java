@@ -33,11 +33,7 @@ public class Settings {
 	private static String		VLCPath								= "";
 	private static String		Itasa_Username						= "";
 	private static String		Itasa_Password						= "";
-	private static boolean		mostraPreair						= true;
-	private static boolean		mostra720p							= true;
 	private static String		ClientID 							= "";
-	private static boolean		download_auto_preair				= false;
-	private static boolean		download_auto_hd					= false;
 	private static boolean 		lettore_nascondi_ignore				= true;
 	private static boolean 		lettore_nascondi_rimosso			= true;
 	
@@ -163,18 +159,6 @@ public class Settings {
 	public static void setItasaPassword(String itasa_Password) {
 		Itasa_Password = itasa_Password;
 	}
-	public static boolean isMostraPreair() {
-		return mostraPreair;
-	}
-	public static void setMostraPreair(boolean mostraPreair) {
-		Settings.mostraPreair = mostraPreair;
-	}
-	public static boolean isMostra720p() {
-		return mostra720p;
-	}
-	public static void setMostra720p(boolean mostra720p) {
-		Settings.mostra720p = mostra720p;
-	}
 	public static int getMinRicerca() {
 		return MinRicerca;
 	}
@@ -207,10 +191,6 @@ public class Settings {
 		setMinRicerca(480);
 		setRicercaSottotitoli(true);
 		setAlwaysOnTop(true);
-		setMostraPreair(true);
-		setMostra720p(true);
-		setDownloadPreair(false);
-		setDownload720p(false);
 	}
 
 	public static void baseSettings(){
@@ -276,10 +256,6 @@ public class Settings {
             setNewUpdate(((int) res.getValueByKey("new_update"))==1?true:false);
             setLastVersion((int) res.getValueByKey("last_version"));
             setRicercaSottotitoli(((int) res.getValueByKey("download_sottotitoli"))==1?true:false);
-            setMostraPreair(((int) res.getValueByKey("mostra_preair"))==1?true:false);
-            setMostra720p(((int) res.getValueByKey("mostra_hd"))==1?true:false);
-            setDownloadPreair(((int) res.getValueByKey("download_auto_preair"))==1?true:false);
-            setDownload720p(((int) res.getValueByKey("download_auto_hd"))==1?true:false);
             setExtenalVLC(((int) res.getValueByKey("external_vlc"))==1?true:false);
             setEnableITASA(((int) res.getValueByKey("itasa"))==1?true:false);
             setLettoreNascondiViste(((int) res.getValueByKey("hide_viste"))==1?true:false);
@@ -336,10 +312,6 @@ public class Settings {
                 "new_update="+(isNewUpdate()?1:0)+","+
                 "last_version="+getLastVersion()+","+
                 "download_sottotitoli="+(isRicercaSottotitoli()?1:0)+","+
-                "mostra_preair="+(isMostraPreair()?1:0)+","+
-                "mostra_hd="+(isMostra720p()?1:0)+","+
-                "download_auto_preair="+(isDownloadPreair()?1:0)+","+
-                "download_auto_hd="+(isDownload720p()?1:0)+","+
                 "external_vlc="+(isExtenalVLC()?1:0)+","+
                 "itasa="+(isEnableITASA()?1:0)+","+
                 "hide_viste="+(isLettoreNascondiViste()?1:0)+","+
@@ -357,22 +329,11 @@ public class Settings {
 	public static boolean isMacOS(){
 		return getSistemaOperativo().contains("Mac");
 	}
-	public static boolean isDownloadPreair() {
-		return download_auto_preair;
-	}
-	public static void setDownloadPreair(boolean downloadPreair) {
-		Settings.download_auto_preair = downloadPreair;
-	}
-	public static boolean isDownload720p() {
-		return download_auto_hd;
-	}
-	public static void setDownload720p(boolean download720p) {
-		Settings.download_auto_hd = download720p;
-	}
 	
 	//TODO completare rilevamento vlc
 	public static String rilevaVLC(){
 		if(isWindows()){
+			//TODO c:\\users\\utente\\roaming\\utorrent
 			
 		}
 		else if(isLinux()){

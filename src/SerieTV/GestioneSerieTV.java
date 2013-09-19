@@ -14,7 +14,7 @@ public class GestioneSerieTV {
 	public static void instance(){
 		if(!instanced){
 			providers=new ArrayList<ProviderSerieTV>(1);
-    		submanager=new GestoreSottotitoli(); //TODO rimuovere commento dopo aver fixato la classe
+    		submanager=new GestoreSottotitoli();
     		providers.add(new EZTV());
     		instanced=true;
 		}

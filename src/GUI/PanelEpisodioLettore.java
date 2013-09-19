@@ -26,6 +26,7 @@ import LettoreVideo.PlaylistItem;
 import Programma.Download;
 import Programma.OperazioniFile;
 import Programma.Settings;
+import SerieTV.GestioneSerieTV;
 import SerieTV.Torrent;
 import StruttureDati.serietv.Episodio;
 
@@ -46,12 +47,18 @@ public class PanelEpisodioLettore extends JPanel {
 	private JComboBox<String> cmb_versione;
 	private JButton btnMostra;
 	
+	private boolean isOK=true;
+	
 	public PanelEpisodioLettore(Episodio ep) {
 		episodio=ep;
 		torrent=ep.getLinkScaricato();
 		if(torrent==null){
 			torrent=ep.getLinkLettore();
 			//System.out.println("sono nell'if - "+(torrent.is720p()?"720p":"Normale"));
+		}
+		if(torrent==null){
+			isOK=false;
+			return;
 		}
 		
 		setSize(750, 100);
@@ -136,6 +143,9 @@ public class PanelEpisodioLettore extends JPanel {
 		
 		init();
 	}
+	public boolean isOK(){
+		return isOK;
+	}
 	private void init(){
 		lblNomeFile.setText("<html><br>&nbsp;&nbsp;Nome file: "+torrent.getFilePath()+"</html>");
 		String tag=torrent.is720p()?"720p":"Normale";
@@ -205,6 +215,7 @@ public class PanelEpisodioLettore extends JPanel {
 			}
 		});
 		btnPlay.addActionListener(new ActionListener() {
+			//TODO avvertire quando il sottotitolo non è ancora stato scaricato
 			public void actionPerformed(ActionEvent arg0) {
 				if(Settings.isExtenalVLC()){
 					String filepath=torrent.getFilePath();
@@ -232,7 +243,7 @@ public class PanelEpisodioLettore extends JPanel {
 		});
 		btnCancellaFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				int r=JOptionPane.showConfirmDialog(PanelEpisodioLettore.this.getParent(), "Sei sicuro di voler cancellare:\n"+torrent.getFormattedName(), "Conferma cancellazione", JOptionPane.YES_NO_OPTION);
+				int r=JOptionPane.showConfirmDialog(PanelEpisodioLettore.this, "Sei sicuro di voler cancellare:\n"+torrent.getFormattedName(), "Conferma cancellazione", JOptionPane.YES_NO_OPTION);
 				if(r==JOptionPane.YES_OPTION){
 					String file=torrent.getFilePath();
 					if(OperazioniFile.deleteFile(file)){
@@ -241,7 +252,7 @@ public class PanelEpisodioLettore extends JPanel {
 						cmb_stato_episodio.setSelectedIndex(Torrent.RIMOSSO);
 					}
 					else {
-						JOptionPane.showMessageDialog(PanelEpisodioLettore.this.getParent(), "Non è stato possibile eliminare il file. Potrebbe essere in uso da un altro processo.\nSe sei sicuro che il file non esiste, imposta manualmente lo stato RIMOSSO");
+						JOptionPane.showMessageDialog(PanelEpisodioLettore.this, "Non è stato possibile eliminare il file. Potrebbe essere in uso da un altro processo.\nSe sei sicuro che il file non esiste, imposta manualmente lo stato RIMOSSO");
 					}
 				}
 			}
@@ -263,6 +274,7 @@ public class PanelEpisodioLettore extends JPanel {
 				}
 				if(!origine_filepath.isEmpty() & !destinazione_path.isEmpty()){
     				Download.copiaFile(origine_filepath, destinazione_path);
+    				//TODO copiare anche i sottotitoli
     				JOptionPane.showMessageDialog(PanelEpisodioLettore.this.getParent().getParent(), "Il file è stato aggiunto alla coda dei file da copiare.\nControlla la sezione File Manager per vedere lo stato della copia.");
 				}
 			}
@@ -286,12 +298,26 @@ public class PanelEpisodioLettore extends JPanel {
 		});
 		btnSottotitolo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO bottone sottotitolo panel episodio lettore
-				
+				class t_look_sub extends Thread {
+					public void run(){
+						btnSottotitolo.setEnabled(false);
+						if(GestioneSerieTV.getSubManager().scaricaSottotitolo(torrent)){
+							JOptionPane.showMessageDialog(PanelEpisodioLettore.this, "Sottotitolo di "+torrent.getFormattedName()+" scaricato");
+						}
+						else {
+							torrent.setSubDownload(true, true);
+							JOptionPane.showMessageDialog(PanelEpisodioLettore.this, "Non è stato possibile scaricare il sottotitolo per "+torrent.getFormattedName()+"\nSottotitolo messo in coda download");
+						}
+						btnSottotitolo.setEnabled(true);
+					}
+				}
+				Thread t=new t_look_sub();
+				t.start();
 			}
 		});
 		btnMostra.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//TODO creare un frame per vedere tutti i link di un episodio in maniera "umana"
 				JFrame frame=new JFrame("Link - "+episodio.getNomeSerie()+" "+episodio.getStagione()+" "+episodio.getEpisodio());
 				frame.setAlwaysOnTop(true);
 				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

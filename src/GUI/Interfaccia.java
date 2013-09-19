@@ -12,6 +12,7 @@ import LettoreVideo.Player;
 import SerieTV.GestioneSerieTV;
 import SerieTV.SerieTV;
 import SerieTV.Torrent;
+import Sottotitoli.GestoreSottotitoli;
 import Sottotitoli.ProviderSottotitoli;
 import Sottotitoli.SerieSub;
 import StruttureDati.serietv.Episodio;
@@ -133,12 +134,8 @@ public class Interfaccia extends JFrame {
 	private JCheckBox		  chckbxAvviaConIl;
 	private JCheckBox		  chckbxAvviaRidottoA;
 	private JCheckBox		  chckbxTrayOnIcon;
-	private JCheckBox		  chckbxDownHD;
-	private JCheckBox		  chckbxDownPreair;
 	private JCheckBox		  chckbxAutoAbilita;
 	private JComboBox<Integer> comboBoxMinutiRicercaAutomatica;
-	private JCheckBox		  chckbxAutoHD;
-	private JCheckBox		  chckbxAutoPreair;
 	private JCheckBox		  chckbxAbilitaDownloadSottotitoli;
 	private JCheckBox		  chckbxAbilitaItaliansubsnet;
 	private JLabel			 lblItasaloginresult;
@@ -180,6 +177,11 @@ public class Interfaccia extends JFrame {
 	private JPanel			 ManagerCopie;
 	private JButton			btnOffline;
 	private JPanel panel_SottotitoliDaScaricare;
+	private JComboBox<SerieSub> cmb_itasa_serie;
+	private JComboBox<SerieSub> cmb_subsfactory_serie;
+	private JButton btnItasaAssocia;
+	private JButton btnSubsfactoryUpdate;
+	private JButton btnItasaUpdate;
 
 	@SuppressWarnings("serial")
 	public Interfaccia() {
@@ -188,7 +190,7 @@ public class Interfaccia extends JFrame {
 		setIconImage(Toolkit.getDefaultToolkit().getImage(Interfaccia.class.getResource("/GUI/res/icona32.png")));
 
 		setResizable(false);
-		setAlwaysOnTop(true);
+		setAlwaysOnTop(Settings.isAlwaysOnTop());
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setSize(750, 600);
 		Dimension res = Toolkit.getDefaultToolkit().getScreenSize();
@@ -458,11 +460,11 @@ public class Interfaccia extends JFrame {
 		panel.add(txt_itasa_cerca);
 		txt_itasa_cerca.setColumns(20);
 
-		JComboBox<SerieSub> cmb_itasa_serie = new JComboBox<SerieSub>();
+		cmb_itasa_serie = new JComboBox<SerieSub>();
 		cmb_itasa_serie.setBounds(10, 125, 208, 20);
 		panel.add(cmb_itasa_serie);
 
-		JButton btnItasaAssocia = new JButton("Associa");
+		btnItasaAssocia = new JButton("Associa");
 		btnItasaAssocia.setBounds(10, 163, 98, 26);
 		panel.add(btnItasaAssocia);
 
@@ -487,7 +489,7 @@ public class Interfaccia extends JFrame {
 		panel.add(txt_subsfactory_cerca);
 		txt_subsfactory_cerca.setColumns(20);
 
-		JComboBox<SerieSub> cmb_subsfactory_serie = new JComboBox<SerieSub>();
+		cmb_subsfactory_serie = new JComboBox<SerieSub>();
 		cmb_subsfactory_serie.setBounds(258, 125, 208, 20);
 		panel.add(cmb_subsfactory_serie);
 
@@ -506,6 +508,16 @@ public class Interfaccia extends JFrame {
 		JButton btnSubsfactoryRimuovi = new JButton("Rimuovi");
 		btnSubsfactoryRimuovi.setBounds(368, 163, 98, 26);
 		panel.add(btnSubsfactoryRimuovi);
+		
+		btnItasaUpdate = new JButton("");
+		btnItasaUpdate.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/aggiorna.png")));
+		btnItasaUpdate.setBounds(220, 122, 26, 26);
+		panel.add(btnItasaUpdate);
+		
+		btnSubsfactoryUpdate = new JButton("");
+		btnSubsfactoryUpdate.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/aggiorna.png")));
+		btnSubsfactoryUpdate.setBounds(468, 122, 26, 26);
+		panel.add(btnSubsfactoryUpdate);
 
 		JScrollPane scrollPane_subscaricare = new JScrollPane();
 		scrollPane_subscaricare.setBounds(0, 202, 370, 220);
@@ -773,23 +785,9 @@ public class Interfaccia extends JFrame {
 		chckbxTrayOnIcon.setBounds(6, 117, 336, 24);
 		panel_1.add(chckbxTrayOnIcon);
 
-		JPanel panel_2 = new JPanel();
-		panel_2.setBorder(new TitledBorder(null, "Download", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-		panel_2.setBounds(379, 11, 350, 57);
-		OpzioniPanel.add(panel_2);
-		panel_2.setLayout(null);
-
-		chckbxDownHD = new JCheckBox("Mostra episodi in HD");
-		chckbxDownHD.setBounds(6, 18, 156, 23);
-		panel_2.add(chckbxDownHD);
-
-		chckbxDownPreair = new JCheckBox("Mostra episodi pre air");
-		chckbxDownPreair.setBounds(164, 18, 180, 23);
-		panel_2.add(chckbxDownPreair);
-
 		JPanel panel_3 = new JPanel();
 		panel_3.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Download automatico", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-		panel_3.setBounds(379, 65, 350, 87);
+		panel_3.setBounds(372, 11, 350, 65);
 		OpzioniPanel.add(panel_3);
 		panel_3.setLayout(null);
 
@@ -810,14 +808,6 @@ public class Interfaccia extends JFrame {
 		lblMinutiTraOgni.setBounds(83, 35, 157, 14);
 		panel_3.add(lblMinutiTraOgni);
 
-		chckbxAutoHD = new JCheckBox("Scarica episodi in HD");
-		chckbxAutoHD.setBounds(6, 56, 157, 23);
-		panel_3.add(chckbxAutoHD);
-
-		chckbxAutoPreair = new JCheckBox("Scarica episodi pre air");
-		chckbxAutoPreair.setBounds(165, 56, 179, 23);
-		panel_3.add(chckbxAutoPreair);
-
 		lblRicercaOre = new JLabel("");
 		lblRicercaOre.setBounds(260, 35, 78, 16);
 		lblRicercaOre.setText("( 1 ora 0 min )");
@@ -825,7 +815,7 @@ public class Interfaccia extends JFrame {
 
 		JPanel panel_4 = new JPanel();
 		panel_4.setBorder(new TitledBorder(null, "Sottotitoli", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-		panel_4.setBounds(10, 159, 717, 136);
+		panel_4.setBounds(10, 159, 712, 136);
 		OpzioniPanel.add(panel_4);
 		panel_4.setLayout(null);
 
@@ -999,6 +989,7 @@ public class Interfaccia extends JFrame {
 
 		btnAggiorna.doClick();
 		
+		initSubDownload();
 		GestioneSerieTV.getSubManager().loadLast10();
 	}
 
@@ -1060,35 +1051,43 @@ public class Interfaccia extends JFrame {
 	public void disegnaLettore() {
 		SerieTV serie = (SerieTV) cmb_serie_lettore.getSelectedItem();
 		if (serie != null) {
-			int stagione = (int) comboBoxLettoreStagione.getSelectedItem();
-			if (stagione >= 0) {
-				boolean ordine_crescente = comboBoxLettoreOrdine.getSelectedIndex() == 0 ? true : false;
-				panel_elenco_puntate_lettore.removeAll();
-
-				boolean hide_v = chckbxNascondiViste.isSelected(), // viste
-				hide_i = chckbxNascondiIgnorate.isSelected(), // ignorate
-				hide_r = chckbxNascondiRimosse.isSelected(); // rimosse
-
-				for (int i = 0; i < serie.getNumEpisodi(); i++) {
-					Episodio e = serie.getEpisodio(i);
-					if (e.getStagione() > stagione)
-						break;
-					else if (e.getStagione() == stagione) {
-						if (hide_v && e.isVisto())
-							continue;
-						if (hide_i && e.isIgnorato())
-							continue;
-						if (hide_r && e.isRimosso())
-							continue;
-
-						if (ordine_crescente)
-							panel_elenco_puntate_lettore.add(new PanelEpisodioLettore(e));
-						else
-							panel_elenco_puntate_lettore.add(new PanelEpisodioLettore(e), 0);
-					}
-				}
-				panel_elenco_puntate_lettore.revalidate();
-				panel_elenco_puntate_lettore.repaint();
+			if(comboBoxLettoreStagione.getSelectedItem()!=null){
+    			int stagione = (int) comboBoxLettoreStagione.getSelectedItem();
+    			if (stagione >= 0) {
+    				boolean ordine_crescente = comboBoxLettoreOrdine.getSelectedIndex() == 0 ? true : false;
+    				panel_elenco_puntate_lettore.removeAll();
+    
+    				boolean hide_v = chckbxNascondiViste.isSelected(), // viste
+    				hide_i = chckbxNascondiIgnorate.isSelected(), // ignorate
+    				hide_r = chckbxNascondiRimosse.isSelected(); // rimosse
+    
+    				for (int i = 0; i < serie.getNumEpisodi(); i++) {
+    					Episodio e = serie.getEpisodio(i);
+    					if (e.getStagione() > stagione)
+    						break;
+    					else if (e.getStagione() == stagione) {
+    						if (hide_v && e.isVisto())
+    							continue;
+    						if (hide_i && e.isIgnorato())
+    							continue;
+    						if (hide_r && e.isRimosso())
+    							continue;
+    
+    						if (ordine_crescente){
+    							PanelEpisodioLettore ep=new PanelEpisodioLettore(e);
+    							if(ep.isOK())
+    								panel_elenco_puntate_lettore.add(new PanelEpisodioLettore(e));
+    						}
+    						else {
+    							PanelEpisodioLettore ep=new PanelEpisodioLettore(e);
+    							if(ep.isOK())
+    								panel_elenco_puntate_lettore.add(new PanelEpisodioLettore(e), 0);
+    						}
+    					}
+    				}
+    				panel_elenco_puntate_lettore.revalidate();
+    				panel_elenco_puntate_lettore.repaint();
+    			}
 			}
 		}
 	}
@@ -1100,12 +1099,8 @@ public class Interfaccia extends JFrame {
 		chckbxAvviaConIl.setSelected(Settings.isAutostart());
 		chckbxAvviaRidottoA.setSelected(Settings.isStartHidden());
 		chckbxTrayOnIcon.setSelected(Settings.isTrayOnIcon());
-		chckbxDownHD.setSelected(Settings.isMostra720p());
-		chckbxDownPreair.setSelected(Settings.isMostraPreair());
 		chckbxAutoAbilita.setSelected(Settings.isDownloadAutomatico());
 		comboBoxMinutiRicercaAutomatica.setSelectedItem(Settings.getMinRicerca());
-		chckbxAutoHD.setSelected(Settings.isDownload720p());
-		chckbxAutoPreair.setSelected(Settings.isDownloadPreair());
 		chckbxAbilitaDownloadSottotitoli.setSelected(Settings.isRicercaSottotitoli());
 		chckbxAbilitaItaliansubsnet.setSelected(Settings.isEnableITASA());
 		txt_itasa_user.setText(Settings.getItasaUsername());
@@ -1741,17 +1736,14 @@ public class Interfaccia extends JFrame {
 		btnOpzioniSalva.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Settings.setAlwaysOnTop(chckbxSempreInPrimo.isSelected());
+				Interfaccia.this.setAlwaysOnTop(Settings.isAlwaysOnTop());
 				Settings.setAskOnClose(chckbxChiediConfermaPrima.isSelected());
 				Settings.setExtenalVLC(chckbxExternalVLC.isSelected());
 				Settings.setAutostart(chckbxAvviaConIl.isSelected());
 				Settings.setStartHidden(chckbxAvviaRidottoA.isSelected());
 				Settings.setTrayOnIcon(chckbxTrayOnIcon.isSelected());
-				Settings.setMostra720p(chckbxDownHD.isSelected());
-				Settings.setMostraPreair(chckbxDownPreair.isSelected());
 				Settings.setDownloadAutomatico(chckbxAutoAbilita.isSelected());
 				Settings.setMinRicerca((int) comboBoxMinutiRicercaAutomatica.getSelectedItem());
-				Settings.setDownload720p(chckbxAutoHD.isSelected());
-				Settings.setDownloadPreair(chckbxAutoPreair.isSelected());
 				Settings.setRicercaSottotitoli(chckbxAbilitaDownloadSottotitoli.isSelected());
 				Settings.setEnableITASA(chckbxAbilitaItaliansubsnet.isSelected());
 				if (txt_itasa_pass.getPassword().length > 0) {
@@ -1785,10 +1777,7 @@ public class Interfaccia extends JFrame {
 				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				chooser.setAcceptAllFileFilterUsed(false);
 				chooser.setFileHidingEnabled(false);
-				chooser.setFileFilter(new ClientFilter("uTorrent", "uTorrent.exe")); // TODO
-																					 // fare
-																					 // multi
-																					 // piattaforma
+				chooser.setFileFilter(new ClientFilter("uTorrent", "uTorrent.exe")); // TODO fare multi piattaforma
 
 				if (chooser.showOpenDialog(Interfaccia.this) == JFileChooser.APPROVE_OPTION) {
 					destinazione_path = chooser.getSelectedFile().getAbsolutePath();
@@ -1807,10 +1796,7 @@ public class Interfaccia extends JFrame {
 				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				chooser.setAcceptAllFileFilterUsed(false);
 				chooser.setFileHidingEnabled(false);
-				chooser.setFileFilter(new ClientFilter("VLC", "vlc.exe")); // TODO
-																		   // fare
-																		   // multi
-																		   // piattaforma
+				chooser.setFileFilter(new ClientFilter("VLC", "vlc.exe")); // TODO fare multi piattaforma
 
 				if (chooser.showOpenDialog(Interfaccia.this) == JFileChooser.APPROVE_OPTION) {
 					destinazione_path = chooser.getSelectedFile().getAbsolutePath();
@@ -1902,11 +1888,63 @@ public class Interfaccia extends JFrame {
 				panel_SottotitoliDaScaricare.repaint();
 			}
 		});
+		btnItasaUpdate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				class t_update_itasa extends Thread {
+					public void run() {
+						btnItasaUpdate.setEnabled(false);
+						cmb_itasa_serie.setEnabled(false);
+						ProviderSottotitoli p_itasa=GestioneSerieTV.getSubManager().getProvider(GestoreSottotitoli.ITASA);
+						p_itasa.caricaElencoSerie();
+						ArrayList<SerieSub> s_ita=p_itasa.getElencoSerie();
+						if(s_ita.size()>0){
+							cmb_itasa_serie.removeAllItems();
+							for(int i=0;i<s_ita.size();i++)
+								cmb_itasa_serie.addItem(s_ita.get(i));
+						}
+						btnItasaUpdate.setEnabled(true);
+						cmb_itasa_serie.setEnabled(true);
+					}
+				}
+				Thread t=new t_update_itasa();
+				t.start();
+			}
+		});
+		btnSubsfactoryUpdate.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				class t_update_subsfactory extends Thread {
+					public void run(){
+						cmb_subsfactory_serie.setEnabled(false);
+						btnSubsfactoryUpdate.setEnabled(false);
+						ProviderSottotitoli p_subs=GestioneSerieTV.getSubManager().getProvider(GestoreSottotitoli.SUBSFACTORY);
+						p_subs.caricaElencoSerie();
+						ArrayList<SerieSub> s_subs=p_subs.getElencoSerie();
+						if(s_subs.size()>0){
+							cmb_subsfactory_serie.removeAllItems();
+							for(int i=0;i<s_subs.size();i++)
+								cmb_subsfactory_serie.addItem(s_subs.get(i));
+						}
+						btnSubsfactoryUpdate.setEnabled(true);
+						cmb_subsfactory_serie.setEnabled(true);
+					}
+				}
+				Thread t=new t_update_subsfactory();
+				t.start();
+			}
+		});
+		//TODO bottoni associa serie sottotitoli
+		//TODO listener su serie sottotitoli in modo che selezioni le serie associate
+		//TODO download sottotitoli "personalizzati"
+		//TODO opzione per caricare VLC automaticamente
+
 	}
 
 	public void addEntrySottotitolo(String nomeserie, int stagione, int episodio, String provider) {
 		DefaultTableModel model = (DefaultTableModel) tableSubDownloaded.getModel();
 		model.addRow(new Object[] { nomeserie, stagione, episodio, provider });
+	}
+	public void subAddSubDownload(Torrent t){
+		panel_SottotitoliDaScaricare.add(new PanelSubDown(t));
 	}
 	public void inizializzaSubDownload(){
 		ArrayList<Torrent> subDown=GestioneSerieTV.getSubManager().getSottotitoliDaScaricare();
@@ -1915,5 +1953,16 @@ public class Interfaccia extends JFrame {
 			panel_SottotitoliDaScaricare.add(new PanelSubDown(subDown.get(i)));
 		}
 		Runtime.getRuntime().gc();
+	}
+	private void initSubDownload(){
+		ProviderSottotitoli p_itasa=GestioneSerieTV.getSubManager().getProvider(GestoreSottotitoli.ITASA);
+		ArrayList<SerieSub> s_ita=p_itasa.getElencoSerie();
+		for(int i=0;i<s_ita.size();i++)
+			cmb_itasa_serie.addItem(s_ita.get(i));
+		//cmb_itasa_serie
+		ProviderSottotitoli p_subsfactory=GestioneSerieTV.getSubManager().getProvider(GestoreSottotitoli.SUBSFACTORY);
+		ArrayList<SerieSub> s_subs=p_subsfactory.getElencoSerie();
+		for(int i=0;i<s_subs.size();i++)
+			cmb_subsfactory_serie.addItem(s_subs.get(i));
 	}
 }

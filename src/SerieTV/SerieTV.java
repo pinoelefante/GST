@@ -148,7 +148,7 @@ public class SerieTV {
 			GestioneSerieTV.getSubManager().aggiungiEpisodio(episodio);
 	}
 	public void addEpisodioDB(Torrent episodio){
-		System.out.println(getNomeSerie()+" "+episodio.getStagione()+"x"+episodio.getEpisodio());
+		//System.out.println(getNomeSerie()+" "+episodio.getStagione()+"x"+episodio.getEpisodio());
 		if(episodio.is720p() && episodio.getScaricato()==Torrent.SCARICARE && !getPreferenze().isPreferisciHD())
 			episodio.setScaricato(Torrent.IGNORATO);
 		if(episodio.isPreAir() && episodio.getScaricato()==Torrent.SCARICARE && !getPreferenze().isDownloadPreair())

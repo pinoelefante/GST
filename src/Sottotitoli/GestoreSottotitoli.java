@@ -136,6 +136,8 @@ public class GestoreSottotitoli {
 				return;
 		}
 		sottotitoli_da_scaricare.add(t);
+		if(Interfaccia.getInterfaccia()!=null)
+			Interfaccia.getInterfaccia().subAddSubDownload(t);
 	}
 
 	public void rimuoviEpisodio(Torrent torrent) {

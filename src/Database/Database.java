@@ -101,11 +101,6 @@ public class Database {
 			stat.executeUpdate("CREATE TABLE IF NOT EXISTS "+TABLE_TVDB_EPISODI+" (" +
 					"id_episodio INTEGER PRIMARY KEY AUTOINCREMENT)");
 	
-			/**
-			 * Tabella Settings
-			 * dir_download | dir_client | dir_vlc | tray_on_icon | start_hidden | ask_on_close | always_on_top | start_win | ricerca_auto | min_ricerca | lingua | new_update | last_version | numero_avvii | ricerca_sub | itasa_id | itasa_pass | id_client
-			 */
-			//TODO modificare tabella settings
 			stat.executeUpdate("CREATE TABLE IF NOT EXISTS "+TABLE_SETTINGS+" ("+
 					"ask_on_close INTEGER)");
 			if(isEmptyTable(TABLE_SETTINGS)){
@@ -326,7 +321,6 @@ public class Database {
 		if(!checkColumn(TABLE_SETTINGS, "min_download_auto")){
 			alter_aggiungicampo(TABLE_SETTINGS, "min_download_auto", "INTEGER", "480");
 		}
-		
 		if(!checkColumn(TABLE_SETTINGS, "new_update")){
 			alter_aggiungicampo(TABLE_SETTINGS, "new_update", "INTEGER", "1");
 		}
@@ -335,18 +329,6 @@ public class Database {
 		}
 		if(!checkColumn(TABLE_SETTINGS, "download_sottotitoli")){
 			alter_aggiungicampo(TABLE_SETTINGS, "download_sottotitoli", "INTEGER", "1");
-		}
-		if(!checkColumn(TABLE_SETTINGS, "mostra_preair")){
-			alter_aggiungicampo(TABLE_SETTINGS, "mostra_preair", "INTEGER", "1");
-		}
-		if(!checkColumn(TABLE_SETTINGS, "mostra_hd")){
-			alter_aggiungicampo(TABLE_SETTINGS, "mostra_hd", "INTEGER", "1");
-		}
-		if(!checkColumn(TABLE_SETTINGS, "download_auto_preair")){
-			alter_aggiungicampo(TABLE_SETTINGS, "download_auto_preair", "INTEGER", "0");
-		}
-		if(!checkColumn(TABLE_SETTINGS, "download_auto_hd")){
-			alter_aggiungicampo(TABLE_SETTINGS, "download_auto_hd", "INTEGER", "0");
 		}
 		if(!checkColumn(TABLE_SETTINGS, "external_vlc")){
 			alter_aggiungicampo(TABLE_SETTINGS, "external_vlc", "INTEGER", "0");

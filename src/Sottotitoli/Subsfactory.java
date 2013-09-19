@@ -220,24 +220,25 @@ public class Subsfactory implements ProviderSottotitoli {
 	private String cercaSubInDB(String id_serie, Torrent t){
 		ArrayList<SottotitoloSubsfactoryDB> subs=caricaSubDaDB(id_serie);
 		
-		for(int i=0;i<subs.size();i++){
-			SottotitoloSubsfactoryDB s=subs.get(i);
-			if(s.getEpisodio()==t.getEpisodio() && s.getStagione()==t.getStagione()){
-				switch(t.is720p()?1:0){
-					case 0:
-						if(s.isNormale())
+		if(subs!=null){
+			for(int i=0;i<subs.size();i++){
+				SottotitoloSubsfactoryDB s=subs.get(i);
+				if(s.getEpisodio()==t.getEpisodio() && s.getStagione()==t.getStagione()){
+					switch(t.is720p()?1:0){
+						case 0:
+							if(s.isNormale())
+								return s.getUrl();
+							break;
+						case 1:
+							if(s.is720p())
+								return s.getUrl();
+							break;
+						case 2:
 							return s.getUrl();
-						break;
-					case 1:
-						if(s.is720p())
-							return s.getUrl();
-						break;
-					case 2:
-						return s.getUrl();
+					}
 				}
 			}
 		}
-		
 		return "";
 	}
 	private ArrayList<SottotitoloSubsfactoryDB> caricaSubDaDB(String id_serie){
