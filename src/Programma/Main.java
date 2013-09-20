@@ -28,6 +28,8 @@ public class Main {
 		try{
 			if(Settings.isWindows())
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+			else if(Settings.isLinux())
+				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
 			
 			fl=new FrameLoading();
 			fl.start();
