@@ -119,7 +119,7 @@ public class PanelEpisodioLettore extends JPanel {
 		btnPlay.setBounds(603, 66, 89, 23);
 		
 		btnMostra = new JButton("Mostra");
-		panel_c.add(btnMostra);
+		//TODO panel_c.add(btnMostra);
 		
 		JPanel panel_1 = new JPanel();
 		add(panel_1, BorderLayout.WEST);
@@ -215,8 +215,16 @@ public class PanelEpisodioLettore extends JPanel {
 			}
 		});
 		btnPlay.addActionListener(new ActionListener() {
-			//TODO avvertire quando il sottotitolo non è ancora stato scaricato
 			public void actionPerformed(ActionEvent arg0) {
+				if(Settings.isRicercaSottotitoli()){
+					ArrayList<String> subs=torrent.getSottotitoliPath();
+					if(subs.size()==0){
+						int r=JOptionPane.showConfirmDialog(PanelEpisodioLettore.this.getParent().getParent(), "Non è stato trovato alcun sottotitolo.\nVuoi visualizzare lo stesso l'episodio?", "Sottotitolo "+torrent.getFormattedName(), JOptionPane.YES_NO_OPTION);
+						if(r==JOptionPane.NO_OPTION)
+							return;
+					}
+				}
+				
 				if(Settings.isExtenalVLC()){
 					String filepath=torrent.getFilePath();
 					if(filepath.length()>0)
@@ -274,7 +282,9 @@ public class PanelEpisodioLettore extends JPanel {
 				}
 				if(!origine_filepath.isEmpty() & !destinazione_path.isEmpty()){
     				Download.copiaFile(origine_filepath, destinazione_path);
-    				//TODO copiare anche i sottotitoli
+    				ArrayList<String> subs=torrent.getSottotitoliPath();
+    				for(int i=0;i<subs.size();i++)
+    					Download.copiaFile(subs.get(i), destinazione_path);
     				JOptionPane.showMessageDialog(PanelEpisodioLettore.this.getParent().getParent(), "Il file è stato aggiunto alla coda dei file da copiare.\nControlla la sezione File Manager per vedere lo stato della copia.");
 				}
 			}

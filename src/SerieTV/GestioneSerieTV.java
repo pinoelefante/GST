@@ -59,7 +59,7 @@ public class GestioneSerieTV {
 			providers.get(i).aggiornaElencoSerie();
 		}
 	}
-	
+	//TODO quando una serie viene rimossa, gli episodi devono cambiare allo stato scaricare
 	public static void rimuoviSeriePreferita(SerieTV st){
 		st.getProvider().rimuoviSeriePreferita(st);
 	}

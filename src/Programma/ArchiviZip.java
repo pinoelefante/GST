@@ -76,6 +76,7 @@ public class ArchiviZip {
 	}
 
 	public static void estrai(String archivio, final String estensione, final String rename, final String cartella_destinazione) {
+		instance();
 		RandomAccessFile randomAccessFile = null;
 		ISevenZipInArchive inArchive = null;
 		try {

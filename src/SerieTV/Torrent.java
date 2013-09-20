@@ -216,4 +216,29 @@ public class Torrent {
 	public void setIDTVDB(int id_tvdb) {
 		this.id_tvdb = id_tvdb;
 	}
+	public ArrayList<String> getSottotitoliPath(){
+		String filepath=getFilePath();
+		if(filepath!=null){
+			ArrayList<String> subs=new ArrayList<String>(1);
+			
+			try{
+				String filename=filepath.substring(filepath.lastIndexOf(File.separator)+1);
+				String directory=filepath.substring(0, filepath.indexOf(filename));
+				filename=filename.substring(0, filename.lastIndexOf("."));
+				File dir=new File(directory);
+				String[] allfiles=dir.list();
+				for(int i=0;i<allfiles.length;i++){
+					if(allfiles[i].toLowerCase().startsWith(filename.toLowerCase()) && allfiles[i].toLowerCase().endsWith(".srt")){
+						if(new File(directory+allfiles[i]).isFile())
+							subs.add(directory+allfiles[i]);
+					}
+				}
+			}
+			catch(Exception e){}
+			subs.trimToSize();
+			return subs;
+		}
+		return null;
+		
+	}
 }

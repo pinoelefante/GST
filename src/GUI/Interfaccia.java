@@ -81,6 +81,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.CompoundBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.border.BevelBorder;
 
 public class Interfaccia extends JFrame {
 	private static Interfaccia thisframe;
@@ -239,7 +240,7 @@ public class Interfaccia extends JFrame {
 		panel_9.add(lblCerca_2);
 
 		txt_cerca_serie_tutte = new JTextField();
-		txt_cerca_serie_tutte.setBounds(73, 42, 159, 20);
+		txt_cerca_serie_tutte.setBounds(73, 37, 159, 27);
 		panel_9.add(txt_cerca_serie_tutte);
 		txt_cerca_serie_tutte.setColumns(20);
 
@@ -265,7 +266,7 @@ public class Interfaccia extends JFrame {
 		panel_9.add(lblSeleziona_1);
 
 		txt_cerca_serie_inserite = new JTextField();
-		txt_cerca_serie_inserite.setBounds(315, 42, 159, 20);
+		txt_cerca_serie_inserite.setBounds(315, 37, 159, 27);
 		panel_9.add(txt_cerca_serie_inserite);
 		txt_cerca_serie_inserite.setColumns(10);
 
@@ -309,7 +310,7 @@ public class Interfaccia extends JFrame {
 
 		txt_add_episodio_stagione = new JTextField();
 		txt_add_episodio_stagione.addKeyListener(new TextListenerOnlyNumber(txt_add_episodio_stagione));
-		txt_add_episodio_stagione.setBounds(280, 23, 30, 20);
+		txt_add_episodio_stagione.setBounds(280, 20, 30, 24);
 		panel_10.add(txt_add_episodio_stagione);
 		txt_add_episodio_stagione.setColumns(3);
 
@@ -319,7 +320,7 @@ public class Interfaccia extends JFrame {
 
 		txt_add_episodio_episodio = new JTextField();
 		txt_add_episodio_episodio.addKeyListener(new TextListenerOnlyNumber(txt_add_episodio_episodio));
-		txt_add_episodio_episodio.setBounds(380, 23, 30, 20);
+		txt_add_episodio_episodio.setBounds(380, 20, 30, 24);
 		panel_10.add(txt_add_episodio_episodio);
 		txt_add_episodio_episodio.setColumns(3);
 
@@ -328,7 +329,7 @@ public class Interfaccia extends JFrame {
 		panel_10.add(lblLink);
 
 		txt_add_episodio_link = new JTextField();
-		txt_add_episodio_link.setBounds(266, 50, 144, 20);
+		txt_add_episodio_link.setBounds(266, 48, 144, 27);
 		txt_add_episodio_link.setToolTipText("Incolla il testo copiato cliccando il tasto destro del mouse");
 		panel_10.add(txt_add_episodio_link);
 		txt_add_episodio_link.setColumns(10);
@@ -426,7 +427,7 @@ public class Interfaccia extends JFrame {
 		panel.add(imgItasaLogo);
 
 		JLabel lblitaliansubs = new JLabel("<html><b>ItalianSubs</b></html>");
-		lblitaliansubs.setBounds(82, 87, 73, 14);
+		lblitaliansubs.setBounds(82, 85, 73, 14);
 		panel.add(lblitaliansubs);
 
 		JLabel lblSerieTV = new JLabel("<html><b>Serie</b><html>");
@@ -444,7 +445,7 @@ public class Interfaccia extends JFrame {
 		panel.add(imgSubsfactoryLogo);
 
 		JLabel lblsubsfactory = new JLabel("<html><b>Subsfactory</b></html>");
-		lblsubsfactory.setBounds(313, 87, 82, 14);
+		lblsubsfactory.setBounds(313, 85, 82, 14);
 		panel.add(lblsubsfactory);
 
 		imgSubspediaLogo = new JLabel("");
@@ -462,7 +463,7 @@ public class Interfaccia extends JFrame {
 		panel.add(lblCerca);
 
 		txt_itasa_cerca = new JTextField();
-		txt_itasa_cerca.setBounds(57, 103, 161, 20);
+		txt_itasa_cerca.setBounds(57, 100, 161, 27);
 		panel.add(txt_itasa_cerca);
 		txt_itasa_cerca.setColumns(20);
 
@@ -491,7 +492,7 @@ public class Interfaccia extends JFrame {
 		panel.add(lblCerca_1);
 
 		txt_subsfactory_cerca = new JTextField();
-		txt_subsfactory_cerca.setBounds(302, 103, 164, 20);
+		txt_subsfactory_cerca.setBounds(302, 100, 164, 27);
 		panel.add(txt_subsfactory_cerca);
 		txt_subsfactory_cerca.setColumns(20);
 
@@ -591,7 +592,7 @@ public class Interfaccia extends JFrame {
 		panel_8.add(cmb_sub_custom_serie);
 
 		txt_sub_custom_serie = new JTextField();
-		txt_sub_custom_serie.setBounds(72, 53, 200, 20);
+		txt_sub_custom_serie.setBounds(72, 45, 200, 27);
 		panel_8.add(txt_sub_custom_serie);
 		txt_sub_custom_serie.setColumns(30);
 
@@ -602,7 +603,7 @@ public class Interfaccia extends JFrame {
 		txt_sub_custom_stagione = new JTextField();
 		txt_sub_custom_stagione.addKeyListener(new TextListenerOnlyNumber(txt_sub_custom_stagione));
 
-		txt_sub_custom_stagione.setBounds(345, 23, 40, 20);
+		txt_sub_custom_stagione.setBounds(345, 22, 40, 24);
 		panel_8.add(txt_sub_custom_stagione);
 		txt_sub_custom_stagione.setColumns(10);
 
@@ -612,7 +613,7 @@ public class Interfaccia extends JFrame {
 
 		txt_sub_custom_episodio = new JTextField();
 		txt_sub_custom_episodio.addKeyListener(new TextListenerOnlyNumber(txt_sub_custom_episodio));
-		txt_sub_custom_episodio.setBounds(345, 51, 40, 20);
+		txt_sub_custom_episodio.setBounds(345, 48, 40, 24);
 		panel_8.add(txt_sub_custom_episodio);
 		txt_sub_custom_episodio.setColumns(10);
 
@@ -622,7 +623,7 @@ public class Interfaccia extends JFrame {
 
 		txt_sub_custom_destinazione = new JTextField();
 		txt_sub_custom_destinazione.setEditable(false);
-		txt_sub_custom_destinazione.setBounds(473, 23, 160, 20);
+		txt_sub_custom_destinazione.setBounds(473, 20, 160, 27);
 		panel_8.add(txt_sub_custom_destinazione);
 		txt_sub_custom_destinazione.setColumns(10);
 
@@ -763,7 +764,7 @@ public class Interfaccia extends JFrame {
 		OpzioniPanel.setLayout(null);
 
 		JPanel panel_1 = new JPanel();
-		panel_1.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "Aspetto", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+		panel_1.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Aspetto", TitledBorder.CENTER, TitledBorder.TOP, null, null));
 		panel_1.setBounds(10, 11, 350, 144);
 		OpzioniPanel.add(panel_1);
 		panel_1.setLayout(null);
@@ -816,7 +817,7 @@ public class Interfaccia extends JFrame {
 		panel_3.add(lblMinutiTraOgni);
 
 		lblRicercaOre = new JLabel("");
-		lblRicercaOre.setBounds(260, 35, 78, 16);
+		lblRicercaOre.setBounds(252, 35, 86, 16);
 		lblRicercaOre.setText("( 1 ora 0 min )");
 		panel_3.add(lblRicercaOre);
 
@@ -839,7 +840,7 @@ public class Interfaccia extends JFrame {
 		panel_4.add(lblUsername);
 
 		txt_itasa_user = new JTextField();
-		txt_itasa_user.setBounds(115, 66, 150, 20);
+		txt_itasa_user.setBounds(115, 64, 150, 27);
 		panel_4.add(txt_itasa_user);
 		txt_itasa_user.setColumns(10);
 
@@ -848,7 +849,7 @@ public class Interfaccia extends JFrame {
 		panel_4.add(lblPasswordItasa);
 
 		txt_itasa_pass = new JPasswordField();
-		txt_itasa_pass.setBounds(115, 98, 150, 20);
+		txt_itasa_pass.setBounds(115, 95, 150, 27);
 		panel_4.add(txt_itasa_pass);
 
 		JButton btnItasaVerificaLogin = new JButton("Verifica login");
@@ -871,7 +872,7 @@ public class Interfaccia extends JFrame {
 
 		txt_utorrent_path = new JTextField();
 		txt_utorrent_path.setEditable(false);
-		txt_utorrent_path.setBounds(145, 30, 240, 20);
+		txt_utorrent_path.setBounds(145, 27, 240, 27);
 		panel_5.add(txt_utorrent_path);
 		txt_utorrent_path.setColumns(10);
 
@@ -881,7 +882,7 @@ public class Interfaccia extends JFrame {
 
 		txt_download_path = new JTextField();
 		txt_download_path.setEditable(false);
-		txt_download_path.setBounds(145, 58, 240, 20);
+		txt_download_path.setBounds(145, 55, 240, 27);
 		panel_5.add(txt_download_path);
 		txt_download_path.setColumns(10);
 
@@ -891,7 +892,7 @@ public class Interfaccia extends JFrame {
 
 		txt_vlc_path = new JTextField();
 		txt_vlc_path.setEditable(false);
-		txt_vlc_path.setBounds(145, 86, 240, 20);
+		txt_vlc_path.setBounds(145, 83, 240, 27);
 		panel_5.add(txt_vlc_path);
 		txt_vlc_path.setColumns(10);
 
@@ -912,7 +913,7 @@ public class Interfaccia extends JFrame {
 
 		JPanel panel_6 = new JPanel();
 		panel_6.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_6.setBounds(10, 480, 717, 37);
+		panel_6.setBounds(10, 444, 717, 58);
 		OpzioniPanel.add(panel_6);
 
 		btnOpzioniSalva = new JButton("Salva");

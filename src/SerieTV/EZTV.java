@@ -15,7 +15,7 @@ import Programma.Settings;
 import Programma.WebProxyManager;
 import StruttureDati.db.KVResult;
 import StruttureDati.serietv.Episodio;
-
+//TODO url che sia solo id di eztv
 public class EZTV extends ProviderSerieTV{
 	public EZTV(){
 		super();
