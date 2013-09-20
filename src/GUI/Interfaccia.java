@@ -184,6 +184,9 @@ public class Interfaccia extends JFrame {
 	private JButton btnItasaUpdate;
 	private JLabel lblItasaSerieAss;
 	private JLabel lblSubsfactorySerieAss;
+	private JButton btnItasaRimuovi;
+	private JButton btnSubsfactoryAssocia;
+	private JButton btnSubsfactoryRimuovi;
 
 	@SuppressWarnings("serial")
 	public Interfaccia() {
@@ -470,7 +473,7 @@ public class Interfaccia extends JFrame {
 		btnItasaAssocia.setBounds(10, 163, 98, 26);
 		panel.add(btnItasaAssocia);
 
-		JButton btnItasaRimuovi = new JButton("Rimuovi");
+		btnItasaRimuovi = new JButton("Rimuovi");
 		btnItasaRimuovi.setBounds(120, 163, 98, 26);
 		panel.add(btnItasaRimuovi);
 
@@ -503,11 +506,11 @@ public class Interfaccia extends JFrame {
 		lblSubsfactorySerieAss.setBounds(330, 145, 164, 16);
 		panel.add(lblSubsfactorySerieAss);
 
-		JButton btnSubsfactoryAssocia = new JButton("Associa");
+		btnSubsfactoryAssocia = new JButton("Associa");
 		btnSubsfactoryAssocia.setBounds(258, 163, 98, 26);
 		panel.add(btnSubsfactoryAssocia);
 
-		JButton btnSubsfactoryRimuovi = new JButton("Rimuovi");
+		btnSubsfactoryRimuovi = new JButton("Rimuovi");
 		btnSubsfactoryRimuovi.setBounds(368, 163, 98, 26);
 		panel.add(btnSubsfactoryRimuovi);
 		
@@ -968,32 +971,42 @@ public class Interfaccia extends JFrame {
 
 		/** TODO decommentare per la distribuzione */
 		/*
-		 * SwingUtilities.invokeLater(new Runnable() { public void run() {
-		 * if(!NativeInterface.isOpen()) NativeInterface.open(); advertising=new
-		 * JWebBrowser(JWebBrowser.destroyOnFinalization());
-		 * advertising.setBarsVisible(false);
-		 * advertising.setStatusBarVisible(false); advertising.setBounds(10,
-		 * 372, 676, 143);
-		 * advertising.navigate("http://pinoelefante.altervista.org/ads.html");
-		 * InfoPanel.add(advertising); } }); /*
-		 */
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				if (!NativeInterface.isOpen())
+					NativeInterface.open();
+				advertising = new JWebBrowser(JWebBrowser.destroyOnFinalization());
+				advertising.setBarsVisible(false);
+				advertising.setStatusBarVisible(false);
+				advertising.setBounds(10, 372, 676, 143);
+				advertising.navigate("http://pinoelefante.altervista.org/ads.html");
+				InfoPanel.add(advertising);
+			}
+		});
+		/* */
 
 		addListener();
 	}
 
 	public void init() {
 		/** inizializza i campi che contengono le serie tv inserite */
-		reloadSeriePreferite();
-		reloadSerieDisponibili();
+		class t_init extends Thread{
+			public void run(){
+				reloadSeriePreferite();
+				reloadSerieDisponibili();
 
-		inizializzaDownloadScroll();
+				inizializzaDownloadScroll();
 
-		buttonReloadSerie.doClick();
+				buttonReloadSerie.doClick();
 
-		btnAggiorna.doClick();
-		
-		initSubDownload();
-		GestioneSerieTV.getSubManager().loadLast10();
+				btnAggiorna.doClick();
+				
+				initSubDownload();
+				GestioneSerieTV.getSubManager().loadLast10();
+			}
+		}
+		Thread t=new t_init();
+		t.start();
 	}
 
 	public void reloadSeriePreferite() {
@@ -1767,8 +1780,11 @@ public class Interfaccia extends JFrame {
 					btnAggiornaElencoRegole.getActionListeners()[0].actionPerformed(new ActionEvent(btnAggiornaElencoRegole, 0, ""));
 				else if (tab.getSelectedComponent() == LettorePanel)
 					disegnaLettore();
-				else if(tab.getSelectedComponent()==SottotitoliPanel)
+				else if(tab.getSelectedComponent()==SottotitoliPanel){
 					inizializzaSubDownload();
+					cmb_serie_sottotitoli.getActionListeners()[0].actionPerformed(new ActionEvent(cmb_serie_sottotitoli, 0, ""));
+				}
+					
 				
 			}
 		});
@@ -1830,7 +1846,12 @@ public class Interfaccia extends JFrame {
 		});
 		btnLettoreUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				disegnaLettore();
+				if(comboBoxLettoreStagione.getSelectedItem()==null){
+					cmb_serie_lettore.getActionListeners()[0].actionPerformed(new ActionEvent(cmb_serie_lettore, 0, ""));
+					disegnaLettore();
+				}
+				else
+					disegnaLettore();
 			}
 		});
 		btnAggiornaElencoRegole.addActionListener(new ActionListener() {
@@ -1898,7 +1919,7 @@ public class Interfaccia extends JFrame {
 						btnItasaUpdate.setEnabled(false);
 						cmb_itasa_serie.setEnabled(false);
 						ProviderSottotitoli p_itasa=GestioneSerieTV.getSubManager().getProvider(GestoreSottotitoli.ITASA);
-						p_itasa.caricaElencoSerie();
+						p_itasa.aggiornaElencoSerieOnline();
 						ArrayList<SerieSub> s_ita=p_itasa.getElencoSerie();
 						if(s_ita.size()>0){
 							cmb_itasa_serie.removeAllItems();
@@ -1920,7 +1941,7 @@ public class Interfaccia extends JFrame {
 						cmb_subsfactory_serie.setEnabled(false);
 						btnSubsfactoryUpdate.setEnabled(false);
 						ProviderSottotitoli p_subs=GestioneSerieTV.getSubManager().getProvider(GestoreSottotitoli.SUBSFACTORY);
-						p_subs.caricaElencoSerie();
+						p_subs.aggiornaElencoSerieOnline();
 						ArrayList<SerieSub> s_subs=p_subs.getElencoSerie();
 						if(s_subs.size()>0){
 							cmb_subsfactory_serie.removeAllItems();
@@ -1967,9 +1988,57 @@ public class Interfaccia extends JFrame {
 							break;
 						}
 					}
-					
-					//lblSubsfactorySerieAss
 				}
+			}
+		});
+		btnItasaAssocia.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(cmb_serie_sottotitoli.getSelectedItem()!=null){
+					SerieTV st=(SerieTV) cmb_serie_sottotitoli.getSelectedItem();
+					if(cmb_itasa_serie.getSelectedItem()!=null){
+						SerieSub ss=(SerieSub) cmb_itasa_serie.getSelectedItem();
+						if(JOptionPane.showConfirmDialog(Interfaccia.this, "Vuoi associare "+st.getNomeSerie()+" con:\n"+ss.getNomeSerie()+"\n?", st.getNomeSerie()+" - Italiansubs", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_NO_OPTION){
+							st.setIDItasa((int)ss.getID());
+							st.aggiornaDB();
+							lblItasaSerieAss.setText("<html>"+ss.getNomeSerie()+"</html>");
+						}
+					}
+				}
+			}
+		});
+		btnItasaRimuovi.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(cmb_serie_sottotitoli.getSelectedItem()!=null){
+					SerieTV st=(SerieTV) cmb_serie_sottotitoli.getSelectedItem();
+					if(JOptionPane.showConfirmDialog(Interfaccia.this, "Vuoi che venga rimossa l'associazione di "+st.getNomeSerie()+" con Italiansubs?", "Rimozione associazione Italiansubs", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
+						st.setIDItasa(-1);
+						st.aggiornaDB();
+						lblItasaSerieAss.setText("<html>Non associata</html>");
+					}
+				}
+				
+			}
+		});
+		btnSubsfactoryAssocia.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(cmb_serie_sottotitoli.getSelectedItem()!=null){
+					SerieTV st=(SerieTV) cmb_serie_sottotitoli.getSelectedItem();
+					if(cmb_subsfactory_serie.getSelectedItem()!=null){
+						SerieSub ss=(SerieSub) cmb_subsfactory_serie.getSelectedItem();
+						if(JOptionPane.showConfirmDialog(Interfaccia.this, "Vuoi associare "+st.getNomeSerie()+" con:\n"+ss.getNomeSerie()+"\n?", st.getNomeSerie()+" - Subsfactory", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_NO_OPTION){
+							st.setIDSubsfactory((int)ss.getID(), false);
+							st.aggiornaDB();
+							lblItasaSerieAss.setText("<html>"+ss.getNomeSerie()+"</html>");
+						}
+					}
+				}
+				
+			}
+		});
+		btnSubsfactoryRimuovi.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 	}
@@ -1994,7 +2063,6 @@ public class Interfaccia extends JFrame {
 		ArrayList<SerieSub> s_ita=p_itasa.getElencoSerie();
 		for(int i=0;i<s_ita.size();i++)
 			cmb_itasa_serie.addItem(s_ita.get(i));
-		//cmb_itasa_serie
 		ProviderSottotitoli p_subsfactory=GestioneSerieTV.getSubManager().getProvider(GestoreSottotitoli.SUBSFACTORY);
 		ArrayList<SerieSub> s_subs=p_subsfactory.getElencoSerie();
 		for(int i=0;i<s_subs.size();i++)

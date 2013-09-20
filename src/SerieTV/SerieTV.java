@@ -13,7 +13,7 @@ public class SerieTV {
 	private String titolo;
 	private ProviderSerieTV provider;
 	private String url_serie;
-	private int id_db, id_itasa=0, id_subsfactory=0, id_tvdb=0, id_subspedia=0;
+	private int id_db, id_itasa=0, id_tvdb=0, id_subspedia=0, id_subsfactory=0;
 	private boolean conclusa, stop_search, inserita;
 	private ElencoEpisodi episodi;
 	private Preferenze preferenze_download;
@@ -95,8 +95,16 @@ public class SerieTV {
 		return id_subsfactory;
 	}
 
-	public void setIDSubsfactory(int id_subsfactory) {
+	public void setIDSubsfactory(int id_subsfactory, boolean updatedb) {
 		this.id_subsfactory = id_subsfactory;
+		String query="SELECT directory FROM "+Database.TABLE_SUBSFACTORY+" WHERE id="+id_subsfactory;
+		ArrayList<KVResult<String, Object>> res=Database.selectQuery(query);
+		if(res.size()==1){
+			String directory=(String) res.get(0).getValueByKey("directory");
+			setSubsfactoryDirectory(directory);
+		}
+		if(updatedb)
+			aggiornaDB();
 	}
 
 	public int getIDTvdb() {

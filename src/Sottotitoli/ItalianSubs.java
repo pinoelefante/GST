@@ -14,8 +14,16 @@ import java.util.Scanner;
 import java.util.Set;
 
 import javax.security.auth.login.FailedLoginException;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.io.IOUtils;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
@@ -29,12 +37,14 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.gargoylesoftware.htmlunit.util.Cookie;
 
+import Database.Database;
 import Naming.Renamer;
 import Programma.Download;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
 import SerieTV.Torrent;
+import StruttureDati.db.KVResult;
 
 public class ItalianSubs implements ProviderSottotitoli{
 	public final static int HDTV = 0,	
@@ -67,8 +77,9 @@ public class ItalianSubs implements ProviderSottotitoli{
 	public ItalianSubs(){
 		feed_rss=new ArrayList<RSSItem>();
 		elenco_serie=new ArrayList<SerieSub>();
-	
-		caricaElencoSerie();
+		caricaSerieDB();
+		aggiornaElencoSerieOnline();
+		System.out.println("ITASADB: Sono state caricate "+elenco_serie.size());
 		loggaItasa();
 	}
 	public boolean isLocked(){
@@ -197,7 +208,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 	}
 	
 	@SuppressWarnings("resource")
-	private int cercaIDSottotitoloFromAPI(int show_id, int serie, int episodio, int tipo) throws ItasaSubNotFound {
+	private int cercaIDSottotitoloFromAPI(int show_id, int serie, int episodio, int tipo) throws ItasaSubNotFound { //TODO fare tramite parsing XML
 		String query = serie + "x"	+ (episodio < 10 ? "0" + episodio : episodio); 
 		String tipo_sub = "Normale";
 		switch (tipo) {
@@ -246,7 +257,91 @@ public class ItalianSubs implements ProviderSottotitoli{
 		}
 		return id;
 	}
-	public void caricaElencoSerie(){
+	private boolean isSeriePresente(int id){
+		if(elenco_serie.isEmpty())
+			return false;
+		for(int i=0;i<elenco_serie.size();i++){
+			SerieSub s=elenco_serie.get(i);
+			if((int)s.getID()==id)
+				return true;
+		}
+		return false;
+	}
+	public synchronized void caricaElencoSerieOnlineXML() {
+		DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
+	    DocumentBuilder domparser = null;
+		try {
+			domparser = dbfactory.newDocumentBuilder();
+			Document doc = domparser.parse(API_SHOWLIST);
+			
+			NodeList elenco_shows=doc.getElementsByTagName("show");
+			for(int i=0;i<elenco_shows.getLength();i++){
+				Node show=elenco_shows.item(i);
+				NodeList show_attributi=show.getChildNodes();
+				String nome="";
+				int id=0;
+				for(int j=0;j<show_attributi.getLength();j++){
+					Node attr=show_attributi.item(j);
+					if(attr instanceof Element){
+						Element attributo=(Element)attr;
+						switch(attributo.getTagName()){
+							case "id":
+								id=Integer.parseInt(attributo.getTextContent().trim());
+								break;
+							case "name":
+								nome=attributo.getTextContent().trim();
+								break;
+						}
+					}
+				}
+				if(!isSeriePresente(id)){
+					SerieSub serie=new SerieSub(nome, id);
+					addSerie(serie);
+					salvaInDB(serie);
+				}
+			}
+		} 
+		catch (SAXException | ParserConfigurationException e) {
+			e.printStackTrace();
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	private boolean addSerie(SerieSub toInsert){
+		if(elenco_serie.isEmpty()){
+			elenco_serie.add(toInsert);
+			return true;
+		}
+		
+		boolean insert=false;
+		for(int i=0;i<elenco_serie.size();i++){
+			SerieSub s=elenco_serie.get(i);
+			int compare=toInsert.getNomeSerie().compareToIgnoreCase(s.getNomeSerie());
+			if(compare<0){
+				elenco_serie.add(i, toInsert);
+				return true;
+			}
+			else if(compare==0){
+				return false;
+			}
+		}
+		if(!insert){
+			elenco_serie.add(toInsert);
+			return true;
+		}
+		return false;
+	}
+	private void salvaInDB(SerieSub serie){
+		String query="INSERT INTO "+Database.TABLE_ITASA+" (id_serie, nome_serie) VALUES ("+(int)serie.getID()+", \""+serie.getNomeSerie()+"\")";
+		Database.updateQuery(query);
+	}
+	public void aggiornaElencoSerieOnline(){
+		caricaElencoSerieOnlineXML();
+	}
+	public void aggiornaElencoSerieOnlineFILE(){
+		caricaElencoSerieOnlineXML();
+		/*
 		ArrayList<SerieSub> elenco=new ArrayList<SerieSub>();
 		try {
 			Download.downloadFromUrl(API_SHOWLIST, Settings.getCurrentDir()+"response_itasa");
@@ -281,6 +376,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 			e.printStackTrace();
 			ManagerException.registraEccezione(e);
 		}
+		*/
 	}
 	public boolean VerificaLogin(String username, String password){
 		String url_login=API_LOGIN.replace("<USERNAME>", username).replace("<PASSWORD>", password);
@@ -649,6 +745,18 @@ public class ItalianSubs implements ProviderSottotitoli{
 	@Override
 	public int getProviderID() {
 		return GestoreSottotitoli.ITASA;
+	}
+	private void caricaSerieDB(){
+		String query = "SELECT * FROM "+Database.TABLE_ITASA+" ORDER BY nome_serie DESC";
+		ArrayList<KVResult<String, Object>> res=Database.selectQuery(query);
+		for(int i=0;i<res.size();i++){
+			KVResult<String, Object> r=res.get(i);
+			String nome=(String) r.getValueByKey("nome_serie");
+			Integer id=(Integer) r.getValueByKey("id_serie");
+			SerieSub serie=new SerieSub(nome, id);
+			serie.setTipoID(SerieSub.TIPOID_INT);
+			elenco_serie.add(0,serie);
+		}
 	}
 }
 

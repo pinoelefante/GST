@@ -124,7 +124,7 @@ public class EZTV extends ProviderSerieTV{
 			st.setInserita(inserita);
 			st.setConclusa(conclusa);
 			st.setIDItasa(id_itasa);
-			st.setIDSubsfactory(id_subsf);
+			st.setIDSubsfactory(id_subsf, false);
 			st.setIDSubspedia(id_subsp);
 			st.setIDTvdb(id_tvdb);
 			st.setStopSearch(stop_search, false);

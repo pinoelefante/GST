@@ -17,6 +17,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import Database.Database;
 import Naming.Renamer;
 import Programma.Download;
 import Programma.ManagerException;
@@ -24,7 +25,8 @@ import Programma.OperazioniFile;
 import Programma.Settings;
 import SerieTV.SerieTV;
 import SerieTV.Torrent;
-
+import StruttureDati.db.KVResult;
+//TODO carica cartella una volta ad avvio per ogni serie
 public class Subsfactory implements ProviderSottotitoli {
 	private final static String URL_ELENCO_SERIE="http://subsfactory.it/subtitle/index.php?&direction=0&order=nom";
 	private final static String URL_FEED_RSS="http://subsfactory.it/subtitle/rss.php";
@@ -37,7 +39,8 @@ public class Subsfactory implements ProviderSottotitoli {
 	public Subsfactory() {
 		feed_rss=new ArrayList<RSSItemSubsfactory>();
 		elenco_serie=new ArrayList<SerieSub>();
-		caricaElencoSerie();
+		caricaSerieDB();
+		aggiornaElencoSerieOnline();
 	}
 
 	@Override
@@ -280,7 +283,6 @@ public class Subsfactory implements ProviderSottotitoli {
 		*/
 		return null;
 	}
-	public static void main(String[] args){	}
 
 	@Override
 	public ArrayList<SerieSub> getElencoSerie() {
@@ -291,9 +293,38 @@ public class Subsfactory implements ProviderSottotitoli {
 	public String getProviderName() {
 		return "Subsfactory.it";
 	}
-
+	private boolean isPresente(String directory){
+		for(int i=0;i<elenco_serie.size();i++){
+			SerieSub s=elenco_serie.get(i);
+			if(((String)s.getID()).compareTo(directory)==0)
+				return true;
+		}
+		return false;
+	}
+	private boolean addSerie(SerieSub s){
+		boolean inserita=false;
+		for(int i=0;i<elenco_serie.size();i++){
+			SerieSub s1=elenco_serie.get(i);
+			int compare=s.getNomeSerie().compareToIgnoreCase(s1.getNomeSerie());
+			if(compare<0){
+				elenco_serie.add(i, s);
+				return true;
+			}
+			else if(compare==0)
+				return false;
+		}
+		if(!inserita){
+			elenco_serie.add(s);
+			return true;
+		}
+		return false;
+	}
+	private void salvaInDB(SerieSub s){
+		String query="INSERT INTO "+Database.TABLE_SUBSFACTORY+" (nome_serie, directory) VALUES (\""+s.getNomeSerie()+"\", \""+(String)s.getID()+"\")";
+		Database.updateQuery(query);
+	}
 	@Override
-	public void caricaElencoSerie() {
+	public synchronized void aggiornaElencoSerieOnline() {
 		FileReader f_r;
 		try {
 			Download.downloadFromUrl(URL_ELENCO_SERIE, Settings.getCurrentDir()+"response_subs");
@@ -304,7 +335,6 @@ public class Subsfactory implements ProviderSottotitoli {
 			ManagerException.registraEccezione(e);
 			return;
 		}
-		elenco_serie.clear();
 		Scanner file=new Scanner(f_r);
 		
 		while(!file.nextLine().contains("<select name=\"loc\""));
@@ -318,7 +348,11 @@ public class Subsfactory implements ProviderSottotitoli {
 				String nome=riga.substring(riga.indexOf("\">")+2, riga.indexOf("</option>")).trim().replace("&nbsp;", "");
 				if(path.split("/").length>2)
 					continue;
-				addSerie(new SerieSub(nome, path));
+				if(!isPresente(path)){
+					SerieSub serie=new SerieSubSubsfactory(nome, path);
+					addSerie(serie);
+					salvaInDB(serie);
+				}
 			}
 			else if(riga.compareToIgnoreCase("</select>")==0)
 				break;
@@ -331,26 +365,6 @@ public class Subsfactory implements ProviderSottotitoli {
 		}
 		catch (IOException e) {
 			ManagerException.registraEccezione(e);
-		}
-	}
-	private void addSerie(SerieSub s){
-		if(elenco_serie==null){
-			elenco_serie=new ArrayList<SerieSub>();
-		}
-		if(elenco_serie.isEmpty())
-			elenco_serie.add(s);
-		else {
-			int i=0;
-			while(i<elenco_serie.size()){
-				SerieSub s_f_e=elenco_serie.get(i);
-				int res=s.getNomeSerie().compareToIgnoreCase(s_f_e.getNomeSerie());
-				if(res<0)
-					break;
-				else if(res==0)
-					return;
-				i++;
-			}
-			elenco_serie.add(i, s);
 		}
 	}
 	private String cercaFeed(String id_subs, Torrent t){
@@ -448,5 +462,18 @@ public class Subsfactory implements ProviderSottotitoli {
 	@Override
 	public int getProviderID() {
 		return GestoreSottotitoli.SUBSFACTORY;
+	}
+	private void caricaSerieDB(){
+		String query="SELECT * FROM "+Database.TABLE_SUBSFACTORY+" ORDER BY nome_serie DESC";
+		ArrayList<KVResult<String, Object>> res=Database.selectQuery(query);
+		for(int i=0;i<res.size();i++){
+			KVResult<String, Object> r=res.get(i);
+			int db=(int) r.getValueByKey("id");
+			String nome=(String) r.getValueByKey("nome_serie");
+			String path=(String) r.getValueByKey("directory");
+			SerieSubSubsfactory s=new SerieSubSubsfactory(nome, path);
+			s.setIDDB(db);
+			elenco_serie.add(0,s);
+		}
 	}
 }

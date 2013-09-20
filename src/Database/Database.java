@@ -472,7 +472,9 @@ public class Database {
 		}
 		catch (SQLException e) {
 			System.out.println("INSERT "+e.getMessage());
+			System.out.println(query);
 			e.printStackTrace();
+			ManagerException.registraEccezione(query);
 			ManagerException.registraEccezione(e);
 		}
 		return (ins_ok==0?false:true);

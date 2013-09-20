@@ -89,7 +89,7 @@ public class Subspedia implements ProviderSottotitoli {
 	public String getProviderName() {
 		return "Subspedia";
 	}
-	public void caricaElencoSerie() {}
+	public void aggiornaElencoSerieOnline() {}
 	
 	private void scaricaFeed() {
 		/* Aggiorna il feed RSS ogni time_update minuti */
