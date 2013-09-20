@@ -35,6 +35,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
@@ -2019,6 +2020,27 @@ public class Interfaccia extends JFrame {
 				
 			}
 		});
+		txt_itasa_cerca.addKeyListener(new KeyAdapter() {
+			public void keyReleased(KeyEvent e) {
+				String text = txt_itasa_cerca.getText().trim().toLowerCase();
+				if (text.isEmpty()) {
+					cmb_itasa_serie.removeAllItems();
+					ArrayList<SerieSub> t = GestioneSerieTV.getSubManager().getElencoSerie(GestoreSottotitoli.ITASA);
+					for (int i = 0; i < t.size(); i++) {
+						cmb_itasa_serie.addItem(t.get(i));
+					}
+				}
+				else {
+					cmb_itasa_serie.removeAllItems();
+					ArrayList<SerieSub> t = GestioneSerieTV.getSubManager().getElencoSerie(GestoreSottotitoli.ITASA);
+					for (int i = 0; i < t.size(); i++) {
+						SerieSub s = t.get(i);
+						if (s.getNomeSerie().toLowerCase().contains(text))
+							cmb_itasa_serie.addItem(s);
+					}
+				}
+			}
+		});
 		btnSubsfactoryAssocia.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if(cmb_serie_sottotitoli.getSelectedItem()!=null){
@@ -2037,8 +2059,37 @@ public class Interfaccia extends JFrame {
 		});
 		btnSubsfactoryRimuovi.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
+				if(cmb_serie_sottotitoli.getSelectedItem()!=null){
+					SerieTV st=(SerieTV) cmb_serie_sottotitoli.getSelectedItem();
+					if(JOptionPane.showConfirmDialog(Interfaccia.this, "Vuoi che venga rimossa l'associazione di "+st.getNomeSerie()+" con Subsfactory?", "Rimozione associazione Subsfactory", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_OPTION){
+						st.setIDSubsfactory(-1, false);
+						st.setSubsfactoryDirectory("");
+						st.aggiornaDB();
+						lblItasaSerieAss.setText("<html>Non associata</html>");
+					}
+				}
 				
+			}
+		});
+		txt_subsfactory_cerca.addKeyListener(new KeyAdapter() {
+			public void keyReleased(KeyEvent e) {
+				String text = txt_subsfactory_cerca.getText().trim().toLowerCase();
+				if (text.isEmpty()) {
+					cmb_subsfactory_serie.removeAllItems();
+					ArrayList<SerieSub> t = GestioneSerieTV.getSubManager().getElencoSerie(GestoreSottotitoli.SUBSFACTORY);
+					for (int i = 0; i < t.size(); i++) {
+						cmb_subsfactory_serie.addItem(t.get(i));
+					}
+				}
+				else {
+					cmb_subsfactory_serie.removeAllItems();
+					ArrayList<SerieSub> t = GestioneSerieTV.getSubManager().getElencoSerie(GestoreSottotitoli.SUBSFACTORY);
+					for (int i = 0; i < t.size(); i++) {
+						SerieSub s = t.get(i);
+						if (s.getNomeSerie().toLowerCase().contains(text))
+							cmb_subsfactory_serie.addItem(s);
+					}
+				}
 			}
 		});
 	}
