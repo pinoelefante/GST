@@ -29,7 +29,7 @@ public class Main {
 			if(Settings.isWindows())
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			else if(Settings.isLinux())
-				UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+				UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 			
 			fl=new FrameLoading();
 			fl.start();
