@@ -155,8 +155,7 @@ public class GestoreSottotitoli {
 		else
 			it_al=true;
 		
-		
-		if(s.getSubsfactoryDirectory().isEmpty()){
+		if(s.getSubsfactoryDirectory().isEmpty()){ //TODO modificare usando id numerico
 			String id=subsfactory.getIDSerieAssociata(s.getNomeSerie());
 			if(id!=null){
 				s.setSubsfactoryDirectory(id);

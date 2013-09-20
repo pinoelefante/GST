@@ -15,6 +15,7 @@ import SerieTV.Torrent;
 import Sottotitoli.GestoreSottotitoli;
 import Sottotitoli.ProviderSottotitoli;
 import Sottotitoli.SerieSub;
+import Sottotitoli.SerieSubSubsfactory;
 import StruttureDati.serietv.Episodio;
 
 import javax.swing.JTabbedPane;
@@ -1956,8 +1957,6 @@ public class Interfaccia extends JFrame {
 				t.start();
 			}
 		});
-		//TODO bottoni associa serie sottotitoli
-		//TODO listener su serie sottotitoli in modo che selezioni le serie associate
 		//TODO download sottotitoli "personalizzati"
 		//TODO opzione per caricare VLC automaticamente
 		//TODO frame loading mostra progresso download dipendenze. chiudibile dopo aver scritto all'interno del db
@@ -2024,9 +2023,9 @@ public class Interfaccia extends JFrame {
 				if(cmb_serie_sottotitoli.getSelectedItem()!=null){
 					SerieTV st=(SerieTV) cmb_serie_sottotitoli.getSelectedItem();
 					if(cmb_subsfactory_serie.getSelectedItem()!=null){
-						SerieSub ss=(SerieSub) cmb_subsfactory_serie.getSelectedItem();
+						SerieSubSubsfactory ss=(SerieSubSubsfactory) cmb_subsfactory_serie.getSelectedItem();
 						if(JOptionPane.showConfirmDialog(Interfaccia.this, "Vuoi associare "+st.getNomeSerie()+" con:\n"+ss.getNomeSerie()+"\n?", st.getNomeSerie()+" - Subsfactory", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_NO_OPTION){
-							st.setIDSubsfactory((int)ss.getID(), false);
+							st.setIDSubsfactory((int)ss.getIDDB(), false);
 							st.aggiornaDB();
 							lblItasaSerieAss.setText("<html>"+ss.getNomeSerie()+"</html>");
 						}
