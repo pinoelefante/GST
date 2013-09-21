@@ -559,10 +559,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 		return str;
 	}
 	public String toString(){
-		String str="";
-		for(int i=0;i<elenco_serie.size();i++)
-			str+=elenco_serie.get(i).getNomeSerie()+" - "+(Integer)elenco_serie.get(i).getID()+"\n";
-		return str;
+		return "Italiansubs";
 	}
 	class RSSItem{
 		private String url;

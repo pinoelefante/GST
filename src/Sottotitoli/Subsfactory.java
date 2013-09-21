@@ -476,4 +476,7 @@ public class Subsfactory implements ProviderSottotitoli {
 			elenco_serie.add(0,s);
 		}
 	}
+	public String toString(){
+		return "Subsfactory";
+	}
 }

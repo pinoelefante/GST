@@ -190,6 +190,11 @@ public class Interfaccia extends JFrame {
 	private JButton btnItasaRimuovi;
 	private JButton btnSubsfactoryAssocia;
 	private JButton btnSubsfactoryRimuovi;
+	private JPanel panel_2;
+	private JComboBox<ProviderSottotitoli> cmb_sub_custom_provider;
+	private JButton btn_sub_custom_Sfoglia;
+	private JButton btn_sub_custom_Scarica;
+	private JComboBox<SerieSub> cmb_sub_custom_serie;
 
 	@SuppressWarnings("serial")
 	public Interfaccia() {
@@ -570,73 +575,73 @@ public class Interfaccia extends JFrame {
 		panel_7.setBounds(0, 0, 10, 10);
 		SottotitoliPanel.add(panel_7);
 
-		JPanel panel_8 = new JPanel();
-		panel_8.setBorder(new TitledBorder(null, "Scarica sottotitolo da un provider", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_8.setBounds(0, 426, 739, 103);
-		SottotitoliPanel.add(panel_8);
-		panel_8.setLayout(null);
+		panel_2 = new JPanel();
+		panel_2.setBorder(new TitledBorder(null, "Scarica sottotitolo da un provider", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_2.setBounds(0, 426, 739, 103);
+		SottotitoliPanel.add(panel_2);
+		panel_2.setLayout(null);
 
 		JLabel lblProvider = new JLabel("Provider");
 		lblProvider.setBounds(12, 25, 55, 16);
-		panel_8.add(lblProvider);
+		panel_2.add(lblProvider);
 
-		JComboBox<ProviderSottotitoli> cmb_sub_custom_provider = new JComboBox<ProviderSottotitoli>();
+		cmb_sub_custom_provider = new JComboBox<ProviderSottotitoli>();
 		cmb_sub_custom_provider.setBounds(72, 21, 200, 20);
-		panel_8.add(cmb_sub_custom_provider);
+		panel_2.add(cmb_sub_custom_provider);
 
 		JLabel lblSerie_1 = new JLabel("Serie");
 		lblSerie_1.setBounds(12, 53, 55, 16);
-		panel_8.add(lblSerie_1);
+		panel_2.add(lblSerie_1);
 
-		JComboBox<SerieSub> cmb_sub_custom_serie = new JComboBox<SerieSub>();
+		cmb_sub_custom_serie = new JComboBox<SerieSub>();
 		cmb_sub_custom_serie.setBounds(72, 75, 200, 20);
-		panel_8.add(cmb_sub_custom_serie);
+		panel_2.add(cmb_sub_custom_serie);
 
 		txt_sub_custom_serie = new JTextField();
 		txt_sub_custom_serie.setBounds(72, 45, 200, 27);
-		panel_8.add(txt_sub_custom_serie);
+		panel_2.add(txt_sub_custom_serie);
 		txt_sub_custom_serie.setColumns(30);
 
 		JLabel lblStagione_1 = new JLabel("Stagione");
 		lblStagione_1.setBounds(291, 25, 55, 16);
-		panel_8.add(lblStagione_1);
+		panel_2.add(lblStagione_1);
 
 		txt_sub_custom_stagione = new JTextField();
 		txt_sub_custom_stagione.addKeyListener(new TextListenerOnlyNumber(txt_sub_custom_stagione));
 
 		txt_sub_custom_stagione.setBounds(345, 22, 40, 24);
-		panel_8.add(txt_sub_custom_stagione);
+		panel_2.add(txt_sub_custom_stagione);
 		txt_sub_custom_stagione.setColumns(10);
 
 		JLabel lblEpisodio = new JLabel("Episodio");
 		lblEpisodio.setBounds(290, 53, 55, 16);
-		panel_8.add(lblEpisodio);
+		panel_2.add(lblEpisodio);
 
 		txt_sub_custom_episodio = new JTextField();
 		txt_sub_custom_episodio.addKeyListener(new TextListenerOnlyNumber(txt_sub_custom_episodio));
 		txt_sub_custom_episodio.setBounds(345, 48, 40, 24);
-		panel_8.add(txt_sub_custom_episodio);
+		panel_2.add(txt_sub_custom_episodio);
 		txt_sub_custom_episodio.setColumns(10);
 
 		JLabel lblDestinazione = new JLabel("Destinazione");
 		lblDestinazione.setBounds(394, 25, 73, 16);
-		panel_8.add(lblDestinazione);
+		panel_2.add(lblDestinazione);
 
 		txt_sub_custom_destinazione = new JTextField();
 		txt_sub_custom_destinazione.setEditable(false);
 		txt_sub_custom_destinazione.setBounds(473, 20, 160, 27);
-		panel_8.add(txt_sub_custom_destinazione);
+		panel_2.add(txt_sub_custom_destinazione);
 		txt_sub_custom_destinazione.setColumns(10);
 
-		JButton btn_sub_custom_Sfoglia = new JButton("Sfoglia");
+		btn_sub_custom_Sfoglia = new JButton("Sfoglia");
 		btn_sub_custom_Sfoglia.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/cartella.png")));
 		btn_sub_custom_Sfoglia.setBounds(636, 21, 93, 24);
-		panel_8.add(btn_sub_custom_Sfoglia);
+		panel_2.add(btn_sub_custom_Sfoglia);
 
-		JButton btn_sub_custom_Scarica = new JButton("Scarica");
+		btn_sub_custom_Scarica = new JButton("Scarica");
 		btn_sub_custom_Scarica.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/download.png")));
 		btn_sub_custom_Scarica.setBounds(500, 53, 120, 38);
-		panel_8.add(btn_sub_custom_Scarica);
+		panel_2.add(btn_sub_custom_Scarica);
 
 		LettorePanel = new JPanel();
 		tab.addTab("Lettore", new ImageIcon(Interfaccia.class.getResource("/GUI/res/player.png")), LettorePanel, null);
@@ -1786,9 +1791,11 @@ public class Interfaccia extends JFrame {
 				else if(tab.getSelectedComponent()==SottotitoliPanel){
 					inizializzaSubDownload();
 					cmb_serie_sottotitoli.getActionListeners()[0].actionPerformed(new ActionEvent(cmb_serie_sottotitoli, 0, ""));
+					if(cmb_sub_custom_provider.getItemCount()<=0){
+						cmb_sub_custom_provider.addItem(GestioneSerieTV.getSubManager().getProvider(GestoreSottotitoli.ITASA));
+						cmb_sub_custom_provider.addItem(GestioneSerieTV.getSubManager().getProvider(GestoreSottotitoli.SUBSFACTORY));
+					}
 				}
-					
-				
 			}
 		});
 		btnUtorrentSfoglia.addActionListener(new ActionListener() {
@@ -2090,6 +2097,69 @@ public class Interfaccia extends JFrame {
 							cmb_subsfactory_serie.addItem(s);
 					}
 				}
+			}
+		});
+		txt_sub_custom_serie.addKeyListener(new KeyAdapter() {
+			public void keyReleased(KeyEvent e) {
+				String text=txt_sub_custom_serie.getText().trim().toLowerCase();
+				if(text.isEmpty()){
+					cmb_sub_custom_serie.removeAllItems();
+					ProviderSottotitoli p=(ProviderSottotitoli) cmb_sub_custom_provider.getSelectedItem();
+					if(p==null)
+						return;
+					ArrayList<SerieSub> t = GestioneSerieTV.getSubManager().getElencoSerie(p.getProviderID());
+					for (int i = 0; i < t.size(); i++) {
+						cmb_sub_custom_serie.addItem(t.get(i));
+					}
+				}
+				else {
+					cmb_sub_custom_serie.removeAllItems();
+					ProviderSottotitoli p=(ProviderSottotitoli) cmb_sub_custom_provider.getSelectedItem();
+					if(p==null)
+						return;
+					ArrayList<SerieSub> t = GestioneSerieTV.getSubManager().getElencoSerie(p.getProviderID());
+					for (int i = 0; i < t.size(); i++) {
+						if(t.get(i).getNomeSerie().toLowerCase().contains(text))
+							cmb_sub_custom_serie.addItem(t.get(i));
+					}
+				}
+			}
+		});
+		cmb_sub_custom_provider.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(cmb_sub_custom_provider.getSelectedItem()!=null){
+					ProviderSottotitoli pr=(ProviderSottotitoli) cmb_sub_custom_provider.getSelectedItem();
+					txt_sub_custom_serie.setText("");
+					ArrayList<SerieSub> serie=pr.getElencoSerie();
+					cmb_sub_custom_serie.removeAllItems();
+					for(int i=0;i<serie.size();i++)
+						cmb_sub_custom_serie.addItem(serie.get(i));
+				}
+				
+			}
+		});
+		btn_sub_custom_Sfoglia.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String destinazione_path = Settings.getDirectoryDownload();
+				JFileChooser chooser = new JFileChooser(destinazione_path.isEmpty() ? null : destinazione_path);
+				chooser.setDialogTitle("Sottotitolo - Cartella download");
+				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+				chooser.setAcceptAllFileFilterUsed(false);
+				chooser.setFileHidingEnabled(false);
+
+				if (chooser.showOpenDialog(Interfaccia.this) == JFileChooser.APPROVE_OPTION) {
+					destinazione_path = chooser.getSelectedFile().getAbsolutePath();
+				}
+				else {
+					return;
+				}
+				txt_sub_custom_destinazione.setText(destinazione_path);
+			}
+		});
+		btn_sub_custom_Scarica.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				
 			}
 		});
 	}

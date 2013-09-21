@@ -100,7 +100,7 @@ public class Main {
 			
 			GUIframe = new Interfaccia();
 			GUIframe.setVisible(true);
-			GUIframe.init();	
+			GUIframe.init();
 			
 			if(Settings.isRicercaSottotitoli()){
 				GestioneSerieTV.getSubManager().avviaRicercaAutomatica();
