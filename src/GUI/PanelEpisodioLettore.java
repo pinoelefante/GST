@@ -218,7 +218,7 @@ public class PanelEpisodioLettore extends JPanel {
 			public void actionPerformed(ActionEvent arg0) {
 				if(Settings.isRicercaSottotitoli()){
 					ArrayList<String> subs=torrent.getSottotitoliPath();
-					if(subs.size()==0){
+					if(subs==null || subs.size()==0){
 						int r=JOptionPane.showConfirmDialog(PanelEpisodioLettore.this.getParent().getParent(), "Non è stato trovato alcun sottotitolo.\nVuoi visualizzare lo stesso l'episodio?", "Sottotitolo "+torrent.getFormattedName(), JOptionPane.YES_NO_OPTION);
 						if(r==JOptionPane.NO_OPTION)
 							return;
@@ -255,6 +255,10 @@ public class PanelEpisodioLettore extends JPanel {
 				if(r==JOptionPane.YES_OPTION){
 					String file=torrent.getFilePath();
 					if(OperazioniFile.deleteFile(file)){
+						ArrayList<String> res=torrent.getSottotitoliPath();
+						if(res!=null)
+							for(int i=0;i<res.size();i++)
+								OperazioniFile.deleteFile(res.get(i));
 						torrent.setScaricato(Torrent.RIMOSSO);
 						torrent.updateTorrentInDB();
 						cmb_stato_episodio.setSelectedIndex(Torrent.RIMOSSO);
@@ -283,8 +287,9 @@ public class PanelEpisodioLettore extends JPanel {
 				if(!origine_filepath.isEmpty() & !destinazione_path.isEmpty()){
     				Download.copiaFile(origine_filepath, destinazione_path);
     				ArrayList<String> subs=torrent.getSottotitoliPath();
-    				for(int i=0;i<subs.size();i++)
-    					Download.copiaFile(subs.get(i), destinazione_path);
+    				if(subs!=null)
+    					for(int i=0;i<subs.size();i++)
+    						Download.copiaFile(subs.get(i), destinazione_path);
     				JOptionPane.showMessageDialog(PanelEpisodioLettore.this.getParent().getParent(), "Il file è stato aggiunto alla coda dei file da copiare.\nControlla la sezione File Manager per vedere lo stato della copia.");
 				}
 			}
