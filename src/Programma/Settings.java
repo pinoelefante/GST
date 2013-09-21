@@ -52,6 +52,8 @@ public class Settings {
 		Settings.current_dir = current_dir;
 	}
 	public static String getClientPath() {
+		if(ClientPath.compareToIgnoreCase("null")==0)
+			return "";
 		return ClientPath;
 	}
 	public static void setClientPath(String clientPath) {
@@ -142,6 +144,8 @@ public class Settings {
 		Settings.alwaysontop = alwaysontop;
 	}
 	public static String getVLCPath() {
+		if(VLCPath.compareToIgnoreCase("null")==0)
+			return "";
 		return VLCPath;
 	}
 	public static void setVLCPath(String vLCPath) {

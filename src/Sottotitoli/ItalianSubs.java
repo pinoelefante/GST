@@ -45,7 +45,7 @@ import Programma.OperazioniFile;
 import Programma.Settings;
 import SerieTV.Torrent;
 import StruttureDati.db.KVResult;
-
+//TODO utilizzare serie sub al posto di serie tv
 public class ItalianSubs implements ProviderSottotitoli{
 	public final static int HDTV = 0,	
 							HD720p = 1,  

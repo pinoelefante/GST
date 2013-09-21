@@ -90,6 +90,9 @@ public abstract class ProviderSerieTV {
 			preferite.remove(s);
 			s.setInserita(false);
 			rimuoviSerieDaDB(s);
+			for(int i=0;i<s.getNumEpisodi();i++){
+				s.getEpisodio(i).setStatus(Torrent.SCARICARE);
+			}
 		}
 	}
 	public SerieTV getNuoveSerieAt(int i){

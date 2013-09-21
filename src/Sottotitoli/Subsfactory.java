@@ -27,6 +27,7 @@ import SerieTV.SerieTV;
 import SerieTV.Torrent;
 import StruttureDati.db.KVResult;
 //TODO carica cartella una volta ad avvio per ogni serie
+//TODO utilizzare serie sub al posto di serie tv
 public class Subsfactory implements ProviderSottotitoli {
 	private final static String URL_ELENCO_SERIE="http://subsfactory.it/subtitle/index.php?&direction=0&order=nom";
 	private final static String URL_FEED_RSS="http://subsfactory.it/subtitle/rss.php";

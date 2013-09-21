@@ -1,11 +1,14 @@
 package Sottotitoli;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import Database.Database;
 import GUI.Interfaccia;
 import Naming.Renamer;
 import Programma.ManagerException;
+import Programma.OperazioniFile;
+import Programma.Settings;
 import SerieTV.GestioneSerieTV;
 import SerieTV.SerieTV;
 import SerieTV.Torrent;
@@ -192,6 +195,25 @@ public class GestoreSottotitoli {
 		
 		Renamer.rinominaSottotitolo(t);
 		return true;
+	}
+	public boolean scaricaSottotitolo(Torrent t, String destinazione){
+		boolean itasa=false, subsf=false, subsp=false;
+		if(this.itasa.scaricaSottotitolo(t))
+			itasa=true;
+		else if(subsfactory.scaricaSottotitolo(t))
+			subsf=true;
+		else if(subspedia.scaricaSottotitolo(t))
+			subsp=true;
+		else 
+			return false;
+		
+		if(itasa||subsf||subsp){
+			String nome=Renamer.generaNomeDownload(t);
+			String path=Settings.getDirectoryDownload()+t.getSerieTV().getFolderSerie()+File.separator+nome;
+			OperazioniFile.copyfile(path, destinazione+File.separator+nome);
+			OperazioniFile.deleteFile(path);
+		}
+		return itasa||subsf||subsp;
 	}
 	public ArrayList<SerieSub> getElencoSerie(int provider){
 		switch(provider){

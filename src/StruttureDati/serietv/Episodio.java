@@ -370,4 +370,10 @@ public class Episodio {
 				t.setScaricato(Torrent.IGNORATO);
 		}
 	}
+	public void setStatus(int status){
+		ArrayList<Torrent> eps=getAll();
+		for(int i=0;i<eps.size();i++){
+			eps.get(i).setScaricato(status);
+		}
+	}
 }

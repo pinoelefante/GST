@@ -2,6 +2,7 @@ package GUI;
 
 import javax.swing.JFrame;
 
+import Naming.CaratteristicheFile;
 import Programma.ControlloAggiornamenti;
 import Programma.Download;
 import Programma.FileManager;
@@ -1500,6 +1501,7 @@ public class Interfaccia extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				SerieTV s = (SerieTV) cmb_serie_aggiunte.getSelectedItem();
 				if (s != null) {
+					//TODO chiedere se rimuovere la cartella
 					GestioneSerieTV.rimuoviSeriePreferita(s);
 					reloadSeriePreferite();
 					inizializzaDownloadScroll();
@@ -2158,8 +2160,38 @@ public class Interfaccia extends JFrame {
 		});
 		btn_sub_custom_Scarica.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				
+				btn_sub_custom_Scarica.setEnabled(false);
+				ProviderSottotitoli provider=(ProviderSottotitoli) cmb_sub_custom_provider.getSelectedItem();
+				if(provider!=null){
+					SerieSub serietv=(SerieSub) cmb_sub_custom_serie.getSelectedItem();
+					if(serietv!=null){
+						int stagione=0, episodio=0;
+						if(txt_sub_custom_stagione.getText().length()<=0)
+							return;
+						if(txt_sub_custom_episodio.getText().length()<=0)
+							return;
+						stagione=Integer.parseInt(txt_sub_custom_stagione.getText());
+						episodio=Integer.parseInt(txt_sub_custom_episodio.getText());
+						
+						String destinazione=txt_sub_custom_destinazione.getText();
+						
+						CaratteristicheFile stat=new CaratteristicheFile();
+						stat.setStagione(stagione);
+						stat.setEpisodio(episodio);
+						SerieTV serie=new SerieTV(null, serietv.getNomeSerie(), "");
+						Torrent torrent=new Torrent(serie, "", Torrent.IGNORATO, stat);
+						boolean download=false;
+						if(destinazione.compareToIgnoreCase(Settings.getDirectoryDownload()+serie.getFolderSerie())!=0)
+							download=GestioneSerieTV.getSubManager().scaricaSottotitolo(torrent, destinazione);
+						else
+							download=GestioneSerieTV.getSubManager().scaricaSottotitolo(torrent);
+						if(download)
+							JOptionPane.showMessageDialog(Interfaccia.this, "Sottotitolo per "+torrent.getFormattedName()+" scaricato");
+						else
+							JOptionPane.showMessageDialog(Interfaccia.this, "Il sottotitolo per "+torrent.getFormattedName()+" non è disponibile");
+					}
+				}
+				btn_sub_custom_Scarica.setEnabled(true);
 			}
 		});
 	}

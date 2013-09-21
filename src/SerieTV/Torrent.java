@@ -239,6 +239,5 @@ public class Torrent {
 			return subs;
 		}
 		return null;
-		
 	}
 }
