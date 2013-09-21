@@ -222,7 +222,7 @@ public class Download {
 				Settings.getClientPath(),
 				"/NOINSTALL",
 				"/DIRECTORY",
-				("\"" + directory_download + File.separator + folder + "\""),
+				("\"Z:" + directory_download + File.separator + folder + "\"").replace(File.separator, "\\\\"),
 				magnet_url
 			};
 			Runtime.getRuntime().exec(cmd);
