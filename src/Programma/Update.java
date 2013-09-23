@@ -1,5 +1,6 @@
 package Programma;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -36,59 +37,7 @@ public class Update {
 		String NOMEDB=Settings.getCurrentDir()+"database.db";
 		try {
 			Connection con = DriverManager.getConnection("jdbc:sqlite:"+NOMEDB, conf.toProperties());
-			String query_serie="SELECT * FROM serie";
-			ArrayList<KVResult<String, Object>> series=Database.selectQuery(con, query_serie);
-			if(series!=null){
-				for(int i=0;i<series.size();i++){
-					KVResult<String, Object> r=series.get(i);
-					int id_db=(int) r.getValueByKey("id");
-					String nome=(String) r.getValueByKey("nome");
-					String url=(String) r.getValueByKey("url");
-					url=url.replace("/shows/", "");
-					url=url.substring(0,url.indexOf("/"));
-					int stato=(int) r.getValueByKey("stato");
-					int inserita=(int) r.getValueByKey("inserita");
-					String query_insert_serie="INSERT INTO "+Database.TABLE_SERIETV +" (id,url, nome, inserita, conclusa, stop_search, provider) VALUES("+
-							id_db+
-							",\""+url+"\""+
-							",\""+SerieTV.formattaNome(nome)+"\""+
-							","+inserita+
-							","+stato+
-							","+0+
-							","+1+")";
-					Database.updateQuery(query_insert_serie);
-					
-					if(inserita==1){
-    					String query_episodi="SELECT * FROM torrent WHERE id_serie="+id_db;
-    					ArrayList<KVResult<String, Object>> episodes=Database.selectQuery(con, query_episodi);
-    					if(episodes!=null){
-    						for(int j=0;j<episodes.size();j++){
-    							KVResult<String, Object> rt=episodes.get(j);
-    							String magnet=(String) rt.getValueByKey("magnet");
-    							int vista=(int) rt.getValueByKey("vista");
-    							int stagione=(int) rt.getValueByKey("serie");
-    							int episodio=(int) rt.getValueByKey("episodio");
-    							int hd=(int) rt.getValueByKey("HD720p");
-    							int repack=(int) rt.getValueByKey("repack");
-    							int preair=(int) rt.getValueByKey("preair");
-    							int proper=(int) rt.getValueByKey("proper");
-    							int sottotitolo=(int) rt.getValueByKey("sottotitolo");
-    							
-    							String query_insert_episodio="INSERT INTO "+Database.TABLE_EPISODI+" (id_serie, url, vista, stagione, episodio, tags, preair, sottotitolo) VALUES ("+
-    								id_db+
-    								",\""+magnet+"\""+
-    								","+vista+
-    								","+stagione+
-    								","+episodio+
-    								","+CaratteristicheFile.valueFromStat(hd==1?true:false, repack==1?true:false, proper==1?true:false)+
-    								","+preair+
-    								","+sottotitolo+")";
-    							Database.updateQuery(query_insert_episodio);
-    						}
-    					}
-					}
-				}
-			}
+			
 			String query_settings="SELECT * FROM settings";
 			ArrayList<KVResult<String, Object>> settings=Database.selectQuery(con, query_settings);
 			if(settings!=null){
@@ -121,6 +70,76 @@ public class Update {
 				String passitasa=(String) settings.get(0).getValueByKey("itasa_pass");
 				Settings.setItasaPassword(passitasa);
 				Settings.AggiornaDB();
+			}
+			
+			String query_serie="SELECT * FROM serie";
+			ArrayList<KVResult<String, Object>> series=Database.selectQuery(con, query_serie);
+			if(series!=null){
+				for(int i=0;i<series.size();i++){
+					KVResult<String, Object> r=series.get(i);
+					int id_db=(int) r.getValueByKey("id");
+					String nome=(String) r.getValueByKey("nome");
+					String url=(String) r.getValueByKey("url");
+					url=url.replace("/shows/", "");
+					url=url.substring(0,url.indexOf("/"));
+					int stato=(int) r.getValueByKey("stato");
+					int inserita=(int) r.getValueByKey("inserita");
+					String nome_formattato=SerieTV.formattaNome(nome);
+					String query_insert_serie="INSERT INTO "+Database.TABLE_SERIETV +" (id,url, nome, inserita, conclusa, stop_search, provider) VALUES("+
+							id_db+
+							",\""+url+"\""+
+							",\""+nome_formattato+"\""+
+							","+inserita+
+							","+stato+
+							","+0+
+							","+1+")";
+					Database.updateQuery(query_insert_serie);
+					
+					if(nome.compareToIgnoreCase(nome_formattato)!=0){
+						String base_dir_download=Settings.getDirectoryDownload();
+						if(base_dir_download!=null && !base_dir_download.isEmpty()){
+							File old_dir=new File(Settings.getDirectoryDownload()+File.separator+nome);
+							if(old_dir.exists() && old_dir.isDirectory()){
+								if(old_dir.renameTo(new File(Settings.getDirectoryDownload()+File.separator+nome_formattato))){
+									System.out.println(old_dir+"- Cartella rinominata correttamente");
+								}
+								else
+									System.out.println(old_dir+"- errore durante rinominazione in: "+nome_formattato);
+							}	
+						}
+					}
+					
+					
+					if(inserita==1){
+    					String query_episodi="SELECT * FROM torrent WHERE id_serie="+id_db;
+    					ArrayList<KVResult<String, Object>> episodes=Database.selectQuery(con, query_episodi);
+    					if(episodes!=null){
+    						for(int j=0;j<episodes.size();j++){
+    							KVResult<String, Object> rt=episodes.get(j);
+    							String magnet=(String) rt.getValueByKey("magnet");
+    							int vista=(int) rt.getValueByKey("vista");
+    							int stagione=(int) rt.getValueByKey("serie");
+    							int episodio=(int) rt.getValueByKey("episodio");
+    							int hd=(int) rt.getValueByKey("HD720p");
+    							int repack=(int) rt.getValueByKey("repack");
+    							int preair=(int) rt.getValueByKey("preair");
+    							int proper=(int) rt.getValueByKey("proper");
+    							int sottotitolo=(int) rt.getValueByKey("sottotitolo");
+    							
+    							String query_insert_episodio="INSERT INTO "+Database.TABLE_EPISODI+" (id_serie, url, vista, stagione, episodio, tags, preair, sottotitolo) VALUES ("+
+    								id_db+
+    								",\""+magnet+"\""+
+    								","+vista+
+    								","+stagione+
+    								","+episodio+
+    								","+CaratteristicheFile.valueFromStat(hd==1?true:false, repack==1?true:false, proper==1?true:false)+
+    								","+preair+
+    								","+sottotitolo+")";
+    							Database.updateQuery(query_insert_episodio);
+    						}
+    					}
+					}
+				}
 			}
 			//TODO cercare doppioni serie tv
 			con.close();
