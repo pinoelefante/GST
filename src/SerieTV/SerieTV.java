@@ -123,7 +123,9 @@ public class SerieTV {
 		this.id_subspedia = id_subspedia;
 	}
 	public int compareTo(SerieTV s2){
-		return this.getNomeSerie().trim().toLowerCase().compareTo(s2.getNomeSerie().trim().toLowerCase());
+		return getUrl().compareToIgnoreCase(s2.getUrl());
+		
+		//return this.getNomeSerie().trim().toLowerCase().compareTo(s2.getNomeSerie().trim().toLowerCase());
 	}
 	
 	public int getProviderID(){
@@ -132,7 +134,7 @@ public class SerieTV {
 	public ProviderSerieTV getProvider(){
 		return provider;
 	}
-	private String formattaNome(String nome){
+	public static String formattaNome(String nome){
 		String formattato=nome;
 		if(formattato.contains(", The")){
 			formattato="The "+formattato.replace(", The", "").trim();

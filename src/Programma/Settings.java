@@ -10,8 +10,7 @@ import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.WinReg;
 
 public class Settings {
-	private static int 			GUI									= 2;
-	private static final int	VersioneSoftware					= 100;
+	private static final int	VersioneSoftware					= 103;
 	public static final String	IndirizzoDonazioni					= "http://pinoelefante.altervista.org/donazioni/donazione_gst.html";
 	private static String		current_dir							= "";
 	private static String		DirectoryDownload					= "";
@@ -208,7 +207,9 @@ public class Settings {
 		DirectoryDownload=current_dir+"Download";
 	}
 	public static void main(String[] args){
-		
+		baseSettings();
+		Database.Connect();
+		CaricaSetting();
 	}
 	/* Tabelle database
     "download_path"
@@ -227,10 +228,6 @@ public class Settings {
     "new_update"
     "last_version"
     "download_sottotitoli"
-    "mostra_preair"
-    "mostra_hd"
-    "download_auto_preair"
-    "download_auto_hd"
     "external_vlc"
     "itasa"
     "hide_viste"
@@ -244,12 +241,36 @@ public class Settings {
 		for(int i=0;i<opzioni.size();i++){
 			KVResult<String, Object> res=opzioni.get(i);
 			
-			setDirectoryDownload(res.getValueByKey("download_path")!=null?(String)res.getValueByKey("download_path"):DirectoryDownload);
-			setClientPath((String) res.getValueByKey("utorrent"));
-			setVLCPath((String) res.getValueByKey("vlc"));
-			setItasaUsername((String) res.getValueByKey("itasa_user"));
-			setItasaPassword((String) res.getValueByKey("itasa_pass"));
-			setClientID((String) res.getValueByKey("client_id"));
+			String download_path=(String) res.getValueByKey("download_path");
+			if(download_path==null || download_path.compareTo("null")==0)
+				download_path=getCurrentDir()+"Download";
+			setDirectoryDownload(download_path);
+			
+			String utorrent_path=(String) res.getValueByKey("utorrent");
+			if(utorrent_path==null || utorrent_path.compareTo("null")==0)
+				utorrent_path="";
+			setClientPath(utorrent_path);
+			
+			String vlc_path=(String) res.getValueByKey("vlc");
+			if(vlc_path==null || vlc_path.compareTo("null")==0)
+				vlc_path="";
+			setVLCPath(vlc_path);
+			
+			String user_itasa=(String) res.getValueByKey("itasa_user");
+			if(user_itasa==null || user_itasa.compareTo("null")==0)
+				user_itasa="";
+			setItasaUsername(user_itasa);
+			
+			String pass_itasa=(String) res.getValueByKey("itasa_pass");
+			if(pass_itasa==null || pass_itasa.compareTo("null")==0)
+				pass_itasa="";
+			setItasaPassword(pass_itasa);
+			
+			String client_id=(String) res.getValueByKey("client_id");
+			if(client_id==null || client_id.compareTo("null")==0)
+				client_id="";
+			setClientID(client_id);
+			
 			setTrayOnIcon(((int) res.getValueByKey("tray_on_icon"))==1?true:false);
 			setStartHidden(((int) res.getValueByKey("start_hidden"))==1?true:false);
 			setAskOnClose(((int) res.getValueByKey("ask_on_close"))==1?true:false);
@@ -391,12 +412,6 @@ public class Settings {
 			return path.toLowerCase().endsWith("vlc");
 		else
 			return true;
-	}
-	public static int getGUI() {
-		return GUI;
-	}
-	public static void setGUI(int gUI) {
-		GUI = gUI;
 	}
 	public static boolean is32bit(){
 		String arch_vm = System.getProperty("os.arch");

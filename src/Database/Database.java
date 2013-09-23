@@ -490,6 +490,30 @@ public class Database {
 		catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
+	}
+	public static ArrayList<KVResult<String,Object>> selectQuery(Connection connection, String query){
+		ArrayList<KVResult<String, Object>> result=new ArrayList<KVResult<String, Object>>();
+		try {
+			Statement stat=connection.createStatement();
+			ResultSet rs=stat.executeQuery(query);
+			ResultSetMetaData meta=rs.getMetaData();
+			while(rs.next()){
+				KVResult<String, Object> res=new KVResult<String, Object>();
+				for(int i=1;i<=meta.getColumnCount();i++){
+					String key=meta.getColumnName(i);
+					Object value=rs.getObject(i);
+					res.addItem(new KVItem<String, Object>(key, value));
+				}
+				result.add(res);
+			}
+			rs.close();
+			stat.close();
+			return result;
+		}
+		catch(SQLException e){
+			System.out.println(e.getMessage());
+			ManagerException.registraEccezione(e);
+			return null;
+		}
 	}
 }

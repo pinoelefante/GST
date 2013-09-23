@@ -57,6 +57,8 @@ public class EZTV extends ProviderSerieTV{
 					String nomeserie=linea.substring(linea.indexOf("class=\"thread_link\">")+"class=\"thread_link\">".length(), linea.indexOf("</a>")).trim();
 					String url=linea.substring(linea.indexOf("<a href=\"")+"<a href=\"".length(), linea.indexOf("\" class=\"thread_link\">")).trim();
 					url=url.replace(base_url, "");
+					url=url.replace("/shows/", "");
+					url=url.substring(0,url.indexOf("/"));
 					String nextline=file.nextLine().trim();
 					int stato=0;
 					if(nextline.contains("ended"))
@@ -237,8 +239,8 @@ public class EZTV extends ProviderSerieTV{
 	
 		try{
     		String base_url=WebProxyManager.getUrlProxy()+getBaseURL();
-    		System.out.println(base_url);
-			Download download=new Download(base_url+serie.getUrl(), Settings.getCurrentDir()+serie.getNomeSerie());
+    		//System.out.println(base_url+"/shows/"+serie.getUrl()+"/");
+			Download download=new Download(base_url+"/shows/"+serie.getUrl()+"/", Settings.getCurrentDir()+serie.getNomeSerie());
     		download.avviaDownload();
     		download.getDownloadThread().join();
     		

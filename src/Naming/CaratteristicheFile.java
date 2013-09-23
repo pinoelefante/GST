@@ -60,6 +60,16 @@ public class CaratteristicheFile {
 			val+=PROPER;
 		return val;
 	}
+	public static int valueFromStat(boolean hd, boolean repack, boolean proper){
+		int val=0;
+		if(hd)
+			val+=HD;
+		if(repack)
+			val+=REPACK;
+		if(proper)
+			val+=PROPER;
+		return val;
+	}
 	public int value(){
 		return value(this);
 	}
