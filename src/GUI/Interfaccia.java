@@ -1078,6 +1078,7 @@ public class Interfaccia extends JFrame {
 	public void disegnaLettore() {
 		SerieTV serie = (SerieTV) cmb_serie_lettore.getSelectedItem();
 		if (serie != null) {
+			panel_elenco_puntate_lettore.removeAll();
 			if(comboBoxLettoreStagione.getSelectedItem()!=null){
     			int stagione = (int) comboBoxLettoreStagione.getSelectedItem();
     			if (stagione >= 0) {

@@ -64,6 +64,7 @@ public class PanelPreferenze extends JPanel {
 		add(panel_2, BorderLayout.EAST);
 		
 		btnSalva = new JButton("Salva");
+		btnSalva.setEnabled(false);
 		panel_2.add(btnSalva);
 		
 		addListener();
@@ -89,5 +90,23 @@ public class PanelPreferenze extends JPanel {
 				}
 			}
 		});
+		chckbxScaricaHd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				abilitaTastoSalva();
+			}
+		});
+		chckbxScaricaPreair.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				abilitaTastoSalva();
+			}
+		});
+	}
+	private void abilitaTastoSalva(){
+		boolean stato_hd=serie.getPreferenze().isPreferisciHD();
+		boolean stato_pre=serie.getPreferenze().isDownloadPreair();
+		if(stato_hd!=chckbxScaricaHd.isSelected() || stato_pre!=chckbxScaricaPreair.isSelected())
+			btnSalva.setEnabled(true);
+		else
+			btnSalva.setEnabled(false);
 	}
 }
