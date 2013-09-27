@@ -3,7 +3,6 @@ package SerieTV;
 import java.io.File;
 import java.util.ArrayList;
 
-import Database.Database;
 import Naming.CaratteristicheFile;
 import Programma.Settings;
 
@@ -128,10 +127,10 @@ public class Torrent {
 	public int getScaricato(){
 		return stato;
 	}
-	private boolean isTorrent(){
+	public boolean isTorrent(){
 		return (url.toLowerCase().endsWith(".torrent"));
 	}
-	private boolean isMagnetLink(){
+	public boolean isMagnetLink(){
 		return url.toLowerCase().startsWith("magnet");
 	}
 	public void setEpisodio(int e){
@@ -189,14 +188,8 @@ public class Torrent {
 		return null;
 	}
 	public static void main(String[] args){
-		Settings.baseSettings();
-		Database.Connect();
-		Settings.CaricaSetting();
-		GestioneSerieTV.instance();
-		Torrent t=new Torrent(new SerieTV(new EZTV(), "Nomeserie", ""), "", SCARICATO);
-		t.setStagione(1);
-		t.setEpisodio(1);
-		System.out.println("File trovato: "+t.getFilePath());
+		String url="magnet:?xt=urn:btih:P5QO3JJN6GS5CEFC6AGD6TQN5GIHAHUH&dn=The.X.Factor.US.S03E04.HDTV.x264-BAJSKORV&tr=udp://tracker.openbittorrent.com:80&tr=udp://tracker.publicbt.com:80&tr=udp://tracker.istole.it:80&tr=udp://open.demonii.com:80&tr=udp://tracker.coppersurfer.tk:80";
+		System.out.println(url.substring(0, url.indexOf("&tr")));
 	}
 	public CaratteristicheFile getStats(){
 		return prop_torrent;
@@ -239,5 +232,28 @@ public class Torrent {
 			return subs;
 		}
 		return null;
+	}
+	public boolean compareHash(String hash){
+		if(isMagnetLink()){
+    		if(hash.compareTo(getMagnetHash(getUrl()))==0){
+    			return true;
+    		}
+    		else
+    			return false;
+		};
+		return false;
+	}
+	public static String getMagnetHash(String magnet){
+		String hash=magnet.substring(magnet.indexOf("btih:")+5, magnet.indexOf("&"));
+		return hash;
+	}
+	public void magnetAppendTrackers(String trackers){
+		url=url.substring(0, url.indexOf("&tr"))+trackers;
+	}
+	public static String getMagnetTrackers(String magnet){
+		if(magnet.contains("&tr")){
+			return magnet.substring(magnet.indexOf("&tr"));
+		}
+		return "";
 	}
 }

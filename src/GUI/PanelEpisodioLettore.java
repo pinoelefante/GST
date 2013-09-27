@@ -54,7 +54,6 @@ public class PanelEpisodioLettore extends JPanel {
 		torrent=ep.getLinkScaricato();
 		if(torrent==null){
 			torrent=ep.getLinkLettore();
-			//System.out.println("sono nell'if - "+(torrent.is720p()?"720p":"Normale"));
 		}
 		if(torrent==null){
 			isOK=false;
@@ -119,7 +118,7 @@ public class PanelEpisodioLettore extends JPanel {
 		btnPlay.setBounds(603, 66, 89, 23);
 		
 		btnMostra = new JButton("Mostra");
-		//TODO panel_c.add(btnMostra);
+		panel_c.add(btnMostra);
 		
 		JPanel panel_1 = new JPanel();
 		add(panel_1, BorderLayout.WEST);
@@ -227,8 +226,10 @@ public class PanelEpisodioLettore extends JPanel {
 				
 				if(Settings.isExtenalVLC()){
 					String filepath=torrent.getFilePath();
-					if(filepath.length()>0)
+					if(filepath.length()>0){
 						PlayerOLD.play(filepath);
+						cmb_stato_episodio.setSelectedIndex(Torrent.VISTO);
+					}
 				}
 				else {
 					Player player=playlist.getPlayer();
@@ -333,7 +334,8 @@ public class PanelEpisodioLettore extends JPanel {
 		btnMostra.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//TODO creare un frame per vedere tutti i link di un episodio in maniera "umana"
-				JFrame frame=new JFrame("Link - "+episodio.getNomeSerie()+" "+episodio.getStagione()+" "+episodio.getEpisodio());
+				
+				JFrame frame=new JFrame("Link - "+episodio.getSerieTV().getNomeSerie()+" "+episodio.getStagione()+" "+episodio.getEpisodio());
 				frame.setAlwaysOnTop(true);
 				frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 				frame.setSize(800, 200);

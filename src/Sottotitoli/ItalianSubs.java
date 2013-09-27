@@ -107,7 +107,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 			return true;
 		}
 		catch (ItasaSubNotFound e) {
-			ManagerException.registraEccezione(e);
+			//ManagerException.registraEccezione(e);
 			int id_s=cercaFeed(id_itasa, t);
 			if(id_s<=0)
 				return false;

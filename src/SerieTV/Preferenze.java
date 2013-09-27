@@ -20,7 +20,7 @@ public class Preferenze {
 		setFromValue(value);
 	}
 	public Preferenze(){
-		setFromValue(0);
+		setFromValue(2);
 	}
 	public boolean isPreferisciHD(){
 		return scarica_hd;

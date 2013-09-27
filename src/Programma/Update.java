@@ -22,6 +22,7 @@ public class Update {
 				case 102:
 					System.out.println("\nAvvio aggiornamento 102 a 103");
 					update_102_to_103();
+					//TODO rimuovere torrent con lo stesso hash
 				default:
 					Settings.setLastVersion(Settings.getVersioneSoftware());
 					Settings.setNewUpdate(false);

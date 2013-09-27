@@ -66,12 +66,32 @@ public class GestioneSerieTV {
 		return submanager;
 	}
 	public static ArrayList<Episodio> caricaEpisodiDaScaricare(){
+		class ThreadUpdate extends Thread {
+			private SerieTV serie;
+			public ThreadUpdate(SerieTV s){
+				serie=s;
+			}
+			public void run(){
+				serie.aggiornaEpisodiOnline();
+			}
+		}
 		ArrayList<Episodio> episodi=new ArrayList<Episodio>();
+		ThreadGroup tg=new ThreadGroup("AggiornamentoEpisodiSerie");
 		for(int i=0;i<providers.size();i++){
 			ProviderSerieTV p=providers.get(i);
 			for(int j=0;j<p.getPreferiteSerieCount();j++){
-				p.getPreferiteSerieAt(j).aggiornaEpisodiOnline();
-				episodi.addAll(p.nuoviEpisodi(p.getPreferiteSerieAt(j)));
+				SerieTV s=p.getPreferiteSerieAt(j);
+				Thread t=new Thread(tg, new ThreadUpdate(s));
+				t.start();
+			}
+			while(tg.activeCount()>0)
+				try {
+					Thread.sleep(300L);
+				}
+				catch (InterruptedException e) {}
+			for(int j=0;j<p.getPreferiteSerieCount();j++){
+				SerieTV s=p.getPreferiteSerieAt(j);
+				episodi.addAll(p.nuoviEpisodi(s));
 			}
 		}
 		return episodi;

@@ -1059,7 +1059,9 @@ public class Interfaccia extends JFrame {
 				btnAggiorna.setEnabled(false);
 				ArrayList<Episodio> eps = GestioneSerieTV.caricaEpisodiDaScaricareOffline();
 				for (int i = 0; i < eps.size(); i++) {
-					panel_scroll_download.add(new PanelEpisodioDownload(eps.get(i)));
+					Episodio e=eps.get(i);
+					if(!e.isScaricato())
+						panel_scroll_download.add(new PanelEpisodioDownload(e));
 				}
 				btnAggiorna.setEnabled(true);
 			}
@@ -1080,8 +1082,6 @@ public class Interfaccia extends JFrame {
     			int stagione = (int) comboBoxLettoreStagione.getSelectedItem();
     			if (stagione >= 0) {
     				boolean ordine_crescente = comboBoxLettoreOrdine.getSelectedIndex() == 0 ? true : false;
-    				panel_elenco_puntate_lettore.removeAll();
-    
     				boolean hide_v = chckbxNascondiViste.isSelected(), // viste
     				hide_i = chckbxNascondiIgnorate.isSelected(), // ignorate
     				hide_r = chckbxNascondiRimosse.isSelected(); // rimosse
@@ -1113,6 +1113,11 @@ public class Interfaccia extends JFrame {
     				panel_elenco_puntate_lettore.revalidate();
     				panel_elenco_puntate_lettore.repaint();
     			}
+			}
+			else {
+				panel_elenco_puntate_lettore.removeAll();
+				panel_elenco_puntate_lettore.revalidate();
+				panel_elenco_puntate_lettore.repaint();
 			}
 		}
 	}
@@ -1518,7 +1523,9 @@ public class Interfaccia extends JFrame {
 							panel_scroll_download.removeAll();
 							Runtime.getRuntime().gc();
 							for (int i = 0; i < eps.size(); i++) {
-								panel_scroll_download.add(new PanelEpisodioDownload(eps.get(i)));
+								//TODO scegliere quali episodi mostrare qui
+								if(eps.get(i).getLinkDownload()!=null)
+									panel_scroll_download.add(new PanelEpisodioDownload(eps.get(i)));
 							}
 							btnAggiorna.setEnabled(true);
 						}
@@ -1711,6 +1718,11 @@ public class Interfaccia extends JFrame {
 									ManagerException.registraEccezione(e);
 									e.printStackTrace();
 								}
+							}
+							else {
+								ManagerException.registraEccezione(p.getEpisodio()+ "- PanelEpisodioDownload link null");
+								p.getEpisodio().ignoraEpisodio();
+								panel_scroll_download.remove(p);
 							}
 						}
 						else

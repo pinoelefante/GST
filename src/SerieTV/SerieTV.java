@@ -19,7 +19,7 @@ public class SerieTV {
 	private Preferenze preferenze_download;
 	
 	public SerieTV(ProviderSerieTV provider, String nomeserie, String url) {
-		episodi=new ElencoEpisodi();
+		episodi=new ElencoEpisodi(this);
 		this.provider=provider;
 		titolo=formattaNome(nomeserie);
 		url_serie=url;
@@ -39,7 +39,7 @@ public class SerieTV {
 	}
 	public Preferenze getPreferenze(){
 		if(preferenze_download==null)
-			preferenze_download=new Preferenze(0);
+			preferenze_download=new Preferenze();
 		return preferenze_download;
 	}
 	public boolean isConclusa(){
@@ -71,6 +71,9 @@ public class SerieTV {
 		provider.salvaSerieInDB(this);
 	}
 	public boolean isStopSearch(){
+		if(getNumEpisodi()==0){
+			stop_search=false;
+		}
 		return stop_search;
 	}
 	public void setStopSearch(boolean s, boolean updateDB){

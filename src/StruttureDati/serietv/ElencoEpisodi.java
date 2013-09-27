@@ -2,12 +2,15 @@ package StruttureDati.serietv;
 
 import java.util.ArrayList;
 
+import SerieTV.SerieTV;
 import SerieTV.Torrent;
 
 public class ElencoEpisodi {
 	private ArrayList<Episodio> episodi;
+	private SerieTV serie;
 	
-	public ElencoEpisodi(){
+	public ElencoEpisodi(SerieTV s){
+		serie=s;
 		episodi=new ArrayList<Episodio>();
 	}
 	public void aggiungiLink(Torrent t){
@@ -26,7 +29,7 @@ public class ElencoEpisodi {
 	}
 	
 	private Episodio aggiungiEpisodio(int stagione, int episodio){
-		Episodio daInserire=new Episodio(stagione, episodio);
+		Episodio daInserire=new Episodio(serie, stagione, episodio);
 		int i;
 		if(size()==0){
 			episodi.add(daInserire);
