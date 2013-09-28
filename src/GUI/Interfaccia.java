@@ -53,6 +53,13 @@ import javax.swing.SwingUtilities;
 
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
+import chrriis.dj.nativeswing.swtimpl.components.WebBrowserAdapter;
+import chrriis.dj.nativeswing.swtimpl.components.WebBrowserCommandEvent;
+import chrriis.dj.nativeswing.swtimpl.components.WebBrowserEvent;
+import chrriis.dj.nativeswing.swtimpl.components.WebBrowserListener;
+import chrriis.dj.nativeswing.swtimpl.components.WebBrowserNavigationEvent;
+import chrriis.dj.nativeswing.swtimpl.components.WebBrowserWindowOpeningEvent;
+import chrriis.dj.nativeswing.swtimpl.components.WebBrowserWindowWillOpenEvent;
 
 import javax.swing.border.TitledBorder;
 import javax.swing.JCheckBox;
@@ -979,17 +986,36 @@ public class Interfaccia extends JFrame {
 		InfoPanel.add(btnChiudiADS);
 
 		/** TODO decommentare per la distribuzione */
-		/*
+		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				if (!NativeInterface.isOpen())
 					NativeInterface.open();
 				advertising = new JWebBrowser(JWebBrowser.destroyOnFinalization());
-				advertising.setBarsVisible(false);
-				advertising.setStatusBarVisible(false);
-				advertising.setBounds(10, 372, 676, 143);
-				advertising.navigate("http://pinoelefante.altervista.org/ads.html");
-				InfoPanel.add(advertising);
+				if(advertising!=null){
+					advertising.setBarsVisible(false);
+					advertising.setStatusBarVisible(false);
+					advertising.setBounds(10, 372, 676, 143);
+					advertising.navigate("http://pinoelefante.altervista.org/ads.html");
+					InfoPanel.add(advertising);
+					advertising.addWebBrowserListener(new WebBrowserAdapter() {
+						public void windowWillOpen(WebBrowserWindowWillOpenEvent arg0) {
+							JWebBrowser newb=arg0.getNewWebBrowser();
+							if(newb!=null){
+								newb.setBounds(10, 372, 676, 143);
+								newb.addWebBrowserListener(advertising.getWebBrowserListeners()[0]);
+								InfoPanel.remove(advertising);
+								advertising=newb;
+								advertising.setBarsVisible(false);
+								advertising.setStatusBarVisible(false);
+								advertising.setBounds(10, 372, 676, 143);
+								InfoPanel.add(advertising);
+								InfoPanel.revalidate();
+								InfoPanel.repaint();
+							}
+						}	
+					});
+				}
 			}
 		});
 		/* */
