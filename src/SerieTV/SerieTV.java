@@ -100,11 +100,13 @@ public class SerieTV {
 
 	public void setIDSubsfactory(int id_subsfactory, boolean updatedb) {
 		this.id_subsfactory = id_subsfactory;
-		String query="SELECT directory FROM "+Database.TABLE_SUBSFACTORY+" WHERE id="+id_subsfactory;
-		ArrayList<KVResult<String, Object>> res=Database.selectQuery(query);
-		if(res.size()==1){
-			String directory=(String) res.get(0).getValueByKey("directory");
-			setSubsfactoryDirectory(directory);
+		if(id_subsfactory>0){
+			String query="SELECT directory FROM "+Database.TABLE_SUBSFACTORY+" WHERE id="+id_subsfactory;
+			ArrayList<KVResult<String, Object>> res=Database.selectQuery(query);
+			if(res.size()==1){
+				String directory=(String) res.get(0).getValueByKey("directory");
+				setSubsfactoryDirectory(directory);
+			}
 		}
 		if(updatedb)
 			aggiornaDB();
@@ -153,9 +155,9 @@ public class SerieTV {
 	}
 	public void addEpisodio(Torrent episodio){
 		if(episodio.is720p() && episodio.getScaricato()==Torrent.SCARICARE && !getPreferenze().isPreferisciHD())
-			episodio.setScaricato(Torrent.IGNORATO);
+			episodio.setScaricato(Torrent.IGNORATO, false);
 		if(episodio.isPreAir() && episodio.getScaricato()==Torrent.SCARICARE && !getPreferenze().isDownloadPreair())
-			episodio.setScaricato(Torrent.IGNORATO);
+			episodio.setScaricato(Torrent.IGNORATO, false);
 		episodi.aggiungiLink(episodio);
 		if(episodio.isSottotitolo())
 			GestioneSerieTV.getSubManager().aggiungiEpisodio(episodio);
@@ -163,9 +165,9 @@ public class SerieTV {
 	public void addEpisodioDB(Torrent episodio){
 		//System.out.println(getNomeSerie()+" "+episodio.getStagione()+"x"+episodio.getEpisodio());
 		if(episodio.is720p() && episodio.getScaricato()==Torrent.SCARICARE && !getPreferenze().isPreferisciHD())
-			episodio.setScaricato(Torrent.IGNORATO);
+			episodio.setScaricato(Torrent.IGNORATO, false);
 		if(episodio.isPreAir() && episodio.getScaricato()==Torrent.SCARICARE && !getPreferenze().isDownloadPreair())
-			episodio.setScaricato(Torrent.IGNORATO);
+			episodio.setScaricato(Torrent.IGNORATO, false);
 		episodi.aggiungiLinkDB(episodio);
 		if(episodio.isSottotitolo())
 			GestioneSerieTV.getSubManager().aggiungiEpisodio(episodio);

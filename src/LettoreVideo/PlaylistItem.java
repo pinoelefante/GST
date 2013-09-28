@@ -20,6 +20,6 @@ public class PlaylistItem {
 		return t.getFilePath();
 	}
 	public void setPlayed(){
-		t.setScaricato(Torrent.VISTO);
+		t.setScaricato(Torrent.VISTO, true);
 	}
 }

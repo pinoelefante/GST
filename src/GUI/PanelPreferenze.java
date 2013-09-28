@@ -75,6 +75,7 @@ public class PanelPreferenze extends JPanel {
 	private void addListener(){
 		btnSalva.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				btnSalva.setEnabled(false);
 				boolean last_hd=serie.getPreferenze().isPreferisciHD();
 				boolean last_preair=serie.getPreferenze().isDownloadPreair();
 				serie.getPreferenze().setDownloadPreair(chckbxScaricaPreair.isSelected());

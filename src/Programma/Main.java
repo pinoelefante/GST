@@ -27,12 +27,12 @@ public class Main {
 		Settings.baseSettings();
 		try{
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-			/*
+			
 			if(Settings.isWindows())
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 			else if(Settings.isLinux())
 				UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-			*/
+			
 			
 			fl=new FrameLoading();
 			fl.start();
@@ -78,7 +78,7 @@ public class Main {
 			GestioneSerieTV.instance();
 			
 			
-			/* TODO
+			/* TODO controllo aggiornamenti
 			fl.settext("Controllo aggiornamenti");
 			thread_update.start();
 			fl.setprog(++i);
@@ -101,11 +101,6 @@ public class Main {
 			GUIframe = new Interfaccia();
 			GUIframe.setVisible(true);
 			GUIframe.init();
-			
-			if(Settings.isRicercaSottotitoli()){
-				GestioneSerieTV.getSubManager().avviaRicercaAutomatica();
-			}
-			
 		}
 		catch(Exception e){
 			JOptionPane.showMessageDialog(GUIframe, e.getMessage());

@@ -41,9 +41,10 @@ public class Torrent {
 		return stato!=SCARICARE;
 	}
 	
-	public void setScaricato(int visto) {
+	public void setScaricato(int visto, boolean update) {
 		this.stato = visto;
-		updateTorrentInDB();
+		if(update)
+			updateTorrentInDB();
 	}
 
 	public boolean is720p() {
@@ -240,7 +241,7 @@ public class Torrent {
     		}
     		else
     			return false;
-		};
+		}
 		return false;
 	}
 	public static String getMagnetHash(String magnet){

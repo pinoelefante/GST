@@ -57,6 +57,7 @@ public class PanelNewSerie extends JPanel {
 			public void actionPerformed(ActionEvent arg0) {
 				if(GestioneSerieTV.aggiungiSeriePreferita(st)){
 					Interfaccia.getInterfaccia().reloadSeriePreferite();
+					PanelNewSerie.this.getParent().remove(PanelNewSerie.this);
 					class updateThread extends Thread{
 						public void run(){
 							st.aggiornaEpisodiOnline();

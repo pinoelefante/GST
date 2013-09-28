@@ -73,8 +73,13 @@ public class Episodio {
 				if(t.isMagnetLink() && link.isMagnetLink()){
 					String HashNew=Torrent.getMagnetHash(link.getUrl());
 					if(t.compareHash(HashNew)){
-						t.magnetAppendTrackers(Torrent.getMagnetTrackers(link.getUrl()));
-						t.updateTorrentInDB();
+						String trackers_old=Torrent.getMagnetTrackers(t.getUrl());
+						String trackers_new=Torrent.getMagnetTrackers(link.getUrl());
+						if(trackers_old.compareToIgnoreCase(trackers_new)!=0){
+							t.magnetAppendTrackers(trackers_new);
+							t.updateTorrentInDB();
+						}
+						return false;
 					}
 				}
 				if(t.getUrl().compareTo(link.getUrl())==0)
@@ -82,8 +87,7 @@ public class Episodio {
 				else {
 					if(link.getStats().compareStats(t.getStats())>0){
 						elenco.add(i, link);
-						inserito=true;
-						break;
+						return true;
 					}
 				}
 			}
@@ -179,7 +183,7 @@ public class Episodio {
 		tutti.addAll(ep_normali);
 		tutti.addAll(ep_preair);
 		
-		link.setScaricato(Torrent.SCARICATO);
+		link.setScaricato(Torrent.SCARICATO, true);
 		if(Settings.isRicercaSottotitoli())
 			link.setSubDownload(true, true);
 		
@@ -192,7 +196,7 @@ public class Episodio {
 					case Torrent.SCARICATO:
 						break;
 					default:
-						t.setScaricato(Torrent.IGNORATO);
+						t.setScaricato(Torrent.IGNORATO, false);
 				}
 			}
 		}
@@ -322,7 +326,7 @@ public class Episodio {
 		for(int i=0;i<eps.size();i++){
 			Torrent t=eps.get(i);
 			if(t.getScaricato()==Torrent.SCARICARE){
-				t.setScaricato(Torrent.IGNORATO);
+				t.setScaricato(Torrent.IGNORATO, true);
 			}
 		}
 	}
@@ -332,7 +336,7 @@ public class Episodio {
 				Torrent t=getLinkHD();
 				if(t!=null){
 					if(t.getScaricato()==status_to_change)
-						t.setScaricato(which_status);
+						t.setScaricato(which_status, true);
 				}
 				break;
 			}
@@ -340,7 +344,7 @@ public class Episodio {
 				Torrent t=getLinkNormale();
 				if(t!=null){
 					if(t.getScaricato()==status_to_change)
-						t.setScaricato(which_status);
+						t.setScaricato(which_status, false);
 				}
 				break;
 			}
@@ -348,7 +352,7 @@ public class Episodio {
 				Torrent t=getLinkPreair();
 				if(t!=null){
 					if(t.getScaricato()==status_to_change)
-						t.setScaricato(which_status);
+						t.setScaricato(which_status, false);
 				}
 				break;
 			}
@@ -364,12 +368,12 @@ public class Episodio {
 			case Torrent.RIMOSSO:
 			case Torrent.IGNORATO:
 				if(t.getFilePath()!=null)
-					t.setScaricato(Torrent.SCARICATO);
+					t.setScaricato(Torrent.SCARICATO, false);
 				break;
 			case Torrent.SCARICATO:
 			case Torrent.VISTO:
 				if(t.getFilePath()==null)
-					t.setScaricato(Torrent.RIMOSSO);
+					t.setScaricato(Torrent.RIMOSSO, false);
 		}
 	}
 	public ArrayList<Torrent> getAll(){
@@ -383,7 +387,8 @@ public class Episodio {
 	public void setStatus(int status){
 		ArrayList<Torrent> eps=getAll();
 		for(int i=0;i<eps.size();i++){
-			eps.get(i).setScaricato(status);
+			Torrent t=eps.get(i);
+			t.setScaricato(status, true);
 		}
 	}
 	public Torrent getLinkScaricato(){

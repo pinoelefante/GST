@@ -172,7 +172,7 @@ public class PanelEpisodioLettore extends JPanel {
 		});
 		cmb_stato_episodio.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				torrent.setScaricato(cmb_stato_episodio.getSelectedIndex());
+				torrent.setScaricato(cmb_stato_episodio.getSelectedIndex(), true);
 				switch((String)cmb_stato_episodio.getSelectedItem()){
 					case "SCARICARE":
 					case "RIMOSSO":
@@ -260,7 +260,7 @@ public class PanelEpisodioLettore extends JPanel {
 						if(res!=null)
 							for(int i=0;i<res.size();i++)
 								OperazioniFile.deleteFile(res.get(i));
-						torrent.setScaricato(Torrent.RIMOSSO);
+						torrent.setScaricato(Torrent.RIMOSSO, true);
 						torrent.updateTorrentInDB();
 						cmb_stato_episodio.setSelectedIndex(Torrent.RIMOSSO);
 					}
@@ -274,6 +274,11 @@ public class PanelEpisodioLettore extends JPanel {
 		btnCopiaSuDispositivo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				String origine_filepath=torrent.getFilePath();
+				if(origine_filepath==null){
+					JOptionPane.showMessageDialog(PanelEpisodioLettore.this, "Il file non esiste");
+					cmb_stato_episodio.setSelectedIndex(Torrent.RIMOSSO);
+					return;
+				}
 				String destinazione_path="";
 				JFileChooser chooser= new JFileChooser();
 				chooser.setDialogTitle("Cartella di destinazione");

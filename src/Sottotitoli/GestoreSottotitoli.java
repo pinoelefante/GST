@@ -81,6 +81,8 @@ public class GestoreSottotitoli {
 		subsfactory=new Subsfactory();
 		subspedia=new Subspedia();
 		ricerca_automatica=new RicercaSottotitoliAutomatica();
+		if(Settings.isRicercaSottotitoli())
+			avviaRicercaAutomatica();
 	}
 	public void avviaRicercaAutomatica(){
 		if(ricerca_automatica==null)

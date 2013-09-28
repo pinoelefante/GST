@@ -68,20 +68,19 @@ public abstract class ProviderSerieTV {
 			boolean inserita=false;
 			for(int i=0;i<getPreferiteSerieCount();i++){
 				SerieTV s2=getPreferiteSerieAt(i);
-				if(s.compareTo(s2)<0){
+				if(s.getNomeSerie().compareTo(s2.getNomeSerie())<0){
 					preferite.add(i, s);
 					s.setInserita(true);
 					salvaSerieInDB(s);
-					inserita=true;
-					break;
+					return true;
 				}
 			}
 			if(!inserita){
 				preferite.add(s);
 				s.setInserita(true);
 				salvaSerieInDB(s);
+				return true;
 			}
-			return true;
 		}
 		return false;
 	}
