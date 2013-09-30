@@ -211,6 +211,14 @@ public class EZTV extends ProviderSerieTV{
 	@Override
 	protected void salvaEpisodioInDB(Torrent t) {
 		if(t.getIDDB()==0){
+			String query_iddb="SELECT id FROM "+Database.TABLE_EPISODI+" WHERE url=\""+t.getUrl()+"\"";
+			ArrayList<KVResult<String, Object>> res=Database.selectQuery(query_iddb);
+			if(res.size()==1){
+				int id=(int) res.get(0).getValueByKey("id");
+				t.setIDDB(id);
+			}
+		}
+		if(t.getIDDB()==0){
 			String query="INSERT INTO "+Database.TABLE_EPISODI+" (id_serie,url,vista,stagione,episodio,tags,preair,sottotitolo,id_tvdb_ep) VALUES ("
 				+t.getSerieTV().getIDDb()+","
 				+"\""+t.getUrl()+"\","

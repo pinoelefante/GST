@@ -322,8 +322,8 @@ public class Subsfactory implements ProviderSottotitoli {
 		}
 		return false;
 	}
-	private void salvaInDB(SerieSub s){
-		String query="INSERT INTO "+Database.TABLE_SUBSFACTORY+" (nome_serie, directory) VALUES (\""+s.getNomeSerie()+"\", \""+(String)s.getID()+"\")";
+	private void salvaInDB(SerieSubSubsfactory s){
+		String query="INSERT INTO "+Database.TABLE_SUBSFACTORY+" (nome_serie, directory) VALUES (\""+s.getNomeSerie()+"\", \""+s.getDirectory()+"\")";
 		Database.updateQuery(query);
 	}
 	@Override

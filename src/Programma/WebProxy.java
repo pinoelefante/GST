@@ -31,7 +31,7 @@ public class WebProxy {
 		return proxyURL;
 	}
 	private void checkOnline(){
-		System.out.println("Verifica online proxy");
+		//System.out.println("Verifica online proxy");
 		try {
 			URL url=new URL(baseURL);
 			HttpURLConnection conn=(HttpURLConnection) url.openConnection();
