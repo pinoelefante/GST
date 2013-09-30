@@ -991,6 +991,7 @@ public class Interfaccia extends JFrame {
 			public void run() {
 				if (!NativeInterface.isOpen())
 					NativeInterface.open();
+				JWebBrowser.clearSessionCookies();
 				advertising = new JWebBrowser(JWebBrowser.destroyOnFinalization());
 				if(advertising!=null){
 					advertising.setBarsVisible(false);
@@ -2030,8 +2031,8 @@ public class Interfaccia extends JFrame {
 					ArrayList<SerieSub> serie_subsf=subsf.getElencoSerie();
 					lblSubsfactorySerieAss.setText("Non associata");
 					for(int i=0;i<serie_subsf.size();i++){
-						SerieSub ss=serie_subsf.get(i);
-						if(((String)ss.getID()).compareToIgnoreCase(st.getSubsfactoryDirectory())==0){
+						SerieSubSubsfactory ss=(SerieSubSubsfactory) serie_subsf.get(i);
+						if(ss.getDirectory().compareTo(st.getNomeSerie())==0){
 							lblSubsfactorySerieAss.setText("<html>"+ss.getNomeSerie()+"</html>");
 							cmb_subsfactory_serie.setSelectedItem(ss);
 							break;

@@ -305,7 +305,7 @@ public class PanelEpisodioLettore extends JPanel {
 				try {
 					Download.downloadMagnet(torrent.getUrl(), Settings.getDirectoryDownload()+File.separator+torrent.getSerieTV().getFolderSerie());
 					if(Settings.isRicercaSottotitoli()){
-						torrent.setSubDownload(true);
+						torrent.setSubDownload(true, true);
 					}
 					episodio.scaricaLink(torrent);
 					cmb_stato_episodio.setSelectedIndex(Torrent.SCARICATO);

@@ -8,8 +8,11 @@ import StruttureDati.db.KVResult;
 public class SerieSubSubsfactory extends SerieSub {
 	private boolean directory_search;
 	private int id_db;
-	public SerieSubSubsfactory(String nome, Object id) {
-		super(nome, id);
+	private String directory;
+	
+	public SerieSubSubsfactory(String nome, int iddb, String directory) {
+		super(nome, iddb);
+		this.directory=directory;
 	}
 	public boolean isDirectorySearch(){
 		return directory_search;
@@ -29,5 +32,8 @@ public class SerieSubSubsfactory extends SerieSub {
 			}
 		}
 		return id_db;
+	}
+	public String getDirectory(){
+		return directory;
 	}
 }

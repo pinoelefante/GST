@@ -19,6 +19,7 @@ import Programma.Download;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
+import SerieTV.SerieTV;
 import SerieTV.Torrent;
 
 public class Subspedia implements ProviderSottotitoli {
@@ -58,7 +59,7 @@ public class Subspedia implements ProviderSottotitoli {
 			return false;
 		}
 	}
-	public String getIDSerieAssociata(String nome_serie) {return null;}
+	public SerieSub getSerieAssociata(SerieTV serie) {return null;}
 	public boolean cercaSottotitolo(Torrent t) {
 		scaricaFeed();
 		for(int i=0;i<rss.size();i++){

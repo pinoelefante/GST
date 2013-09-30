@@ -4,6 +4,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import SerieTV.GestioneSerieTV;
+import Sottotitoli.GestoreSottotitoli;
 import Database.Database;
 import GUI.FrameLoading;
 import GUI.Interfaccia;
@@ -101,6 +102,14 @@ public class Main {
 			GUIframe = new Interfaccia();
 			GUIframe.setVisible(true);
 			GUIframe.init();
+			
+			Thread subThread=new Thread(new Runnable() {
+				public void run() {
+					if(Settings.isRicercaSottotitoli())
+						GestioneSerieTV.getSubManager().avviaRicercaAutomatica();
+				}
+			});
+			subThread.start();
 		}
 		catch(Exception e){
 			JOptionPane.showMessageDialog(GUIframe, e.getMessage());

@@ -185,10 +185,12 @@ public class SerieTV {
 	
 	public String getSubsfactoryDirectory(){
 		if(SubsfactoryOnlineDirectory.isEmpty()){
-			String query="SELECT directory FROM "+Database.TABLE_SUBSFACTORY+" WHERE id="+getIDDBSubsfactory();
-			ArrayList<KVResult<String, Object>> res=Database.selectQuery(query);
-			if(res.size()==1){
-				SubsfactoryOnlineDirectory=(String) res.get(0).getValueByKey("directory");
+			if(getIDDBSubsfactory()>0){
+				String query="SELECT directory FROM "+Database.TABLE_SUBSFACTORY+" WHERE id="+getIDDBSubsfactory();
+				ArrayList<KVResult<String, Object>> res=Database.selectQuery(query);
+				if(res.size()==1){
+					SubsfactoryOnlineDirectory=(String) res.get(0).getValueByKey("directory");
+				}
 			}
 		}
 		return SubsfactoryOnlineDirectory;

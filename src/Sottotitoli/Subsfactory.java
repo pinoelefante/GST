@@ -113,10 +113,12 @@ public class Subsfactory implements ProviderSottotitoli {
 		}
 	}
 	@Override
-	public String getIDSerieAssociata(String nome_serie) {
-		for(int i=0;i<elenco_serie.size();i++)
-			if(elenco_serie.get(i).getNomeSerie().compareToIgnoreCase(nome_serie)==0)
-				return ((String)elenco_serie.get(i).getID());
+	public SerieSub getSerieAssociata(SerieTV serie) {
+		for(int i=0;i<elenco_serie.size();i++){
+			SerieSubSubsfactory s=(SerieSubSubsfactory) elenco_serie.get(i);
+			if(serie.getNomeSerie().compareToIgnoreCase(s.getNomeSerie())==0)
+				return s;
+		}
 		return null;
 	}
 
@@ -296,8 +298,8 @@ public class Subsfactory implements ProviderSottotitoli {
 	}
 	private boolean isPresente(String directory){
 		for(int i=0;i<elenco_serie.size();i++){
-			SerieSub s=elenco_serie.get(i);
-			if(((String)s.getID()).compareTo(directory)==0)
+			SerieSubSubsfactory s=(SerieSubSubsfactory) elenco_serie.get(i);
+			if((s.getDirectory().compareTo(directory))==0)
 				return true;
 		}
 		return false;
@@ -350,9 +352,10 @@ public class Subsfactory implements ProviderSottotitoli {
 				if(path.split("/").length>2)
 					continue;
 				if(!isPresente(path)){
-					SerieSub serie=new SerieSubSubsfactory(nome, path);
+					SerieSubSubsfactory serie=new SerieSubSubsfactory(nome,0, path);
 					addSerie(serie);
 					salvaInDB(serie);
+					serie.setIDDB(serie.getIDDB());
 				}
 			}
 			else if(riga.compareToIgnoreCase("</select>")==0)
@@ -375,14 +378,14 @@ public class Subsfactory implements ProviderSottotitoli {
 		}
 		for(int i=0;i<feed_rss.size();i++){
 			RSSItemSubsfactory rss=feed_rss.get(i);
-			System.out.println(rss.getStagione()+" "+rss.getEpisodio()+" "+ rss.getUrlDownload());
-			System.out.println("ID: "+rss.getID()+" - "+id_subs);
+			//System.out.println(rss.getStagione()+" "+rss.getEpisodio()+" "+ rss.getUrlDownload());
+			//System.out.println("ID: "+rss.getID()+" - "+id_subs);
 			if(rss.getID().toLowerCase().startsWith(id_subs.toLowerCase())){
-				System.out.println("Stagione: "+rss.getStagione() + " - "+t.getStagione());
+				//System.out.println("Stagione: "+rss.getStagione() + " - "+t.getStagione());
 				if(rss.getStagione()==t.getStagione()){
-					System.out.println("Puntata: "+rss.getEpisodio()+" - "+t.getEpisodio());
+					//System.out.println("Puntata: "+rss.getEpisodio()+" - "+t.getEpisodio());
 					if(rss.getEpisodio()==t.getEpisodio()){
-						System.out.println("Risoluzione: Rss("+rss.is720p()+rss.isNormale()+")"+" - Torrent("+t.is720p()+!t.is720p()+")");
+						//System.out.println("Risoluzione: Rss("+rss.is720p()+rss.isNormale()+")"+" - Torrent("+t.is720p()+!t.is720p()+")");
 						if(rss.isNormale()==!t.is720p())
 							return rss.getUrlDownload();
 						else if(rss.is720p()==t.is720p())
@@ -472,8 +475,7 @@ public class Subsfactory implements ProviderSottotitoli {
 			int db=(int) r.getValueByKey("id");
 			String nome=(String) r.getValueByKey("nome_serie");
 			String path=(String) r.getValueByKey("directory");
-			SerieSubSubsfactory s=new SerieSubSubsfactory(nome, path);
-			s.setIDDB(db);
+			SerieSubSubsfactory s=new SerieSubSubsfactory(nome, db ,path);
 			elenco_serie.add(0,s);
 		}
 	}

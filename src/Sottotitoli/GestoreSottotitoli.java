@@ -81,8 +81,6 @@ public class GestoreSottotitoli {
 		subsfactory=new Subsfactory();
 		subspedia=new Subspedia();
 		ricerca_automatica=new RicercaSottotitoliAutomatica();
-		if(Settings.isRicercaSottotitoli())
-			avviaRicercaAutomatica();
 	}
 	public void avviaRicercaAutomatica(){
 		if(ricerca_automatica==null)
@@ -151,19 +149,20 @@ public class GestoreSottotitoli {
 	public boolean associaSerie(SerieTV s){
 		boolean itasa_assoc=false, it_al=false, subs_assoc=false, subs_al=false;
 		if(s.getIDItasa()<=0){
-			String id=itasa.getIDSerieAssociata(s.getNomeSerie());
+			SerieSub id=itasa.getSerieAssociata(s);
 			if(id!=null){
-				s.setIDItasa(Integer.parseInt(id));
+				s.setIDItasa((int)id.getID());
 				itasa_assoc=true;
 			}
 		}
 		else
 			it_al=true;
 		
-		if(s.getSubsfactoryDirectory().isEmpty()){ //TODO modificare usando id numerico
-			String id=subsfactory.getIDSerieAssociata(s.getNomeSerie());
+		if(s.getIDDBSubsfactory()==0){ //TODO modificare usando id numerico
+			SerieSubSubsfactory id=(SerieSubSubsfactory) subsfactory.getSerieAssociata(s);
 			if(id!=null){
-				s.setSubsfactoryDirectory(id);
+				s.setIDSubsfactory((int)id.getID(), false);
+				s.setSubsfactoryDirectory(id.getDirectory());
 				subs_assoc=true;
 			}
 		}

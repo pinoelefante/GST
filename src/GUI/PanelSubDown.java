@@ -56,7 +56,7 @@ public class PanelSubDown extends JPanel {
 	private void addListener(){
 		btnRimuovi.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				torrent.setSubDownload(false);
+				torrent.setSubDownload(false,true);
 				PanelSubDown.this.getParent().remove(PanelSubDown.this);
 			}
 		});

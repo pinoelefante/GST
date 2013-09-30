@@ -43,6 +43,7 @@ import Programma.Download;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
+import SerieTV.SerieTV;
 import SerieTV.Torrent;
 import StruttureDati.db.KVResult;
 //TODO utilizzare serie sub al posto di serie tv
@@ -679,10 +680,10 @@ public class ItalianSubs implements ProviderSottotitoli{
 		}
 	}
 	@Override
-	public String getIDSerieAssociata(String nome_serie) {
+	public SerieSub getSerieAssociata(SerieTV serie) {
 		for(int i=0;i<elenco_serie.size();i++)
-			if(elenco_serie.get(i).getNomeSerie().compareToIgnoreCase(nome_serie)==0)
-				return ((int)elenco_serie.get(i).getID())+"";
+			if(elenco_serie.get(i).getNomeSerie().compareToIgnoreCase(serie.getNomeSerie())==0)
+				return elenco_serie.get(i);
 		return null;
 	}
 
