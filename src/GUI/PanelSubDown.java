@@ -62,31 +62,37 @@ public class PanelSubDown extends JPanel {
 		});
 		btnScarica.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				lblRisultato.setText("<html>Ricerca sottotitolo in corso</html>");
-				btnScarica.setEnabled(false);
-				btnRimuovi.setEnabled(false);
-				if(GestioneSerieTV.getSubManager().scaricaSottotitolo(torrent)){
-					lblRisultato.setText("<html>Sottotitolo scaricato!</html>");
-					class threadRemove extends Thread {
-						public void run(){
-							int secondi=5;
-							while (secondi>=0){
-								lblRisultato.setText("<html>Sottotitolo scaricato!<br>Rimozione tra "+secondi+" secondi</html>");
-								try { sleep(1000); }
-								catch (InterruptedException e) {}
-								secondi--;
+				class t_ricercaSub extends Thread {
+					public void run(){
+						lblRisultato.setText("<html>Ricerca sottotitolo in corso</html>");
+						btnScarica.setEnabled(false);
+						btnRimuovi.setEnabled(false);
+						if(GestioneSerieTV.getSubManager().scaricaSottotitolo(torrent)){
+							lblRisultato.setText("<html>Sottotitolo scaricato!</html>");
+							class threadRemove extends Thread {
+								public void run(){
+									int secondi=5;
+									while (secondi>=0){
+										lblRisultato.setText("<html>Sottotitolo scaricato!<br>Rimozione tra "+secondi+" secondi</html>");
+										try { sleep(1000); }
+										catch (InterruptedException e) {}
+										secondi--;
+									}
+									PanelSubDown.this.getParent().remove(PanelSubDown.this);
+								}
 							}
-							PanelSubDown.this.getParent().remove(PanelSubDown.this);
+							Thread t_rimozione=new threadRemove();
+							t_rimozione.start();
+						}
+						else {
+							lblRisultato.setText("<html>Sottotitolo non trovato</html>");
+							btnScarica.setEnabled(true);
+							btnRimuovi.setEnabled(true);
 						}
 					}
-					Thread t_rimozione=new threadRemove();
-					t_rimozione.start();
 				}
-				else {
-					lblRisultato.setText("<html>Sottotitolo non trovato</html>");
-					btnScarica.setEnabled(true);
-					btnRimuovi.setEnabled(true);
-				}
+				Thread t=new t_ricercaSub();
+				t.start();
 			}
 		});
 	}
