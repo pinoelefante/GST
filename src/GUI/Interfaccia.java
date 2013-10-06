@@ -30,6 +30,7 @@ import java.awt.PopupMenu;
 import java.awt.SystemTray;
 import java.awt.Toolkit;
 import java.awt.TrayIcon;
+import java.awt.TrayIcon.MessageType;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
@@ -1465,12 +1466,12 @@ public class Interfaccia extends JFrame {
 		addWindowListener(new WindowListener() {
 			public void windowOpened(WindowEvent arg0) {}
 			public void windowIconified(WindowEvent arg0) {
-				thisframe.setVisible(false);
+				if(Settings.isTrayOnIcon())
+					thisframe.setVisible(false);
 			}
 			public void windowDeiconified(WindowEvent arg0) {}
 			public void windowDeactivated(WindowEvent arg0) {}
 			public void windowClosing(WindowEvent arg0) {
-				System.out.println("Window closing");
 				if(Settings.isAskOnClose()){
 					int risposta=JOptionPane.showConfirmDialog(thisframe, "Vuoi chiudere Gestione Serie TV?", "Conferma chiusura Gestione Serie TV", JOptionPane.YES_NO_OPTION);
 					if(risposta==JOptionPane.YES_OPTION){
@@ -2030,7 +2031,6 @@ public class Interfaccia extends JFrame {
 			}
 		});
 		//TODO download sottotitoli "personalizzati"
-		//TODO opzione per caricare VLC automaticamente
 		//TODO frame loading mostra progresso download dipendenze. chiudibile dopo aver scritto all'interno del db
 		cmb_serie_sottotitoli.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -2274,6 +2274,10 @@ public class Interfaccia extends JFrame {
 	public void addEntrySottotitolo(String nomeserie, int stagione, int episodio, String provider) {
 		DefaultTableModel model = (DefaultTableModel) tableSubDownloaded.getModel();
 		model.addRow(new Object[] { nomeserie, stagione, episodio, provider });
+		if(tray!=null){
+			String messaggio=nomeserie+" S"+(stagione<10?"0"+stagione:stagione)+"E"+(episodio<10?"0"+episodio:episodio)+" - "+provider;
+			tray.getTrayIcons()[0].displayMessage("", messaggio, MessageType.INFO);
+		}
 	}
 	public void subAddSubDownload(Torrent t){
 		panel_SottotitoliDaScaricare.add(new PanelSubDown(t));

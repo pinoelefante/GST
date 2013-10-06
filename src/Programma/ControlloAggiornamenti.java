@@ -1,16 +1,20 @@
 package Programma;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Scanner;
 
 public class ControlloAggiornamenti {
-	private final static String URL_DB="http://pinoelefante.altervista.org/software/GST2/version.dat";
+	private final static String URL_DB="version.dat";
+	private final static String URL_PROGRAMMA="GestioneSerieTV5.exe";
+	private final static String URL_PROGRAMMA_JAR="st.jar";
+	private final static String URL_BASE="http://pinoelefante.altervista.org/software/GST2/"; 
 	private int versione_online;
 	
 	private void retrieveVersioneOnline(){
-		Download downloader=new Download(URL_DB, Settings.getCurrentDir()+"version.dat");
+		Download downloader=new Download(URL_BASE+URL_DB, Settings.getCurrentDir()+"version.dat");
 		downloader.avviaDownload();
 		try {
 			downloader.getDownloadThread().join();
@@ -34,5 +38,50 @@ public class ControlloAggiornamenti {
 	public int getVersioneOnline(){
 		retrieveVersioneOnline();
 		return versione_online;
+	}
+	public boolean scarica(){
+		String path_download=URL_BASE;
+		if(Settings.isWindows()){
+			path_download+=URL_PROGRAMMA;
+		}
+		else {
+			path_download+=URL_PROGRAMMA_JAR;
+		}
+		Download d=new Download(path_download, Settings.getCurrentDir()+"newupdate.gst");
+		d.avviaDownload();
+		try {
+			d.getDownloadThread().join();
+		}
+		catch (InterruptedException e) {
+			return false;
+		}
+		if(d.getFileSizeDowloaded()<d.getFileSize())
+			return false;
+		else {
+			if(OperazioniFile.fileExists(Settings.getCurrentDir()+"newupdate.gst"))
+				return true;
+			else
+				return false;
+		}
+	}
+	public void update() {
+		if(Settings.getVersioneSoftware()<getVersioneOnline()){
+    		if(scarica()) {
+    			String[] cmd={
+    					System.getProperty("java.home")+File.separator+"bin"+File.separator+"java"+(Settings.isWindows()?".exe":""), 
+    					"-jar", 
+    					Settings.getCurrentDir()+"gst_updater.jar"
+    			};
+    			try {
+    				OperazioniFile.deleteFile(Settings.getCurrentDir()+"eccezioni.txt");
+    				Runtime.getRuntime().exec(cmd);
+    				System.exit(0);
+    			}
+    			catch (IOException e) {
+    				e.printStackTrace();
+    				ManagerException.registraEccezione(e);
+    			}
+    		}
+		}
 	}
 }

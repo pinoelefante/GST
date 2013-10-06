@@ -10,7 +10,7 @@ import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.WinReg;
 
 public class Settings {
-	private static final int	VersioneSoftware					= 103;
+	private static final int	VersioneSoftware					= 102;
 	public static final String	IndirizzoDonazioni					= "http://pinoelefante.altervista.org/donazioni/donazione_gst.html";
 	private static String		current_dir							= "";
 	private static String		DirectoryDownload					= "";
@@ -297,9 +297,11 @@ public class Settings {
 			Advapi32Util.registrySetStringValue(WinReg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Run", "GestioneSerieTV", getCurrentDir()+"GestioneSerieTV5.exe");
 		}
 		else if(isLinux()){
+			String path_exec=System.getProperty("java.home")+File.separator+"java -jar "+getCurrentDir()+"st.jar";
 			//TODO
 		}
 		else if(isMacOS()){
+			String path_exec=System.getProperty("java.home")+File.separator+"java -jar "+getCurrentDir()+"st.jar";
 			//TODO
 		}
 	}

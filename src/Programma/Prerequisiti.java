@@ -35,7 +35,34 @@ public class Prerequisiti {
 			e1.printStackTrace();
 			ManagerException.registraEccezione(e1);
 		}
+		checkUtility();
 		checkVLC();
+	}
+	private static void checkUtility() {
+		if(list_utility.isEmpty())
+			popola_utility();
+		try {
+    		for(int i=0;i<list_utility.size();i++){
+    			Dipendenza d=list_utility.get(i);
+    			File file=new File(Settings.getCurrentDir()+d.getNomeDest());
+    			if(file.exists()){
+    				System.out.println(d.getNome()+": "+file.length()+"/"+d.getSize());
+    				if(file.length()!=d.getSize()){
+    					System.out.println("Scaricando: "+d.getNome());
+    					Download.downloadFromUrl(d.getUrl(), Settings.getCurrentDir()+d.getNomeDest());
+    				}
+    			}
+    			else {
+    				System.out.println("Scaricando: "+d.getNome());
+    				Download.downloadFromUrl(d.getUrl(), Settings.getCurrentDir()+d.getNomeDest());
+    			}
+    		}
+		}
+		catch(IOException e){
+			e.printStackTrace();
+			ManagerException.registraEccezione(e);
+		}
+		
 	}
 	private static ArrayList<Dipendenza> vlc_dep=new ArrayList<Dipendenza>(3);
 	private static void checkVLC(){
@@ -82,6 +109,11 @@ public class Prerequisiti {
 		}
 		
 	}
+	private static ArrayList<Dipendenza> list_utility=new ArrayList<Dipendenza>();
+	private final static String sito2="http://pinoelefante.altervista.org/software/GST2/";
+	private static void popola_utility() {
+		list_utility.add(new Dipendenza("gst_updater.jar", "gst_updater.jar", sito2+"gst_updater.jar", "indipendent", 1868L, true, true));
+	}
 	private static void popola_vlc() {
 		String destinazione=Settings.getCurrentDir()+"lib"+File.separator+"vlc"+File.separator+Settings.getOSName()+"-"+Settings.getVMArch()+File.separator;
 		if(Settings.isWindows()){
@@ -121,8 +153,7 @@ public class Prerequisiti {
 	private static void popola_dipendenze() {
 		String arch_vm = System.getProperty("os.arch");
 		boolean x86 = arch_vm.contains("x86")||arch_vm.contains("i386");
-		
-		
+
 		list_dipendenze.add(new Dipendenza("commons-codec.jar", "commons-codec.jar", sito+"commons-codec.jar", "indipendent", 232771L, true, true));
 		list_dipendenze.add(new Dipendenza("commons-collections.jar", "commons-collections.jar", sito+"commons-collections.jar", "indipendent", 575389L, true, true));
 		list_dipendenze.add(new Dipendenza("commons-io.jar", "commons-io.jar", sito+"commons-io.jar", "indipendent", 173587L, true, true));

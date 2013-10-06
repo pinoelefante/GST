@@ -23,7 +23,7 @@ public class Main {
 	static Interfaccia frame2;
 	private static Interfaccia GUIframe;
 	public static void main(String[] args) {
-		
+		ManagerException.registraEccezione("");
 		Settings.baseSettings();
 		try{
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
@@ -88,18 +88,14 @@ public class Main {
 			for(int j=0;j<query.length;j++)
 				Database.updateQuery(query[j]);
 			
+			fl.settext("Controllo aggiornamenti");
+			fl.setprog(++i);
+			ControlloAggiornamenti aggiornamenti=new ControlloAggiornamenti();
+			aggiornamenti.update();
 			
 			fl.settext("Caricando serie dal database");
 			fl.setprog(++i);
 			GestioneSerieTV.instance();
-			
-			
-			/* TODO controllo aggiornamenti
-			fl.settext("Controllo aggiornamenti");
-			thread_update.start();
-			fl.setprog(++i);
-			thread_update.join();
-			*/
 			
 			fl.settext("Avvio interfaccia grafica");
 			fl.setprog(++i);
