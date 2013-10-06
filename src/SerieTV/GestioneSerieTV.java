@@ -83,12 +83,14 @@ public class GestioneSerieTV {
 				SerieTV s=p.getPreferiteSerieAt(j);
 				Thread t=new Thread(tg, new ThreadUpdate(s));
 				t.start();
+				try {
+					Thread.sleep(500);
+				}catch (InterruptedException e) {}
 			}
 			while(tg.activeCount()>0)
 				try {
-					Thread.sleep(300L);
-				}
-				catch (InterruptedException e) {}
+					Thread.sleep(500L);
+				}catch (InterruptedException e) {}
 			for(int j=0;j<p.getPreferiteSerieCount();j++){
 				SerieTV s=p.getPreferiteSerieAt(j);
 				episodi.addAll(p.nuoviEpisodi(s));

@@ -74,6 +74,21 @@ public class Main {
 			Update.start();
 			fl.setprog(++i);
 			
+			String[] query={
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T1\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T2\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T3\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T4\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T5\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T6\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T7\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T8\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T9\""
+			};
+			for(int j=0;j<query.length;j++)
+				Database.updateQuery(query[j]);
+			
+			
 			fl.settext("Caricando serie dal database");
 			fl.setprog(++i);
 			GestioneSerieTV.instance();

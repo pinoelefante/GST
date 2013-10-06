@@ -114,6 +114,15 @@ public class Subsfactory implements ProviderSottotitoli {
 	}
 	@Override
 	public SerieSub getSerieAssociata(SerieTV serie) {
+		int iddb=serie.getIDDBSubsfactory();
+		if(iddb>0){
+			for(int i=0;i<elenco_serie.size();i++){
+				SerieSub s=elenco_serie.get(i);
+				if(s.getIDDB()==iddb)
+					return s;
+			}
+		}
+			
 		for(int i=0;i<elenco_serie.size();i++){
 			SerieSubSubsfactory s=(SerieSubSubsfactory) elenco_serie.get(i);
 			if(serie.getNomeSerie().compareToIgnoreCase(s.getNomeSerie())==0)

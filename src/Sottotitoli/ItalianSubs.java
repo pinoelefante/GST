@@ -263,7 +263,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 			return false;
 		for(int i=0;i<elenco_serie.size();i++){
 			SerieSub s=elenco_serie.get(i);
-			if((int)s.getID()==id)
+			if((int)s.getIDDB()==id)
 				return true;
 		}
 		return false;
@@ -334,7 +334,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 		return false;
 	}
 	private void salvaInDB(SerieSub serie){
-		String query="INSERT INTO "+Database.TABLE_ITASA+" (id_serie, nome_serie) VALUES ("+(int)serie.getID()+", \""+serie.getNomeSerie()+"\")";
+		String query="INSERT INTO "+Database.TABLE_ITASA+" (id_serie, nome_serie) VALUES ("+(int)serie.getIDDB()+", \""+serie.getNomeSerie()+"\")";
 		Database.updateQuery(query);
 	}
 	public void aggiornaElencoSerieOnline(){
@@ -548,7 +548,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 		for(int i=0;i<elenco_serie.size();i++){
 			SerieSub s=elenco_serie.get(i);
 			if(s.getNomeSerie().compareToIgnoreCase(nome)==0)
-				return (int)s.getID();
+				return (int)s.getIDDB();
 		}
 		return -1;
 	}
@@ -602,24 +602,28 @@ public class ItalianSubs implements ProviderSottotitoli{
 			
 			if (nome.contains("Preair"))
 				nome.replace("Preair", "");
-
-			String str_index = nome.substring(nome.lastIndexOf(" ")).trim();
-			try {
-				if (!str_index.contains("x")) {
-					setEpisodio(Integer.parseInt(str_index));
+			if(nome.contains(" ")){
+				String str_index = nome.substring(nome.lastIndexOf(" ")).trim();
+				try {
+					if (!str_index.contains("x")) {
+						setEpisodio(Integer.parseInt(str_index));
+					}
+					else {
+						setStagione(Integer.parseInt(str_index.substring(0, str_index.indexOf("x"))));
+						setEpisodio(Integer.parseInt(str_index.substring(str_index.indexOf("x") + 1)));
+					}
 				}
-				else {
-					setStagione(Integer.parseInt(str_index.substring(0, str_index.indexOf("x"))));
-					setEpisodio(Integer.parseInt(str_index.substring(str_index.indexOf("x") + 1)));
+				catch (NumberFormatException e) {
+					//ManagerException.registraEccezione(e);
+					return;
 				}
+				setNomeSerie(nome.substring(0, nome.indexOf(str_index)).trim().replace("&amp;", "&"));
+				setIDSerie(cercaSerie(getNomeSerie()));
+				setIDSub(Integer.parseInt(getUrl().substring(getUrl().indexOf("&id=")+"&id=".length())));
 			}
-			catch (NumberFormatException e) {
-				ManagerException.registraEccezione(e);
-				return;
+			else {
+				setNomeSerie(nome);
 			}
-			setNomeSerie(nome.substring(0, nome.indexOf(str_index)).trim().replace("&amp;", "&"));
-			setIDSerie(cercaSerie(getNomeSerie()));
-			setIDSub(Integer.parseInt(getUrl().substring(getUrl().indexOf("&id=")+"&id=".length())));
 		}
 		public String getUrl() {
 			return url;
@@ -681,6 +685,14 @@ public class ItalianSubs implements ProviderSottotitoli{
 	}
 	@Override
 	public SerieSub getSerieAssociata(SerieTV serie) {
+		if(serie.getIDItasa()>0){
+			int id=serie.getIDItasa();
+			for(int i=0;i<elenco_serie.size();i++){
+				SerieSub s=elenco_serie.get(i);
+				if(s.getIDDB()==id)
+					return s;
+			}
+		}
 		for(int i=0;i<elenco_serie.size();i++)
 			if(elenco_serie.get(i).getNomeSerie().compareToIgnoreCase(serie.getNomeSerie())==0)
 				return elenco_serie.get(i);
@@ -752,7 +764,6 @@ public class ItalianSubs implements ProviderSottotitoli{
 			String nome=(String) r.getValueByKey("nome_serie");
 			Integer id=(Integer) r.getValueByKey("id_serie");
 			SerieSub serie=new SerieSub(nome, id);
-			serie.setTipoID(SerieSub.TIPOID_INT);
 			elenco_serie.add(0,serie);
 		}
 	}

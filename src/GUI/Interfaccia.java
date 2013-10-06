@@ -22,6 +22,7 @@ import StruttureDati.serietv.Episodio;
 import javax.swing.JTabbedPane;
 
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -203,6 +204,8 @@ public class Interfaccia extends JFrame {
 	private JButton btn_sub_custom_Sfoglia;
 	private JButton btn_sub_custom_Scarica;
 	private JComboBox<SerieSub> cmb_sub_custom_serie;
+	private JButton btnLettoreApriCartella;
+	private JCheckBox chckbxCaricaVlcAutomaticamente;
 
 	@SuppressWarnings("serial")
 	public Interfaccia() {
@@ -766,6 +769,11 @@ public class Interfaccia extends JFrame {
 		btnLettoreUpdate.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/aggiorna.png")));
 		btnLettoreUpdate.setBounds(701, 260, 26, 26);
 		LettorePanel.add(btnLettoreUpdate);
+		
+		btnLettoreApriCartella = new JButton("Apri cartella");
+		btnLettoreApriCartella.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/folder_24.png")));
+		btnLettoreApriCartella.setBounds(604, 495, 135, 28);
+		LettorePanel.add(btnLettoreApriCartella);
 
 		ManagerCopie = new JPanel();
 		tab.addTab("File Manager", new ImageIcon(Interfaccia.class.getResource("/GUI/res/salva.png")), ManagerCopie, null);
@@ -779,7 +787,7 @@ public class Interfaccia extends JFrame {
 
 		JPanel panel_1 = new JPanel();
 		panel_1.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Aspetto", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-		panel_1.setBounds(10, 11, 350, 144);
+		panel_1.setBounds(10, 11, 350, 160);
 		OpzioniPanel.add(panel_1);
 		panel_1.setLayout(null);
 
@@ -788,24 +796,28 @@ public class Interfaccia extends JFrame {
 		panel_1.add(chckbxSempreInPrimo);
 
 		chckbxExternalVLC = new JCheckBox("Preferisci il player esterno");
-		chckbxExternalVLC.setBounds(6, 70, 338, 23);
+		chckbxExternalVLC.setBounds(6, 85, 338, 23);
 		panel_1.add(chckbxExternalVLC);
 
 		chckbxChiediConfermaPrima = new JCheckBox("Chiedi conferma prima di uscire");
-		chckbxChiediConfermaPrima.setBounds(6, 44, 338, 23);
+		chckbxChiediConfermaPrima.setBounds(6, 42, 338, 23);
 		panel_1.add(chckbxChiediConfermaPrima);
 
 		chckbxAvviaConIl = new JCheckBox("Avvia con il sistema operativo");
-		chckbxAvviaConIl.setBounds(6, 96, 196, 23);
+		chckbxAvviaConIl.setBounds(6, 109, 196, 23);
 		panel_1.add(chckbxAvviaConIl);
 
 		chckbxAvviaRidottoA = new JCheckBox("Avvia ridotto a icona");
-		chckbxAvviaRidottoA.setBounds(204, 96, 140, 23);
+		chckbxAvviaRidottoA.setBounds(204, 109, 140, 23);
 		panel_1.add(chckbxAvviaRidottoA);
 
 		chckbxTrayOnIcon = new JCheckBox("Minimizza nella tray");
-		chckbxTrayOnIcon.setBounds(6, 117, 336, 24);
+		chckbxTrayOnIcon.setBounds(6, 131, 336, 24);
 		panel_1.add(chckbxTrayOnIcon);
+		
+		chckbxCaricaVlcAutomaticamente = new JCheckBox("Carica VLC automaticamente");
+		chckbxCaricaVlcAutomaticamente.setBounds(6, 66, 318, 18);
+		panel_1.add(chckbxCaricaVlcAutomaticamente);
 
 		JPanel panel_3 = new JPanel();
 		panel_3.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Download automatico", TitledBorder.CENTER, TitledBorder.TOP, null, null));
@@ -837,7 +849,7 @@ public class Interfaccia extends JFrame {
 
 		JPanel panel_4 = new JPanel();
 		panel_4.setBorder(new TitledBorder(null, "Sottotitoli", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-		panel_4.setBounds(10, 159, 712, 136);
+		panel_4.setBounds(10, 180, 712, 136);
 		OpzioniPanel.add(panel_4);
 		panel_4.setLayout(null);
 
@@ -876,7 +888,7 @@ public class Interfaccia extends JFrame {
 
 		JPanel panel_5 = new JPanel();
 		panel_5.setBorder(new TitledBorder(null, "Programmi", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-		panel_5.setBounds(10, 307, 717, 125);
+		panel_5.setBounds(10, 325, 717, 125);
 		OpzioniPanel.add(panel_5);
 		panel_5.setLayout(null);
 
@@ -927,7 +939,7 @@ public class Interfaccia extends JFrame {
 
 		JPanel panel_6 = new JPanel();
 		panel_6.setBorder(new TitledBorder(null, "", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_6.setBounds(10, 444, 717, 58);
+		panel_6.setBounds(10, 460, 717, 58);
 		OpzioniPanel.add(panel_6);
 
 		btnOpzioniSalva = new JButton("Salva");
@@ -986,7 +998,7 @@ public class Interfaccia extends JFrame {
 		InfoPanel.add(btnChiudiADS);
 
 		/** TODO decommentare per la distribuzione */
-		
+		/*
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				if (!NativeInterface.isOpen())
@@ -1039,6 +1051,8 @@ public class Interfaccia extends JFrame {
 				
 				initSubDownload();
 				GestioneSerieTV.getSubManager().loadLast10();
+				
+				btnVLCInstance.doClick();
 			}
 		}
 		Thread t=new t_init();
@@ -1816,6 +1830,7 @@ public class Interfaccia extends JFrame {
 					Settings.setItasaUsername(txt_itasa_user.getText());
 					Settings.setItasaPassword(String.copyValueOf(txt_itasa_pass.getPassword()));
 				}
+				Settings.setVLCAutoload(chckbxCaricaVlcAutomaticamente.isSelected());
 				Settings.setClientPath(txt_utorrent_path.getText());
 				Settings.setDirectoryDownload(txt_download_path.getText());
 				Settings.setVLCPath(txt_vlc_path.getText());
@@ -2015,28 +2030,20 @@ public class Interfaccia extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				if(cmb_serie_sottotitoli.getSelectedItem()!=null){
 					SerieTV st=(SerieTV) cmb_serie_sottotitoli.getSelectedItem();
-					ProviderSottotitoli itasa=GestioneSerieTV.getSubManager().getProvider(GestoreSottotitoli.ITASA);
-					ArrayList<SerieSub> serie_itasa=itasa.getElencoSerie();
 					lblItasaSerieAss.setText("Non associata");
-					for(int i=0;i<serie_itasa.size();i++){
-						SerieSub ss=serie_itasa.get(i);
-						if(((int)ss.getID())==st.getIDItasa()){
-							lblItasaSerieAss.setText("<html>"+ss.getNomeSerie()+"</html>");
-							cmb_itasa_serie.setSelectedItem(ss);
-							break;
-						}
+					ProviderSottotitoli itasa=GestioneSerieTV.getSubManager().getProvider(GestoreSottotitoli.ITASA);
+					SerieSub serie_itasa=itasa.getSerieAssociata(st);
+					if(serie_itasa!=null){
+    					lblItasaSerieAss.setText("<html>"+serie_itasa.getNomeSerie()+"</html>");
+    					cmb_itasa_serie.setSelectedItem(serie_itasa);
 					}
 					
-					ProviderSottotitoli subsf=GestioneSerieTV.getSubManager().getProvider(GestoreSottotitoli.SUBSFACTORY);
-					ArrayList<SerieSub> serie_subsf=subsf.getElencoSerie();
 					lblSubsfactorySerieAss.setText("Non associata");
-					for(int i=0;i<serie_subsf.size();i++){
-						SerieSubSubsfactory ss=(SerieSubSubsfactory) serie_subsf.get(i);
-						if(ss.getDirectory().compareTo(st.getNomeSerie())==0){
-							lblSubsfactorySerieAss.setText("<html>"+ss.getNomeSerie()+"</html>");
-							cmb_subsfactory_serie.setSelectedItem(ss);
-							break;
-						}
+					ProviderSottotitoli subsf=GestioneSerieTV.getSubManager().getProvider(GestoreSottotitoli.SUBSFACTORY);
+					SerieSubSubsfactory serie_subsf=(SerieSubSubsfactory) subsf.getSerieAssociata(st);
+					if(serie_subsf!=null){
+						lblSubsfactorySerieAss.setText("<html>"+serie_subsf.getNomeSerie()+"</html>");
+						cmb_subsfactory_serie.setSelectedItem(serie_subsf);
 					}
 				}
 			}
@@ -2048,7 +2055,7 @@ public class Interfaccia extends JFrame {
 					if(cmb_itasa_serie.getSelectedItem()!=null){
 						SerieSub ss=(SerieSub) cmb_itasa_serie.getSelectedItem();
 						if(JOptionPane.showConfirmDialog(Interfaccia.this, "Vuoi associare "+st.getNomeSerie()+" con:\n"+ss.getNomeSerie()+"\n?", st.getNomeSerie()+" - Italiansubs", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_NO_OPTION){
-							st.setIDItasa((int)ss.getID());
+							st.setIDItasa((int)ss.getIDDB());
 							st.aggiornaDB();
 							lblItasaSerieAss.setText("<html>"+ss.getNomeSerie()+"</html>");
 						}
@@ -2099,7 +2106,7 @@ public class Interfaccia extends JFrame {
 						if(JOptionPane.showConfirmDialog(Interfaccia.this, "Vuoi associare "+st.getNomeSerie()+" con:\n"+ss.getNomeSerie()+"\n?", st.getNomeSerie()+" - Subsfactory", JOptionPane.YES_NO_OPTION)==JOptionPane.YES_NO_OPTION){
 							st.setIDSubsfactory((int)ss.getIDDB(), false);
 							st.aggiornaDB();
-							lblItasaSerieAss.setText("<html>"+ss.getNomeSerie()+"</html>");
+							lblSubsfactorySerieAss.setText("<html>"+ss.getNomeSerie()+"</html>");
 						}
 					}
 				}
@@ -2114,7 +2121,7 @@ public class Interfaccia extends JFrame {
 						st.setIDSubsfactory(-1, false);
 						st.setSubsfactoryDirectory("");
 						st.aggiornaDB();
-						lblItasaSerieAss.setText("<html>Non associata</html>");
+						lblSubsfactorySerieAss.setText("<html>Non associata</html>");
 					}
 				}
 				
@@ -2232,6 +2239,28 @@ public class Interfaccia extends JFrame {
 					}
 				}
 				btn_sub_custom_Scarica.setEnabled(true);
+			}
+		});
+		btnLettoreApriCartella.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				SerieTV serie=(SerieTV) cmb_serie_lettore.getSelectedItem();
+				if(serie!=null){
+					if(Desktop.isDesktopSupported()){
+    					String folder=Settings.getDirectoryDownload()+serie.getFolderSerie();
+    					Desktop d=Desktop.getDesktop();
+    					try {
+							d.open(new File(folder));
+						}
+						catch (IOException e) {
+							JOptionPane.showMessageDialog(Interfaccia.this, "Errore nell'apertura della cartella");
+							e.printStackTrace();
+						}
+					}
+					else {
+						JOptionPane.showMessageDialog(Interfaccia.this, "Questa opzione non è disponibile su questo sistema");
+						btnLettoreApriCartella.setEnabled(false);
+					}
+				}
 			}
 		});
 	}

@@ -182,8 +182,8 @@ public class PanelEpisodioDownload extends JPanel {
 		});
 		btnInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-				
+				ep.ignoraEpisodio();
+				PanelEpisodioDownload.this.getParent().remove(PanelEpisodioDownload.this);
 			}
 		});
 	}

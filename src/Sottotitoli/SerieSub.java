@@ -1,14 +1,12 @@
 package Sottotitoli;
 
 public class SerieSub {
-	public final static int TIPOID_INT=1, TIPOID_STRING=2;
 	private String nomeserie;
-	private Object ID;
-	private int tipo_id;
+	private int ID;
 	
-	public SerieSub(String nome, Object id) {
+	public SerieSub(String nome, int iddb) {
 		setNomeSerie(nome);
-		setID(id);
+		setIDDB(iddb);
 	}
 	public String getNomeSerie() {
 		return nomeserie;
@@ -16,17 +14,11 @@ public class SerieSub {
 	public void setNomeSerie(String nomeserie) {
 		this.nomeserie = nomeserie;
 	}
-	public Object getID() {
+	public int getIDDB() {
 		return ID;
 	}
-	public void setID(Object iD) {
-		ID = iD;
-	}
-	public int getTipoID() {
-		return tipo_id;
-	}
-	public void setTipoID(int tipo_id) {
-		this.tipo_id = tipo_id;
+	public void setIDDB(int id) {
+		ID = id;
 	}
 	public String toString(){
 		return getNomeSerie();

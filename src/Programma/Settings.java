@@ -30,6 +30,7 @@ public class Settings {
 	private static boolean		RicercaSottotitoli					= true;
 	private static boolean 		alwaysontop							= true;
 	private static String		VLCPath								= "";
+	private static boolean		VLCAutoload							= false;
 	private static String		Itasa_Username						= "";
 	private static String		Itasa_Password						= "";
 	private static String		ClientID 							= "";
@@ -281,6 +282,7 @@ public class Settings {
             setNewUpdate(((int) res.getValueByKey("new_update"))==1?true:false);
             setLastVersion((int) res.getValueByKey("last_version"));
             setRicercaSottotitoli(((int) res.getValueByKey("download_sottotitoli"))==1?true:false);
+            setVLCAutoload(((int) res.getValueByKey("vlc_autoload"))==1?true:false);
             setExtenalVLC(((int) res.getValueByKey("external_vlc"))==1?true:false);
             setEnableITASA(((int) res.getValueByKey("itasa"))==1?true:false);
             setLettoreNascondiViste(((int) res.getValueByKey("hide_viste"))==1?true:false);
@@ -464,5 +466,11 @@ public class Settings {
 	public static void setLettoreOrdine(int lettore_ordine) {
 		Settings.lettore_ordine = lettore_ordine;
 		AggiornaDB();
+	}
+	public static boolean isVLCAutoload() {
+		return VLCAutoload;
+	}
+	public static void setVLCAutoload(boolean vLCAutoload) {
+		VLCAutoload = vLCAutoload;
 	}
 }

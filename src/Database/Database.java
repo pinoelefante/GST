@@ -348,6 +348,9 @@ public class Database {
 		if(!checkColumn(TABLE_SETTINGS, "ordine_lettore")){
 			alter_aggiungicampo(TABLE_SETTINGS, "ordine_lettore", "INTEGER", "0");
 		}
+		if(!checkColumn(TABLE_SETTINGS, "vlc_autoload")){
+			alter_aggiungicampo(TABLE_SETTINGS, "vlc_autoload", "INTEGER", "0");
+		}
 	}
 	
 	public static boolean drop(String table){

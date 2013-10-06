@@ -23,7 +23,7 @@ public class SerieSubSubsfactory extends SerieSub {
 	public void setIDDB(int i){
 		id_db=i;
 	}
-	public int getIDDB(){
+	public int getIDDB() {
 		if(id_db<=0){
 			String query="SELECT id FROM "+Database.TABLE_SUBSFACTORY+" WHERE nome_serie=\""+getNomeSerie()+"\" AND directory=\""+getDirectory()+"\"";
 			ArrayList<KVResult<String, Object>> res=Database.selectQuery(query);

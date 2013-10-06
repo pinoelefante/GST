@@ -151,17 +151,17 @@ public class GestoreSottotitoli {
 		if(s.getIDItasa()<=0){
 			SerieSub id=itasa.getSerieAssociata(s);
 			if(id!=null){
-				s.setIDItasa((int)id.getID());
+				s.setIDItasa((int)id.getIDDB());
 				itasa_assoc=true;
 			}
 		}
 		else
 			it_al=true;
 		
-		if(s.getIDDBSubsfactory()==0){ //TODO modificare usando id numerico
+		if(s.getIDDBSubsfactory()==0){
 			SerieSubSubsfactory id=(SerieSubSubsfactory) subsfactory.getSerieAssociata(s);
 			if(id!=null){
-				s.setIDSubsfactory((int)id.getID(), false);
+				s.setIDSubsfactory((int)id.getIDDB(), false);
 				s.setSubsfactoryDirectory(id.getDirectory());
 				subs_assoc=true;
 			}
