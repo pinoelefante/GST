@@ -56,6 +56,7 @@ public class Main {
 			Runtime.getRuntime().addShutdownHook(new Thread(){
 				public void run(){
 					Database.rebuildDB();
+					Database.Disconnect();
 				}
 			});
 			
@@ -114,7 +115,7 @@ public class Main {
 			FileManager.instance();
 			
 			GUIframe = new Interfaccia();
-			GUIframe.setVisible(true);
+			//GUIframe.setVisible(true);
 			GUIframe.init();
 			
 			Thread subThread=new Thread(new Runnable() {

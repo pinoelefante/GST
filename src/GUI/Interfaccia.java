@@ -21,10 +21,15 @@ import StruttureDati.serietv.Episodio;
 
 import javax.swing.JTabbedPane;
 
+import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Desktop;
 import java.awt.Dimension;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
 import java.awt.Toolkit;
+import java.awt.TrayIcon;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
@@ -37,7 +42,6 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
@@ -54,13 +58,6 @@ import javax.swing.SwingUtilities;
 
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
-import chrriis.dj.nativeswing.swtimpl.components.WebBrowserAdapter;
-import chrriis.dj.nativeswing.swtimpl.components.WebBrowserCommandEvent;
-import chrriis.dj.nativeswing.swtimpl.components.WebBrowserEvent;
-import chrriis.dj.nativeswing.swtimpl.components.WebBrowserListener;
-import chrriis.dj.nativeswing.swtimpl.components.WebBrowserNavigationEvent;
-import chrriis.dj.nativeswing.swtimpl.components.WebBrowserWindowOpeningEvent;
-import chrriis.dj.nativeswing.swtimpl.components.WebBrowserWindowWillOpenEvent;
 
 import javax.swing.border.TitledBorder;
 import javax.swing.JCheckBox;
@@ -91,7 +88,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.CompoundBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.border.BevelBorder;
 
 public class Interfaccia extends JFrame {
 	private static Interfaccia thisframe;
@@ -1040,6 +1036,12 @@ public class Interfaccia extends JFrame {
 		/** inizializza i campi che contengono le serie tv inserite */
 		class t_init extends Thread{
 			public void run(){
+				setTray();
+				if(Settings.isStartHidden())
+					thisframe.setVisible(false);
+				else
+					thisframe.setVisible(true);
+				
 				reloadSeriePreferite();
 				reloadSerieDisponibili();
 
@@ -1462,27 +1464,30 @@ public class Interfaccia extends JFrame {
 
 		addWindowListener(new WindowListener() {
 			public void windowOpened(WindowEvent arg0) {}
-
-			public void windowIconified(WindowEvent arg0) {}
-
+			public void windowIconified(WindowEvent arg0) {
+				thisframe.setVisible(false);
+			}
 			public void windowDeiconified(WindowEvent arg0) {}
-
 			public void windowDeactivated(WindowEvent arg0) {}
-
 			public void windowClosing(WindowEvent arg0) {
-				if (advertising != null)
-					advertising.disposeNativePeer();
-				NativeInterface.close();
-				if (VLCPanel != null) {
-					if (VLCPanel.isLinked()) {
-						VLCPanel.stop();
-						VLCPanel.release();
+				System.out.println("Window closing");
+				if(Settings.isAskOnClose()){
+					int risposta=JOptionPane.showConfirmDialog(thisframe, "Vuoi chiudere Gestione Serie TV?", "Conferma chiusura Gestione Serie TV", JOptionPane.YES_NO_OPTION);
+					if(risposta==JOptionPane.YES_OPTION){
+						if (advertising != null)
+							advertising.disposeNativePeer();
+						NativeInterface.close();
+						if (VLCPanel != null) {
+							if (VLCPanel.isLinked()) {
+								VLCPanel.stop();
+								VLCPanel.release();
+							}
+						}
+						System.exit(0);
 					}
 				}
 			}
-
 			public void windowClosed(WindowEvent arg0) {}
-
 			public void windowActivated(WindowEvent arg0) {}
 		});
 		txt_cerca_serie_tutte.addKeyListener(new KeyAdapter() {
@@ -2290,5 +2295,57 @@ public class Interfaccia extends JFrame {
 		ArrayList<SerieSub> s_subs=p_subsfactory.getElencoSerie();
 		for(int i=0;i<s_subs.size();i++)
 			cmb_subsfactory_serie.addItem(s_subs.get(i));
+	}
+	public static SystemTray	tray;
+	public void removeTray() {
+		TrayIcon[] ic = tray.getTrayIcons();
+		if (ic.length > 0)
+			tray.remove(ic[0]);
+		setExtendedState(JFrame.NORMAL);
+		setVisible(true);
+	}
+
+	public void setTray() {
+		if (!SystemTray.isSupported()) {
+			System.out.println("SystemTray is not supported");
+			return;
+		}
+		PopupMenu popup = new PopupMenu();
+		final TrayIcon trayIcon = new TrayIcon(Resource.createImage("/GUI/res/icona32.png", "Gestione Serie TV rel." + Settings.getVersioneSoftware() + " by pinoelefante"), "Gestione Serie TV rel." + Settings.getVersioneSoftware() + " by pinoelefante");
+
+		tray = SystemTray.getSystemTray();
+		MenuItem restoreWin = new MenuItem("Apri");
+		MenuItem exitItem = new MenuItem("Chiudi");
+
+		popup.add(restoreWin);
+		popup.add(exitItem);
+
+		trayIcon.setPopupMenu(popup);
+		try {
+			tray.add(trayIcon);
+		}
+		catch (AWTException e) {
+			System.out.println("TrayIcon could not be added.");
+			ManagerException.registraEccezione(e);
+			return;
+		}
+
+		trayIcon.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				setVisible(true);
+				setExtendedState(JFrame.NORMAL);
+			}
+		});
+		restoreWin.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				setVisible(true);
+				setExtendedState(JFrame.NORMAL);
+			}
+		});
+		exitItem.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				thisframe.getWindowListeners()[0].windowClosing(new WindowEvent(thisframe, WindowEvent.WINDOW_CLOSING));
+			}
+		});
 	}
 }
