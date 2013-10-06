@@ -4,7 +4,6 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import SerieTV.GestioneSerieTV;
-import Sottotitoli.GestoreSottotitoli;
 import Database.Database;
 import GUI.FrameLoading;
 import GUI.Interfaccia;
