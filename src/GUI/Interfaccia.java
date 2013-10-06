@@ -1052,7 +1052,8 @@ public class Interfaccia extends JFrame {
 				initSubDownload();
 				GestioneSerieTV.getSubManager().loadLast10();
 				
-				btnVLCInstance.doClick();
+				if(Settings.isVLCAutoload())
+					btnVLCInstance.doClick();
 			}
 		}
 		Thread t=new t_init();

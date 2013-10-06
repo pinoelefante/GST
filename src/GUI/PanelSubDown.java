@@ -69,23 +69,23 @@ public class PanelSubDown extends JPanel {
 						btnRimuovi.setEnabled(false);
 						if(GestioneSerieTV.getSubManager().scaricaSottotitolo(torrent)){
 							lblRisultato.setText("<html>Sottotitolo scaricato!</html>");
-							class threadRemove extends Thread {
-								public void run(){
-									int secondi=5;
-									while (secondi>=0){
-										lblRisultato.setText("<html>Sottotitolo scaricato!<br>Rimozione tra "+secondi+" secondi</html>");
-										try { sleep(1000); }
-										catch (InterruptedException e) {}
-										secondi--;
-									}
-									PanelSubDown.this.getParent().remove(PanelSubDown.this);
-								}
+							Thread t_wait=new ThreadWait(5);
+							t_wait.start();
+							try {
+								t_wait.join();
 							}
-							Thread t_rimozione=new threadRemove();
-							t_rimozione.start();
+							catch (InterruptedException e) {}
+							PanelSubDown.this.getParent().remove(PanelSubDown.this);
 						}
 						else {
 							lblRisultato.setText("<html>Sottotitolo non trovato</html>");
+							Thread t_wait=new ThreadWait(5);
+							t_wait.start();
+							try {
+								t_wait.join();
+							}
+							catch (InterruptedException e) {}
+							lblRisultato.setText("");
 							btnScarica.setEnabled(true);
 							btnRimuovi.setEnabled(true);
 						}

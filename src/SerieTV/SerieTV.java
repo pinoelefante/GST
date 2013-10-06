@@ -53,7 +53,7 @@ public class SerieTV {
 		Runtime.getRuntime().gc();
 	}
 	public String getFolderSerie() {
-		return getNomeSerie().replace(":", "-").replace("?", "").replace("/", "-").replace("\\", "-").replace("*", "").replace("<", "").replace(">", "").replace("|", "").replace("\"", "");
+		return getNomeSerie().replace(":", "-").replace("?", "").replace("/", "-").replace("\\", "-").replace("*", "").replace("<", "").replace(">", "").replace("|", "").replace("\"", "").replace(".", "");
 	}
 	public int getIDDb(){
 		return id_db;
