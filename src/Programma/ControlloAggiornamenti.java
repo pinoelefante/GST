@@ -65,7 +65,7 @@ public class ControlloAggiornamenti {
 		}
 	}
 	public void update() {
-		if(Settings.getVersioneSoftware()<getVersioneOnline()){
+		if(getVersioneOnline()>Settings.getVersioneSoftware()){
     		if(scarica()) {
     			String[] cmd={
     					System.getProperty("java.home")+File.separator+"bin"+File.separator+"java"+(Settings.isWindows()?".exe":""), 

@@ -59,6 +59,8 @@ import javax.swing.SwingUtilities;
 
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
+import chrriis.dj.nativeswing.swtimpl.components.WebBrowserAdapter;
+import chrriis.dj.nativeswing.swtimpl.components.WebBrowserWindowWillOpenEvent;
 
 import javax.swing.border.TitledBorder;
 import javax.swing.JCheckBox;
@@ -995,7 +997,7 @@ public class Interfaccia extends JFrame {
 		InfoPanel.add(btnChiudiADS);
 
 		/** TODO decommentare per la distribuzione */
-		/*
+		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				if (!NativeInterface.isOpen())
@@ -1329,19 +1331,14 @@ public class Interfaccia extends JFrame {
 							btnCercaAggiornamenti.setEnabled(true);
 							lblRisultatoAggiornamenti.setText("<html>Versione online: " + versione + "<br><font color='blue'><u>Clicca qui per scaricarla</u></font></html>");
 							lblRisultatoAggiornamenti.setToolTipText("Clicca per aggiornare");
-							// System.out.println(lblRisultatoAggiornamenti.getMouseListeners().length);
 							rimuoviListener();
 							lblRisultatoAggiornamenti.addMouseListener(new MouseListener() {
 								public void mouseReleased(MouseEvent arg0) {}
-
 								public void mousePressed(MouseEvent arg0) {}
-
 								public void mouseExited(MouseEvent arg0) {}
-
 								public void mouseEntered(MouseEvent arg0) {}
-
 								public void mouseClicked(MouseEvent arg0) {
-									JOptionPane.showMessageDialog(Interfaccia.this, "Prova");
+									controller.update();
 								}
 							});
 						}
