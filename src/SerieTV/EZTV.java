@@ -15,7 +15,7 @@ import Programma.Settings;
 import Programma.WebProxyManager;
 import StruttureDati.db.KVResult;
 import StruttureDati.serietv.Episodio;
-//TODO url che sia solo id di eztv
+
 public class EZTV extends ProviderSerieTV{
 	public EZTV(){
 		super();
@@ -63,6 +63,19 @@ public class EZTV extends ProviderSerieTV{
 					int stato=0;
 					if(nextline.contains("ended"))
 						stato=1;
+					switch(nomeserie){
+						case "T1":
+						case "T2":
+						case "T3":
+						case "T4":
+						case "T5":
+						case "T6":
+						case "T7":
+						case "T8":
+						case "T9":
+							continue;
+							
+					}
 					SerieTV toInsert=new SerieTV(this, nomeserie, url);
 					toInsert.setConclusa(stato==0?false:true);
 					

@@ -1181,6 +1181,7 @@ public class Interfaccia extends JFrame {
 		comboBoxMinutiRicercaAutomatica.setSelectedItem(Settings.getMinRicerca());
 		chckbxAbilitaDownloadSottotitoli.setSelected(Settings.isRicercaSottotitoli());
 		chckbxAbilitaItaliansubsnet.setSelected(Settings.isEnableITASA());
+		chckbxCaricaVlcAutomaticamente.setSelected(Settings.isVLCAutoload());
 		txt_itasa_user.setText(Settings.getItasaUsername());
 		txt_itasa_pass.setText("");
 		txt_utorrent_path.setText(Settings.getClientPath());
