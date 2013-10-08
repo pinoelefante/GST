@@ -1482,8 +1482,10 @@ public class Interfaccia extends JFrame {
 								VLCPanel.release();
 							}
 						}
-						System.exit(0);
+						setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 					}
+					else
+						setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 				}
 			}
 			public void windowClosed(WindowEvent arg0) {}
