@@ -342,6 +342,7 @@ public class Settings {
                 "last_version="+getLastVersion()+","+
                 "download_sottotitoli="+(isRicercaSottotitoli()?1:0)+","+
                 "external_vlc="+(isExtenalVLC()?1:0)+","+
+                "vlc_autoload="+(isVLCAutoload()?1:0)+","+
                 "itasa="+(isEnableITASA()?1:0)+","+
                 "hide_viste="+(isLettoreNascondiViste()?1:0)+","+
                 "hide_ignorate="+(isLettoreNascondiIgnore()?1:0)+","+
