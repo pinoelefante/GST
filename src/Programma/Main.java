@@ -83,7 +83,16 @@ public class Main {
 				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T6\"",
 				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T7\"",
 				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T8\"",
-				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T9\""
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T9\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp1\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp2\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp3\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp4\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp5\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp6\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp7\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp8\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp9\""
 			};
 			for(int j=0;j<query.length;j++)
 				Database.updateQuery(query[j]);

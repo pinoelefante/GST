@@ -73,6 +73,15 @@ public class EZTV extends ProviderSerieTV{
 						case "T7":
 						case "T8":
 						case "T9":
+						case "Temp1":
+						case "Temp2":
+						case "Temp3":
+						case "Temp4":
+						case "Temp5":
+						case "Temp6":
+						case "Temp7":
+						case "Temp8":
+						case "Temp9":
 							continue;
 							
 					}
