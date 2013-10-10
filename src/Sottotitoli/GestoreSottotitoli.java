@@ -115,10 +115,10 @@ public class GestoreSottotitoli {
 				","+t.getEpisodio()+
 				","+provider.getProviderID()+")";
 		Database.updateQuery(query);
-		Interfaccia.getInterfaccia().addEntrySottotitolo(t.getNomeSerie(), t.getStagione(), t.getEpisodio(), provider.getProviderName());
+		Interfaccia.getInterfaccia().addEntrySottotitolo(t.getNomeSerie(), t.getStagione(), t.getEpisodio(), provider.getProviderName(), true);
 	}
-	private void aggiungiLogEntry(String serie, int stagione, int episodio, int provider){
-		Interfaccia.getInterfaccia().addEntrySottotitolo(serie, stagione,episodio, getProvider(provider).getProviderName());
+	private void aggiungiLogEntry(String serie, int stagione, int episodio, int provider, boolean tray_notify){
+		Interfaccia.getInterfaccia().addEntrySottotitolo(serie, stagione,episodio, getProvider(provider).getProviderName(), tray_notify);
 	}
 	public void loadLast10(){
 		String query="SELECT * FROM "+Database.TABLE_LOGSUB+" ORDER BY id DESC LIMIT 10";
@@ -129,7 +129,7 @@ public class GestoreSottotitoli {
 			int stagione=(int) r.getValueByKey("stagione");
 			int episodio=(int) r.getValueByKey("episodio");
 			int id_provider=(int) r.getValueByKey("id_provider");
-			aggiungiLogEntry(nomeserie, stagione, episodio, id_provider);
+			aggiungiLogEntry(nomeserie, stagione, episodio, id_provider, false);
 		}
 	}
 	public void aggiungiEpisodio(Torrent t){

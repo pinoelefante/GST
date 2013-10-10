@@ -23,11 +23,39 @@ public class Update {
 					System.out.println("\nAvvio aggiornamento 102 a 103");
 					update_102_to_103();
 					//TODO rimuovere torrent con lo stesso hash
+				case 103: 
+					update_103_to_104();
 				default:
 					Settings.setLastVersion(Settings.getVersioneSoftware());
 					Settings.setNewUpdate(false);
 			}
 		}
+	}
+	private static void update_103_to_104() {
+		String[] query={
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T1\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T2\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T3\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T4\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T5\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T6\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T7\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T8\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T9\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp1\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp2\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp3\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp4\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp5\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp6\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp7\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp8\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp9\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temporary_Placeholder\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temporary_Placeholder_2\""
+			};
+			for(int j=0;j<query.length;j++)
+				Database.updateQuery(query[j]);
 	}
 	private static void update_102_to_103(){
 		SQLiteConfig conf=new SQLiteConfig();

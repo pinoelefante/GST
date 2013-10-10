@@ -2271,10 +2271,10 @@ public class Interfaccia extends JFrame {
 		});
 	}
 
-	public void addEntrySottotitolo(String nomeserie, int stagione, int episodio, String provider) {
+	public void addEntrySottotitolo(String nomeserie, int stagione, int episodio, String provider, boolean tray_not) {
 		DefaultTableModel model = (DefaultTableModel) tableSubDownloaded.getModel();
 		model.addRow(new Object[] { nomeserie, stagione, episodio, provider });
-		if(tray!=null){
+		if(tray!=null && tray_not){
 			String messaggio=nomeserie+" S"+(stagione<10?"0"+stagione:stagione)+"E"+(episodio<10?"0"+episodio:episodio)+" - "+provider;
 			tray.getTrayIcons()[0].displayMessage("", messaggio, MessageType.INFO);
 		}

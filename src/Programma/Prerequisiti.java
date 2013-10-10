@@ -112,7 +112,7 @@ public class Prerequisiti {
 	private static ArrayList<Dipendenza> list_utility=new ArrayList<Dipendenza>();
 	private final static String sito2="http://pinoelefante.altervista.org/software/GST2/";
 	private static void popola_utility() {
-		list_utility.add(new Dipendenza("gst_updater.jar", "gst_updater.jar", sito2+"gst_updater.jar", "indipendent", 1868L, true, true));
+		list_utility.add(new Dipendenza("gst_updater.jar", "gst_updater.jar", sito2+"gst_updater.jar", "indipendent", 2112L, true, true));
 	}
 	private static void popola_vlc() {
 		String destinazione=Settings.getCurrentDir()+"lib"+File.separator+"vlc"+File.separator+Settings.getOSName()+"-"+Settings.getVMArch()+File.separator;
