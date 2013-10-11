@@ -32,6 +32,7 @@ public class PanelEpisodioDownload extends JPanel {
 	private JButton btnPreair;
 	private JButton btnInfo;
 	private JCheckBox chckbxnomeserie;
+	private JButton btnX;
 	
 	public PanelEpisodioDownload(Episodio e) {
 		ep=e;
@@ -54,7 +55,8 @@ public class PanelEpisodioDownload extends JPanel {
 		JPanel panel_6 = new JPanel();
 		panel.add(panel_6, BorderLayout.EAST);
 		
-		JButton btnX = new JButton("X");
+		btnX = new JButton("");
+		btnX.setIcon(new ImageIcon(PanelEpisodioDownload.class.getResource("/GUI/res/Xclose.png")));
 		panel_6.add(btnX);
 		
 		JPanel panel_1 = new JPanel();
@@ -181,6 +183,11 @@ public class PanelEpisodioDownload extends JPanel {
 			}
 		});
 		btnInfo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				//TODO info da tvdb
+			}
+		});
+		btnX.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				ep.ignoraEpisodio();
 				PanelEpisodioDownload.this.getParent().remove(PanelEpisodioDownload.this);

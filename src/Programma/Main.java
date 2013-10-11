@@ -23,6 +23,7 @@ public class Main {
 	static Interfaccia frame2;
 	private static Interfaccia GUIframe;
 	public static void main(String[] args) {
+		@SuppressWarnings("unused")
 		IstanceManager istance_manager=new IstanceManager();
 		Settings.baseSettings();
 		try{

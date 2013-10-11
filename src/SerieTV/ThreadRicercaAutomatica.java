@@ -1,12 +1,7 @@
 package SerieTV;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import javax.swing.JOptionPane;
 
 //import GUI.Interfaccia;
-import Programma.ManagerException;
-import Programma.Settings;
 
 //TODO RIFARE LA CLASSE
 

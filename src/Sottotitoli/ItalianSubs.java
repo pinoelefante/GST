@@ -73,7 +73,6 @@ public class ItalianSubs implements ProviderSottotitoli{
 	private Thread LoggerItasa;
 	private GregorianCalendar RSS_UltimoAggiornamento;
 	private final long update_time_rss=900000L;  //15 minuti
-	private static int download_corrente=0;
 	
 	public ItalianSubs(){
 		feed_rss=new ArrayList<RSSItem>();
@@ -207,9 +206,19 @@ public class ItalianSubs implements ProviderSottotitoli{
 			ManagerException.registraEccezione(e);
 		}
 	}
-	
-	@SuppressWarnings("resource")
-	private int cercaIDSottotitoloFromAPI(int show_id, int serie, int episodio, int tipo) throws ItasaSubNotFound { //TODO fare tramite parsing XML
+	public static void main(String[] args){
+		Database.Connect();
+		ItalianSubs itasa=new ItalianSubs();
+		try {
+			int id=itasa.cercaIDSottotitoloFromAPI(399, 7, 5, ItalianSubs.HDTV);
+			System.out.println("ID del sottotitolo: "+id);
+		}
+		catch (ItasaSubNotFound e) {
+			System.out.println(e.getMessage());
+			e.printStackTrace();
+		}
+	}
+	private int cercaIDSottotitoloFromAPI(int show_id, int serie, int episodio, int tipo) throws ItasaSubNotFound { 
 		String query = serie + "x"	+ (episodio < 10 ? "0" + episodio : episodio); 
 		String tipo_sub = "Normale";
 		switch (tipo) {
@@ -222,41 +231,45 @@ public class ItalianSubs implements ProviderSottotitoli{
 		}
 		String url_query = API_SUB_GETID.replace("<QUERY>", query).replace("<VERSIONE>", tipo_sub).replace("<SHOW_ID>", show_id	+ "");
 
-		FileReader f_r = null;
-		Scanner file = null;
-		int id = -1;
+		DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
+	    DocumentBuilder domparser = null;
 		try {
-			int id_r;
-			synchronized (this) {
-				id_r=download_corrente;
-				download_corrente++;
-			}
-			Download.downloadFromUrl(url_query, Settings.getCurrentDir()+"response_sub_"+id_r);
-			f_r = new FileReader(Settings.getCurrentDir()+"response_sub_"+id_r);
-			file = new Scanner(f_r);
-			while (file.hasNextLine()) {
-				String linea = file.nextLine().trim();
-				if (linea.startsWith("<root>")) {
-					String n_sub = linea.substring(linea.indexOf("<count>"), linea.indexOf("</count>")).replace("<count>", "").trim();
-					int n = Integer.parseInt(n_sub);
-					if (n == 0)
-						throw new ItasaSubNotFound("Non sono presenti sottotitoli per questa puntata");
-					else if (n > 0) {
-						String id_s = linea.substring(linea.indexOf("<id>"), linea.indexOf("</id>")).replace("<id>", "").trim();
-						id = Integer.parseInt(id_s);
-						break;
+			domparser = dbfactory.newDocumentBuilder();
+			Document doc = domparser.parse(url_query);
+			
+			NodeList countlist=doc.getElementsByTagName("count");
+			if(countlist.getLength()==1){
+				Element count=(Element) countlist.item(0);
+				int num_sub=Integer.parseInt(count.getTextContent());
+				if(num_sub>0){
+					NodeList idlist=doc.getElementsByTagName("id");
+					int id=0;
+					for(int i=0;i<idlist.getLength();i++){
+						Node value=idlist.item(i);
+						if(value instanceof Element){
+							Element v=(Element)value;
+							int id_v=Integer.parseInt(v.getTextContent());
+							if(id_v>id)
+								id=id_v;
+						}
 					}
+					return id;
+				}
+				else {
+					throw new ItasaSubNotFound("Sottotitolo non trovato");
 				}
 			}
-			file.close();
-			f_r.close();
-			OperazioniFile.deleteFile(Settings.getCurrentDir()+"response_sub_"+id_r);
+			else
+				throw new ItasaSubNotFound("Risposta API non valida");
+		}
+		catch(ParserConfigurationException e){}
+		catch (SAXException e) {
+			e.printStackTrace();
 		}
 		catch (IOException e) {
-			ManagerException.registraEccezione(e);
-			throw new ItasaSubNotFound("Itasa exception - probabile errore di connessione");
+			e.printStackTrace();
 		}
-		return id;
+		throw new ItasaSubNotFound("Sottotitolo non trovato");
 	}
 	private boolean isSeriePresente(int id){
 		if(elenco_serie.isEmpty())
