@@ -272,6 +272,7 @@ public class PanelEpisodioLettore extends JPanel {
 		});
 		
 		btnCopiaSuDispositivo.addActionListener(new ActionListener() {
+			private String dest;
 			public void actionPerformed(ActionEvent arg0) {
 				String origine_filepath=torrent.getFilePath();
 				if(origine_filepath==null){
@@ -280,12 +281,13 @@ public class PanelEpisodioLettore extends JPanel {
 					return;
 				}
 				String destinazione_path="";
-				JFileChooser chooser= new JFileChooser();
+				JFileChooser chooser= new JFileChooser(dest);
 				chooser.setDialogTitle("Cartella di destinazione");
 				chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 				chooser.setAcceptAllFileFilterUsed(false);
 				if(chooser.showOpenDialog(PanelEpisodioLettore.this.getParent().getParent().getParent()) == JFileChooser.APPROVE_OPTION){
 					destinazione_path=chooser.getSelectedFile().getAbsolutePath();
+					dest=destinazione_path;
 				}
 				else {
 				      return;
