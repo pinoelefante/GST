@@ -72,7 +72,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 	private boolean locked=true;
 	private Thread LoggerItasa;
 	private GregorianCalendar RSS_UltimoAggiornamento;
-	private final long update_time_rss=900000L;  //15 minuti
+	private final long update_time_rss=/*1 minuto*/60000L*15;  //15 minuti
 	
 	public ItalianSubs(){
 		feed_rss=new ArrayList<RSSItem>();

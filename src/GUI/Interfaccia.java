@@ -1555,10 +1555,18 @@ public class Interfaccia extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				SerieTV s = (SerieTV) cmb_serie_aggiunte.getSelectedItem();
 				if (s != null) {
-					//TODO chiedere se rimuovere la cartella
-					GestioneSerieTV.rimuoviSeriePreferita(s);
-					reloadSeriePreferite();
-					inizializzaDownloadScroll();
+					int conferma1=JOptionPane.showConfirmDialog(thisframe, "Sei sicuro di voler rimuovere la serie?\n"+s.getNomeSerie(), s.getNomeSerie()+" - Rimozione", JOptionPane.YES_NO_OPTION);
+					if(conferma1==JOptionPane.YES_OPTION) {
+						int conferma2=JOptionPane.showConfirmDialog(thisframe, "Vuoi cancellare la cartella contenente tutti gli episodi?", s.getNomeSerie()+" - Rimozione cartella", JOptionPane.YES_NO_OPTION);
+						if(conferma2==JOptionPane.YES_OPTION) {
+							OperazioniFile.DeleteDirectory(new File(Settings.getDirectoryDownload()+s.getFolderSerie()));
+						}
+						GestioneSerieTV.rimuoviSeriePreferita(s);
+						reloadSeriePreferite();
+						inizializzaDownloadScroll();
+						
+					}
+					
 				}
 			}
 		});
