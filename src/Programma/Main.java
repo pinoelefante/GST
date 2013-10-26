@@ -24,7 +24,7 @@ public class Main {
 	private static Interfaccia GUIframe;
 	public static void main(String[] args) {
 		@SuppressWarnings("unused")
-		IstanceManager istance_manager=new IstanceManager();
+		InstanceManager instance_manager=new InstanceManager();
 		Settings.baseSettings();
 		try{
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");

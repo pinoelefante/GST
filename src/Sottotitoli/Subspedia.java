@@ -17,7 +17,6 @@ import org.xml.sax.SAXException;
 import Naming.Renamer;
 import Programma.Download;
 import Programma.ManagerException;
-import Programma.OperazioniFile;
 import Programma.Settings;
 import SerieTV.SerieTV;
 import SerieTV.Torrent;
@@ -99,13 +98,13 @@ public class Subspedia implements ProviderSottotitoli {
 		
 		last_update=System.currentTimeMillis();
 		try {
-			Download.downloadFromUrl(URLFeedRSS, Settings.getCurrentDir()+"feed_subspedia");
+			//Download.downloadFromUrl(URLFeedRSS, Settings.getCurrentDir()+"feed_subspedia");
 			rss.clear();
 			
 			DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
 			dbfactory.setNamespaceAware(true);
 			DocumentBuilder domparser = dbfactory.newDocumentBuilder();
-			Document doc = domparser.parse(new File(Settings.getCurrentDir()+"feed_subspedia"));
+			Document doc = domparser.parse(URLFeedRSS);
 			
 			NodeList elementi=doc.getElementsByTagName("item");
 			for(int i=0;i<elementi.getLength();i++){
@@ -133,7 +132,7 @@ public class Subspedia implements ProviderSottotitoli {
 				}
 				rss.add(new SubspediaRSSItem(titolo, link));
 			}
-			OperazioniFile.deleteFile(Settings.getCurrentDir()+"feed_subspedia");
+			//OperazioniFile.deleteFile(Settings.getCurrentDir()+"feed_subspedia");
 		} 
 		catch (IOException e) {	
 			e.printStackTrace();

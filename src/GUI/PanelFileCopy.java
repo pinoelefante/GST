@@ -145,6 +145,7 @@ public class PanelFileCopy extends JPanel {
 			catch(ArithmeticException e){
 				lblCurrentStatus.setText("Errore durante la copia");
 				interrupt();
+				btnAvvia.setEnabled(true);
 			}
 		}
 	}
@@ -157,9 +158,18 @@ public class PanelFileCopy extends JPanel {
 		});
 		btnAnnulla.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if(download.isStarted() && !download.isComplete())
-					arrestaDownload();
-				FileManager.removePanel(PanelFileCopy.this);
+				class ThreadRimuoviCopia extends Thread {
+					public void run() {
+						btnAnnulla.setEnabled(false);
+						if(download.isStarted() && !download.isComplete())
+							arrestaDownload();
+						FileManager.removePanel(PanelFileCopy.this);
+						
+						btnAnnulla.setEnabled(true);
+					}
+				}
+				Thread t=new ThreadRimuoviCopia();
+				t.start();
 			}
 		});
 	}

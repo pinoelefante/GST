@@ -409,11 +409,11 @@ public class Subsfactory implements ProviderSottotitoli {
 		RSS_UltimoAggiornamento=new GregorianCalendar();
 		feed_rss.clear();
 		try {
-			Download.downloadFromUrl(URL_FEED_RSS, Settings.getCurrentDir()+"feed_subs");
-			
+			//Download.downloadFromUrl(URL_FEED_RSS, Settings.getCurrentDir()+"feed_subs");
+			//System.out.println("Aggiornamento feed RSS Subsfactory");
 			DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder domparser = dbfactory.newDocumentBuilder();
-			Document doc = domparser.parse(new File(Settings.getCurrentDir()+"feed_subs"));
+			Document doc = domparser.parse(URL_FEED_RSS);
 			
 			NodeList elementi=doc.getElementsByTagName("item");
 			for(int i=0;i<elementi.getLength();i++){
@@ -441,7 +441,7 @@ public class Subsfactory implements ProviderSottotitoli {
 				if(rss.isValid())
 					feed_rss.add(rss);
 			}
-			OperazioniFile.deleteFile(Settings.getCurrentDir()+"feed_subs");
+			//OperazioniFile.deleteFile(Settings.getCurrentDir()+"feed_subs");
 		} 
 		catch (IOException e) {	
 			e.printStackTrace();

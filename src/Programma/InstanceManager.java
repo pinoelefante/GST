@@ -10,14 +10,14 @@ import javax.swing.JFrame;
 
 import GUI.Interfaccia;
 
-public class IstanceManager {
+public class InstanceManager {
 	private ServerSocket socket;
 	private static int listen_port=54564;
 	
-	public IstanceManager() {
+	public InstanceManager() {
 		this(listen_port);
 	}
-	public IstanceManager(int port) {
+	public InstanceManager(int port) {
 		listen_port=port;
 		try {
 			socket=new ServerSocket(listen_port);
