@@ -74,7 +74,14 @@ public class InstanceManager {
 			//caso in cui non fosse possibile scrivere sul socket o socket server non raggiungibile
 			e.printStackTrace();
 		}
-		
 	}
-
+	public void disconnect(){
+		if(socket!=null)
+			try {
+				socket.close();
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+	}
 }

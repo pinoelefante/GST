@@ -162,7 +162,6 @@ public class Interfaccia extends JFrame {
 	private JButton			btnRimuovi;
 	private JButton			btnScarica;
 	private JButton			btnIgnora;
-	private JButton			btnTest;
 	private JLabel			 lblDona;
 	private JButton			btnCercaAggiornamenti;
 	private JButton			btnAggiornaAds;
@@ -198,7 +197,7 @@ public class Interfaccia extends JFrame {
 	private JButton btnItasaRimuovi;
 	private JButton btnSubsfactoryAssocia;
 	private JButton btnSubsfactoryRimuovi;
-	private JPanel panel_2;
+	private JPanel panel_download_sub_single;
 	private JComboBox<ProviderSottotitoli> cmb_sub_custom_provider;
 	private JButton btn_sub_custom_Sfoglia;
 	private JButton btn_sub_custom_Scarica;
@@ -369,9 +368,6 @@ public class Interfaccia extends JFrame {
 		panel_info_episodio.setBounds(385, 257, 344, 269);
 		DownloadPanel.add(panel_info_episodio);
 
-		btnTest = new JButton("test");
-		panel_info_episodio.add(btnTest);
-
 		btnAggiorna = new JButton("Aggiorna");
 
 		btnAggiorna.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/aggiorna.png")));
@@ -430,117 +426,117 @@ public class Interfaccia extends JFrame {
 		tab.addTab("Sottotitoli", new ImageIcon(Interfaccia.class.getResource("/GUI/res/sottotitoli.png")), SottotitoliPanel, null);
 		SottotitoliPanel.setLayout(null);
 
-		JPanel panel = new JPanel();
-		panel.setBorder(new TitledBorder(null, "Associatore", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel.setBounds(0, 0, 739, 200);
-		SottotitoliPanel.add(panel);
-		panel.setLayout(null);
+		JPanel panel_sub_associatore = new JPanel();
+		panel_sub_associatore.setBorder(new TitledBorder(null, "Associatore", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_sub_associatore.setBounds(0, 0, 739, 200);
+		SottotitoliPanel.add(panel_sub_associatore);
+		panel_sub_associatore.setLayout(null);
 
 		imgItasaLogo = new JLabel("");
 		imgItasaLogo.setToolTipText("Clicca per visitare ItalianSubs");
 		imgItasaLogo.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/itasa.png")));
 		imgItasaLogo.setBounds(10, 49, 208, 37);
-		panel.add(imgItasaLogo);
+		panel_sub_associatore.add(imgItasaLogo);
 
 		JLabel lblitaliansubs = new JLabel("<html><b>ItalianSubs</b></html>");
 		lblitaliansubs.setBounds(82, 85, 73, 14);
-		panel.add(lblitaliansubs);
+		panel_sub_associatore.add(lblitaliansubs);
 
 		JLabel lblSerieTV = new JLabel("<html><b>Serie</b><html>");
 		lblSerieTV.setBounds(172, 24, 46, 14);
-		panel.add(lblSerieTV);
+		panel_sub_associatore.add(lblSerieTV);
 
 		cmb_serie_sottotitoli = new JComboBox<SerieTV>();
 		cmb_serie_sottotitoli.setBounds(228, 21, 238, 20);
-		panel.add(cmb_serie_sottotitoli);
+		panel_sub_associatore.add(cmb_serie_sottotitoli);
 
 		imgSubsfactoryLogo = new JLabel("");
 		imgSubsfactoryLogo.setToolTipText("Clicca per visitare Subsfactory");
 		imgSubsfactoryLogo.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/subsfactory.jpg")));
 		imgSubsfactoryLogo.setBounds(258, 49, 208, 37);
-		panel.add(imgSubsfactoryLogo);
+		panel_sub_associatore.add(imgSubsfactoryLogo);
 
 		JLabel lblsubsfactory = new JLabel("<html><b>Subsfactory</b></html>");
 		lblsubsfactory.setBounds(313, 85, 82, 14);
-		panel.add(lblsubsfactory);
+		panel_sub_associatore.add(lblsubsfactory);
 
 		imgSubspediaLogo = new JLabel("");
 		imgSubspediaLogo.setToolTipText("Clicca per visitare Subspedia");
 		imgSubspediaLogo.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/subspedia.png")));
 		imgSubspediaLogo.setBounds(505, 49, 208, 37);
-		panel.add(imgSubspediaLogo);
+		panel_sub_associatore.add(imgSubspediaLogo);
 
 		JLabel lblsubspedia = new JLabel("<html><b>Subspedia</b></html>");
 		lblsubspedia.setBounds(581, 87, 73, 14);
-		panel.add(lblsubspedia);
+		panel_sub_associatore.add(lblsubspedia);
 
 		JLabel lblCerca = new JLabel("Cerca");
 		lblCerca.setBounds(10, 105, 46, 14);
-		panel.add(lblCerca);
+		panel_sub_associatore.add(lblCerca);
 
 		txt_itasa_cerca = new JTextField();
 		txt_itasa_cerca.setBounds(57, 100, 161, 27);
-		panel.add(txt_itasa_cerca);
+		panel_sub_associatore.add(txt_itasa_cerca);
 		txt_itasa_cerca.setColumns(20);
 
 		cmb_itasa_serie = new JComboBox<SerieSub>();
 		cmb_itasa_serie.setBounds(10, 125, 208, 20);
-		panel.add(cmb_itasa_serie);
+		panel_sub_associatore.add(cmb_itasa_serie);
 
 		btnItasaAssocia = new JButton("Associa");
 		btnItasaAssocia.setBounds(10, 163, 98, 26);
-		panel.add(btnItasaAssocia);
+		panel_sub_associatore.add(btnItasaAssocia);
 
 		btnItasaRimuovi = new JButton("Rimuovi");
 		btnItasaRimuovi.setBounds(120, 163, 98, 26);
-		panel.add(btnItasaRimuovi);
+		panel_sub_associatore.add(btnItasaRimuovi);
 
 		JLabel lblItasaAssociata = new JLabel("Associata a: ");
 		lblItasaAssociata.setBounds(10, 145, 73, 16);
-		panel.add(lblItasaAssociata);
+		panel_sub_associatore.add(lblItasaAssociata);
 
 		lblItasaSerieAss = new JLabel("");
 		lblItasaSerieAss.setBounds(82, 145, 164, 16);
-		panel.add(lblItasaSerieAss);
+		panel_sub_associatore.add(lblItasaSerieAss);
 
 		JLabel lblCerca_1 = new JLabel("Cerca");
 		lblCerca_1.setBounds(258, 105, 46, 14);
-		panel.add(lblCerca_1);
+		panel_sub_associatore.add(lblCerca_1);
 
 		txt_subsfactory_cerca = new JTextField();
 		txt_subsfactory_cerca.setBounds(302, 100, 164, 27);
-		panel.add(txt_subsfactory_cerca);
+		panel_sub_associatore.add(txt_subsfactory_cerca);
 		txt_subsfactory_cerca.setColumns(20);
 
 		cmb_subsfactory_serie = new JComboBox<SerieSub>();
 		cmb_subsfactory_serie.setBounds(258, 125, 208, 20);
-		panel.add(cmb_subsfactory_serie);
+		panel_sub_associatore.add(cmb_subsfactory_serie);
 
 		JLabel lblSubsfactoryAssociata = new JLabel("Associata a:");
 		lblSubsfactoryAssociata.setBounds(258, 145, 73, 16);
-		panel.add(lblSubsfactoryAssociata);
+		panel_sub_associatore.add(lblSubsfactoryAssociata);
 
 		lblSubsfactorySerieAss = new JLabel("");
 		lblSubsfactorySerieAss.setBounds(330, 145, 164, 16);
-		panel.add(lblSubsfactorySerieAss);
+		panel_sub_associatore.add(lblSubsfactorySerieAss);
 
 		btnSubsfactoryAssocia = new JButton("Associa");
 		btnSubsfactoryAssocia.setBounds(258, 163, 98, 26);
-		panel.add(btnSubsfactoryAssocia);
+		panel_sub_associatore.add(btnSubsfactoryAssocia);
 
 		btnSubsfactoryRimuovi = new JButton("Rimuovi");
 		btnSubsfactoryRimuovi.setBounds(368, 163, 98, 26);
-		panel.add(btnSubsfactoryRimuovi);
+		panel_sub_associatore.add(btnSubsfactoryRimuovi);
 		
 		btnItasaUpdate = new JButton("");
 		btnItasaUpdate.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/aggiorna.png")));
 		btnItasaUpdate.setBounds(220, 122, 26, 26);
-		panel.add(btnItasaUpdate);
+		panel_sub_associatore.add(btnItasaUpdate);
 		
 		btnSubsfactoryUpdate = new JButton("");
 		btnSubsfactoryUpdate.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/aggiorna.png")));
 		btnSubsfactoryUpdate.setBounds(468, 122, 26, 26);
-		panel.add(btnSubsfactoryUpdate);
+		panel_sub_associatore.add(btnSubsfactoryUpdate);
 
 		JScrollPane scrollPane_subscaricare = new JScrollPane();
 		scrollPane_subscaricare.setBounds(0, 202, 370, 220);
@@ -581,78 +577,85 @@ public class Interfaccia extends JFrame {
 		tableSubDownloaded.setRowSelectionAllowed(false);
 		scrollPane_logsub.setViewportView(tableSubDownloaded);
 
-		JPanel panel_7 = new JPanel();
-		panel_7.setBounds(0, 0, 10, 10);
-		SottotitoliPanel.add(panel_7);
-
-		panel_2 = new JPanel();
-		panel_2.setBorder(new TitledBorder(null, "Scarica sottotitolo da un provider", TitledBorder.LEADING, TitledBorder.TOP, null, null));
-		panel_2.setBounds(0, 426, 739, 103);
-		SottotitoliPanel.add(panel_2);
-		panel_2.setLayout(null);
+		/*TODO abilitare download sottotitolo singolo dopo aver fixato le classi di sub management*/
+		panel_download_sub_single = new JPanel();
+		panel_download_sub_single.setBorder(new TitledBorder(null, "Scarica sottotitolo da un provider", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		panel_download_sub_single.setBounds(0, 426, 739, 103);
+		SottotitoliPanel.add(panel_download_sub_single);
+		panel_download_sub_single.setLayout(null);
 
 		JLabel lblProvider = new JLabel("Provider");
 		lblProvider.setBounds(12, 25, 55, 16);
-		panel_2.add(lblProvider);
+		panel_download_sub_single.add(lblProvider);
 
 		cmb_sub_custom_provider = new JComboBox<ProviderSottotitoli>();
+		cmb_sub_custom_provider.setEnabled(false);
 		cmb_sub_custom_provider.setBounds(72, 21, 200, 20);
-		panel_2.add(cmb_sub_custom_provider);
+		panel_download_sub_single.add(cmb_sub_custom_provider);
 
 		JLabel lblSerie_1 = new JLabel("Serie");
 		lblSerie_1.setBounds(12, 53, 55, 16);
-		panel_2.add(lblSerie_1);
+		panel_download_sub_single.add(lblSerie_1);
 
 		cmb_sub_custom_serie = new JComboBox<SerieSub>();
+		cmb_sub_custom_serie.setEnabled(false);
 		cmb_sub_custom_serie.setBounds(72, 75, 200, 20);
-		panel_2.add(cmb_sub_custom_serie);
+		panel_download_sub_single.add(cmb_sub_custom_serie);
 
 		txt_sub_custom_serie = new JTextField();
+		txt_sub_custom_serie.setEnabled(false);
 		txt_sub_custom_serie.setBounds(72, 45, 200, 27);
-		panel_2.add(txt_sub_custom_serie);
+		panel_download_sub_single.add(txt_sub_custom_serie);
 		txt_sub_custom_serie.setColumns(30);
 
 		JLabel lblStagione_1 = new JLabel("Stagione");
 		lblStagione_1.setBounds(291, 25, 55, 16);
-		panel_2.add(lblStagione_1);
+		panel_download_sub_single.add(lblStagione_1);
 
 		txt_sub_custom_stagione = new JTextField();
+		txt_sub_custom_stagione.setEnabled(false);
 		txt_sub_custom_stagione.addKeyListener(new TextListenerOnlyNumber(txt_sub_custom_stagione));
 
 		txt_sub_custom_stagione.setBounds(345, 22, 40, 24);
-		panel_2.add(txt_sub_custom_stagione);
+		panel_download_sub_single.add(txt_sub_custom_stagione);
 		txt_sub_custom_stagione.setColumns(10);
 
 		JLabel lblEpisodio = new JLabel("Episodio");
 		lblEpisodio.setBounds(290, 53, 55, 16);
-		panel_2.add(lblEpisodio);
+		panel_download_sub_single.add(lblEpisodio);
 
 		txt_sub_custom_episodio = new JTextField();
+		txt_sub_custom_episodio.setEnabled(false);
 		txt_sub_custom_episodio.addKeyListener(new TextListenerOnlyNumber(txt_sub_custom_episodio));
 		txt_sub_custom_episodio.setBounds(345, 48, 40, 24);
-		panel_2.add(txt_sub_custom_episodio);
+		panel_download_sub_single.add(txt_sub_custom_episodio);
 		txt_sub_custom_episodio.setColumns(10);
 
 		JLabel lblDestinazione = new JLabel("Destinazione");
 		lblDestinazione.setBounds(394, 25, 73, 16);
-		panel_2.add(lblDestinazione);
+		panel_download_sub_single.add(lblDestinazione);
 
 		txt_sub_custom_destinazione = new JTextField();
+		txt_sub_custom_destinazione.setEnabled(false);
 		txt_sub_custom_destinazione.setEditable(false);
 		txt_sub_custom_destinazione.setBounds(473, 20, 160, 27);
-		panel_2.add(txt_sub_custom_destinazione);
+		panel_download_sub_single.add(txt_sub_custom_destinazione);
 		txt_sub_custom_destinazione.setColumns(10);
 
 		btn_sub_custom_Sfoglia = new JButton("Sfoglia");
+		btn_sub_custom_Sfoglia.setEnabled(false);
 		btn_sub_custom_Sfoglia.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/cartella.png")));
 		btn_sub_custom_Sfoglia.setBounds(636, 21, 93, 24);
-		panel_2.add(btn_sub_custom_Sfoglia);
+		panel_download_sub_single.add(btn_sub_custom_Sfoglia);
 
 		btn_sub_custom_Scarica = new JButton("Scarica");
+		btn_sub_custom_Scarica.setEnabled(false);
 		btn_sub_custom_Scarica.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/download.png")));
 		btn_sub_custom_Scarica.setBounds(500, 53, 120, 38);
-		panel_2.add(btn_sub_custom_Scarica);
+		panel_download_sub_single.add(btn_sub_custom_Scarica);
 
+		//FINE DOWNLOAD SINGOLO 
+		
 		LettorePanel = new JPanel();
 		tab.addTab("Lettore", new ImageIcon(Interfaccia.class.getResource("/GUI/res/player.png")), LettorePanel, null);
 		LettorePanel.setLayout(null);
@@ -818,15 +821,17 @@ public class Interfaccia extends JFrame {
 		chckbxCaricaVlcAutomaticamente.setBounds(6, 66, 318, 18);
 		panel_1.add(chckbxCaricaVlcAutomaticamente);
 
-		JPanel panel_3 = new JPanel();
-		panel_3.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Download automatico", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-		panel_3.setBounds(372, 11, 350, 65);
-		OpzioniPanel.add(panel_3);
-		panel_3.setLayout(null);
+		JPanel panel_opzioni_download_automatico = new JPanel();
+		panel_opzioni_download_automatico.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Download automatico", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+		panel_opzioni_download_automatico.setBounds(372, 11, 350, 65);
+		OpzioniPanel.add(panel_opzioni_download_automatico);
+		panel_opzioni_download_automatico.setLayout(null);
 
 		chckbxAutoAbilita = new JCheckBox("Abilita");
 		chckbxAutoAbilita.setBounds(6, 9, 97, 23);
-		panel_3.add(chckbxAutoAbilita);
+		//TODO abilitare dopo aver fixato l'autosearch
+		chckbxAutoAbilita.setEnabled(false);
+		panel_opzioni_download_automatico.add(chckbxAutoAbilita);
 
 		comboBoxMinutiRicercaAutomatica = new JComboBox<Integer>();
 		comboBoxMinutiRicercaAutomatica.addItem(60);
@@ -835,16 +840,16 @@ public class Interfaccia extends JFrame {
 		comboBoxMinutiRicercaAutomatica.addItem(960);
 		comboBoxMinutiRicercaAutomatica.addItem(1440);
 		comboBoxMinutiRicercaAutomatica.setBounds(10, 33, 66, 20);
-		panel_3.add(comboBoxMinutiRicercaAutomatica);
+		panel_opzioni_download_automatico.add(comboBoxMinutiRicercaAutomatica);
 
 		JLabel lblMinutiTraOgni = new JLabel("minuti tra ogni ricerca");
 		lblMinutiTraOgni.setBounds(83, 35, 157, 14);
-		panel_3.add(lblMinutiTraOgni);
+		panel_opzioni_download_automatico.add(lblMinutiTraOgni);
 
 		lblRicercaOre = new JLabel("");
 		lblRicercaOre.setBounds(252, 35, 86, 16);
 		lblRicercaOre.setText("( 1 ora 0 min )");
-		panel_3.add(lblRicercaOre);
+		panel_opzioni_download_automatico.add(lblRicercaOre);
 
 		JPanel panel_4 = new JPanel();
 		panel_4.setBorder(new TitledBorder(null, "Sottotitoli", TitledBorder.CENTER, TitledBorder.TOP, null, null));
@@ -878,6 +883,8 @@ public class Interfaccia extends JFrame {
 		panel_4.add(txt_itasa_pass);
 
 		JButton btnItasaVerificaLogin = new JButton("Verifica login");
+		//<TODO abilitare dopo aver fixato il listener per verificare il login su itasa
+		btnItasaVerificaLogin.setEnabled(false);
 		btnItasaVerificaLogin.setBounds(278, 64, 108, 26);
 		panel_4.add(btnItasaVerificaLogin);
 
@@ -946,6 +953,8 @@ public class Interfaccia extends JFrame {
 		panel_6.add(btnOpzioniSalva);
 
 		JButton btnOpzioniPredefiniti = new JButton("Predefiniti");
+		//TODO abilitare dopo aver creato il listener per le opzioni predefinite
+		btnOpzioniPredefiniti.setEnabled(false);
 		btnOpzioniPredefiniti.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/reset.png")));
 		panel_6.add(btnOpzioniPredefiniti);
 
@@ -996,7 +1005,7 @@ public class Interfaccia extends JFrame {
 		btnChiudiADS.setBounds(696, 492, 33, 23);
 		InfoPanel.add(btnChiudiADS);
 
-		/** TODO decommentare per la distribuzione */
+		/** TODO decommentare per la distribuzione *//*
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -1048,7 +1057,7 @@ public class Interfaccia extends JFrame {
 				reloadSeriePreferite();
 				reloadSerieDisponibili();
 
-				inizializzaDownloadScroll();
+				//inizializzaDownloadScroll();
 
 				buttonReloadSerie.doClick();
 
@@ -1594,11 +1603,6 @@ public class Interfaccia extends JFrame {
 				Thread t = new UpdateEpisodes();
 				t.setName("update episodi");
 				t.start();
-
-			}
-		});
-		btnTest.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
 
 			}
 		});
@@ -2356,7 +2360,7 @@ public class Interfaccia extends JFrame {
 		});
 		exitItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				thisframe.getWindowListeners()[0].windowClosing(new WindowEvent(thisframe, WindowEvent.WINDOW_CLOSING));
+				System.exit(0);
 			}
 		});
 	}
