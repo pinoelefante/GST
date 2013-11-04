@@ -1492,6 +1492,7 @@ public class Interfaccia extends JFrame {
 							}
 						}
 						setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+						System.exit(0);
 					}
 					else
 						setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
@@ -2360,7 +2361,7 @@ public class Interfaccia extends JFrame {
 		});
 		exitItem.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.exit(0);
+				getWindowListeners()[0].windowClosing(new WindowEvent(thisframe, 0));
 			}
 		});
 	}
