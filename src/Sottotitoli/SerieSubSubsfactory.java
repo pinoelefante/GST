@@ -9,9 +9,12 @@ public class SerieSubSubsfactory extends SerieSub {
 	private boolean directory_search;
 	private int id_db;
 	private String directory;
+	private ArrayList<SottotitoloSubsfactory> subs_subsfactory;
+	private boolean folder_loaded=false;
 	
 	public SerieSubSubsfactory(String nome, int iddb, String directory) {
 		super(nome, iddb);
+		subs_subsfactory=new ArrayList<>();
 		this.directory=directory;
 	}
 	public boolean isDirectorySearch(){
@@ -35,5 +38,22 @@ public class SerieSubSubsfactory extends SerieSub {
 	}
 	public String getDirectory(){
 		return directory;
+	}
+	public boolean isCartellaOnlineCaricata(){
+		return folder_loaded;
+	}
+	public void setCartellaOnlineCaricata(){
+		folder_loaded=true;
+	}
+	public int getCartellaOnlineSize(){
+		return subs_subsfactory.size();
+	}
+	public SottotitoloSubsfactory getSubFromCartellaOnline(int index){
+		if(index>0 && index<subs_subsfactory.size())
+			return subs_subsfactory.get(index);
+		return null;
+	}
+	public void addSub(SottotitoloSubsfactory s){
+		subs_subsfactory.add(s);
 	}
 }

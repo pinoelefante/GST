@@ -23,6 +23,9 @@ import Programma.Download;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
+import SerieTV.EZTV;
+import SerieTV.GestioneSerieTV;
+import SerieTV.ProviderSerieTV;
 import SerieTV.SerieTV;
 import SerieTV.Torrent;
 import StruttureDati.db.KVResult;
@@ -43,7 +46,23 @@ public class Subsfactory implements ProviderSottotitoli {
 		caricaSerieDB();
 		aggiornaElencoSerieOnline();
 	}
-
+	public static void main(String[] args){
+		Database.Connect();
+		//GestioneSerieTV.instance();
+		
+		Subsfactory subsf=new Subsfactory();
+		SerieTV st=new SerieTV(new EZTV(), "Arrow", "");
+		st.setSubsfactoryDirectory("Serie USA/Arrow");
+		Torrent t=new Torrent(st, "", 0);
+		t.setEpisodio(3);
+		t.setStagione(1);
+		if(subsf.cercaSottotitolo(t)){
+			System.out.println("Sottotitolo trovato");
+		}
+		else 
+			System.out.println("Sottotitolo non trovato");
+		
+	}
 	@Override
 	public boolean scaricaSottotitolo(Torrent t) {
 		if(t==null)
@@ -70,14 +89,7 @@ public class Subsfactory implements ProviderSottotitoli {
 						break;
 				}
 			case 1:
-				url=cercaSubInDB(st.getSubsfactoryDirectory(), t);
-				if(url!=null){
-					if(url.length()>0)
-						break;
-				}
-			case 2:
-				caricaCartella(st.getSubsfactoryDirectory(), "");
-				url=cercaSubInDB(st.getSubsfactoryDirectory(), t);
+				url=cercaURLInCartella(t);
 				if(url!=null){
 					if(url.length()>0)
 						break;
@@ -98,6 +110,21 @@ public class Subsfactory implements ProviderSottotitoli {
 			}
 		}
 		return false;
+	}
+	private String cercaURLInCartella(Torrent t){
+		SerieSubSubsfactory serie_sub=(SerieSubSubsfactory) getSerieAssociata(t.getSerieTV());
+		caricaCartella(t.getSerieTV(), "");
+		for(int i=0;i<serie_sub.getCartellaOnlineSize();i++){
+			SottotitoloSubsfactory sub=serie_sub.getSubFromCartellaOnline(i);
+			if(sub!=null){
+				if(t.getEpisodio()==sub.getEpisodio()){
+					if(t.getStagione()==sub.getStagione()){
+						return sub.getUrlDownload();
+					}
+				}
+			}
+		}
+		return null;
 	}
 	private boolean scaricaSub(String url, String nome, String folder){
 		String cartella_destinazione=Settings.getDirectoryDownload()+(Settings.getDirectoryDownload().endsWith(File.pathSeparator)?folder:(File.separator+folder));
@@ -136,24 +163,20 @@ public class Subsfactory implements ProviderSottotitoli {
 		System.out.println("Subsfactory.it - "+t.getNomeSerie());
 		SerieTV st=t.getSerieTV();
 		
-		//cerca in database
-		String url=cercaSubInDB(st.getSubsfactoryDirectory(), t);
-		if(url.length()>0)
+		String url=cercaURLInCartella(t);
+		if(url!=null)
 			return true;
-		
-		//carica cartella online
-		caricaCartella(st.getSubsfactoryDirectory(), "");
-		//cerca di nuovo in database
-		url=cercaSubInDB(st.getSubsfactoryDirectory(), t);
-		if(url.length()>0)
-			return true;
-
+		 
 		//cerca in feed
 		return cercaFeed(st.getSubsfactoryDirectory(), t)==null?false:true;
 	}
 	
 	//Verifica all'interno della pagina della serie
-	private void caricaCartella(String id_serie, String id_cartella){
+	private void caricaCartella(SerieTV st, String id_cartella){
+		String id_serie=st.getSubsfactoryDirectory();
+		SerieSubSubsfactory s_subs=(SerieSubSubsfactory) getSerieAssociata(st);
+		if(s_subs.isCartellaOnlineCaricata())
+			return;
 		/*
 		 http://subsfactory.it/subtitle/index.php?&direction=0&order=nom&directory=Serie%20USA/Arrow 
 		*/
@@ -183,11 +206,12 @@ public class Subsfactory implements ProviderSottotitoli {
 						sub.setNormale(true);
 					}
 					String path_d="http://www.subsfactory.it/subtitle/index.php?action=downloadfile"+"&directory="+id_serie+(id_cartella.length()>0?("/"+id_cartella):""+"&filename="+sub.getNomeFile());
-					if(sub.getEpisodio()>0 && sub.getStagione()>0 && !isSubInDB(path_d)){
-						inserisciSubInDB(path_d, sub, sub.getNomeFile().toLowerCase().contains("stagione"));
-					}
+					sub.setUrlDownload(path_d);
+					s_subs.addSub(sub);
+					//s_subs.addSub(new SottotitoloSubsfactory());
 				}
 			}
+			s_subs.setCartellaOnlineCaricata();
 			file.close();
 			f.close();
 			OperazioniFile.deleteFile(Settings.getCurrentDir()+"subsf_response_"+id_download);
@@ -196,104 +220,6 @@ public class Subsfactory implements ProviderSottotitoli {
 			e.printStackTrace();
 			ManagerException.registraEccezione(e);
 		}
-	}
-	private boolean isSubInDB(String path){
-		return false;
-		/*
-		SQLParameter[] cond=new SQLParameter[1];
-		cond[0]=new SQLParameter(SQLParameter.TEXT, path, "path");
-		ArrayList<SQLParameter[]> res=Database.select(Database.TABLE_SUBSFACTORY, cond, "", "=");
-		for(int i=0;i<res.size();i++){
-			SQLParameter[] p=res.get(i);
-			for(int j=0;j<p.length;j++)
-				System.out.print(p[j].pvalueAsString()+" ");
-			System.out.println();
-		}
-		return res.size()>0;
-		*/
-	}
-	private void inserisciSubInDB(String path, SottotitoloSubsfactory sub, boolean completa){
-		/*
-		SQLParameter[] parametri=new SQLParameter[6];
-		int i=0;
-		parametri[i++]=new SQLParameter(SQLParameter.TEXT, path, "path");
-		parametri[i++]=new SQLParameter(SQLParameter.TEXT, sub.getIDSerie(), "id_serie");
-		parametri[i++]=new SQLParameter(SQLParameter.INTEGER, sub.getStagione(), "stagione");
-		parametri[i++]=new SQLParameter(SQLParameter.INTEGER, sub.getEpisodio(), "episodio");
-		int tipo=0;
-		if(sub.isNormale() && sub.is720p())
-			tipo=2;
-		else if(sub.isNormale())
-			tipo=0;
-		else if(sub.is720p())
-			tipo=1;
-		parametri[i++]=new SQLParameter(SQLParameter.INTEGER, tipo, "tipo");
-		parametri[i++]=new SQLParameter(SQLParameter.INTEGER, completa?1:0, "is_completa");
-		Database.insert(Database.TABLE_SUBSFACTORY, parametri);
-		*/
-	}
-	private String cercaSubInDB(String id_serie, Torrent t){
-		ArrayList<SottotitoloSubsfactoryDB> subs=caricaSubDaDB(id_serie);
-		
-		if(subs!=null){
-			for(int i=0;i<subs.size();i++){
-				SottotitoloSubsfactoryDB s=subs.get(i);
-				if(s.getEpisodio()==t.getEpisodio() && s.getStagione()==t.getStagione()){
-					switch(t.is720p()?1:0){
-						case 0:
-							if(s.isNormale())
-								return s.getUrl();
-							break;
-						case 1:
-							if(s.is720p())
-								return s.getUrl();
-							break;
-						case 2:
-							return s.getUrl();
-					}
-				}
-			}
-		}
-		return "";
-	}
-	private ArrayList<SottotitoloSubsfactoryDB> caricaSubDaDB(String id_serie){
-		/*
-		ArrayList<SottotitoloSubsfactoryDB> subs=new ArrayList<SottotitoloSubsfactoryDB>();
-		SQLParameter[] par=new SQLParameter[1];
-		par[0]=new SQLParameter(SQLParameter.TEXT, id_serie, "id_serie");
-		ArrayList<SQLParameter[]> res=Database.select(Database.TABLE_SUBSFACTORY, par, "", "=");
-		for(int i=0;i<res.size();i++){
-			SQLParameter[] r=res.get(i); 
-			String url = null, id_s = null;
-			int ep = 0, seas = 0, tipo = 0;
-			boolean compl = false;
-			for(int j=0;j<r.length;j++){
-				switch(r[j].getField()){
-					case "path":
-						url=r[j].pvalueAsString();
-						break;
-					case "id_serie":
-						id_s=r[j].pvalueAsString();
-						break;
-					case "stagione":
-						seas=(int)r[j].pvalue();
-						break;
-					case "episodio":
-						ep=(int)r[j].pvalue();
-						break;
-					case "tipo":
-						tipo=(int)r[j].pvalue();
-						break;
-					case "is_completa":
-						compl=(((int)r[j].pvalue())==0?false:true);
-						break;
-				}
-			}
-			subs.add(new SottotitoloSubsfactoryDB(tipo, url, seas, ep, compl, id_s));
-		}
-		return subs;
-		*/
-		return null;
 	}
 
 	@Override

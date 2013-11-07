@@ -1005,7 +1005,7 @@ public class Interfaccia extends JFrame {
 		btnChiudiADS.setBounds(696, 492, 33, 23);
 		InfoPanel.add(btnChiudiADS);
 
-		/** TODO decommentare per la distribuzione *//*
+		/** TODO decommentare per la distribuzione */
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -1590,7 +1590,6 @@ public class Interfaccia extends JFrame {
 							panel_scroll_download.removeAll();
 							Runtime.getRuntime().gc();
 							for (int i = 0; i < eps.size(); i++) {
-								//TODO scegliere quali episodi mostrare qui
 								if(eps.get(i).getLinkDownload()!=null)
 									panel_scroll_download.add(new PanelEpisodioDownload(eps.get(i)));
 							}

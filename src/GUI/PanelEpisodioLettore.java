@@ -118,6 +118,8 @@ public class PanelEpisodioLettore extends JPanel {
 		btnPlay.setBounds(603, 66, 89, 23);
 		
 		btnMostra = new JButton("Mostra");
+		//TODO decommentare per debug
+		btnMostra.setVisible(false);
 		panel_c.add(btnMostra);
 		
 		JPanel panel_1 = new JPanel();

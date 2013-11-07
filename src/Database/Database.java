@@ -25,6 +25,7 @@ public class Database {
 	public final static String TABLE_EPISODI="episodi";
 	public final static String TABLE_ITASA="itasa";
 	public final static String TABLE_SUBSFACTORY="subsfactory";
+	//public final static String TABLE_SUBSFACTORY_SUBS="subsfactory_subs";
 	public final static String TABLE_LOGSUB="logsub";
 	public final static String TABLE_SETTINGS="settings";
 	public static final String TABLE_SUBSPEDIA = "subspedia";

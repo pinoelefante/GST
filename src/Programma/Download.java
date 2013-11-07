@@ -210,10 +210,12 @@ public class Download {
 					("\"" + folder + "\""),
 					magnet_url
 			};
+			/*
 			for(int i=0;i<cmd.length;i++){
 				System.out.print(cmd[i]+" ");
 			}
 			System.out.println();
+			*/
 			Runtime.getRuntime().exec(cmd);
 		}
 		else if(Settings.isLinux()){
@@ -227,6 +229,22 @@ public class Download {
 			};
 			Runtime.getRuntime().exec(cmd);
 			//Runtime.getRuntime().exec("wine "+Settings.getClientPath()+ " /NOINSTALL /DIRECTORY " + "'T:"+File.separator +  folder + "'" + " " + url);
+		}
+		else if(Settings.isMacOS()){
+			String[] cmd={
+					Settings.getClientPath(),
+					"/NOINSTALL",
+					"/DIRECTORY",
+					("\"" + folder + "\""),
+					magnet_url
+			};
+			/*
+			for(int i=0;i<cmd.length;i++){
+				System.out.print(cmd[i]+" ");
+			}
+			System.out.println();
+			*/
+			Runtime.getRuntime().exec(cmd);
 		}
 	}
 	public static void downloadFromUrl(String url_download, String localFilename) throws IOException{
