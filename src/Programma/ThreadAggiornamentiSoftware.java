@@ -40,6 +40,7 @@ public class ThreadAggiornamentiSoftware extends Thread {
 				f.delete();
 				Settings.setNewUpdate(true);
 				Settings.setLastVersion(Settings.getVersioneSoftware());
+				Settings.AggiornaDB();
 				Runtime.getRuntime().exec(Settings.getCurrentDir()+"GestioneSerieTV5.exe");
 				System.exit(0);
 			}

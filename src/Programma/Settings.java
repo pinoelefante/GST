@@ -10,7 +10,7 @@ import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.WinReg;
 
 public class Settings {
-	private static final int	VersioneSoftware					= 107;
+	private static final int	VersioneSoftware					= 108;
 	public static final String	IndirizzoDonazioni					= "http://pinoelefante.altervista.org/donazioni/donazione_gst.html";
 	private static String		current_dir							= "";
 	private static String		DirectoryDownload					= "";
@@ -38,7 +38,7 @@ public class Settings {
 	private static boolean 		lettore_nascondi_rimosso			= true;
 	
 	private static boolean 		extenal_VLC							= false;
-	private static boolean 		enableITASA							= false;
+	private static boolean 		enableITASA							= true;
 	private static boolean 		lettore_nascondi_viste				= true;
 	private static int			lettore_ordine						= 0;
 	
@@ -96,7 +96,6 @@ public class Settings {
 			createAutoStart();
 		else
 			removeAutostart();
-		AggiornaDB();
 		return autostart;
 	}
 	public static boolean isDownloadAutomatico() {
@@ -122,14 +121,12 @@ public class Settings {
 	}
 	public static void setNewUpdate(boolean newUpdate) {
 		NewUpdate = newUpdate;
-		AggiornaDB();
 	}
 	public static int getLastVersion() {
 		return LastVersion;
 	}
 	public static void setLastVersion(int lastVersion) {
 		LastVersion = lastVersion;
-		AggiornaDB();
 	}
 	public static boolean isRicercaSottotitoli() {
 		return RicercaSottotitoli;
@@ -380,14 +377,12 @@ public class Settings {
 	}
 	public static void setLettoreNascondiIgnore(boolean lettore_nascondi_ignore) {
 		Settings.lettore_nascondi_ignore = lettore_nascondi_ignore;
-		AggiornaDB();
 	}
 	public static boolean isLettoreNascondiRimosso() {
 		return lettore_nascondi_rimosso;
 	}
 	public static void setLettoreNascondiRimosso(boolean lettore_nascondi_rimosso) {
 		Settings.lettore_nascondi_rimosso = lettore_nascondi_rimosso;
-		AggiornaDB();
 	}
 	//TODO completare rilevamento client utorrent
 	public static String rilevaUtorrent(){
@@ -461,14 +456,12 @@ public class Settings {
 	}
 	public static void setLettoreNascondiViste(boolean lettore_nascondi_viste) {
 		Settings.lettore_nascondi_viste = lettore_nascondi_viste;
-		AggiornaDB();
 	}
 	public static int getLettoreOrdine() {
 		return lettore_ordine;
 	}
 	public static void setLettoreOrdine(int lettore_ordine) {
 		Settings.lettore_ordine = lettore_ordine;
-		AggiornaDB();
 	}
 	public static boolean isVLCAutoload() {
 		return VLCAutoload;

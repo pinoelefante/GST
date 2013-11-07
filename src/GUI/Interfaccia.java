@@ -1724,6 +1724,7 @@ public class Interfaccia extends JFrame {
 		comboBoxLettoreOrdine.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Settings.setLettoreOrdine(comboBoxLettoreOrdine.getSelectedIndex());
+				Settings.AggiornaDB();
 				disegnaLettore();
 			}
 		});
@@ -1747,18 +1748,21 @@ public class Interfaccia extends JFrame {
 		chckbxNascondiViste.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Settings.setLettoreNascondiViste(chckbxNascondiViste.isSelected());
+				Settings.AggiornaDB();
 				disegnaLettore();
 			}
 		});
 		chckbxNascondiIgnorate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Settings.setLettoreNascondiIgnore(chckbxNascondiIgnorate.isSelected());
+				Settings.AggiornaDB();
 				disegnaLettore();
 			}
 		});
 		chckbxNascondiRimosse.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Settings.setLettoreNascondiRimosso(chckbxNascondiRimosse.isSelected());
+				Settings.AggiornaDB();
 				disegnaLettore();
 			}
 		});

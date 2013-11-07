@@ -25,11 +25,19 @@ public class Update {
 					//TODO rimuovere torrent con lo stesso hash
 				case 103: 
 					update_103_to_104();
+				case 107:
+					update_107_to_108();
 				default:
 					Settings.setLastVersion(Settings.getVersioneSoftware());
 					Settings.setNewUpdate(false);
+					Settings.AggiornaDB();
 			}
 		}
+	}
+	private static void update_107_to_108(){
+		Settings.setEnableITASA(true);
+		String query="UPDATE "+Database.TABLE_SETTINGS+" SET itasa=1";
+		Database.updateQuery(query);
 	}
 	private static void update_103_to_104() {
 		String[] query={

@@ -175,8 +175,9 @@ public class GestoreSottotitoli {
 		return (itasa_assoc || subs_assoc) || (it_al || subs_al);
 	}
 	public boolean cercaSottotitolo(Torrent t){
-		boolean itasa, subsfactory, subspedia;
-		itasa=this.itasa.cercaSottotitolo(t);
+		boolean itasa=false, subsfactory, subspedia;
+		if(Settings.isEnableITASA())
+			itasa=this.itasa.cercaSottotitolo(t);
 		subsfactory=this.subsfactory.cercaSottotitolo(t);
 		subspedia=this.subspedia.cercaSottotitolo(t);
 		return (itasa || subsfactory || subspedia);
@@ -198,23 +199,28 @@ public class GestoreSottotitoli {
 		return true;
 	}
 	public boolean scaricaSottotitolo(Torrent t, String destinazione){
-		boolean itasa=false, subsf=false, subsp=false;
-		if(this.itasa.scaricaSottotitolo(t))
-			itasa=true;
-		else if(subsfactory.scaricaSottotitolo(t))
-			subsf=true;
-		else if(subspedia.scaricaSottotitolo(t))
-			subsp=true;
-		else 
-			return false;
-		
-		if(itasa||subsf||subsp){
-			String nome=Renamer.generaNomeDownload(t);
-			String path=Settings.getDirectoryDownload()+t.getSerieTV().getFolderSerie()+File.separator+nome;
-			OperazioniFile.copyfile(path, destinazione+File.separator+nome);
-			OperazioniFile.deleteFile(path);
+		//boolean itasa=false, subsf=false, subsp=false;
+		switch(0){
+			case 1:
+				if(Settings.isEnableITASA())
+		    		if(this.itasa.scaricaSottotitolo(t))
+		    			break;
+			case 2:
+				if(subsfactory.scaricaSottotitolo(t))
+					break;
+			case 3:
+				if(subspedia.scaricaSottotitolo(t))
+					break;
+			default:
+				return true;
 		}
-		return itasa||subsf||subsp;
+		
+    	String nome=Renamer.generaNomeDownload(t);
+    	String path=Settings.getDirectoryDownload()+t.getSerieTV().getFolderSerie()+File.separator+nome;
+    	OperazioniFile.copyfile(path, destinazione+File.separator+nome);
+		OperazioniFile.deleteFile(path);
+		
+		return true;
 	}
 	public ArrayList<SerieSub> getElencoSerie(int provider){
 		switch(provider){
