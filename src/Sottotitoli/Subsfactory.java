@@ -24,12 +24,10 @@ import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
 import SerieTV.EZTV;
-import SerieTV.GestioneSerieTV;
-import SerieTV.ProviderSerieTV;
 import SerieTV.SerieTV;
 import SerieTV.Torrent;
 import StruttureDati.db.KVResult;
-//TODO carica cartella una volta ad avvio per ogni serie
+
 //TODO utilizzare serie sub al posto di serie tv
 public class Subsfactory implements ProviderSottotitoli {
 	private final static String URL_ELENCO_SERIE="http://subsfactory.it/subtitle/index.php?&direction=0&order=nom";
@@ -48,7 +46,6 @@ public class Subsfactory implements ProviderSottotitoli {
 	}
 	public static void main(String[] args){
 		Database.Connect();
-		//GestioneSerieTV.instance();
 		
 		Subsfactory subsf=new Subsfactory();
 		SerieTV st=new SerieTV(new EZTV(), "Arrow", "");
@@ -56,9 +53,9 @@ public class Subsfactory implements ProviderSottotitoli {
 		Torrent t=new Torrent(st, "", 0);
 		t.setEpisodio(3);
 		t.setStagione(1);
-		if(subsf.cercaSottotitolo(t)){
+		
+		if(subsf.cercaSottotitolo(t))
 			System.out.println("Sottotitolo trovato");
-		}
 		else 
 			System.out.println("Sottotitolo non trovato");
 		
@@ -113,7 +110,7 @@ public class Subsfactory implements ProviderSottotitoli {
 	}
 	private String cercaURLInCartella(Torrent t){
 		SerieSubSubsfactory serie_sub=(SerieSubSubsfactory) getSerieAssociata(t.getSerieTV());
-		caricaCartella(t.getSerieTV(), "");
+		caricaCartella(serie_sub, "");
 		for(int i=0;i<serie_sub.getCartellaOnlineSize();i++){
 			SottotitoloSubsfactory sub=serie_sub.getSubFromCartellaOnline(i);
 			if(sub!=null){
@@ -172,9 +169,8 @@ public class Subsfactory implements ProviderSottotitoli {
 	}
 	
 	//Verifica all'interno della pagina della serie
-	private void caricaCartella(SerieTV st, String id_cartella){
-		String id_serie=st.getSubsfactoryDirectory();
-		SerieSubSubsfactory s_subs=(SerieSubSubsfactory) getSerieAssociata(st);
+	private void caricaCartella(SerieSubSubsfactory s_subs, String id_cartella){
+		String id_serie=s_subs.getDirectory();
 		if(s_subs.isCartellaOnlineCaricata())
 			return;
 		/*
@@ -208,7 +204,9 @@ public class Subsfactory implements ProviderSottotitoli {
 					String path_d="http://www.subsfactory.it/subtitle/index.php?action=downloadfile"+"&directory="+id_serie+(id_cartella.length()>0?("/"+id_cartella):""+"&filename="+sub.getNomeFile());
 					sub.setUrlDownload(path_d);
 					s_subs.addSub(sub);
-					//s_subs.addSub(new SottotitoloSubsfactory());
+				}
+				else {
+					//TODO ricerca cartelle
 				}
 			}
 			s_subs.setCartellaOnlineCaricata();
