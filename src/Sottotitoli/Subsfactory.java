@@ -48,10 +48,10 @@ public class Subsfactory implements ProviderSottotitoli {
 		Database.Connect();
 		
 		Subsfactory subsf=new Subsfactory();
-		SerieTV st=new SerieTV(new EZTV(), "Arrow", "");
-		st.setSubsfactoryDirectory("Serie USA/Arrow");
+		SerieTV st=new SerieTV(new EZTV(), "We Are Men", "");
+		st.setSubsfactoryDirectory("Serie USA/1600 Penn");
 		Torrent t=new Torrent(st, "", 0);
-		t.setEpisodio(3);
+		t.setEpisodio(1);
 		t.setStagione(1);
 		
 		if(subsf.cercaSottotitolo(t))
@@ -113,11 +113,20 @@ public class Subsfactory implements ProviderSottotitoli {
 		caricaCartella(serie_sub, "");
 		for(int i=0;i<serie_sub.getCartellaOnlineSize();i++){
 			SottotitoloSubsfactory sub=serie_sub.getSubFromCartellaOnline(i);
+			//System.out.println(sub);
 			if(sub!=null){
 				if(t.getEpisodio()==sub.getEpisodio()){
+					System.out.println("Episodio OK");
 					if(t.getStagione()==sub.getStagione()){
+						System.out.println("Stagione OK");
 						return sub.getUrlDownload();
 					}
+					else {
+						System.out.println("Stagione non OK");
+					}
+				}
+				else {
+					System.out.println("Episodio non OK - "+t.getEpisodio()+" diverso da "+sub.getEpisodio());
 				}
 			}
 		}
@@ -204,6 +213,7 @@ public class Subsfactory implements ProviderSottotitoli {
 					String path_d="http://www.subsfactory.it/subtitle/index.php?action=downloadfile"+"&directory="+id_serie+(id_cartella.length()>0?("/"+id_cartella):""+"&filename="+sub.getNomeFile());
 					sub.setUrlDownload(path_d);
 					s_subs.addSub(sub);
+					System.out.println(sub.getStagione()+"x"+sub.getEpisodio()+" - "+path_d);
 				}
 				else {
 					//TODO ricerca cartelle

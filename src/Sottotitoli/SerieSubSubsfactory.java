@@ -14,7 +14,7 @@ public class SerieSubSubsfactory extends SerieSub {
 	
 	public SerieSubSubsfactory(String nome, int iddb, String directory) {
 		super(nome, iddb);
-		subs_subsfactory=new ArrayList<>();
+		subs_subsfactory=new ArrayList<SottotitoloSubsfactory>();
 		this.directory=directory;
 	}
 	public boolean isDirectorySearch(){
@@ -49,7 +49,7 @@ public class SerieSubSubsfactory extends SerieSub {
 		return subs_subsfactory.size();
 	}
 	public SottotitoloSubsfactory getSubFromCartellaOnline(int index){
-		if(index>0 && index<subs_subsfactory.size())
+		if(index>=0 && index<subs_subsfactory.size())
 			return subs_subsfactory.get(index);
 		return null;
 	}

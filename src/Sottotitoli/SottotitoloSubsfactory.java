@@ -56,4 +56,7 @@ class SottotitoloSubsfactory {
 	public String getUrlDownload(){
 		return url_download;
 	}
+	public String toString(){
+		return season+"x"+ep+" - "+getUrlDownload();
+	}
 }
