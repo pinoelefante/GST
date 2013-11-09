@@ -71,12 +71,7 @@ public class Subsfactory implements ProviderSottotitoli {
 		System.out.println(t.getNomeSerie()+" - id_subsfactory: "+id_subsfactory);
 		if(id_subsfactory.isEmpty())
 			return false;
-		/*
-		 * cercare nel database
-		 * se non è presente caricare cartella online
-		 * cercare di nuovo nel database
-		 * se non è presente cercare nel feed rss
-		 */
+		
 		String url="";
 		switch(0){
 			case 0:

@@ -7,6 +7,7 @@ import SerieTV.GestioneSerieTV;
 import Database.Database;
 import GUI.FrameLoading;
 import GUI.Interfaccia;
+import InfoManager.TheTVDB;
 
 public class Main {
 	//public static ThreadAggiornamentiSoftware	thread_update		= new ThreadAggiornamentiSoftware(false);
@@ -83,6 +84,10 @@ public class Main {
 			fl.settext("Caricando serie dal database");
 			fl.setprog(++i);
 			GestioneSerieTV.instance();
+			
+			fl.settext("Caricando mirrors TheTVDB");
+			fl.setprog(++i);
+			TheTVDB.caricaMirrors();
 			
 			fl.settext("Avvio interfaccia grafica");
 			fl.setprog(++i);

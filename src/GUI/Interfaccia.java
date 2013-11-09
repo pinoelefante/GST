@@ -363,10 +363,15 @@ public class Interfaccia extends JFrame {
 		scrollPaneDownload.setViewportView(panel_scroll_download);
 		panel_scroll_download.setLayout(new GridLayout(0, 1, 0, 0));
 
-		JPanel panel_info_episodio = new JPanel();
+		panel_info_episodio = new JInfoPanel();
+		JScrollPane scroll_info_ep=new JScrollPane(panel_info_episodio);
+		scroll_info_ep.setBounds(385, 257, 344, 269);
 		panel_info_episodio.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		panel_info_episodio.setBounds(385, 257, 344, 269);
-		DownloadPanel.add(panel_info_episodio);
+		//panel_info_episodio.setBounds(385, 257, 344, 269);
+		panel_info_episodio.setLayout(new BorderLayout());
+		//DownloadPanel.add(panel_info_episodio);
+		DownloadPanel.add(scroll_info_ep);
+		PanelEpisodioDownload.setPanelInfo(panel_info_episodio);
 
 		btnAggiorna = new JButton("Aggiorna");
 
@@ -1005,7 +1010,7 @@ public class Interfaccia extends JFrame {
 		btnChiudiADS.setBounds(696, 492, 33, 23);
 		InfoPanel.add(btnChiudiADS);
 
-		/** TODO decommentare per la distribuzione */
+		/** TODO decommentare per la distribuzione *//*
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -1882,13 +1887,18 @@ public class Interfaccia extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				String destinazione_path = Settings.getClientPath();
 				JFileChooser chooser = new JFileChooser(destinazione_path.isEmpty() ? null : destinazione_path);
-				chooser.setDialogTitle("Percorso uTorrent");
+				chooser.setDialogTitle("Percorso uTorrent");				
 				chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 				chooser.setAcceptAllFileFilterUsed(false);
 				chooser.setFileHidingEnabled(false);
-				chooser.setFileFilter(new ClientFilter("uTorrent", "uTorrent.exe")); // TODO fare multi piattaforma
+				if(Settings.isWindows())
+					chooser.setFileFilter(new ClientFilter("uTorrent", "uTorrent.exe")); // TODO fare multi piattaforma
+				else if(Settings.isMacOS())
+					chooser.setFileFilter(new ClientFilter("uTorrent", "uTorrent"));
+				else if(Settings.isLinux())
+					chooser.setFileFilter(new ClientFilter("uTorrent", "uTorrent.exe"));
 
-				if (chooser.showOpenDialog(Interfaccia.this) == JFileChooser.APPROVE_OPTION) {
+				if (chooser.showOpenDialog(thisframe) == JFileChooser.APPROVE_OPTION) {
 					destinazione_path = chooser.getSelectedFile().getAbsolutePath();
 				}
 				else {
@@ -2317,6 +2327,7 @@ public class Interfaccia extends JFrame {
 			cmb_subsfactory_serie.addItem(s_subs.get(i));
 	}
 	public static SystemTray	tray;
+	private JInfoPanel panel_info_episodio;
 	public void removeTray() {
 		TrayIcon[] ic = tray.getTrayIcons();
 		if (ic.length > 0)

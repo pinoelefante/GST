@@ -3,6 +3,7 @@ package GUI;
 import javax.swing.JPanel;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 
 import javax.swing.JCheckBox;
 import javax.swing.SwingConstants;
@@ -11,12 +12,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.border.Border;
 import javax.swing.border.EtchedBorder;
 
+import InfoManager.SerieTVDB;
+import InfoManager.TheTVDB;
 import Programma.Download;
 import Programma.ManagerException;
 import Programma.Settings;
@@ -25,6 +30,7 @@ import StruttureDati.serietv.Episodio;
 
 public class PanelEpisodioDownload extends JPanel {
 	
+	private static JInfoPanel panel_info;
 	private static final long serialVersionUID = 1L;
 	private Episodio ep;
 	private JButton btnHd;
@@ -34,6 +40,9 @@ public class PanelEpisodioDownload extends JPanel {
 	private JCheckBox chckbxnomeserie;
 	private JButton btnX;
 	
+	public static void setPanelInfo(JInfoPanel p){
+		panel_info=p;
+	}
 	public PanelEpisodioDownload(Episodio e) {
 		ep=e;
 		setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
@@ -69,7 +78,7 @@ public class PanelEpisodioDownload extends JPanel {
 		btnInfo = new JButton("");
 		btnInfo.setIcon(new ImageIcon(PanelEpisodioDownload.class.getResource("/GUI/res/info.png")));
 		//TODO abilitare quando verrà creata la classe per TheTVDB
-		btnInfo.setEnabled(false);
+		//btnInfo.setEnabled(false);
 		panel_3.add(btnInfo);
 		
 		JPanel panel_2 = new JPanel();
@@ -186,7 +195,47 @@ public class PanelEpisodioDownload extends JPanel {
 		});
 		btnInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				//TODO info da tvdb
+				class disegnaInfo extends Thread {
+					public void run(){
+						if(panel_info.isLocked()){
+							//TODO cosa fare se il pannello delle informazioni è bloccato
+						}
+						else {
+							panel_info.setLocked(true);
+							panel_info.removeAll();
+							
+							JLabel banner=new JLabel("Download delle informazioni in corso...");
+							/*
+							JLabel l_titolo=new JLabel("Titolo: "), titolo=new JLabel(),
+								   l_data=new JLabel("Data inizio:"), data=new JLabel(),
+								   l_descr=new JLabel("Descrizione: "), descr=new JLabel(),
+								   l_attori=new JLabel("Attori: "), attori=new JLabel();
+							*/
+							JPanel nord=new JPanel();
+							((FlowLayout)nord.getLayout()).setAlignment(FlowLayout.CENTER);
+							nord.add(banner);
+							
+							ArrayList<SerieTVDB> series=TheTVDB.getSeries(ep.getNomeSerie());
+							SerieTVDB serie=series.get(0);
+							
+							JPanel centro=new JPanel();
+							JLabel label=new JLabel("<html>Titolo: <b>"+serie.getNomeSerie()+"</b><br>"
+									+ "Messa in onda: <b>"+serie.getDataInizio()+"</b><br>"
+									+ "Trama: <b>"+serie.getDescrizione()+"</b><br>"
+									+ "</html>");
+							centro.add(label);
+							
+							panel_info.add(nord, BorderLayout.NORTH);
+							panel_info.add(centro, BorderLayout.CENTER);
+							panel_info.revalidate();
+							panel_info.repaint();
+							
+							panel_info.setLocked(false);
+						}
+					}
+				}
+				Thread t=new disegnaInfo();
+				t.start();
 			}
 		});
 		btnX.addActionListener(new ActionListener() {
