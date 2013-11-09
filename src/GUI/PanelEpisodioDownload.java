@@ -196,6 +196,31 @@ public class PanelEpisodioDownload extends JPanel {
 		btnInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				class disegnaInfo extends Thread {
+					private JLabel descrizione_totale;
+					public String formattaDescrizione(String descrizione){
+						String[] dotSelect=descrizione.split("[.]");
+						String descr="";
+						String line="";
+						for(int i=0;i<dotSelect.length;i++){
+							String[] spaceSelect=dotSelect[i].split(" ");
+							for(int j=0;j<spaceSelect.length;j++){
+								if(spaceSelect[j].length()+line.length()>40){
+									line+=" "+spaceSelect[j];
+									if(j==spaceSelect.length-1)
+										line+=".";
+									descr+=line+"<br>";
+									line="";
+								}
+								else {
+									line+=" "+spaceSelect[j];
+									if(j==spaceSelect.length-1)
+										line+=".";
+								}
+							}
+						}
+						return descr;
+					}
+					
 					public void run(){
 						if(panel_info.isLocked()){
 							//TODO cosa fare se il pannello delle informazioni è bloccato
@@ -204,7 +229,7 @@ public class PanelEpisodioDownload extends JPanel {
 							panel_info.setLocked(true);
 							panel_info.removeAll();
 							
-							JLabel banner=new JLabel("Download delle informazioni in corso...");
+							descrizione_totale=new JLabel("Download delle informazioni in corso...");
 							/*
 							JLabel l_titolo=new JLabel("Titolo: "), titolo=new JLabel(),
 								   l_data=new JLabel("Data inizio:"), data=new JLabel(),
@@ -213,7 +238,7 @@ public class PanelEpisodioDownload extends JPanel {
 							*/
 							JPanel nord=new JPanel();
 							((FlowLayout)nord.getLayout()).setAlignment(FlowLayout.CENTER);
-							nord.add(banner);
+							nord.add(descrizione_totale);
 							
 							ArrayList<SerieTVDB> series=TheTVDB.getSeries(ep.getNomeSerie());
 							SerieTVDB serie=series.get(0);
@@ -221,7 +246,7 @@ public class PanelEpisodioDownload extends JPanel {
 							JPanel centro=new JPanel();
 							JLabel label=new JLabel("<html>Titolo: <b>"+serie.getNomeSerie()+"</b><br>"
 									+ "Messa in onda: <b>"+serie.getDataInizio()+"</b><br>"
-									+ "Trama: <b>"+serie.getDescrizione()+"</b><br>"
+									+ "Trama: <b>"+formattaDescrizione(serie.getDescrizione())+"</b><br>"
 									+ "</html>");
 							centro.add(label);
 							
