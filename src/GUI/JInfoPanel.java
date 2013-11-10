@@ -7,10 +7,10 @@ public class JInfoPanel extends JPanel{
 	private static final long serialVersionUID = 1L;
 	private boolean lock=false;
 	
-	public boolean isLocked(){
+	public synchronized boolean isLocked(){
 		return lock;
 	}
-	public void setLocked(boolean s){
+	public synchronized void setLocked(boolean s){
 		lock=s;
 	}
 }

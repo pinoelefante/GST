@@ -1,5 +1,6 @@
 package InfoManager;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -191,10 +192,11 @@ public class TheTVDB {
 					SerieTVDB newSerie = new SerieTVDB(id, nome_serie, descrizione, banner_path, data_inizio);
 					serie_trovate.add(newSerie);
 				}
-				SerieTVDB associata = individuaSerieAssociata(serietv);
+				SerieTVDB associata = individuaSerieAssociata(serietv, serie_trovate);
 				if(associata!=null){
 					serietv.setIDTvdb(associata.getId());
 					serietv.aggiornaDB();
+					getSerieAll(associata);
 					//TODO scaricare banner
 					//TODO aggiornare l'elenco attori
 					//TODO aggiornare elenco episodi
@@ -214,6 +216,9 @@ public class TheTVDB {
 				e.printStackTrace();
 				ManagerException.registraEccezione(e);
 			}
+		}
+		else { //TODO cercare nel database
+			
 		}
 
 		return null;
@@ -253,25 +258,49 @@ public class TheTVDB {
 			NodeList stat_episodi=doc.getElementsByTagName("");
 		}
 		catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		catch (SAXException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
 		return serie;
 	}
-
-	private static SerieTVDB individuaSerieAssociata(SerieTV serietv) {
-		// TODO Auto-generated method stub
-		return null;
+	public static boolean scaricaBanner(String cartellaBase, String path){
+		String localPath=cartellaBase+(cartellaBase.endsWith(File.separator)?"":File.separator)+path;
+		return false;
+	}
+	private static SerieTVDB individuaSerieAssociata(SerieTV serietv, ArrayList<SerieTVDB> list) {
+		if(list.isEmpty())
+			return null;
+		else {
+			if(list.size()==0)
+				return list.get(0);
+			else {
+				int index_minori_differenze=-1, max_differenza=serietv.getNomeSerie().length()+1;
+				String nomeserie=serietv.getNomeSerie().toLowerCase();
+				for(int i=0;i<list.size();i++){
+					String nome=list.get(i).getNomeSerie().toLowerCase();
+					if(nomeserie.compareToIgnoreCase(nome)==0)
+						return list.get(i);
+					else {
+						if(nomeserie.startsWith(nome) || nome.startsWith(nomeserie)){
+							int differenza=Math.abs(nomeserie.length()-nome.length());
+							if(differenza<max_differenza){
+								max_differenza=differenza;
+								index_minori_differenze=i;
+							}
+						}
+					}
+				}
+				if(index_minori_differenze>=0)
+					return list.get(index_minori_differenze);
+				else
+					return null;
+			}
+		}
 	}
 
 	public static ArrayList<ActorTVDB> getActors(SerieTVDB serie) {//

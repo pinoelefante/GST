@@ -9,6 +9,8 @@ import Programma.FileManager;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
+import InfoManager.SerieTVDB;
+import InfoManager.TheTVDB;
 import LettoreVideo.Player;
 import SerieTV.GestioneSerieTV;
 import SerieTV.SerieTV;
@@ -25,6 +27,7 @@ import java.awt.AWTException;
 import java.awt.BorderLayout;
 import java.awt.Desktop;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.MenuItem;
 import java.awt.PopupMenu;
 import java.awt.SystemTray;
@@ -291,12 +294,12 @@ public class Interfaccia extends JFrame {
 
 		btnAggiungi = new JButton("Aggiungi");
 		btnAggiungi.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/add.png")));
-		btnAggiungi.setBounds(95, 95, 103, 26);
+		btnAggiungi.setBounds(129, 95, 103, 26);
 		panel_9.add(btnAggiungi);
 
 		btnRimuovi = new JButton("Rimuovi");
 		btnRimuovi.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/remove.png")));
-		btnRimuovi.setBounds(335, 95, 103, 26);
+		btnRimuovi.setBounds(372, 95, 103, 26);
 		panel_9.add(btnRimuovi);
 
 		buttonReloadSerie = new JButton("");
@@ -304,6 +307,14 @@ public class Interfaccia extends JFrame {
 		buttonReloadSerie.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/aggiorna.png")));
 		buttonReloadSerie.setBounds(197, 15, 33, 23);
 		panel_9.add(buttonReloadSerie);
+		
+		btnInfoSerieAggiunte = new JButton("info_serie_aggiunte");
+		btnInfoSerieAggiunte.setBounds(315, 95, 45, 26);
+		panel_9.add(btnInfoSerieAggiunte);
+		
+		btnInfoSerieTutte = new JButton("info_serie_tutte");
+		btnInfoSerieTutte.setBounds(73, 95, 45, 26);
+		panel_9.add(btnInfoSerieTutte);
 
 		JPanel panel_10 = new JPanel();
 		panel_10.setBorder(new TitledBorder(new LineBorder(new Color(184, 207, 229)), "Aggiungi episodio dall'esterno", TitledBorder.LEADING, TitledBorder.TOP, null, null));
@@ -365,7 +376,7 @@ public class Interfaccia extends JFrame {
 
 		panel_info_episodio = new JInfoPanel();
 		JScrollPane scroll_info_ep=new JScrollPane(panel_info_episodio);
-		scroll_info_ep.setBounds(385, 257, 344, 269);
+		scroll_info_ep.setBounds(375, 257, 364, 269);
 		panel_info_episodio.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		//panel_info_episodio.setBounds(385, 257, 344, 269);
 		panel_info_episodio.setLayout(new BorderLayout());
@@ -2295,6 +2306,24 @@ public class Interfaccia extends JFrame {
 				}
 			}
 		});
+		btnInfoSerieAggiunte.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				SerieTV s=(SerieTV) cmb_serie_aggiunte.getSelectedItem();
+				if(s!=null){
+					Thread t=new disegnaInfo(s);
+					t.start();
+				}
+			}
+		});
+		btnInfoSerieTutte.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				SerieTV s=(SerieTV) cmb_serie_tutte.getSelectedItem();
+				if(s!=null){
+					Thread t=new disegnaInfo(s);
+					t.start();
+				}
+			}
+		});
 	}
 
 	public void addEntrySottotitolo(String nomeserie, int stagione, int episodio, String provider, boolean tray_not) {
@@ -2328,6 +2357,8 @@ public class Interfaccia extends JFrame {
 	}
 	public static SystemTray	tray;
 	private JInfoPanel panel_info_episodio;
+	private JButton btnInfoSerieTutte;
+	private JButton btnInfoSerieAggiunte;
 	public void removeTray() {
 		TrayIcon[] ic = tray.getTrayIcons();
 		if (ic.length > 0)
@@ -2378,5 +2409,106 @@ public class Interfaccia extends JFrame {
 				getWindowListeners()[0].windowClosing(new WindowEvent(thisframe, 0));
 			}
 		});
+	}
+	class disegnaInfo extends Thread {
+		private SerieTV serie;
+	
+		public disegnaInfo(SerieTV serie){
+			this.serie=serie;
+		}
+		public void run(){
+			if(panel_info_episodio.isLocked()){
+				System.out.println("Pannello bloccato");
+				//TODO cosa fare se il pannello delle informazioni è bloccato
+			}
+			else {
+				try{
+    				panel_info_episodio.setLocked(true);
+    				panel_info_episodio.removeAll();
+    				
+    				JLabel banner=new JLabel("Download delle informazioni in corso...");
+    				
+    				JPanel nord=new JPanel();
+    				((FlowLayout)nord.getLayout()).setAlignment(FlowLayout.CENTER);
+    				nord.add(banner);
+    				
+    				SerieTVDB serie=TheTVDB.getSeries(this.serie);
+    				if(serie==null){
+    					banner.setText("Informazioni sulla serie non trovate");
+    					panel_info_episodio.setLocked(false);
+    					return;
+    				}
+    				
+    				getBanner(banner, serie.getUrlBanner());
+    				JPanel centro=new JPanel();
+    				((FlowLayout)centro.getLayout()).setAlignment(FlowLayout.LEFT);
+    				String genere="";
+    				if(serie.getGeneri()!=null){
+        				for(int i=0;i<serie.getGeneri().size();i++){
+        					genere+=serie.getGeneri().get(i)+" ";
+        				}
+    				}
+    				JLabel descrizione=new JLabel("<html><font size=3>Titolo: <b>"+serie.getNomeSerie()+"</b><br>"
+    						+ "Messa in onda: <b>"+serie.getDataInizio()+"</b><br>"
+    						+ "Genere: <b>"+genere+"</b><br>"
+    						+ "Network: <b>"+(serie.getNetwork()==null?"":serie.getNetwork())+"</b><br>"
+    						+ "Valutazione: <b>"+(serie.getRating()==0.0?"S.V.":serie.getRating())+"</b><br>"
+    						+ "Trama: <b>"+formattaDescrizione(serie.getDescrizione())+"</b><br>"
+    						+ "</font></html>");
+    				centro.add(descrizione);
+    				
+    				panel_info_episodio.add(nord, BorderLayout.NORTH);
+    				panel_info_episodio.add(centro, BorderLayout.CENTER);
+    				panel_info_episodio.revalidate();
+    				panel_info_episodio.repaint();
+    				
+    				panel_info_episodio.setLocked(false);
+				}
+				catch(Exception e){
+					e.printStackTrace();
+					panel_info_episodio.setLocked(false);
+				}
+			}
+		}
+		public void getBanner(JLabel banner, String url_banner){
+			try {
+				if(url_banner!=null){
+    				if(OperazioniFile.fileExists(Settings.getDirectoryDownload()+"tvdb/"+url_banner)){
+    					Resource.setImage(banner, Settings.getDirectoryDownload()+"tvdb/"+url_banner, 320);
+    				}
+    				else
+    					banner.setText("Banner non disponibile");
+				}
+				else
+					banner.setText("Banner non disponibile");
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		public String formattaDescrizione(String descrizione){
+			String[] dotSelect=descrizione.split("[.]");
+			String descr="";
+			String line="";
+			for(int i=0;i<dotSelect.length;i++){
+				String[] spaceSelect=dotSelect[i].split(" ");
+				for(int j=0;j<spaceSelect.length;j++){
+					if(spaceSelect[j].length()+line.length()>40){
+						line+=" "+spaceSelect[j];
+						if(j==spaceSelect.length-1)
+							line+=".";
+						descr+=line+"<br>";
+						line="";
+					}
+					else {
+						line+=" "+spaceSelect[j];
+						if(j==spaceSelect.length-1)
+							line+=".<br>";
+					}
+				}
+				
+			}
+			return descr;
+		}
 	}
 }
