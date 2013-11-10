@@ -85,4 +85,13 @@ public class SerieTVDB {
 	public void setNetwork(String textContent) {
 		network=textContent;
 	}
+	public String getNetwork(){
+		return network;
+	}
+	public float getRating(){
+		return rating;
+	}
+	public ArrayList<String> getGeneri(){
+		return generi;
+	}
 }
