@@ -152,6 +152,13 @@ public class TheTVDB {
 				ArrayList<SerieTVDB> serie_trovate = new ArrayList<SerieTVDB>(1);
 
 				NodeList elementi = doc.getElementsByTagName("Series");
+				if(elementi.getLength()==0){
+					API_PATH = API_SERIE.replace("<seriesname>", SerieTV.removeNationality(serietv.getNomeSerie())).replace("<mirrorpath>", mirror.getUrl());
+					doc=domparser.parse(API_PATH);
+					elementi=doc.getElementsByTagName("Series");
+					if(elementi.getLength()==0)
+						return null;
+				}
 				for (int i = 0; i < elementi.getLength(); i++) {
 					Node serie = elementi.item(i);
 					NodeList attributi = serie.getChildNodes();
@@ -216,7 +223,6 @@ public class TheTVDB {
 		Mirror mirrorxml=getXMLMirror();
 		String API_PATH=API_SERIE_ALL.replace("<mirror_path>", mirrorxml.getUrl()).replace("<id_serie>", serie.getId()+"").replace("<lang>", "en");
 		
-		
 		try {
 			DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder domparser = dbfactory.newDocumentBuilder();
@@ -243,6 +249,8 @@ public class TheTVDB {
 					}
 				}
 			}
+			//TODO episodi
+			NodeList stat_episodi=doc.getElementsByTagName("");
 		}
 		catch (ParserConfigurationException e) {
 			// TODO Auto-generated catch block

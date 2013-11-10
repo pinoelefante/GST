@@ -153,6 +153,22 @@ public class SerieTV {
 		formattato=formattato.trim();
 		return formattato;
 	}
+	public static String removeNationality(String nome){
+		String formattato=nome;
+		Pattern pattern=Pattern.compile("\\W[aA-zZ]{2}\\W$");
+		Matcher matcher=pattern.matcher(formattato);
+		if(matcher.find()){
+			formattato=formattato.replace(matcher.group(), "").trim();
+		}
+		return formattato;
+	}
+	public static void main(String[] args){
+		String nomeserie="Dracula (US)";
+		String nomeserie2="(US) Dracula";
+		
+		System.out.println("Prima stringa: "+nomeserie+"\nFormattata: "+removeNationality(nomeserie));
+		System.out.println("Seconda stringa: "+nomeserie2+"\nFormattata: "+removeNationality(nomeserie2));
+	}
 	public void addEpisodio(Torrent episodio){
 		if(episodio.is720p() && episodio.getScaricato()==Torrent.SCARICARE && !getPreferenze().isPreferisciHD())
 			episodio.setScaricato(Torrent.IGNORATO, false);
