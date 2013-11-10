@@ -2416,6 +2416,8 @@ public class Interfaccia extends JFrame {
 		public disegnaInfo(SerieTV serie){
 			this.serie=serie;
 		}
+		private JLabel banner, descrizione;
+		private JPanel nord, centro;
 		public void run(){
 			if(panel_info_episodio.isLocked()){
 				System.out.println("Pannello bloccato");
@@ -2426,42 +2428,19 @@ public class Interfaccia extends JFrame {
     				panel_info_episodio.setLocked(true);
     				panel_info_episodio.removeAll();
     				
-    				JLabel banner=new JLabel("Download delle informazioni in corso...");
+    				banner=new JLabel("Download delle informazioni in corso...");
     				
-    				JPanel nord=new JPanel();
+    				nord=new JPanel();
     				((FlowLayout)nord.getLayout()).setAlignment(FlowLayout.CENTER);
     				nord.add(banner);
     				
     				SerieTVDB serie=TheTVDB.getSeries(this.serie);
     				if(serie==null){
     					banner.setText("Informazioni sulla serie non trovate");
-    					panel_info_episodio.setLocked(false);
-    					return;
     				}
-    				
-    				getBanner(banner, serie.getUrlBanner());
-    				JPanel centro=new JPanel();
-    				((FlowLayout)centro.getLayout()).setAlignment(FlowLayout.LEFT);
-    				String genere="";
-    				if(serie.getGeneri()!=null){
-        				for(int i=0;i<serie.getGeneri().size();i++){
-        					genere+=serie.getGeneri().get(i)+" ";
-        				}
+    				else {
+    					disegna(serie);
     				}
-    				JLabel descrizione=new JLabel("<html><font size=3>Titolo: <b>"+serie.getNomeSerie()+"</b><br>"
-    						+ "Messa in onda: <b>"+serie.getDataInizio()+"</b><br>"
-    						+ "Genere: <b>"+genere+"</b><br>"
-    						+ "Network: <b>"+(serie.getNetwork()==null?"":serie.getNetwork())+"</b><br>"
-    						+ "Valutazione: <b>"+(serie.getRating()==0.0?"S.V.":serie.getRating())+"</b><br>"
-    						+ "Trama: <b>"+formattaDescrizione(serie.getDescrizione())+"</b><br>"
-    						+ "</font></html>");
-    				centro.add(descrizione);
-    				
-    				panel_info_episodio.add(nord, BorderLayout.NORTH);
-    				panel_info_episodio.add(centro, BorderLayout.CENTER);
-    				panel_info_episodio.revalidate();
-    				panel_info_episodio.repaint();
-    				
     				panel_info_episodio.setLocked(false);
 				}
 				catch(Exception e){
@@ -2469,6 +2448,30 @@ public class Interfaccia extends JFrame {
 					panel_info_episodio.setLocked(false);
 				}
 			}
+		}
+		public void disegna(SerieTVDB serie){
+			getBanner(banner, serie.getUrlBanner());
+			centro=new JPanel();
+			((FlowLayout)centro.getLayout()).setAlignment(FlowLayout.LEFT);
+			String genere="";
+			if(serie.getGeneri()!=null){
+				for(int i=0;i<serie.getGeneri().size();i++){
+					genere+=serie.getGeneri().get(i)+" ";
+				}
+			}
+			descrizione=new JLabel("<html><font size=3>Titolo: <b>"+serie.getNomeSerie()+"</b><br>"
+					+ "Messa in onda: <b>"+serie.getDataInizio()+"</b><br>"
+					+ "Genere: <b>"+genere+"</b><br>"
+					+ "Network: <b>"+(serie.getNetwork()==null?"":serie.getNetwork())+"</b><br>"
+					+ "Valutazione: <b>"+(serie.getRating()==0.0?"S.V.":serie.getRating())+"</b><br>"
+					+ "Trama: <b>"+formattaDescrizione(serie.getDescrizione())+"</b><br>"
+					+ "</font></html>");
+			centro.add(descrizione);
+			
+			panel_info_episodio.add(nord, BorderLayout.NORTH);
+			panel_info_episodio.add(centro, BorderLayout.CENTER);
+			panel_info_episodio.revalidate();
+			panel_info_episodio.repaint();
 		}
 		public void getBanner(JLabel banner, String url_banner){
 			try {

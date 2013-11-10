@@ -14,7 +14,9 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import Programma.Download;
 import Programma.ManagerException;
+import Programma.OperazioniFile;
 import SerieTV.SerieTV;
 
 public class TheTVDB {
@@ -270,6 +272,19 @@ public class TheTVDB {
 	}
 	public static boolean scaricaBanner(String cartellaBase, String path){
 		String localPath=cartellaBase+(cartellaBase.endsWith(File.separator)?"":File.separator)+path;
+		Mirror mirror=getBannerMirror();
+		if(mirror!=null){
+			String url_API=API_IMAGE.replace("<mirror_path>", mirror.getUrl())+(mirror.getUrl().endsWith("/")?"":"/");
+			try {
+				if(!OperazioniFile.fileExists(localPath))
+					Download.downloadFromUrl(url_API, localPath);
+				return true;
+			} 
+			catch (IOException e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
 		return false;
 	}
 	private static SerieTVDB individuaSerieAssociata(SerieTV serietv, ArrayList<SerieTVDB> list) {

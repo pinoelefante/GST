@@ -69,7 +69,7 @@ public class SerieTVDB {
 		return "ID: "+getId()+"\nTitolo: "+getNomeSerie()+"\nData inizio: "+getDataInizio()+"\nBanner: "+getUrlBanner()+"\nDescrizione: "+getDescrizione();
 	}
 	public void setGeneri(String textContent) {
-		String[] generi=textContent.split("|");
+		String[] generi=textContent.replace("|", " ").split(" ");
 		if(this.generi==null)
 			this.generi=new ArrayList<String>(2);
 		for(int i=0;i<generi.length;i++){
