@@ -2427,6 +2427,8 @@ public class Interfaccia extends JFrame {
 				try{
     				panel_info_episodio.setLocked(true);
     				panel_info_episodio.removeAll();
+    				panel_info_episodio.revalidate();
+    				panel_info_episodio.repaint();
     				
     				banner=new JLabel("Download delle informazioni in corso...");
     				
@@ -2476,11 +2478,22 @@ public class Interfaccia extends JFrame {
 		public void getBanner(JLabel banner, String url_banner){
 			try {
 				if(url_banner!=null){
-    				if(OperazioniFile.fileExists(Settings.getDirectoryDownload()+"tvdb/"+url_banner)){
-    					Resource.setImage(banner, Settings.getDirectoryDownload()+"tvdb/"+url_banner, 320);
+					String url_img=TheTVDB.getUrlBanner(url_banner);
+					if(url_img!=null)
+						Resource.setImage(banner, url_img, 320);
+					else
+						banner.setText("Banner non disponibile");
+					/*
+    				if(OperazioniFile.fileExists(Settings.getDirectoryDownload()+"tvdb"+File.separator+url_banner.replace("/", File.separator))){
+    					Resource.setImage(banner, Settings.getDirectoryDownload()+"tvdb"+File.separator+url_banner.replace("/", File.separator), 320);
     				}
-    				else
-    					banner.setText("Banner non disponibile");
+    				else {
+    					if(TheTVDB.scaricaBanner(Settings.getDirectoryDownload()+"tvdb", url_banner))
+    						Resource.setImage(banner, Settings.getDirectoryDownload()+"tvdb"+File.separator+url_banner.replace("/", File.separator), 320);
+    					else
+    						banner.setText("Banner non disponibile");
+    				}
+    				*/
 				}
 				else
 					banner.setText("Banner non disponibile");
@@ -2505,8 +2518,11 @@ public class Interfaccia extends JFrame {
 					}
 					else {
 						line+=" "+spaceSelect[j];
-						if(j==spaceSelect.length-1)
+						if(j==spaceSelect.length-1){
 							line+=".<br>";
+							descr+=line;
+							line="";
+						}
 					}
 				}
 				

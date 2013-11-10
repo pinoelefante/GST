@@ -55,7 +55,7 @@ public class SerieTVDB {
 	}
 
 	public void setUrlBanner(String url_banner) {
-		this.url_banner = url_banner;
+		this.url_banner = url_banner;;
 	}
 
 	public String getDescrizione() {
@@ -80,7 +80,12 @@ public class SerieTVDB {
 	}
 	public void setRating(String textContent) {
 		textContent.replace(",", ".");
-		rating=Float.parseFloat(textContent);
+		try {
+			rating=Float.parseFloat(textContent);
+		}
+		catch(NumberFormatException e){
+			rating=0.0f;
+		}
 	}
 	public void setNetwork(String textContent) {
 		network=textContent;

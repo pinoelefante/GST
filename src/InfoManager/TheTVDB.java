@@ -271,14 +271,18 @@ public class TheTVDB {
 		return serie;
 	}
 	public static boolean scaricaBanner(String cartellaBase, String path){
-		String localPath=cartellaBase+(cartellaBase.endsWith(File.separator)?"":File.separator)+path;
+		String localPath=cartellaBase+(cartellaBase.endsWith(File.separator)?"":File.separator)+path.replace("/", File.separator);
 		Mirror mirror=getBannerMirror();
 		if(mirror!=null){
-			String url_API=API_IMAGE.replace("<mirror_path>", mirror.getUrl())+(mirror.getUrl().endsWith("/")?"":"/")+path;
+			String url_API=API_IMAGE.replace("<mirror_path>", mirror.getUrl()).replace("<path_image>", path);
+			System.out.println("URL:"+url_API);
+			System.out.println("Local: "+localPath);
+			
 			try {
-				if(!OperazioniFile.fileExists(localPath))
+				if(!OperazioniFile.fileExists(localPath)){
 					Download.downloadFromUrl(url_API, localPath);
-				return true;
+					return OperazioniFile.fileExists(localPath);
+				}
 			} 
 			catch (IOException e) {
 				e.printStackTrace();
@@ -286,6 +290,13 @@ public class TheTVDB {
 			}
 		}
 		return false;
+	}
+	public static String getUrlBanner(String path_banner){
+		Mirror mirror=getBannerMirror();
+		if(mirror!=null){
+			return API_IMAGE.replace("<mirror_path>", mirror.getUrl()).replace("<path_image>", path_banner);
+		}
+		return null;
 	}
 	private static SerieTVDB individuaSerieAssociata(SerieTV serietv, ArrayList<SerieTVDB> list) {
 		if(list.isEmpty())
