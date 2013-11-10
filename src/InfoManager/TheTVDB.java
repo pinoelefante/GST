@@ -274,7 +274,7 @@ public class TheTVDB {
 		String localPath=cartellaBase+(cartellaBase.endsWith(File.separator)?"":File.separator)+path;
 		Mirror mirror=getBannerMirror();
 		if(mirror!=null){
-			String url_API=API_IMAGE.replace("<mirror_path>", mirror.getUrl())+(mirror.getUrl().endsWith("/")?"":"/");
+			String url_API=API_IMAGE.replace("<mirror_path>", mirror.getUrl())+(mirror.getUrl().endsWith("/")?"":"/")+path;
 			try {
 				if(!OperazioniFile.fileExists(localPath))
 					Download.downloadFromUrl(url_API, localPath);
