@@ -2,6 +2,7 @@ package GUI;
 
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 
@@ -30,7 +31,25 @@ public class Resource {
 	public static void setImage(JLabel lab, String file_path, int max_w) throws IOException{
 		if(lab==null)
 			return;
-		URL imageURL = new URL(file_path);/*Resource.class.getResource(file_path);*/
+		//URL imageURL = new URL(file_path);/*Resource.class.getResource(file_path);*/
+		//BufferedImage myPicture = ImageIO.read(imageURL);
+		BufferedImage myPicture = ImageIO.read(new File(file_path));
+		if(myPicture.getWidth()>max_w && max_w>=0){
+			float percent_to_scale=(max_w)/(float)myPicture.getWidth();
+			float new_h=myPicture.getHeight()*percent_to_scale;
+			float new_w=myPicture.getWidth()*percent_to_scale;
+			Image img=myPicture.getScaledInstance((int)new_w, (int)new_h, Image.SCALE_SMOOTH);
+			BufferedImage new_image=new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_RGB);
+			new_image.getGraphics().drawImage(img, 0, 0, null);
+			myPicture=new_image;
+		}
+		lab.setText("");
+		lab.setIcon(new ImageIcon(myPicture));
+	}
+	public static void setImageFromJar(JLabel lab, String file_path, int max_w) throws IOException{
+		if(lab==null)
+			return;
+		URL imageURL = Resource.class.getResource(file_path);
 		BufferedImage myPicture = ImageIO.read(imageURL);
 		if(myPicture.getWidth()>max_w && max_w>=0){
 			float percent_to_scale=(max_w)/(float)myPicture.getWidth();

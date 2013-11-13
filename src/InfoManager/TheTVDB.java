@@ -196,8 +196,8 @@ public class TheTVDB {
 				}
 				SerieTVDB associata = individuaSerieAssociata(serietv, serie_trovate);
 				if(associata!=null){
-					serietv.setIDTvdb(associata.getId());
-					serietv.aggiornaDB();
+					//serietv.setIDTvdb(associata.getId());
+					//serietv.aggiornaDB();
 					getSerieAll(associata);
 					//TODO scaricare banner
 					//TODO aggiornare l'elenco attori

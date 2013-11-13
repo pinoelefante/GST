@@ -2478,12 +2478,14 @@ public class Interfaccia extends JFrame {
 		public void getBanner(JLabel banner, String url_banner){
 			try {
 				if(url_banner!=null){
+					/*
 					String url_img=TheTVDB.getUrlBanner(url_banner);
 					if(url_img!=null)
 						Resource.setImage(banner, url_img, 320);
 					else
 						banner.setText("Banner non disponibile");
-					/*
+					*/
+					
     				if(OperazioniFile.fileExists(Settings.getDirectoryDownload()+"tvdb"+File.separator+url_banner.replace("/", File.separator))){
     					Resource.setImage(banner, Settings.getDirectoryDownload()+"tvdb"+File.separator+url_banner.replace("/", File.separator), 320);
     				}
@@ -2493,7 +2495,7 @@ public class Interfaccia extends JFrame {
     					else
     						banner.setText("Banner non disponibile");
     				}
-    				*/
+    				
 				}
 				else
 					banner.setText("Banner non disponibile");
