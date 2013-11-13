@@ -3,10 +3,12 @@ package SerieTV;
 import java.io.File;
 import java.util.ArrayList;
 
+import Interfacce.ValueChangeNotifier;
+import Interfacce.ValueChangeSubscriber;
 import Naming.CaratteristicheFile;
 import Programma.Settings;
 
-public class Torrent {
+public class Torrent implements ValueChangeNotifier{
 	public final static int SCARICARE=0, SCARICATO=1, VISTO=2, RIMOSSO=3, IGNORATO=4; 
 	private String	url;
 	private int		stato; //0 non scaricato - 1 scaricato - 2 visto - 3 rimosso - 4 ignorato
@@ -42,9 +44,13 @@ public class Torrent {
 	}
 	
 	public void setScaricato(int visto, boolean update) {
-		this.stato = visto;
-		if(update)
-			updateTorrentInDB();
+		boolean aggiornare=this.stato!=visto;
+		if(aggiornare){
+			this.stato = visto;
+			notificaValueChange();
+			if(update)
+				updateTorrentInDB();
+		}
 	}
 
 	public boolean is720p() {
@@ -252,5 +258,30 @@ public class Torrent {
 			return magnet.substring(magnet.indexOf("&tr"));
 		}
 		return "";
+	}
+	
+	private ArrayList<ValueChangeSubscriber> sottoscrittori=new ArrayList<ValueChangeSubscriber>(2);
+	@Override
+	public void subscribe(ValueChangeSubscriber s) {
+		if(s!=null)
+			sottoscrittori.add(s);
+	}
+	@Override
+	public void unsubscribe(ValueChangeSubscriber s) {
+		if(s!=null)
+			sottoscrittori.remove(s);
+	}
+	@Override
+	public void notificaValueChange() {
+		for(int i=0;i<sottoscrittori.size();){
+			ValueChangeSubscriber s=sottoscrittori.get(i);
+			if(s!=null){
+				s.sendNotifica();
+				i++;
+			}
+			else {
+				sottoscrittori.remove(i);
+			}
+		}
 	}
 }

@@ -21,6 +21,7 @@ import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.border.EtchedBorder;
 
+import Interfacce.ValueChangeSubscriber;
 import LettoreVideo.Player;
 import LettoreVideo.PlaylistItem;
 import Programma.Download;
@@ -30,7 +31,7 @@ import SerieTV.GestioneSerieTV;
 import SerieTV.Torrent;
 import StruttureDati.serietv.Episodio;
 
-public class PanelEpisodioLettore extends JPanel {
+public class PanelEpisodioLettore extends JPanel implements ValueChangeSubscriber{
 	private static final long serialVersionUID = 1L;
 	private static JPlaylist playlist;
 	private Episodio episodio;
@@ -59,6 +60,8 @@ public class PanelEpisodioLettore extends JPanel {
 			isOK=false;
 			return;
 		}
+		
+		torrent.subscribe(this);
 		
 		setSize(750, 100);
 		setLayout(new BorderLayout(0, 0));
@@ -264,7 +267,7 @@ public class PanelEpisodioLettore extends JPanel {
 								OperazioniFile.deleteFile(res.get(i));
 						torrent.setScaricato(Torrent.RIMOSSO, true);
 						torrent.updateTorrentInDB();
-						cmb_stato_episodio.setSelectedIndex(Torrent.RIMOSSO);
+						//cmb_stato_episodio.setSelectedIndex(Torrent.RIMOSSO);
 					}
 					else {
 						JOptionPane.showMessageDialog(PanelEpisodioLettore.this, "Non è stato possibile eliminare il file. Potrebbe essere in uso da un altro processo.\nSe sei sicuro che il file non esiste, imposta manualmente lo stato RIMOSSO");
@@ -378,5 +381,10 @@ public class PanelEpisodioLettore extends JPanel {
 	}
 	public static void setPlaylist(JPlaylist p){
 		playlist=p;
+	}
+	@Override
+	public void sendNotifica() {
+		cmb_stato_episodio.setSelectedIndex(torrent.getScaricato());
+		//TODO agire in base ai settaggi: rimosso/visto/ignorato -> rimuovere panel
 	}
 }
