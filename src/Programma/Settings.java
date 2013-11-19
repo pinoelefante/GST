@@ -204,11 +204,7 @@ public class Settings {
 		
 		DirectoryDownload=current_dir+"Download";
 	}
-	public static void main(String[] args){
-		baseSettings();
-		Database.Connect();
-		CaricaSetting();
-	}
+
 	/* Tabelle database
     "download_path"
     "utorrent"
@@ -304,7 +300,7 @@ public class Settings {
 	}
 	public static void removeAutostart() {
 		if(isWindows()){
-			if(Advapi32Util.registryKeyExists(WinReg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Run\\GestioneSerieTV")){
+			if(Advapi32Util.registryValueExists(WinReg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Run", "GestioneSerieTV")){
 				Advapi32Util.registryDeleteValue(WinReg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Run", "GestioneSerieTV");
 			}
 		}
@@ -314,6 +310,10 @@ public class Settings {
 		else if(isMacOS()){
 			//TODO
 		}
+	}
+	public static void main (String[] args){
+		baseSettings();
+		removeAutostart();
 	}
 	public static boolean verificaUtorrent(){
 		String nome_client=ClientPath.substring(ClientPath.lastIndexOf(File.separator)+1);
