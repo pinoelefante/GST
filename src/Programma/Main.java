@@ -28,13 +28,12 @@ public class Main {
 		InstanceManager instance_manager=new InstanceManager();
 		Settings.baseSettings();
 		try{
-			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-			/*
+			//UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 			if(Settings.isWindows())
 				UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-			else if(Settings.isLinux())
+			else 
 				UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-			*/
+			
 			
 			fl=new FrameLoading();
 			fl.start();

@@ -308,11 +308,13 @@ public class Interfaccia extends JFrame {
 		buttonReloadSerie.setBounds(197, 15, 33, 23);
 		panel_9.add(buttonReloadSerie);
 		
-		btnInfoSerieAggiunte = new JButton("info_serie_aggiunte");
+		btnInfoSerieAggiunte = new JButton("");
+		btnInfoSerieAggiunte.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/info.png")));
 		btnInfoSerieAggiunte.setBounds(315, 95, 45, 26);
 		panel_9.add(btnInfoSerieAggiunte);
 		
-		btnInfoSerieTutte = new JButton("info_serie_tutte");
+		btnInfoSerieTutte = new JButton("");
+		btnInfoSerieTutte.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/info.png")));
 		btnInfoSerieTutte.setBounds(73, 95, 45, 26);
 		panel_9.add(btnInfoSerieTutte);
 
@@ -1021,7 +1023,7 @@ public class Interfaccia extends JFrame {
 		btnChiudiADS.setBounds(696, 492, 33, 23);
 		InfoPanel.add(btnChiudiADS);
 
-		/** TODO decommentare per la distribuzione *//*
+		/** TODO decommentare per la distribuzione */
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -2495,7 +2497,6 @@ public class Interfaccia extends JFrame {
     					else
     						banner.setText("Banner non disponibile");
     				}
-    				
 				}
 				else
 					banner.setText("Banner non disponibile");
