@@ -99,7 +99,7 @@ public class PanelSubDown extends JPanel implements ValueChangeSubscriber{
 	}
 	@Override
 	public void sendNotifica() {
-		// TODO Auto-generated method stub
-		
+		if(!torrent.isSottotitolo())
+			getParent().remove(this);
 	}
 }

@@ -101,15 +101,17 @@ public class Torrent implements ValueChangeNotifier{
 		setSubDownload(stat, false);
 	}
 	public void setSubDownload(boolean stat, boolean update_db){
-		sub_down=stat;
-		if(stat)
-			GestioneSerieTV.getSubManager().aggiungiEpisodio(this);
-		else
-			GestioneSerieTV.getSubManager().rimuoviEpisodio(this);
-		if(update_db)
-			updateTorrentInDB();
+		if(stat!=sub_down){
+			sub_down=stat;
+			notificaValueChange();
+			if(stat)
+				GestioneSerieTV.getSubManager().aggiungiEpisodio(this);
+			else
+				GestioneSerieTV.getSubManager().rimuoviEpisodio(this);
+			if(update_db)
+				updateTorrentInDB();
+		}
 	}
-	
 	public void setPreair(boolean stato) {
 		preair=stato;
 	}
