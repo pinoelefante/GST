@@ -1,6 +1,7 @@
 package GUI;
 import javax.swing.JPanel;
 
+import Interfacce.ValueChangeSubscriber;
 import SerieTV.GestioneSerieTV;
 import SerieTV.Torrent;
 
@@ -15,7 +16,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.border.EtchedBorder;
 
-public class PanelSubDown extends JPanel {
+public class PanelSubDown extends JPanel implements ValueChangeSubscriber{
 	private static final long serialVersionUID = 1L;
 	private JLabel lblRisultato;
 	private JButton btnScarica;
@@ -95,5 +96,10 @@ public class PanelSubDown extends JPanel {
 				t.start();
 			}
 		});
+	}
+	@Override
+	public void sendNotifica() {
+		// TODO Auto-generated method stub
+		
 	}
 }
