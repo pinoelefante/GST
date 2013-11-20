@@ -25,6 +25,7 @@ public class PanelSubDown extends JPanel implements ValueChangeSubscriber{
 	
 	public PanelSubDown(Torrent t) {
 		torrent=t;
+		torrent.subscribe(this);
 		setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
 		setLayout(new BorderLayout(0, 0));
 		
