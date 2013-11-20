@@ -1082,6 +1082,7 @@ public class Interfaccia extends JFrame {
 				btnAggiorna.doClick();
 				
 				initSubDownload();
+				inizializzaSubDownload();
 				GestioneSerieTV.getSubManager().loadLast10();
 				
 				if(Settings.isVLCAutoload())
@@ -1886,14 +1887,7 @@ public class Interfaccia extends JFrame {
 					btnAggiornaElencoRegole.getActionListeners()[0].actionPerformed(new ActionEvent(btnAggiornaElencoRegole, 0, ""));
 				else if (tab.getSelectedComponent() == LettorePanel)
 					disegnaLettore();
-				else if(tab.getSelectedComponent()==SottotitoliPanel){
-					inizializzaSubDownload();
-					cmb_serie_sottotitoli.getActionListeners()[0].actionPerformed(new ActionEvent(cmb_serie_sottotitoli, 0, ""));
-					if(cmb_sub_custom_provider.getItemCount()<=0){
-						cmb_sub_custom_provider.addItem(GestioneSerieTV.getSubManager().getProvider(GestoreSottotitoli.ITASA));
-						cmb_sub_custom_provider.addItem(GestioneSerieTV.getSubManager().getProvider(GestoreSottotitoli.SUBSFACTORY));
-					}
-				}
+				
 			}
 		});
 		btnUtorrentSfoglia.addActionListener(new ActionListener() {
@@ -2356,6 +2350,8 @@ public class Interfaccia extends JFrame {
 		ArrayList<SerieSub> s_subs=p_subsfactory.getElencoSerie();
 		for(int i=0;i<s_subs.size();i++)
 			cmb_subsfactory_serie.addItem(s_subs.get(i));
+		
+		cmb_serie_sottotitoli.getActionListeners()[0].actionPerformed(new ActionEvent(cmb_serie_sottotitoli, 0, ""));
 	}
 	public static SystemTray	tray;
 	private JInfoPanel panel_info_episodio;
