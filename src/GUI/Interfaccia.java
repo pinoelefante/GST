@@ -369,7 +369,7 @@ public class Interfaccia extends JFrame {
 
 		JScrollPane scrollPaneDownload = new JScrollPane();
 		scrollPaneDownload.setBounds(0, 257, 375, 269);
-		scrollPaneDownload.getVerticalScrollBar().setUnitIncrement(8);
+		scrollPaneDownload.getVerticalScrollBar().setUnitIncrement(10);
 		DownloadPanel.add(scrollPaneDownload);
 
 		panel_scroll_download = new JPanel();
@@ -379,12 +379,13 @@ public class Interfaccia extends JFrame {
 		panel_info_episodio = new JInfoPanel();
 		JScrollPane scroll_info_ep=new JScrollPane(panel_info_episodio);
 		scroll_info_ep.setBounds(375, 257, 364, 269);
+		scroll_info_ep.getVerticalScrollBar().setUnitIncrement(10);
 		panel_info_episodio.setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
-		//panel_info_episodio.setBounds(385, 257, 344, 269);
 		panel_info_episodio.setLayout(new BorderLayout());
-		//DownloadPanel.add(panel_info_episodio);
 		DownloadPanel.add(scroll_info_ep);
-		PanelEpisodioDownload.setPanelInfo(panel_info_episodio);
+		//PanelEpisodioDownload.setPanelInfo(panel_info_episodio);
+		DisegnaInfoSerie.setPanelInfo(panel_info_episodio);
+		DisegnaInfoEpisodio.setInfoPanel(panel_info_episodio);
 
 		btnAggiorna = new JButton("Aggiorna");
 
@@ -1082,7 +1083,6 @@ public class Interfaccia extends JFrame {
 				btnAggiorna.doClick();
 				
 				initSubDownload();
-				inizializzaSubDownload();
 				GestioneSerieTV.getSubManager().loadLast10();
 				
 				if(Settings.isVLCAutoload())
@@ -2306,7 +2306,7 @@ public class Interfaccia extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				SerieTV s=(SerieTV) cmb_serie_aggiunte.getSelectedItem();
 				if(s!=null){
-					Thread t=new disegnaInfo(s);
+					Thread t=new DisegnaInfoSerie(s);
 					t.start();
 				}
 			}
@@ -2315,7 +2315,7 @@ public class Interfaccia extends JFrame {
 			public void actionPerformed(ActionEvent arg0) {
 				SerieTV s=(SerieTV) cmb_serie_tutte.getSelectedItem();
 				if(s!=null){
-					Thread t=new disegnaInfo(s);
+					Thread t=new DisegnaInfoSerie(s);
 					t.start();
 				}
 			}
@@ -2333,14 +2333,6 @@ public class Interfaccia extends JFrame {
 	public void subAddSubDownload(Torrent t){
 		panel_SottotitoliDaScaricare.add(new PanelSubDown(t));
 	}
-	public void inizializzaSubDownload(){
-		ArrayList<Torrent> subDown=GestioneSerieTV.getSubManager().getSottotitoliDaScaricare();
-		panel_SottotitoliDaScaricare.removeAll();
-		for(int i=0;i<subDown.size();i++){
-			panel_SottotitoliDaScaricare.add(new PanelSubDown(subDown.get(i)));
-		}
-		Runtime.getRuntime().gc();
-	}
 	private void initSubDownload(){
 		ProviderSottotitoli p_itasa=GestioneSerieTV.getSubManager().getProvider(GestoreSottotitoli.ITASA);
 		ArrayList<SerieSub> s_ita=p_itasa.getElencoSerie();
@@ -2352,6 +2344,13 @@ public class Interfaccia extends JFrame {
 			cmb_subsfactory_serie.addItem(s_subs.get(i));
 		
 		cmb_serie_sottotitoli.getActionListeners()[0].actionPerformed(new ActionEvent(cmb_serie_sottotitoli, 0, ""));
+		
+		ArrayList<Torrent> subDown=GestioneSerieTV.getSubManager().getSottotitoliDaScaricare();
+		panel_SottotitoliDaScaricare.removeAll();
+		for(int i=0;i<subDown.size();i++){
+			panel_SottotitoliDaScaricare.add(new PanelSubDown(subDown.get(i)));
+		}
+		Runtime.getRuntime().gc();
 	}
 	public static SystemTray	tray;
 	private JInfoPanel panel_info_episodio;
@@ -2408,6 +2407,7 @@ public class Interfaccia extends JFrame {
 			}
 		});
 	}
+	/*
 	class disegnaInfo extends Thread {
 		private SerieTV serie;
 	
@@ -2476,13 +2476,13 @@ public class Interfaccia extends JFrame {
 		public void getBanner(JLabel banner, String url_banner){
 			try {
 				if(url_banner!=null){
-					/*
-					String url_img=TheTVDB.getUrlBanner(url_banner);
-					if(url_img!=null)
-						Resource.setImage(banner, url_img, 320);
-					else
-						banner.setText("Banner non disponibile");
-					*/
+					
+//					String url_img=TheTVDB.getUrlBanner(url_banner);
+//					if(url_img!=null)
+//						Resource.setImage(banner, url_img, 320);
+//					else
+//						banner.setText("Banner non disponibile");
+//					
 					
     				if(OperazioniFile.fileExists(Settings.getDirectoryDownload()+"tvdb"+File.separator+url_banner.replace("/", File.separator))){
     					Resource.setImage(banner, Settings.getDirectoryDownload()+"tvdb"+File.separator+url_banner.replace("/", File.separator), 320);
@@ -2529,4 +2529,5 @@ public class Interfaccia extends JFrame {
 			return descr;
 		}
 	}
+	*/
 }

@@ -3,7 +3,7 @@ package GUI;
 import javax.swing.JPanel;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.Dimension;
 
 import javax.swing.JCheckBox;
 import javax.swing.SwingConstants;
@@ -18,8 +18,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.border.EtchedBorder;
 
-import InfoManager.SerieTVDB;
-import InfoManager.TheTVDB;
 import Programma.Download;
 import Programma.ManagerException;
 import Programma.Settings;
@@ -27,8 +25,6 @@ import SerieTV.Torrent;
 import StruttureDati.serietv.Episodio;
 
 public class PanelEpisodioDownload extends JPanel {
-	
-	private static JInfoPanel panel_info;
 	private static final long serialVersionUID = 1L;
 	private Episodio ep;
 	private JButton btnHd;
@@ -37,10 +33,8 @@ public class PanelEpisodioDownload extends JPanel {
 	private JButton btnInfo;
 	private JCheckBox chckbxnomeserie;
 	private JButton btnX;
+	private static Dimension buttonSize=new Dimension(46, 26);
 	
-	public static void setPanelInfo(JInfoPanel p){
-		panel_info=p;
-	}
 	public PanelEpisodioDownload(Episodio e) {
 		ep=e;
 		setBorder(new EtchedBorder(EtchedBorder.LOWERED, null, null));
@@ -64,6 +58,7 @@ public class PanelEpisodioDownload extends JPanel {
 		
 		btnX = new JButton("");
 		btnX.setIcon(new ImageIcon(PanelEpisodioDownload.class.getResource("/GUI/res/Xclose.png")));
+		btnX.setPreferredSize(buttonSize);
 		panel_6.add(btnX);
 		
 		JPanel panel_1 = new JPanel();
@@ -76,7 +71,8 @@ public class PanelEpisodioDownload extends JPanel {
 		btnInfo = new JButton("");
 		btnInfo.setIcon(new ImageIcon(PanelEpisodioDownload.class.getResource("/GUI/res/info.png")));
 		//TODO abilitare quando verrà creata la classe per TheTVDB
-		btnInfo.setEnabled(false);
+		btnInfo.setPreferredSize(buttonSize);
+		btnInfo.setEnabled(true);
 		panel_3.add(btnInfo);
 		
 		JPanel panel_2 = new JPanel();
@@ -193,74 +189,11 @@ public class PanelEpisodioDownload extends JPanel {
 		});
 		btnInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				class disegnaInfo extends Thread {
-					public void run(){
-						if(panel_info.isLocked()){
-							//TODO cosa fare se il pannello delle informazioni è bloccato
-						}
-						else {
-							panel_info.setLocked(true);
-							panel_info.removeAll();
-							
-							JLabel banner=new JLabel("Download delle informazioni in corso...");
-							
-							JPanel nord=new JPanel();
-							((FlowLayout)nord.getLayout()).setAlignment(FlowLayout.CENTER);
-							nord.add(banner);
-							
-							SerieTVDB serie=TheTVDB.getSeries(ep.getLinkDownload().getSerieTV());
-							
-							getBanner(banner, serie.getUrlBanner());
-							JPanel centro=new JPanel();
-							JLabel descrizione=new JLabel("<html>Titolo: <b>"+serie.getNomeSerie()+"</b><br>"
-									+ "Messa in onda: <b>"+serie.getDataInizio()+"</b><br>"
-									+ "Trama: <b>"+formattaDescrizione(serie.getDescrizione())+"</b><br>"
-									+ "</html>");
-							centro.add(descrizione);
-							
-							panel_info.add(nord, BorderLayout.NORTH);
-							panel_info.add(centro, BorderLayout.CENTER);
-							panel_info.revalidate();
-							panel_info.repaint();
-							
-							panel_info.setLocked(false);
-						}
-					}
-					public void getBanner(JLabel banner, String url_banner){
-						try {
-							Resource.setImage(banner, Settings.getDirectoryDownload()+"tvdb/"+url_banner, 320);
-						}
-						catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
-					public String formattaDescrizione(String descrizione){
-						String[] dotSelect=descrizione.split("[.]");
-						String descr="";
-						String line="";
-						for(int i=0;i<dotSelect.length;i++){
-							String[] spaceSelect=dotSelect[i].split(" ");
-							for(int j=0;j<spaceSelect.length;j++){
-								if(spaceSelect[j].length()+line.length()>40){
-									line+=" "+spaceSelect[j];
-									if(j==spaceSelect.length-1)
-										line+=".";
-									descr+=line+"<br>";
-									line="";
-								}
-								else {
-									line+=" "+spaceSelect[j];
-									if(j==spaceSelect.length-1)
-										line+=".<br>";
-								}
-							}
-							
-						}
-						return descr;
-					}
+				Torrent link=getLink();
+				if(link!=null){
+					Thread t=new DisegnaInfoEpisodio(link);
+					t.start();
 				}
-				Thread t=new disegnaInfo();
-				t.start();
 			}
 		});
 		btnX.addActionListener(new ActionListener() {

@@ -100,7 +100,9 @@ public class PanelSubDown extends JPanel implements ValueChangeSubscriber{
 	}
 	@Override
 	public void sendNotifica() {
-		if(!torrent.isSottotitolo())
+		if(!torrent.isSottotitolo()){
+			torrent.unsubscribe(this);
 			getParent().remove(this);
+		}
 	}
 }

@@ -4,6 +4,7 @@ import javax.swing.JPanel;
 import javax.swing.border.EtchedBorder;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -16,9 +17,12 @@ import SerieTV.GestioneSerieTV;
 import SerieTV.SerieTV;
 
 public class PanelNewSerie extends JPanel {
+	
 	private static final long serialVersionUID = 1L;
-	private JButton btnInserisci;
+	private JButton btnInserisci, btnInfo;
 	private SerieTV st;
+	private static Dimension buttonSize=new Dimension(45, 26);
+	
 	
 	public PanelNewSerie(SerieTV serie) {
 		st=serie;
@@ -48,7 +52,12 @@ public class PanelNewSerie extends JPanel {
 		
 		btnInserisci = new JButton("");
 		btnInserisci.setIcon(new ImageIcon(PanelNewSerie.class.getResource("/GUI/res/add.png")));
+		btnInserisci.setPreferredSize(buttonSize);
+		btnInfo = new JButton("");
+		btnInfo.setIcon(new ImageIcon(PanelNewSerie.class.getResource("/GUI/res/info.png")));
+		btnInfo.setPreferredSize(buttonSize);
 		panel_1.add(btnInserisci);
+		panel_1.add(btnInfo);
 		
 		addListener();
 	}
@@ -65,6 +74,14 @@ public class PanelNewSerie extends JPanel {
 						}
 					}
 					Thread t=new updateThread();
+					t.start();
+				}
+			}
+		});
+		btnInfo.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(st!=null){
+					Thread t=new DisegnaInfoSerie(st);
 					t.start();
 				}
 			}
