@@ -5,7 +5,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.LayoutManager;
 
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
@@ -16,19 +15,22 @@ public class JInfoPanel extends JPanel{
 	private static final long serialVersionUID = 1L;
 	private boolean lock=false;
 	private JWebBrowser browser_adv;
-	private JPanel contentPane=new JPanel();
+	private JPanel contentPane;
 	
 	public JInfoPanel(){
 		super();
+		contentPane=new JPanel();
 		super.setLayout(new BorderLayout());
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
     			browser_adv=new JWebBrowser(JWebBrowser.destroyOnFinalization());
     			browser_adv.setBarsVisible(false);
     			browser_adv.setStatusBarVisible(false);
+    			browser_adv.setLocationBarVisible(false);
     			browser_adv.setPreferredSize(new Dimension(320, 260));
-    			browser_adv.navigate("https://www.google.it");
+    			browser_adv.navigate("http://pinoelefante.altervista.org/ads.html");
     			JInfoPanel.super.add(browser_adv, BorderLayout.SOUTH);
+    			Advertising.setB1(browser_adv);
 			}
 		});
 		super.add(contentPane, BorderLayout.CENTER);
@@ -42,11 +44,9 @@ public class JInfoPanel extends JPanel{
 	public void setLayout(LayoutManager l){
 		if(contentPane!=null){
 			contentPane.setLayout(l);
-			System.out.println("Nuovo layout");
 		}
 		else {
 			super.setLayout(l);
-			System.out.println("Old layout");
 		}
 	}
 	public Component add(Component c){
@@ -59,9 +59,4 @@ public class JInfoPanel extends JPanel{
 	public void removeAll(){
 		contentPane.removeAll();
 	}
-	
-//TODO
-// aggiungere web browser	
-// sovrascrivere metodo removeall
-// sovrascrivere il metodo add
 }

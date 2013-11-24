@@ -129,5 +129,4 @@ public abstract class ProviderSerieTV {
 	protected abstract void salvaEpisodioInDB(Torrent t);
 	public abstract int getProviderID();
 	public abstract void caricaEpisodiOnline(SerieTV serie);
-	
 }
