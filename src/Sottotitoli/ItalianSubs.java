@@ -168,8 +168,8 @@ public class ItalianSubs implements ProviderSottotitoli{
 		RSS_UltimoAggiornamento=new GregorianCalendar();
 		feed_rss.clear();
 		try {
-			Download.downloadFromUrl("http://feeds.feedburner.com/ITASA-Ultimi-Sottotitoli", Settings.getCurrentDir()+"feed_itasa");
-			FileReader f_r=new FileReader(Settings.getCurrentDir()+"feed_itasa");
+			Download.downloadFromUrl("http://feeds.feedburner.com/ITASA-Ultimi-Sottotitoli", Settings.getUserDir()+"feed_itasa");
+			FileReader f_r=new FileReader(Settings.getUserDir()+"feed_itasa");
 			Scanner file=new Scanner(f_r);
 			while(file.hasNextLine()){
 				String riga=file.nextLine().trim();
@@ -200,7 +200,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 			}
 			file.close();
 			f_r.close();
-			OperazioniFile.deleteFile(Settings.getCurrentDir()+"feed_itasa");
+			OperazioniFile.deleteFile(Settings.getUserDir()+"feed_itasa");
 		} 
 		catch (IOException e) {
 			ManagerException.registraEccezione(e);
@@ -399,8 +399,8 @@ public class ItalianSubs implements ProviderSottotitoli{
 		FileReader f_r=null;
 		Scanner file=null;
 		try {
-			Download.downloadFromUrl(url_login, Settings.getCurrentDir()+"response_login");
-			f_r=new FileReader(Settings.getCurrentDir()+"response_login");
+			Download.downloadFromUrl(url_login, Settings.getUserDir()+"response_login");
+			f_r=new FileReader(Settings.getUserDir()+"response_login");
 			file=new Scanner(f_r);
 			while(file.hasNextLine()){
 				String linea=file.nextLine().trim();
@@ -429,7 +429,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 			catch (IOException e) {	
 				ManagerException.registraEccezione(e);
 			}
-			OperazioniFile.deleteFile(Settings.getCurrentDir()+"response_login");
+			OperazioniFile.deleteFile(Settings.getUserDir()+"response_login");
 		}
 		return stato;
 	}

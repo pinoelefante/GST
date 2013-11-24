@@ -8,6 +8,7 @@ import java.awt.LayoutManager;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
 
 public class JInfoPanel extends JPanel{
@@ -23,11 +24,13 @@ public class JInfoPanel extends JPanel{
 		super.setLayout(new BorderLayout());
 		SwingUtilities.invokeLater(new Runnable(){
 			public void run(){
+				if (!NativeInterface.isOpen())
+					NativeInterface.open();
     			browser_adv=new JWebBrowser(JWebBrowser.destroyOnFinalization());
     			browser_adv.setBarsVisible(false);
     			browser_adv.setStatusBarVisible(false);
     			browser_adv.setLocationBarVisible(false);
-    			browser_adv.setPreferredSize(new Dimension(320, 260));
+    			browser_adv.setPreferredSize(new Dimension(300, 260));
     			browser_adv.navigate("http://pinoelefante.altervista.org/ads.html");
     			JInfoPanel.super.add(browser_adv, BorderLayout.SOUTH);
     			Advertising.setB1(browser_adv);

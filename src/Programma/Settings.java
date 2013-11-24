@@ -10,9 +10,10 @@ import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.WinReg;
 
 public class Settings {
-	private static final int	VersioneSoftware					= 110;
+	private static final int	VersioneSoftware					= 111;
 	public static final String	IndirizzoDonazioni					= "http://pinoelefante.altervista.org/donazioni/donazione_gst.html";
 	private static String		current_dir							= "";
+	private static String		user_dir							= "";
 	private static String		DirectoryDownload					= "";
 	private static String		ClientPath							= "";
 	private static boolean		TrayOnIcon							= true;
@@ -202,7 +203,23 @@ public class Settings {
 		}
 		System.setProperty("user.dir", current_dir);
 		
-		DirectoryDownload=current_dir+"Download";
+		String u_dir=System.getProperty("user.home");
+		if(u_dir != null){
+			user_dir=u_dir+File.separator+".gst";
+			if(!user_dir.endsWith(File.separator)){
+				user_dir+=File.separator;
+			}
+			File udir=new File(user_dir);
+			if(!udir.exists())
+				udir.mkdirs();
+		}
+		else {
+			user_dir=current_dir;
+		}
+		DirectoryDownload=user_dir+"Download";
+	}
+	public static String getUserDir(){
+		return user_dir;
 	}
 
 	/* Tabelle database
@@ -237,7 +254,7 @@ public class Settings {
 			
 			String download_path=(String) res.getValueByKey("download_path");
 			if(download_path==null || download_path.compareTo("null")==0)
-				download_path=getCurrentDir()+"Download";
+				download_path=getUserDir()+"Download";
 			setDirectoryDownload(download_path);
 			
 			String utorrent_path=(String) res.getValueByKey("utorrent");

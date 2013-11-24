@@ -6,6 +6,8 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.swing.JOptionPane;
+
 import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteConfig.SynchronousMode;
 
@@ -20,18 +22,33 @@ public class Update {
 			switch(Settings.getLastVersion()){
 				case 0:
 				case 102:
-					System.out.println("\nAvvio aggiornamento 102 a 103");
 					update_102_to_103();
-					//TODO rimuovere torrent con lo stesso hash
 				case 103: 
 					update_103_to_104();
 				case 107:
 					update_107_to_108();
+				case 110:
+					update_110_to_111();
 				default:
 					Settings.setLastVersion(Settings.getVersioneSoftware());
 					Settings.setNewUpdate(false);
 					Settings.AggiornaDB();
 			}
+		}
+	}
+	private static void update_110_to_111(){
+		Database.Disconnect();
+		if(OperazioniFile.fileExists(Settings.getUserDir()+"database2.sqlite"))
+			OperazioniFile.copyfile(Settings.getUserDir()+"database2.sqlite", Settings.getUserDir()+"database2.sqlite.bak");
+		if(OperazioniFile.deleteFile(Settings.getUserDir()+"database2.sqlite")){
+			System.out.println("database2.sqlite eliminato con successo");
+		}
+		if(OperazioniFile.copyfile(Settings.getCurrentDir()+"database2.sqlite", Settings.getUserDir()+"database2.sqlite")){
+			System.out.println("database2.sqlite copiato con successo");
+			Database.Connect();
+		}
+		else {
+			JOptionPane.showMessageDialog(null, "Errore durante l'aggiornamento del database");
 		}
 	}
 	private static void update_107_to_108(){

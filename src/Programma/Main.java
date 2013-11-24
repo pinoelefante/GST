@@ -104,7 +104,7 @@ public class Main {
 			GUIframe = new Interfaccia();
 			//GUIframe.setVisible(true);
 			GUIframe.init();
-			
+			//System.out.println(System.getProperty("java.class.path"));
 			Thread subThread=new Thread(new Runnable() {
 				public void run() {
 					if(Settings.isRicercaSottotitoli())

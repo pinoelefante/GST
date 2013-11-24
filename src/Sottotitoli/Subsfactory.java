@@ -184,8 +184,8 @@ public class Subsfactory implements ProviderSottotitoli {
 		try {
 			//String path=url.substring(url.indexOf("directory=")+"directory=".length());
 			int id_download=download_corrente++;
-			Download.downloadFromUrl(url, Settings.getCurrentDir()+"subsf_response_"+id_download);
-			FileReader f=new FileReader(Settings.getCurrentDir()+"subsf_response_"+id_download);
+			Download.downloadFromUrl(url, Settings.getUserDir()+"subsf_response_"+id_download);
+			FileReader f=new FileReader(Settings.getUserDir()+"subsf_response_"+id_download);
 			Scanner file=new Scanner(f);
 			while(file.hasNextLine()){
 				String linea=file.nextLine().trim();
@@ -217,7 +217,7 @@ public class Subsfactory implements ProviderSottotitoli {
 			s_subs.setCartellaOnlineCaricata();
 			file.close();
 			f.close();
-			OperazioniFile.deleteFile(Settings.getCurrentDir()+"subsf_response_"+id_download);
+			OperazioniFile.deleteFile(Settings.getUserDir()+"subsf_response_"+id_download);
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -268,11 +268,11 @@ public class Subsfactory implements ProviderSottotitoli {
 	public synchronized void aggiornaElencoSerieOnline() {
 		FileReader f_r;
 		try {
-			Download.downloadFromUrl(URL_ELENCO_SERIE, Settings.getCurrentDir()+"response_subs");
-			f_r=new FileReader(Settings.getCurrentDir()+"response_subs");
+			Download.downloadFromUrl(URL_ELENCO_SERIE, Settings.getUserDir()+"response_subs");
+			f_r=new FileReader(Settings.getUserDir()+"response_subs");
 		}
 		catch (IOException e) {
-			OperazioniFile.deleteFile(Settings.getCurrentDir()+"response_subs");
+			OperazioniFile.deleteFile(Settings.getUserDir()+"response_subs");
 			ManagerException.registraEccezione(e);
 			return;
 		}
@@ -303,7 +303,7 @@ public class Subsfactory implements ProviderSottotitoli {
 		file.close();
 		try {
 			f_r.close();
-			OperazioniFile.deleteFile(Settings.getCurrentDir()+"response_subs");
+			OperazioniFile.deleteFile(Settings.getUserDir()+"response_subs");
 		}
 		catch (IOException e) {
 			ManagerException.registraEccezione(e);

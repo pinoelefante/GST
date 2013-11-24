@@ -32,7 +32,7 @@ public class Database {
 	public static final String TABLE_TVDB_SERIE = "tvdb_serie";
 	public static final String TABLE_TVDB_EPISODI = "tvdb_ep";
 	
-	private final static String NOMEDB=Settings.getCurrentDir()+"database2.sqlite";
+	private final static String NOMEDB=Settings.getUserDir()+"database2.sqlite";
 
 	public static void Connect() {
 		try {
@@ -444,7 +444,7 @@ public class Database {
 		return -1;
 	}
 	public static ArrayList<KVResult<String,Object>> selectQuery(String query){
-		System.out.println(query);
+		//System.out.println(query);
 		ArrayList<KVResult<String, Object>> result=new ArrayList<KVResult<String, Object>>();
 		try {
 			Statement stat=con.createStatement();
@@ -470,7 +470,7 @@ public class Database {
 		}
 	}
 	public static boolean updateQuery(String query){
-		System.out.println(query);
+		//System.out.println(query);
 		int ins_ok=0;
 		try {
 			Statement stat=con.createStatement();

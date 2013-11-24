@@ -14,18 +14,18 @@ public class ControlloAggiornamenti {
 	private int versione_online;
 	
 	private void retrieveVersioneOnline(){
-		Download downloader=new Download(URL_BASE+URL_DB, Settings.getCurrentDir()+"version.dat");
+		Download downloader=new Download(URL_BASE+URL_DB, Settings.getUserDir()+"version.dat");
 		downloader.avviaDownload();
 		try {
 			downloader.getDownloadThread().join();
-			FileReader f=new FileReader(Settings.getCurrentDir()+"version.dat");
+			FileReader f=new FileReader(Settings.getUserDir()+"version.dat");
 			Scanner file=new Scanner(f);
 			if(file.hasNextInt()){
 				versione_online=file.nextInt();
 			}
 			file.close();
 			f.close();
-			OperazioniFile.deleteFile(Settings.getCurrentDir()+"version.dat");
+			OperazioniFile.deleteFile(Settings.getUserDir()+"version.dat");
 		} 
 		catch (InterruptedException e) {
 			return;
@@ -73,7 +73,7 @@ public class ControlloAggiornamenti {
     					Settings.getCurrentDir()+"gst_updater.jar"
     			};
     			try {
-    				OperazioniFile.deleteFile(Settings.getCurrentDir()+"eccezioni.txt");
+    				OperazioniFile.deleteFile(Settings.getUserDir()+"eccezioni.txt");
     				Runtime.getRuntime().exec(cmd);
     				System.exit(0);
     			}

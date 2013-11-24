@@ -33,7 +33,7 @@ public class EZTV extends ProviderSerieTV{
 		System.out.println("EZTV.it - Aggiornando elenco serie tv");
 		String base_url=WebProxyManager.getUrlProxy()+getBaseURL();
 		System.out.println(base_url);
-		Download downloader=new Download(base_url+"/showlist/", Settings.getCurrentDir()+"file.html");
+		Download downloader=new Download(base_url+"/showlist/", Settings.getUserDir()+"file.html");
 		downloader.avviaDownload();
 		
 		try {
@@ -48,7 +48,7 @@ public class EZTV extends ProviderSerieTV{
 		Scanner file=null;
 		int caricate=0;
 		try {
-			f_r=new FileReader(Settings.getCurrentDir()+"file.html");
+			f_r=new FileReader(Settings.getUserDir()+"file.html");
 			file=new Scanner(f_r);
 			
 			while(file.hasNextLine()){
@@ -111,7 +111,7 @@ public class EZTV extends ProviderSerieTV{
 				ManagerException.registraEccezione(e);
 			}
 		}
-		OperazioniFile.deleteFile(Settings.getCurrentDir()+"file.html");
+		OperazioniFile.deleteFile(Settings.getUserDir()+"file.html");
 	}
 
 	@Override
@@ -272,11 +272,11 @@ public class EZTV extends ProviderSerieTV{
 		try{
     		String base_url=WebProxyManager.getUrlProxy()+getBaseURL();
     		//System.out.println(base_url+"/shows/"+serie.getUrl()+"/");
-			Download download=new Download(base_url+"/shows/"+serie.getUrl()+"/", Settings.getCurrentDir()+serie.getNomeSerie());
+			Download download=new Download(base_url+"/shows/"+serie.getUrl()+"/", Settings.getUserDir()+serie.getNomeSerie());
     		download.avviaDownload();
     		download.getDownloadThread().join();
     		
-    		FileReader fr=new FileReader(Settings.getCurrentDir()+serie.getNomeSerie());
+    		FileReader fr=new FileReader(Settings.getUserDir()+serie.getNomeSerie());
     		Scanner file=new Scanner(fr);
     		while(file.hasNextLine()){
     			String linea=file.nextLine();
@@ -291,7 +291,7 @@ public class EZTV extends ProviderSerieTV{
     		}
     		file.close();
     		fr.close();
-    		OperazioniFile.deleteFile(Settings.getCurrentDir()+serie.getNomeSerie());
+    		OperazioniFile.deleteFile(Settings.getUserDir()+serie.getNomeSerie());
     		
     		if(serie.isConclusa()){
     			serie.setStopSearch(true, true);
