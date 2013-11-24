@@ -48,6 +48,7 @@ public class DisegnaInfoSerie extends Thread {
 				nord=new JPanel();
 				((FlowLayout)nord.getLayout()).setAlignment(FlowLayout.CENTER);
 				nord.add(banner);
+				panel_info_episodio.add(nord, BorderLayout.NORTH);
 				
 				panel_info_episodio.revalidate();
 				panel_info_episodio.repaint();
@@ -86,7 +87,6 @@ public class DisegnaInfoSerie extends Thread {
 				+ "</font></html>");
 		centro.add(descrizione);
 		
-		panel_info_episodio.add(nord, BorderLayout.NORTH);
 		panel_info_episodio.add(centro, BorderLayout.CENTER);
 		panel_info_episodio.revalidate();
 		panel_info_episodio.repaint();

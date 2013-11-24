@@ -72,7 +72,7 @@ public class PanelEpisodioDownload extends JPanel {
 		btnInfo.setIcon(new ImageIcon(PanelEpisodioDownload.class.getResource("/GUI/res/info.png")));
 		//TODO abilitare quando verrà creata la classe per TheTVDB
 		btnInfo.setPreferredSize(buttonSize);
-		btnInfo.setEnabled(true);
+		btnInfo.setEnabled(false);
 		panel_3.add(btnInfo);
 		
 		JPanel panel_2 = new JPanel();
