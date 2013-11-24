@@ -311,10 +311,4 @@ public class EZTV extends ProviderSerieTV{
 			ManagerException.registraEccezione(e);
 		}
 	}
-
-	@Override
-	protected boolean rimuoviSerieDaDB(SerieTV serie) {
-		String query="UPDATE "+Database.TABLE_SERIETV+" SET inserita=0, stop_search=0 WHERE provider="+getProviderID()+" AND id="+serie.getIDDb();
-		return Database.updateQuery(query);
-	}
 }

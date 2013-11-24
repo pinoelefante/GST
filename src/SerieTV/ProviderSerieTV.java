@@ -88,10 +88,21 @@ public abstract class ProviderSerieTV {
 		if(s.isInserita()){
 			preferite.remove(s);
 			s.setInserita(false);
+			s.setConclusa(false);
+			s.setStopSearch(false, false);
 			rimuoviSerieDaDB(s);
 			for(int i=0;i<s.getNumEpisodi();i++){
 				s.getEpisodio(i).setStatus(Torrent.SCARICARE);
 			}
+		}
+	}
+	protected boolean rimuoviSerieDaDB(SerieTV serie){
+		try {
+			serie.aggiornaDB();
+			return true;
+		}
+		catch(Exception e){
+			return false;
 		}
 	}
 	public SerieTV getNuoveSerieAt(int i){
@@ -118,5 +129,5 @@ public abstract class ProviderSerieTV {
 	protected abstract void salvaEpisodioInDB(Torrent t);
 	public abstract int getProviderID();
 	public abstract void caricaEpisodiOnline(SerieTV serie);
-	protected abstract boolean rimuoviSerieDaDB(SerieTV serie);
+	
 }
