@@ -16,10 +16,12 @@ import java.io.IOException;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.border.EtchedBorder;
 
 import Programma.Download;
 import Programma.ManagerException;
+import Programma.OperazioniFile;
 import Programma.Settings;
 import SerieTV.Torrent;
 import StruttureDati.serietv.Episodio;
@@ -141,6 +143,11 @@ public class PanelEpisodioDownload extends JPanel {
 	private void addListener(){
 		btnHd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String path_ut=Settings.getClientPath();
+				if(path_ut==null || path_ut.isEmpty() || !OperazioniFile.fileExists(path_ut)){
+					JOptionPane.showMessageDialog(PanelEpisodioDownload.this.getParent(), "Il percorso di uTorrent non è specificato oppure non è valido");
+					return;
+				}
 				Torrent link=ep.getLinkHD();
 				if(link!=null){
 					try {
@@ -157,6 +164,11 @@ public class PanelEpisodioDownload extends JPanel {
 		});
 		btnSd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String path_ut=Settings.getClientPath();
+				if(path_ut==null || path_ut.isEmpty() || !OperazioniFile.fileExists(path_ut)){
+					JOptionPane.showMessageDialog(PanelEpisodioDownload.this.getParent(), "Il percorso di uTorrent non è specificato oppure non è valido");
+					return;
+				}
 				Torrent link=ep.getLinkNormale();
 				if(link!=null){
 					try {
@@ -173,6 +185,11 @@ public class PanelEpisodioDownload extends JPanel {
 		});
 		btnPreair.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String path_ut=Settings.getClientPath();
+				if(path_ut==null || path_ut.isEmpty() || !OperazioniFile.fileExists(path_ut)){
+					JOptionPane.showMessageDialog(PanelEpisodioDownload.this.getParent(), "Il percorso di uTorrent non è specificato oppure non è valido");
+					return;
+				}
 				Torrent link=ep.getLinkPreair();
 				if(link!=null){
 					try {

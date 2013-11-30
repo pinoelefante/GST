@@ -1788,6 +1788,11 @@ public class Interfaccia extends JFrame {
 		});
 		btnScarica.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				String path_ut=Settings.getClientPath();
+				if(path_ut==null || path_ut.isEmpty() || !OperazioniFile.fileExists(path_ut)){
+					JOptionPane.showMessageDialog(thisframe, "Il percorso di uTorrent non è specificato oppure non è valido");
+					return;
+				}
 				for (int i = 0; i < panel_scroll_download.getComponentCount(); ) {
 					if (panel_scroll_download.getComponent(i) instanceof PanelEpisodioDownload) {
 						PanelEpisodioDownload p = (PanelEpisodioDownload) panel_scroll_download.getComponent(i);
