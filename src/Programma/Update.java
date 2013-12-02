@@ -6,8 +6,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import javax.swing.JOptionPane;
-
 import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteConfig.SynchronousMode;
 
@@ -48,7 +46,8 @@ public class Update {
 			Database.Connect();
 		}
 		else {
-			JOptionPane.showMessageDialog(null, "Errore durante l'aggiornamento del database");
+			ManagerException.registraEccezione("Si è verificato un errore durante l'aggiornamento del software.\nNon è stato possibile copiare il vecchio database.\nSe questa è una nuova installazione, questo errore può essere ignorato.");
+			Database.Connect();
 		}
 	}
 	private static void update_107_to_108(){
