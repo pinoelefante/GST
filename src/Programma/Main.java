@@ -70,7 +70,6 @@ public class Main {
 			OperazioniFile.dumpfileclean();
 			fl.setprog(++i);
 			
-			
 			fl.settext("Applicando aggiornamenti");
 			Update.start();
 			fl.setprog(++i);

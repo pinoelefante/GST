@@ -25,13 +25,14 @@ public class EZTV extends ProviderSerieTV{
 		return "eztv.it";
 	}
 	public String getBaseURL() {
-		return "http://eztv.it";
+		return "http://www.eztvproxy.org";
+		//return "http://eztv.it";
 	}
 
 	@Override
 	public void aggiornaElencoSerie() {
 		System.out.println("EZTV.it - Aggiornando elenco serie tv");
-		String base_url=WebProxyManager.getUrlProxy()+getBaseURL();
+		String base_url=/*WebProxyManager.getUrlProxy()+*/getBaseURL();
 		System.out.println(base_url);
 		Download downloader=new Download(base_url+"/showlist/", Settings.getUserDir()+"file.html");
 		downloader.avviaDownload();
@@ -270,7 +271,7 @@ public class EZTV extends ProviderSerieTV{
 		System.out.println("Aggiornando i link di: "+serie.getNomeSerie());
 	
 		try{
-    		String base_url=WebProxyManager.getUrlProxy()+getBaseURL();
+    		String base_url=/*WebProxyManager.getUrlProxy()+*/getBaseURL();
     		//System.out.println(base_url+"/shows/"+serie.getUrl()+"/");
 			Download download=new Download(base_url+"/shows/"+serie.getUrl()+"/", Settings.getUserDir()+serie.getNomeSerie());
     		download.avviaDownload();
