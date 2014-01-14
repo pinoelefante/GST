@@ -4,11 +4,16 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
+
+import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 import Database.Database;
 import Naming.CaratteristicheFile;
 import Programma.Download;
+import Programma.HttpsDownload;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
@@ -25,7 +30,7 @@ public class EZTV extends ProviderSerieTV{
 		return "eztv.it";
 	}
 	public String getBaseURL() {
-		return "http://www.eztvproxy.org";
+		return "https://eztv-proxy.net";
 		//return "http://eztv.it";
 	}
 
@@ -33,38 +38,15 @@ public class EZTV extends ProviderSerieTV{
 	public void aggiornaElencoSerie() {
 		System.out.println("EZTV.it - Aggiornando elenco serie tv");
 		String base_url=/*WebProxyManager.getUrlProxy()+*/getBaseURL();
-		System.out.println(base_url);
-		Download downloader=new Download(base_url+"/showlist/", Settings.getUserDir()+"file.html");
-		downloader.avviaDownload();
-		
-		try {
-			downloader.getDownloadThread().join();
-		}
-		catch (InterruptedException e1) {
-			e1.printStackTrace();
-			aggiornaElencoSerie();
-		}
-		
-		FileReader f_r=null;
-		Scanner file=null;
-		int caricate=0;
-		try {
-			f_r=new FileReader(Settings.getUserDir()+"file.html");
-			file=new Scanner(f_r);
-			
-			while(file.hasNextLine()){
-				String linea=file.nextLine().trim();
-				if(linea.contains("\"thread_link\"")){
-					String nomeserie=linea.substring(linea.indexOf("class=\"thread_link\">")+"class=\"thread_link\">".length(), linea.indexOf("</a>")).trim();
-					String url=linea.substring(linea.indexOf("<a href=\"")+"<a href=\"".length(), linea.indexOf("\" class=\"thread_link\">")).trim();
-					url=url.replace(base_url, "");
-					url=url.replace("/shows/", "");
-					url=url.substring(0,url.indexOf("/"));
-					String nextline=file.nextLine().trim();
-					int stato=0;
-					if(nextline.contains("ended"))
-						stato=1;
-					switch(nomeserie){
+		if(base_url.startsWith("https")){
+			HtmlPage showlist = HttpsDownload.downloadPageFromHttpsUrl(base_url+"/showlist/");
+			List<HtmlAnchor> shows=showlist.getAnchors();
+			int caricate=0;
+			for(int i=0;i<shows.size();i++){
+				String link=shows.get(i).getHrefAttribute();
+				String nome=shows.get(i).asText();
+				if(link.startsWith("/shows/")){
+					switch(nome){
 						case "T1":
 						case "T2":
 						case "T3":
@@ -86,33 +68,99 @@ public class EZTV extends ProviderSerieTV{
 						case "Temporary_Placeholder":
 						case "Temporary_Placeholder_2":
 							continue;
-							
 					}
-					SerieTV toInsert=new SerieTV(this, nomeserie, url);
-					toInsert.setConclusa(stato==0?false:true);
-					
+					link=link.replace(base_url, "");
+					link=link.replace("/shows/", "");
+					link=link.substring(0,link.indexOf("/"));
+					SerieTV toInsert=new SerieTV(this, nome, link);
 					if(addSerieFromOnline(toInsert)==null){ //null se non è presente nel database
 						salvaSerieInDB(toInsert);
 						caricate++;
 					}
+					System.out.println(nome+" - "+link);
 				}
 			}
 			System.out.println("EZTV - aggiornamento elenco serie tv completo\nCaricate "+caricate+" nuove serie");
 		}
-		catch (FileNotFoundException e) {
-			ManagerException.registraEccezione(e);
-		}
-		finally{
-			file.close();
+		else {
+			Download downloader=new Download(base_url+"/showlist/", Settings.getUserDir()+"file.html");
+			downloader.avviaDownload();
 			try {
-				f_r.close();
+				downloader.getDownloadThread().join();
 			}
-			catch (IOException e) {	
-				e.printStackTrace();
+			catch (InterruptedException e1) {
+				e1.printStackTrace();
+				//aggiornaElencoSerie();
+			}
+			FileReader f_r=null;
+			Scanner file=null;
+			int caricate=0;
+			try {
+				f_r=new FileReader(Settings.getUserDir()+"file.html");
+				file=new Scanner(f_r);
+				
+				while(file.hasNextLine()){
+					String linea=file.nextLine().trim();
+					if(linea.contains("\"thread_link\"")){
+						String nomeserie=linea.substring(linea.indexOf("class=\"thread_link\">")+"class=\"thread_link\">".length(), linea.indexOf("</a>")).trim();
+						String url=linea.substring(linea.indexOf("<a href=\"")+"<a href=\"".length(), linea.indexOf("\" class=\"thread_link\">")).trim();
+						url=url.replace(base_url, "");
+						url=url.replace("/shows/", "");
+						url=url.substring(0,url.indexOf("/"));
+						String nextline=file.nextLine().trim();
+						int stato=0;
+						if(nextline.contains("ended"))
+							stato=1;
+						switch(nomeserie){
+							case "T1":
+							case "T2":
+							case "T3":
+							case "T4":
+							case "T5":
+							case "T6":
+							case "T7":
+							case "T8":
+							case "T9":
+							case "Temp1":
+							case "Temp2":
+							case "Temp3":
+							case "Temp4":
+							case "Temp5":
+							case "Temp6":
+							case "Temp7":
+							case "Temp8":
+							case "Temp9":
+							case "Temporary_Placeholder":
+							case "Temporary_Placeholder_2":
+								continue;
+								
+						}
+						SerieTV toInsert=new SerieTV(this, nomeserie, url);
+						toInsert.setConclusa(stato==0?false:true);
+						
+						if(addSerieFromOnline(toInsert)==null){ //null se non è presente nel database
+							salvaSerieInDB(toInsert);
+							caricate++;
+						}
+					}
+				}
+				System.out.println("EZTV - aggiornamento elenco serie tv completo\nCaricate "+caricate+" nuove serie");
+			}
+			catch (FileNotFoundException e) {
 				ManagerException.registraEccezione(e);
 			}
+			finally{
+				file.close();
+				try {
+					f_r.close();
+				}
+				catch (IOException e) {	
+					e.printStackTrace();
+					ManagerException.registraEccezione(e);
+				}
+			}
+			OperazioniFile.deleteFile(Settings.getUserDir()+"file.html");
 		}
-		OperazioniFile.deleteFile(Settings.getUserDir()+"file.html");
 	}
 
 	@Override
@@ -273,26 +321,48 @@ public class EZTV extends ProviderSerieTV{
 		try{
     		String base_url=/*WebProxyManager.getUrlProxy()+*/getBaseURL();
     		//System.out.println(base_url+"/shows/"+serie.getUrl()+"/");
-			Download download=new Download(base_url+"/shows/"+serie.getUrl()+"/", Settings.getUserDir()+serie.getNomeSerie());
-    		download.avviaDownload();
-    		download.getDownloadThread().join();
-    		
-    		FileReader fr=new FileReader(Settings.getUserDir()+serie.getNomeSerie());
-    		Scanner file=new Scanner(fr);
-    		while(file.hasNextLine()){
-    			String linea=file.nextLine();
-    			if (linea.contains("magnet:?xt=urn:btih:")) {
-    				int inizio = linea.indexOf("magnet:?xt=urn:btih:");
-    				int fine = linea.indexOf("\" class=\"magnet\"");
-    				String url_magnet = linea.substring(inizio, fine);
-    				Torrent t=new Torrent(serie, url_magnet, Torrent.SCARICARE);
-    				t.parseMagnet();
-    				serie.addEpisodio(t);
+    		base_url+="/shows/"+serie.getUrl()+"/";
+    		if(base_url.startsWith("https")){
+    			HtmlPage pagina=HttpsDownload.downloadPageFromHttpsUrl(base_url);
+    			List<HtmlAnchor> links=pagina.getAnchors();
+    			for(int i=0;i<links.size();i++){
+    				String link=links.get(i).getHrefAttribute();
+    				if(link.startsWith("magnet:?xt=urn:btih:")){
+    					//System.out.println(link);
+    					Torrent t=new Torrent(serie, link, Torrent.SCARICARE);
+    					t.parseMagnet();
+    					serie.addEpisodio(t);
+    				}
     			}
+    			pagina.cleanUp();
+    			pagina.remove();
     		}
-    		file.close();
-    		fr.close();
-    		OperazioniFile.deleteFile(Settings.getUserDir()+serie.getNomeSerie());
+    		else {
+    			Download download=new Download(base_url, Settings.getUserDir()+serie.getNomeSerie());
+        		download.avviaDownload();
+        		download.getDownloadThread().join();
+    		
+    		
+        		FileReader fr=new FileReader(Settings.getUserDir()+serie.getNomeSerie());
+        		Scanner file=new Scanner(fr);
+        		while(file.hasNextLine()){
+        			String linea=file.nextLine();
+        			if (linea.contains("magnet:?xt=urn:btih:")) {
+        				int inizio = linea.indexOf("magnet:?xt=urn:btih:");
+        				int fine = linea.indexOf("\" class=\"magnet\"");
+        				String url_magnet = linea.substring(inizio, fine);
+        				System.out.println(url_magnet);
+        				if(url_magnet.length()>0){
+            				Torrent t=new Torrent(serie, url_magnet, Torrent.SCARICARE);
+            				t.parseMagnet();
+            				serie.addEpisodio(t);
+        				}
+        			}
+        		}
+        		file.close();
+        		fr.close();
+        		OperazioniFile.deleteFile(Settings.getUserDir()+serie.getNomeSerie());
+    		}
     		
     		if(serie.isConclusa()){
     			serie.setStopSearch(true, true);

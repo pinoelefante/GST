@@ -2,6 +2,7 @@ package SerieTV;
 
 import java.util.ArrayList;
 
+import Programma.Download;
 import Sottotitoli.GestoreSottotitoli;
 import StruttureDati.serietv.Episodio;
 
@@ -84,7 +85,7 @@ public class GestioneSerieTV {
 				Thread t=new Thread(tg, new ThreadUpdate(s));
 				t.start();
 				try {
-					Thread.sleep(500);
+					Thread.sleep(250);
 				}catch (InterruptedException e) {}
 			}
 			while(tg.activeCount()>0)
