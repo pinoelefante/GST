@@ -22,15 +22,32 @@ import StruttureDati.db.KVResult;
 import StruttureDati.serietv.Episodio;
 
 public class EZTV extends ProviderSerieTV{
+	private ArrayList<String> baseUrls;
+	private String baseUrl;
 	public EZTV(){
 		super();
+		baseUrls=new ArrayList<String>();
+		baseUrls.add("http://eztvproxy.org");
+		baseUrls.add("http://eztv.it");
+		baseUrls.add("https://eztv-proxy.net");
+		baseUrl=getOnlineUrl();
+		System.out.println("Base URL in uso: "+baseUrl);
+	}
+	
+	private String getOnlineUrl(){
+		for(int i=0;i<baseUrls.size();i++){
+			if(Download.isRaggiungibile(baseUrls.get(i)))
+				return baseUrls.get(i);
+		}
+		return WebProxyManager.getUrlProxy()+"http://eztv.it";
 	}
 	
 	public String getProviderName() {
 		return "eztv.it";
 	}
 	public String getBaseURL() {
-		return "https://eztv-proxy.net";
+		return baseUrl;
+		//return "https://eztv-proxy.net";
 		//return "http://eztv.it";
 	}
 
@@ -65,6 +82,14 @@ public class EZTV extends ProviderSerieTV{
 						case "Temp7":
 						case "Temp8":
 						case "Temp9":
+						case "Temp 01":
+						case "Temp 02":
+						case "Temp 03":
+						case "Temp 04":
+						case "Temp01":
+						case "Temp02":
+						case "Temp03":
+						case "Temp04":
 						case "Temporary_Placeholder":
 						case "Temporary_Placeholder_2":
 							continue;
@@ -132,6 +157,14 @@ public class EZTV extends ProviderSerieTV{
 							case "Temp9":
 							case "Temporary_Placeholder":
 							case "Temporary_Placeholder_2":
+							case "Temp 01":
+							case "Temp 02":
+							case "Temp 03":
+							case "Temp 04":
+							case "Temp01":
+							case "Temp02":
+							case "Temp03":
+							case "Temp04":
 								continue;
 								
 						}

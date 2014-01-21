@@ -4,9 +4,16 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.GeneralSecurityException;
+
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class Download {
 	private long d_corrente, d_finale;
@@ -288,5 +295,50 @@ public class Download {
 	}
 	private void setStarted(boolean started) {
 		this.started = started;
+	}
+	private static boolean isHttpRaggiungibile(String url_s){
+		HttpURLConnection urlConn=null;
+		try {
+			URL url=new URL(url_s);
+			urlConn=(HttpURLConnection) url.openConnection();
+			if(urlConn.getResponseCode()==200)
+				return true;
+		}
+		catch(Exception e){
+			return false;
+		}
+		finally {
+			if(urlConn!=null)
+				urlConn.disconnect();
+		}
+		return false;
+	}
+	private static boolean isHttpsRaggiungibile(String url_s){
+		WebClient webClient=new WebClient(BrowserVersion.FIREFOX_3_6);
+		try {
+			webClient.setUseInsecureSSL(true);
+			HtmlPage page=webClient.getPage(url_s);
+			if(page!=null){
+				return true;
+			}
+		}
+		catch (GeneralSecurityException | FailingHttpStatusCodeException | IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		finally {
+			webClient.closeAllWindows();
+			webClient=null;
+		}
+		
+		return false;
+	}
+	public static boolean isRaggiungibile(String url){
+		if(url.startsWith("https://")){
+			return isHttpsRaggiungibile(url);
+		}
+		else {
+			return isHttpRaggiungibile(url);
+		}
 	}
 }
