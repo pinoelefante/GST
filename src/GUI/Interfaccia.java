@@ -12,6 +12,7 @@ import Programma.Settings;
 import LettoreVideo.Player;
 import SerieTV.GestioneSerieTV;
 import SerieTV.SerieTV;
+import SerieTV.ThreadRicercaAutomatica;
 import SerieTV.Torrent;
 import Sottotitoli.GestoreSottotitoli;
 import Sottotitoli.ProviderSottotitoli;
@@ -845,8 +846,7 @@ public class Interfaccia extends JFrame {
 
 		chckbxAutoAbilita = new JCheckBox("Abilita");
 		chckbxAutoAbilita.setBounds(6, 9, 97, 23);
-		//TODO abilitare dopo aver fixato l'autosearch
-		chckbxAutoAbilita.setEnabled(false);
+		chckbxAutoAbilita.setEnabled(true);
 		panel_opzioni_download_automatico.add(chckbxAutoAbilita);
 
 		comboBoxMinutiRicercaAutomatica = new JComboBox<Integer>();
@@ -1021,7 +1021,7 @@ public class Interfaccia extends JFrame {
 		btnChiudiADS.setBounds(696, 492, 33, 23);
 		InfoPanel.add(btnChiudiADS);
 
-		/** TODO decommentare per la distribuzione *//*
+		/** TODO decommentare per la distribuzione */
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
@@ -1036,7 +1036,6 @@ public class Interfaccia extends JFrame {
 					advertising.setBounds(10, 372, 676, 143);
 					advertising.navigate("http://pinoelefante.altervista.org/ads.html");
 					InfoPanel.add(advertising);
-					Advertising.setB2(advertising);
 					advertising.addWebBrowserListener(new WebBrowserAdapter() {
 						public void windowWillOpen(WebBrowserWindowWillOpenEvent arg0) {
 							JWebBrowser newb=arg0.getNewWebBrowser();
@@ -1050,7 +1049,6 @@ public class Interfaccia extends JFrame {
 								advertising.setLocationBarVisible(false);
 								advertising.setBounds(10, 372, 676, 143);
 								InfoPanel.add(advertising);
-								Advertising.setB2(advertising);
 								InfoPanel.revalidate();
 								InfoPanel.repaint();
 							}
@@ -1883,6 +1881,12 @@ public class Interfaccia extends JFrame {
 				Settings.setDirectoryDownload(txt_download_path.getText());
 				Settings.setVLCPath(txt_vlc_path.getText());
 				Settings.AggiornaDB();
+				
+				if(Settings.isDownloadAutomatico()){
+					ThreadRicercaAutomatica.avvia();
+				}
+				else
+					ThreadRicercaAutomatica.arresta();
 			}
 		});
 		tab.addChangeListener(new ChangeListener() {

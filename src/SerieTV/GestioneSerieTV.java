@@ -2,7 +2,6 @@ package SerieTV;
 
 import java.util.ArrayList;
 
-import Programma.Download;
 import Sottotitoli.GestoreSottotitoli;
 import StruttureDati.serietv.Episodio;
 
@@ -77,26 +76,31 @@ public class GestioneSerieTV {
 			}
 		}
 		ArrayList<Episodio> episodi=new ArrayList<Episodio>();
-		ThreadGroup tg=new ThreadGroup("AggiornamentoEpisodiSerie");
-		for(int i=0;i<providers.size();i++){
-			ProviderSerieTV p=providers.get(i);
-			for(int j=0;j<p.getPreferiteSerieCount();j++){
-				SerieTV s=p.getPreferiteSerieAt(j);
-				Thread t=new Thread(tg, new ThreadUpdate(s));
-				t.start();
-				try {
-					Thread.sleep(250);
-				}catch (InterruptedException e) {}
-			}
-			while(tg.activeCount()>0)
-				try {
-					Thread.sleep(500L);
-				}catch (InterruptedException e) {}
-			for(int j=0;j<p.getPreferiteSerieCount();j++){
-				SerieTV s=p.getPreferiteSerieAt(j);
-				episodi.addAll(p.nuoviEpisodi(s));
+		if(!isLoading()){
+			loading=true;
+			ThreadGroup tg=new ThreadGroup("AggiornamentoEpisodiSerie");
+			for(int i=0;i<providers.size();i++){
+				ProviderSerieTV p=providers.get(i);
+				for(int j=0;j<p.getPreferiteSerieCount();j++){
+					SerieTV s=p.getPreferiteSerieAt(j);
+					Thread t=new Thread(tg, new ThreadUpdate(s));
+					t.start();
+					try {
+						Thread.sleep(250);
+					}catch (InterruptedException e) {}
+				}
+				while(tg.activeCount()>0)
+					try {
+						Thread.sleep(500L);
+					}catch (InterruptedException e) {}
+				for(int j=0;j<p.getPreferiteSerieCount();j++){
+					SerieTV s=p.getPreferiteSerieAt(j);
+					episodi.addAll(p.nuoviEpisodi(s));
+				}
 			}
 		}
+		loading=false;
+		firstLoading=true;
 		return episodi;
 	}
 	public static ArrayList<Episodio> caricaEpisodiDaScaricareOffline(){
@@ -118,5 +122,13 @@ public class GestioneSerieTV {
 			}
 		}
 		return newseries;
+	}
+	private static boolean loading=false;
+	public static boolean isLoading() {
+		return loading;
+	}
+	private static boolean firstLoading=false;
+	public static boolean isFirstLoaded(){
+		return firstLoading;
 	}
 }

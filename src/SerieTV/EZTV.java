@@ -27,8 +27,8 @@ public class EZTV extends ProviderSerieTV{
 	public EZTV(){
 		super();
 		baseUrls=new ArrayList<String>();
-		baseUrls.add("http://eztvproxy.org");
 		baseUrls.add("http://eztv.it");
+		baseUrls.add("http://eztvproxy.org");
 		baseUrls.add("https://eztv-proxy.net");
 		baseUrl=getOnlineUrl();
 		System.out.println("Base URL in uso: "+baseUrl);
@@ -36,8 +36,10 @@ public class EZTV extends ProviderSerieTV{
 	
 	private String getOnlineUrl(){
 		for(int i=0;i<baseUrls.size();i++){
-			if(Download.isRaggiungibile(baseUrls.get(i)))
-				return baseUrls.get(i);
+			String url_b=baseUrls.get(i);
+			System.out.println("Verificando: "+url_b);
+			if(Download.isRaggiungibile(url_b))
+				return url_b;
 		}
 		return WebProxyManager.getUrlProxy()+"http://eztv.it";
 	}

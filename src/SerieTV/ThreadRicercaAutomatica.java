@@ -1,79 +1,83 @@
 package SerieTV;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 
-//import GUI.Interfaccia;
+import Programma.Download;
+import Programma.Settings;
+import StruttureDati.serietv.Episodio;
 
-//TODO RIFARE LA CLASSE
-
-public class ThreadRicercaAutomatica extends Thread {/*
-	public void run() {
-		if ((!Settings.isStartHidden())) {
-			while (!Settings.isCanStartDownloadAutomatico()) {
-				try {
-					Thread.sleep(1000L);
-				}
-				catch (InterruptedException e1) {
-					e1.printStackTrace();
-					ManagerException.registraEccezione(e1);
-				}
-			}
-		}
+public class ThreadRicercaAutomatica extends Thread {
+	public static ThreadRicercaAutomatica getInstance(){
+		if(thisInstance==null)
+			thisInstance=new ThreadRicercaAutomatica();
+		return thisInstance;
+	}
+	private ThreadRicercaAutomatica(){
+		super();
+		thisInstance=this;
+	}
+	public void run(){
+		System.out.println("Avvio download automatico");
 		try {
-			System.out.println("Inizio sleep");
-			Thread.sleep(15000L);
-			System.out.println("Fine sleep");
-		}
-		catch (InterruptedException e1) {
-			e1.printStackTrace();
-			ManagerException.registraEccezione(e1);
-		}
-		boolean error_e = false;
-		while (true) {
-			System.out.println("Controllo serie tv...");
-			GestioneSerieTV.aggiornaListeTorrent();
-			ArrayList<Torrent> torrent_download = GestioneSerieTV.getTorrentDownload();
-			for (int i = 0; i < torrent_download.size(); i++) {
-				try {
-					Torrent t=torrent_download.get(i);
-					
-					if(t.is720p())
-						if(!Settings.isDownload720p())
-							continue;
-					if(t.isPreAir())
-						if(!Settings.isDownloadPreair())
-							continue;
-					
-					Download.downloadMagnet(t.getUrl(), t.getNomeSerieFolder());
-					t.setScaricato(Torrent.SCARICATO);
-					t.setSottotitolo(true, false);
-				}
-				catch (IOException e) {
-					error_e = true;
-					ManagerException.registraEccezione(e);
-					break;
-				}
-				try {
-					Thread.sleep(333L);
-				}
-				catch (InterruptedException e) {
-					ManagerException.registraEccezione(e);
-				}
+			while(!GestioneSerieTV.isFirstLoaded() || GestioneSerieTV.isLoading()){
+				sleep(1000L);
+				System.out.println("Attesa fine caricamento");
 			}
-			if (error_e) {
-				JOptionPane.showMessageDialog(null, "Errore durante il download automatico.\nControllare le impostazioni.");
+			int i=0;
+			while(true){
+				download();
+				do {
+					sleep(60000L);
+					System.out.println("Attesa prossimo download: "+i+"/"+(Settings.getMinRicerca()*60));
+					i=i+60;
+				}
+				while(i<Settings.getMinRicerca()*60);
+				aggiorna();
 			}
-
-			//Interfaccia.RidisegnaScrollPanel();
+		}
+		catch(InterruptedException e){
+			System.out.println("Download automatico interrotto");
+			thisInstance=null;
+		}
+	}
+	private void download(){
+		System.out.println("Download automatico degli episodi");
+		ArrayList<Episodio> torrents=GestioneSerieTV.caricaEpisodiDaScaricareOffline();
+		for(int i=0;i<torrents.size();i++){
+			Episodio ep=torrents.get(i);
+			Torrent torrent=ep.getLinkDownload();
 			try {
-				Runtime.getRuntime().gc();
-				System.out.println("Fine controllo...");
-				Thread.sleep(Settings.getMinRicercaMilli());
-			}
-			catch (InterruptedException e) {
-				System.out.println("Interrotto");
-				ManagerException.registraEccezione(e);
+				Download.downloadMagnet(torrent.getUrl(), Settings.getDirectoryDownload() + File.separator + torrent.getSerieTV().getFolderSerie());
+				ep.scaricaLink(torrent);
+			} 
+			catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}
-	*/
+	private void aggiorna(){
+		System.out.println("Download automatico - aggiornamento");
+		if(!GestioneSerieTV.isLoading()){
+			System.out.println("Download automatico - aggiornamento avviato");
+			GestioneSerieTV.caricaEpisodiDaScaricare();
+		}
+	}
+	private static ThreadRicercaAutomatica thisInstance;
+	public static void avvia(){
+		Thread t=getInstance();
+		if(t.isInterrupted()){
+			arresta();
+			t=getInstance();
+		}
+		if(!t.isAlive())
+			t.start();
+	}
+	public static void arresta(){
+		if(thisInstance!=null){
+			thisInstance.interrupt();
+			thisInstance=null;
+		}
+	}
 }

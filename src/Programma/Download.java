@@ -266,6 +266,7 @@ public class Download {
 			throw new IOException("Il download non è stato completato");
 		}
 	}
+	/*
 	public static void main(String[] args){
 		Download d=new Download("file:///D:\\SerieTV\\Alcatraz\\Alcatraz.S01E01.HDTV.XviD-LOL.[VTV].avi", "E:\\Multimedia\\a.avi");
 		d.avviaDownload();
@@ -277,6 +278,7 @@ public class Download {
 		}
 		catch(InterruptedException e){}
 	}
+	*/
 	public static void copiaFile(String origine, String dir_destinazione){
 		if(!origine.startsWith("file:///")){
 			origine="file:///"+origine;
@@ -298,13 +300,21 @@ public class Download {
 	}
 	private static boolean isHttpRaggiungibile(String url_s){
 		HttpURLConnection urlConn=null;
+		String userAgent = "GestioneSerieTV/rel."+Settings.getVersioneSoftware()+" ("+System.getProperty("os.name")+")";
 		try {
 			URL url=new URL(url_s);
 			urlConn=(HttpURLConnection) url.openConnection();
-			if(urlConn.getResponseCode()==200)
+			urlConn.setConnectTimeout(30000);
+			urlConn.setReadTimeout(30000);
+			if(userAgent!=null)
+				urlConn.setRequestProperty("User-Agent", userAgent);
+			int rc=urlConn.getResponseCode();
+			System.out.println(rc+" - response code - "+url_s);
+			if(rc==200)
 				return true;
 		}
-		catch(Exception e){
+		catch(IOException e){
+			e.printStackTrace();
 			return false;
 		}
 		finally {

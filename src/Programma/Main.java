@@ -4,6 +4,7 @@ import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
 import SerieTV.GestioneSerieTV;
+import SerieTV.ThreadRicercaAutomatica;
 import Database.Database;
 import GUI.FrameLoading;
 import GUI.Interfaccia;
@@ -111,6 +112,9 @@ public class Main {
 				}
 			});
 			subThread.start();
+			
+			if(Settings.isDownloadAutomatico())
+				ThreadRicercaAutomatica.avvia();
 		}
 		catch(Exception e){
 			JOptionPane.showMessageDialog(GUIframe, e.getMessage());

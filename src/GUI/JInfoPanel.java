@@ -33,7 +33,7 @@ public class JInfoPanel extends JPanel{
     			browser_adv.setPreferredSize(new Dimension(300, 260));
     			browser_adv.navigate("http://pinoelefante.altervista.org/ads.html");
     			JInfoPanel.super.add(browser_adv, BorderLayout.SOUTH);
-    			Advertising.setB1(browser_adv);
+    			//Advertising.setB1(browser_adv);
 			}
 		});
 		super.add(contentPane, BorderLayout.CENTER);

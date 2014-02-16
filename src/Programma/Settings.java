@@ -22,7 +22,6 @@ public class Settings {
 	private static boolean		Autostart							= true;
 	private static boolean		DownloadAutomatico					= false;
 	private static int			MinRicerca							= 480;
-	private static int			MinRicercaMilli						= MinRicerca * 60 * 1000;
 	private static String		SistemaOperativo					= "";
 	private static boolean		canStartDownloadAutomatico			= false;
 	
@@ -166,22 +165,12 @@ public class Settings {
 	}
 	public static void setMinRicerca(int minRicerca) {
 		MinRicerca = minRicerca;
-		aggiornaMinRicercaMilli();
-	}
-	public static void aggiornaMinRicercaMilli() {
-		setMinRicercaMilli(MinRicerca * 60 * 1000);
 	}
 	public static void setClientID(String id){
 		ClientID=id;
 	}
 	public static String getClientID(){
 		return ClientID;
-	}
-	public static int getMinRicercaMilli() {
-		return MinRicercaMilli;
-	}
-	public static void setMinRicercaMilli(int minRicercaMilli) {
-		MinRicercaMilli = minRicercaMilli;
 	}
 	//TODO Settaggi default
 	public static void setDefault() {

@@ -42,7 +42,7 @@ public class GestoreSottotitoli {
 				ManagerException.registraEccezione(e1);
 			}
 			
-			System.out.println("Avvio thread ricerca automatica");
+			System.out.println("Avvio thread ricerca automatica sottotitoli");
 			if(sottotitoli_da_scaricare.size()==0)
 				System.out.println("Ricerca sottotitoli - Coda vuota");
 			
