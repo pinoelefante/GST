@@ -6,22 +6,14 @@ import javax.swing.UIManager;
 import SerieTV.GestioneSerieTV;
 import SerieTV.ThreadRicercaAutomatica;
 import Database.Database;
+import GUI.Advertising;
 import GUI.FrameLoading;
 import GUI.Interfaccia;
 import InfoManager.TheTVDB;
 
 public class Main {
-	//public static ThreadAggiornamentiSoftware	thread_update		= new ThreadAggiornamentiSoftware(false);
-	//public static ThreadRicercaAutomatica		thread_autosearch	= new ThreadRicercaAutomatica();
 	public static FrameLoading 					fl;
-	/*
-	public static void avviaThreadRicercaAutomatica() {
-		if (!thread_autosearch.isAlive()) {
-			thread_autosearch = new ThreadRicercaAutomatica();
-			thread_autosearch.start();
-		}
-	}
-	*/
+
 	static Interfaccia frame2;
 	private static Interfaccia GUIframe;
 	public static void main(String[] args) {
@@ -51,7 +43,6 @@ public class Main {
 			Prerequisiti.checkDipendenze();
 			fl.setprog(++i);
 			
-			
 			fl.settext("Connessione al database");
 			Database.Connect();
 			fl.setprog(++i);
@@ -61,7 +52,6 @@ public class Main {
 					Database.Disconnect();
 				}
 			});
-			
 			
 			fl.settext("Caricamento impostazioni");
 			Settings.CaricaSetting();
@@ -91,20 +81,12 @@ public class Main {
 			fl.settext("Avvio interfaccia grafica");
 			fl.setprog(++i);
 			
-			/*
-			if (Settings.isDownloadAutomatico()) {
-				avviaThreadRicercaAutomatica();
-			}
-			*/
-			
 			fl.chiudi();
 			
 			FileManager.instance();
 			
 			GUIframe = new Interfaccia();
-			//GUIframe.setVisible(true);
 			GUIframe.init();
-			//System.out.println(System.getProperty("java.class.path"));
 			Thread subThread=new Thread(new Runnable() {
 				public void run() {
 					if(Settings.isRicercaSottotitoli())
@@ -115,6 +97,10 @@ public class Main {
 			
 			if(Settings.isDownloadAutomatico())
 				ThreadRicercaAutomatica.avvia();
+			
+			/*
+			Advertising.avvio();
+			*/
 		}
 		catch(Exception e){
 			JOptionPane.showMessageDialog(GUIframe, e.getMessage());

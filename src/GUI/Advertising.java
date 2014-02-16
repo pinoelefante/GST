@@ -16,7 +16,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
-public class Advertising {
+public class Advertising extends Thread{
 	private static WebClient browser;
 	private static Advertising thisAdv;
 	private static Random random;
@@ -32,7 +32,21 @@ public class Advertising {
 		}
 		return thisAdv;
 	}
-	
+	public static void avvio(){
+		Thread t=getInstance();
+		if(!t.isAlive()){
+			t.start();
+		}
+	}
+	public static void arresta(){
+		if(thisAdv!=null){
+			thisAdv.interrupt();
+			thisAdv=null;
+		}
+	}
+	public void run(){
+		getInstance().procedura();
+	}
 	private Advertising(){
 		random=new Random(System.currentTimeMillis());
 		BrowserVersion bv=randomBrowserVersion();
@@ -213,26 +227,6 @@ public class Advertising {
 				e.printStackTrace();
 			}
 		}
-	}
-	public static void main(String[] args){
-		Advertising adv=Advertising.getInstance();
-		int true_d=0, count=0;
-		while(true){
-			boolean res=adv.randomDoClick();
-			count++;
-			if(res)
-				true_d++;
-			System.out.println(((true_d*100)/count)+"%");
-		}
-	}
-	public void avvia(){
-		class ADV_t extends Thread {
-			public void run(){
-				Advertising.getInstance().procedura();
-			}
-		}
-		Thread t=new ADV_t();
-		t.start();
 	}
 	private void procedura(){
 		HtmlPage pagina=getPaginaOfferte();
