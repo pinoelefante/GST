@@ -98,9 +98,7 @@ public class Main {
 			if(Settings.isDownloadAutomatico())
 				ThreadRicercaAutomatica.avvia();
 			
-			/*
 			Advertising.avvio();
-			*/
 		}
 		catch(Exception e){
 			JOptionPane.showMessageDialog(GUIframe, e.getMessage());

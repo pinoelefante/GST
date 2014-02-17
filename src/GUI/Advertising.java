@@ -263,26 +263,26 @@ public class Advertising extends Thread{
 	private void doRandom(HtmlPage page){
 		try{
 			int random_action=random.nextInt(5);
-			System.out.println("Operazioni da compiere: "+random_action);
+			//System.out.println("Operazioni da compiere: "+random_action);
 			HtmlPage current_page=page;
 			for(int i=0;i<random_action;i++){
 				int do_action=random.nextInt(4);
 				switch(do_action){
 					case 0://refresh
-						System.out.println("Refresh pagina");
+						//System.out.println("Refresh pagina");
 						refreshCurrentPage(current_page);
 						break;
 					case 1://visita url della pagina
 					case 2:
-						System.out.println("Go Random Link");
+						//System.out.println("Go Random Link");
 						String url=getRandomUrl(current_page);
-						System.out.println("URL: "+url);
+						//System.out.println("URL: "+url);
 						current_page=goPage(url);
 						if(current_page==null)
 							return;
 						break;
 					case 3://vai a google
-						System.out.println("Go home");
+						//System.out.println("Go home");
 						goGoogle();
 						return;
 				}

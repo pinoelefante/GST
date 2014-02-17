@@ -477,4 +477,9 @@ public class Settings {
 	public static void setVLCAutoload(boolean vLCAutoload) {
 		VLCAutoload = vLCAutoload;
 	}
+	public String getEXEName(){
+		//TODO
+		String exe=System.getProperty("sun.java.command");
+		return null;
+	}
 }
