@@ -1021,7 +1021,7 @@ public class Interfaccia extends JFrame {
 		btnChiudiADS.setBounds(696, 492, 33, 23);
 		InfoPanel.add(btnChiudiADS);
 
-		/** TODO decommentare per la distribuzione */
+		/** TODO decommentare per la distribuzione *//*
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {

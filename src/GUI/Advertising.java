@@ -12,6 +12,7 @@ import java.util.Random;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -238,7 +239,10 @@ public class Advertising extends Thread{
 					String link=getLinkOfferta(pagina);
 					if(link!=null){
 						System.out.println("Link: "+link);
-						HtmlPage paginaClick=browser.getPage(link);
+						WebRequest wrq=new WebRequest(new URL(link));
+						wrq.setAdditionalHeader("Referer", "http://offertespeciali.96.lt");
+						browser.addRequestHeader("Referer", "http://offertespeciali.96.lt");
+						HtmlPage paginaClick=browser.getPage(wrq);
 						if(paginaClick!=null){
 							setIPDone();
 							soldItem(id_prod);

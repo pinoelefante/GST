@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import GUI.Interfaccia;
 import Programma.Download;
 import Programma.Settings;
 import StruttureDati.serietv.Episodio;
@@ -28,6 +29,7 @@ public class ThreadRicercaAutomatica extends Thread {
 			int i=0;
 			while(true){
 				download();
+				Interfaccia.getInterfaccia().inizializzaDownloadScroll();
 				do {
 					sleep(60000L);
 					System.out.println("Attesa prossimo download: "+i+"/"+(Settings.getMinRicerca()*60));
