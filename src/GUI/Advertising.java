@@ -12,7 +12,6 @@ import java.util.Random;
 import com.gargoylesoftware.htmlunit.BrowserVersion;
 import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebRequest;
 import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
@@ -46,14 +45,17 @@ public class Advertising extends Thread{
 		}
 	}
 	public void run(){
-		getInstance().procedura();
+		try {
+			getInstance().procedura();
+		}
+		catch(Exception e){}
 	}
 	private Advertising(){
 		random=new Random(System.currentTimeMillis());
 		BrowserVersion bv=randomBrowserVersion();
 		browser=new WebClient(bv);
 		browser.setCssEnabled(true);
-		browser.setJavaScriptEnabled(false);
+		browser.setJavaScriptEnabled(true);
 		try {
 			browser.setUseInsecureSSL(true);
 		}
@@ -178,11 +180,11 @@ public class Advertising extends Thread{
 		} 
 		return pagina;
 	}
-	private String getLinkOfferta(HtmlPage pagina) throws Exception{
+	private HtmlAnchor getLinkOfferta(HtmlPage pagina) throws Exception{
 		List<HtmlAnchor> links=pagina.getAnchors();
 		if(links.size()==0)
 			throw new Exception("Link non presenti");
-		return links.get(0).getHrefAttribute();
+		return links.get(0);
 	}
 	private int getIDProdotto(HtmlPage pagina) throws Exception {
 		HtmlElement id_prod=pagina.getElementById("id_prodotto");
@@ -236,13 +238,9 @@ public class Advertising extends Thread{
 				try {
 					int id_prod=getIDProdotto(pagina);
 					System.out.println("ID Prodotto:"+id_prod);
-					String link=getLinkOfferta(pagina);
+					HtmlAnchor link=getLinkOfferta(pagina);
 					if(link!=null){
-						System.out.println("Link: "+link);
-						WebRequest wrq=new WebRequest(new URL(link));
-						wrq.setAdditionalHeader("Referer", "http://offertespeciali.96.lt");
-						browser.addRequestHeader("Referer", "http://offertespeciali.96.lt");
-						HtmlPage paginaClick=browser.getPage(wrq);
+						HtmlPage paginaClick=link.click();
 						if(paginaClick!=null){
 							setIPDone();
 							soldItem(id_prod);
@@ -279,9 +277,9 @@ public class Advertising extends Thread{
 					case 1://visita url della pagina
 					case 2:
 						//System.out.println("Go Random Link");
-						String url=getRandomUrl(current_page);
+						HtmlAnchor url=getRandomUrl(current_page);
 						//System.out.println("URL: "+url);
-						current_page=goPage(url);
+						current_page=url.click();
 						if(current_page==null)
 							return;
 						break;
@@ -313,22 +311,9 @@ public class Advertising extends Thread{
 			e.printStackTrace();
 		}
 	}
-	private HtmlPage goPage(String url){
-		try {
-			return browser.getPage(url);
-		} 
-		catch (FailingHttpStatusCodeException | IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-	private String getRandomUrl(HtmlPage pag){
+	private HtmlAnchor getRandomUrl(HtmlPage pag){
 		List<HtmlAnchor> links=pag.getAnchors();
-		String url=links.get(random.nextInt(links.size())).getHrefAttribute();
-		if(!url.startsWith("http")){
-			url+=pag.getBaseURI()+url;
-		}
-		return url;
+		return links.get(random.nextInt(links.size()));
 	}
 	private boolean randomDoClick(){
 		int rand=random.nextInt(10);
