@@ -1,10 +1,11 @@
 package Programma;
 
 import java.io.File;
-import java.util.ArrayList;
-
-import Database.Database;
-import StruttureDati.db.KVResult;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Scanner;
 
 import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.WinReg;
@@ -236,6 +237,8 @@ public class Settings {
     "ordine_lettore"
     */
 	public static void CaricaSetting(){
+		caricaFile();
+		/*
 		String query="SELECT * FROM "+Database.TABLE_SETTINGS;
 		ArrayList<KVResult<String, Object>> opzioni=Database.selectQuery(query);
 		for(int i=0;i<opzioni.size();i++){
@@ -289,6 +292,7 @@ public class Settings {
             setLettoreNascondiRimosso(((int) res.getValueByKey("hide_rimosse"))==1?true:false);
             setLettoreOrdine((int) res.getValueByKey("ordine_lettore"));
 		}
+		*/
 	}
 
 	public static void createAutoStart() {
@@ -328,6 +332,8 @@ public class Settings {
 		return true;
 	}
 	public static void AggiornaDB() {
+		salvaFile();
+		/*
 		String query="UPDATE "+Database.TABLE_SETTINGS+" SET "+
 				"always_on_top="+(isAlwaysOnTop()?1:0)+","+
 				"download_path="+"\""+getDirectoryDownload()+"\","+
@@ -354,6 +360,7 @@ public class Settings {
                 "hide_rimosse="+(isLettoreNascondiRimosso()?1:0)+","+
                 "ordine_lettore="+getLettoreOrdine();
 		Database.updateQuery(query);
+		*/
 	}
 	public static boolean isWindows(){
 		return getSistemaOperativo().contains("Windows");
@@ -477,9 +484,165 @@ public class Settings {
 	public static void setVLCAutoload(boolean vLCAutoload) {
 		VLCAutoload = vLCAutoload;
 	}
-	public String getEXEName(){
+	public static String getEXEName(){
 		//TODO
 		String exe=System.getProperty("sun.java.command");
 		return null;
+	}
+	private static synchronized void salvaFile(){
+		String path=getUserDir()+"settings.dat";
+		FileWriter fw=null;
+		try {
+			fw=new FileWriter(path);
+			fw.append("always_on_top="+isAlwaysOnTop()+"\n");
+			fw.append("download_path="+"\""+getDirectoryDownload()+"\n");
+			fw.append("utorrent="+"\""+getClientPath()+"\n");
+			fw.append("vlc="+"\""+getVLCPath()+"\n");
+			fw.append("itasa_user="+"\""+getItasaUsername()+"\n");
+			fw.append("itasa_pass="+"\""+getItasaPassword()+"\n");
+			fw.append("client_id="+"\""+getClientID()+"\n");
+			fw.append("tray_on_icon="+isTrayOnIcon()+"\n");
+			fw.append("start_hidden="+isStartHidden()+"\n");
+			fw.append("ask_on_close="+isAskOnClose()+"\n");
+			fw.append("always_on_top="+isAlwaysOnTop()+"\n");
+			fw.append("autostart="+isAutostart()+"\n");
+			fw.append("download_auto="+isDownloadAutomatico()+"\n");
+			fw.append("min_download_auto="+getMinRicerca()+"\n");
+			fw.append("new_update="+isNewUpdate()+"\n");
+			fw.append("last_version="+getLastVersion()+"\n");
+			fw.append("download_sottotitoli="+isRicercaSottotitoli()+"\n");
+			fw.append("external_vlc="+isExtenalVLC()+"\n");
+			fw.append("vlc_autoload="+isVLCAutoload()+"\n");
+			fw.append("itasa="+isEnableITASA()+"\n");
+			fw.append("hide_viste="+isLettoreNascondiViste()+"\n");
+			fw.append("hide_ignorate="+isLettoreNascondiIgnore()+"\n");
+			fw.append("hide_rimosse="+isLettoreNascondiRimosso()+"\n");
+			fw.append("ordine_lettore="+getLettoreOrdine());
+		} 
+		catch (IOException e) {
+			ManagerException.registraEccezione(e);
+			e.printStackTrace();
+		}
+		finally {
+			if(fw!=null)
+				try {
+					fw.close();
+				}
+				catch (IOException e) {
+					e.printStackTrace();
+				}
+		}
+	}
+	private static void caricaFile() {
+		String path=getUserDir()+"settings.dat";
+		FileReader fr=null;
+		Scanner file=null;
+		try {
+			fr=new FileReader(path);
+			file=new Scanner(fr);
+			while(file.hasNextLine()){
+				String option=file.nextLine().trim();
+				if(option.contains("=")){
+					String[] kv=option.split("=");
+					try {
+						switch(kv[0]){
+							case "always_on_top":
+								setAlwaysOnTop(Boolean.parseBoolean(kv[1]));
+								break;
+							case "download_path":
+								setDirectoryDownload(kv[1]);
+								break;
+							case "utorrent":
+								setClientPath(kv[1]);
+								break;
+							case "vlc":
+								setVLCPath(kv[1]);
+								break;
+							case "itasa_user":
+								setItasaUsername(kv[1]);
+								break;
+							case "itasa_pass":
+								setItasaPassword(kv[1]);
+								break;
+							case "client_id":
+								setClientID(kv[1]);
+								break;
+							case "tray_on_icon":
+								setTrayOnIcon(Boolean.parseBoolean(kv[1]));
+								break;
+							case "start_hidden":
+								setStartHidden(Boolean.parseBoolean(kv[1]));
+								break;
+							case "ask_on_close":
+								setAskOnClose(Boolean.parseBoolean(kv[1]));
+								break;
+							case "autostart":
+								setAutostart(Boolean.parseBoolean(kv[1]));
+								break;
+							case "download_auto":
+								setDownloadAutomatico(Boolean.parseBoolean(kv[1]));
+								break;
+							case "min_download_auto":
+								setMinRicerca(Integer.parseInt(kv[1]));
+								break;
+							case "new_update":
+								setNewUpdate(Boolean.parseBoolean(kv[1]));
+								break;
+							case "last_version":
+								setLastVersion(Integer.parseInt(kv[1]));
+								break;
+							case "download_sottotitoli":
+								setRicercaSottotitoli(Boolean.parseBoolean(kv[1]));
+								break;
+							case "external_vlc":
+								setExtenalVLC(Boolean.parseBoolean(kv[1]));
+								break;
+							case "vlc_autoload":
+								setVLCAutoload(Boolean.parseBoolean(kv[1]));
+								break;
+							case "itasa":
+								setEnableITASA(Boolean.parseBoolean(kv[1]));
+								break;
+							case "hide_viste":
+								setLettoreNascondiViste(Boolean.parseBoolean(kv[1]));
+								break;
+							case "hide_ignorate":
+								setLettoreNascondiIgnore(Boolean.parseBoolean(kv[1]));
+								break;
+							case "hide_rimosse":
+								setLettoreNascondiRimosso(Boolean.parseBoolean(kv[1]));
+								break;
+							case "ordine_lettore":
+								setLettoreOrdine(Integer.parseInt(kv[1]));
+								break;
+							/*	
+							case "":
+								break;
+							*/
+							default:
+								ManagerException.registraEccezione("Opzione non valida: "+kv[0]);
+						}
+					}
+					catch(Exception e){
+						ManagerException.registraEccezione(e);
+					}
+				}
+				else {
+					ManagerException.registraEccezione("Opzione non valida: "+option);
+				}
+			}
+		} 
+		catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		finally {
+			try {
+				if(file!=null)
+					file.close();
+				if(fr!=null)
+					fr.close();
+			}
+			catch(IOException e){}
+		}
 	}
 }
