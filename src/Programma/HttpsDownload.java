@@ -14,7 +14,7 @@ public class HttpsDownload {
 			"5.0 ("+System.getProperty("os.name")+" "+System.getProperty("os.arch")+") GST/"+Settings.getVersioneSoftware(), 
 			"Mozilla/5.0 ("+System.getProperty("os.name")+" "+System.getProperty("os.arch")+") GST/"+Settings.getVersioneSoftware(),
 			Settings.getVersioneSoftware()));
-	public static synchronized HtmlPage downloadPageFromHttpsUrl(String url_download) {
+	public static HtmlPage downloadPageFromHttpsUrl(String url_download) {
 		try {
 			webClient.setUseInsecureSSL(true);
 			webClient.setActiveXNative(false);

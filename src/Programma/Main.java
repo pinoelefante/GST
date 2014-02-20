@@ -13,9 +13,8 @@ import InfoManager.TheTVDB;
 
 public class Main {
 	public static FrameLoading 					fl;
-
-	static Interfaccia frame2;
-	private static Interfaccia GUIframe;
+	private static Interfaccia 					GUIframe;
+	
 	public static void main(String[] args) {
 		@SuppressWarnings("unused")
 		InstanceManager instance_manager=new InstanceManager();

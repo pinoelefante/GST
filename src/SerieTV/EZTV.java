@@ -26,6 +26,7 @@ public class EZTV extends ProviderSerieTV{
 	private String baseUrl;
 	public EZTV(){
 		super();
+		cleanUpTemp();
 		baseUrls=new ArrayList<String>();
 		baseUrls.add("http://eztv.it");
 		baseUrls.add("http://eztvproxy.org");
@@ -416,5 +417,39 @@ public class EZTV extends ProviderSerieTV{
 			e.printStackTrace();
 			ManagerException.registraEccezione(e);
 		}
+	}
+	private void cleanUpTemp(){
+		String[] query={
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T1\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T2\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T3\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T4\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T5\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T6\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T7\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T8\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"T9\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp1\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp2\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp3\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp4\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp5\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp6\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp7\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp8\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp9\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temporary_Placeholder\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temporary_Placeholder_2\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp01\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp02\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp03\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp04\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp 01\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp 02\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp 03\"",
+			"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp 04\""
+		};
+		for(int j=0;j<query.length;j++)
+			Database.updateQuery(query[j]);
 	}
 }

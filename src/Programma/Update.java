@@ -27,12 +27,70 @@ public class Update {
 					update_107_to_108();
 				case 110:
 					update_110_to_111();
+				case 117:
+					update_117_to_118();
 				default:
 					Settings.setLastVersion(Settings.getVersioneSoftware());
 					Settings.setNewUpdate(false);
-					Settings.AggiornaDB();
+					Settings.salvaSettings();
 			}
 		}
+	}
+	private static void update_117_to_118(){
+		String query="SELECT * FROM "+Database.TABLE_SETTINGS;
+		ArrayList<KVResult<String, Object>> opzioni=Database.selectQuery(query);
+		for(int i=0;i<opzioni.size();i++){
+			KVResult<String, Object> res=opzioni.get(i);
+			
+			String download_path=(String) res.getValueByKey("download_path");
+			if(download_path==null || download_path.compareTo("null")==0)
+				download_path=Settings.getUserDir()+"Download";
+			Settings.setDirectoryDownload(download_path);
+			
+			String utorrent_path=(String) res.getValueByKey("utorrent");
+			if(utorrent_path==null || utorrent_path.compareTo("null")==0)
+				utorrent_path="";
+			Settings.setClientPath(utorrent_path);
+			
+			String vlc_path=(String) res.getValueByKey("vlc");
+			if(vlc_path==null || vlc_path.compareTo("null")==0)
+				vlc_path="";
+			Settings.setVLCPath(vlc_path);
+			
+			String user_itasa=(String) res.getValueByKey("itasa_user");
+			if(user_itasa==null || user_itasa.compareTo("null")==0)
+				user_itasa="";
+			Settings.setItasaUsername(user_itasa);
+			
+			String pass_itasa=(String) res.getValueByKey("itasa_pass");
+			if(pass_itasa==null || pass_itasa.compareTo("null")==0)
+				pass_itasa="";
+			Settings.setItasaPassword(pass_itasa);
+			
+			String client_id=(String) res.getValueByKey("client_id");
+			if(client_id==null || client_id.compareTo("null")==0)
+				client_id="";
+			Settings.setClientID(client_id);
+			
+			Settings.setTrayOnIcon(((int) res.getValueByKey("tray_on_icon"))==1?true:false);
+			Settings.setStartHidden(((int) res.getValueByKey("start_hidden"))==1?true:false);
+			Settings.setAskOnClose(((int) res.getValueByKey("ask_on_close"))==1?true:false);
+			Settings.setAlwaysOnTop(((int) res.getValueByKey("always_on_top"))==1?true:false);
+			Settings.setAutostart(((int) res.getValueByKey("autostart"))==1?true:false);
+            Settings.setDownloadAutomatico(((int) res.getValueByKey("download_auto"))==1?true:false);
+            Settings.setMinRicerca((int) res.getValueByKey("min_download_auto"));
+            Settings.setNewUpdate(((int) res.getValueByKey("new_update"))==1?true:false);
+            Settings.setLastVersion((int) res.getValueByKey("last_version"));
+            Settings.setRicercaSottotitoli(((int) res.getValueByKey("download_sottotitoli"))==1?true:false);
+            Settings.setVLCAutoload(((int) res.getValueByKey("vlc_autoload"))==1?true:false);
+            Settings.setExtenalVLC(((int) res.getValueByKey("external_vlc"))==1?true:false);
+            Settings. setEnableITASA(((int) res.getValueByKey("itasa"))==1?true:false);
+            Settings.setLettoreNascondiViste(((int) res.getValueByKey("hide_viste"))==1?true:false);
+            Settings.setLettoreNascondiIgnore(((int) res.getValueByKey("hide_ignorate"))==1?true:false);
+            Settings.setLettoreNascondiRimosso(((int) res.getValueByKey("hide_rimosse"))==1?true:false);
+            Settings.setLettoreOrdine((int) res.getValueByKey("ordine_lettore"));
+		}
+		Settings.salvaSettings();
 	}
 	private static void update_110_to_111(){
 		Database.Disconnect();
@@ -76,7 +134,15 @@ public class Update {
 				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp8\"",
 				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp9\"",
 				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temporary_Placeholder\"",
-				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temporary_Placeholder_2\""
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temporary_Placeholder_2\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp01\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp02\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp03\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp04\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp 01\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp 02\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp 03\"",
+				"DELETE FROM "+Database.TABLE_SERIETV+" WHERE nome=\"Temp 04\""
 			};
 			for(int j=0;j<query.length;j++)
 				Database.updateQuery(query[j]);
@@ -123,7 +189,7 @@ public class Update {
 					Settings.setItasaUsername(useritasa);
 					String passitasa=(String) settings.get(0).getValueByKey("itasa_pass");
 					Settings.setItasaPassword(passitasa);
-					Settings.AggiornaDB();
+					Settings.salvaSettings();
 				}
 				
 				String query_serie="SELECT * FROM serie";
@@ -201,6 +267,4 @@ public class Update {
 			}
 		}
 	}
-	
-	
 }

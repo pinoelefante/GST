@@ -11,7 +11,7 @@ import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.WinReg;
 
 public class Settings {
-	private static final int	VersioneSoftware					= 117;
+	private static final int	VersioneSoftware					= 118;
 	public static final String	IndirizzoDonazioni					= "http://pinoelefante.altervista.org/donazioni/donazione_gst.html";
 	private static String		current_dir							= "";
 	private static String		user_dir							= "";
@@ -238,61 +238,6 @@ public class Settings {
     */
 	public static void CaricaSetting(){
 		caricaFile();
-		/*
-		String query="SELECT * FROM "+Database.TABLE_SETTINGS;
-		ArrayList<KVResult<String, Object>> opzioni=Database.selectQuery(query);
-		for(int i=0;i<opzioni.size();i++){
-			KVResult<String, Object> res=opzioni.get(i);
-			
-			String download_path=(String) res.getValueByKey("download_path");
-			if(download_path==null || download_path.compareTo("null")==0)
-				download_path=getUserDir()+"Download";
-			setDirectoryDownload(download_path);
-			
-			String utorrent_path=(String) res.getValueByKey("utorrent");
-			if(utorrent_path==null || utorrent_path.compareTo("null")==0)
-				utorrent_path="";
-			setClientPath(utorrent_path);
-			
-			String vlc_path=(String) res.getValueByKey("vlc");
-			if(vlc_path==null || vlc_path.compareTo("null")==0)
-				vlc_path="";
-			setVLCPath(vlc_path);
-			
-			String user_itasa=(String) res.getValueByKey("itasa_user");
-			if(user_itasa==null || user_itasa.compareTo("null")==0)
-				user_itasa="";
-			setItasaUsername(user_itasa);
-			
-			String pass_itasa=(String) res.getValueByKey("itasa_pass");
-			if(pass_itasa==null || pass_itasa.compareTo("null")==0)
-				pass_itasa="";
-			setItasaPassword(pass_itasa);
-			
-			String client_id=(String) res.getValueByKey("client_id");
-			if(client_id==null || client_id.compareTo("null")==0)
-				client_id="";
-			setClientID(client_id);
-			
-			setTrayOnIcon(((int) res.getValueByKey("tray_on_icon"))==1?true:false);
-			setStartHidden(((int) res.getValueByKey("start_hidden"))==1?true:false);
-			setAskOnClose(((int) res.getValueByKey("ask_on_close"))==1?true:false);
-			setAlwaysOnTop(((int) res.getValueByKey("always_on_top"))==1?true:false);
-            setAutostart(((int) res.getValueByKey("autostart"))==1?true:false);
-            setDownloadAutomatico(((int) res.getValueByKey("download_auto"))==1?true:false);
-            setMinRicerca((int) res.getValueByKey("min_download_auto"));
-            setNewUpdate(((int) res.getValueByKey("new_update"))==1?true:false);
-            setLastVersion((int) res.getValueByKey("last_version"));
-            setRicercaSottotitoli(((int) res.getValueByKey("download_sottotitoli"))==1?true:false);
-            setVLCAutoload(((int) res.getValueByKey("vlc_autoload"))==1?true:false);
-            setExtenalVLC(((int) res.getValueByKey("external_vlc"))==1?true:false);
-            setEnableITASA(((int) res.getValueByKey("itasa"))==1?true:false);
-            setLettoreNascondiViste(((int) res.getValueByKey("hide_viste"))==1?true:false);
-            setLettoreNascondiIgnore(((int) res.getValueByKey("hide_ignorate"))==1?true:false);
-            setLettoreNascondiRimosso(((int) res.getValueByKey("hide_rimosse"))==1?true:false);
-            setLettoreOrdine((int) res.getValueByKey("ordine_lettore"));
-		}
-		*/
 	}
 
 	public static void createAutoStart() {
@@ -331,36 +276,8 @@ public class Settings {
 			return false;
 		return true;
 	}
-	public static void AggiornaDB() {
+	public static void salvaSettings() {
 		salvaFile();
-		/*
-		String query="UPDATE "+Database.TABLE_SETTINGS+" SET "+
-				"always_on_top="+(isAlwaysOnTop()?1:0)+","+
-				"download_path="+"\""+getDirectoryDownload()+"\","+
-                "utorrent="+"\""+getClientPath()+"\","+
-				"vlc="+"\""+getVLCPath()+"\","+
-                "itasa_user="+"\""+getItasaUsername()+"\","+
-                "itasa_pass="+"\""+getItasaPassword()+"\","+
-                "client_id="+"\""+getClientID()+"\","+
-                "tray_on_icon="+(isTrayOnIcon()?1:0)+","+
-                "start_hidden="+(isStartHidden()?1:0)+","+
-                "ask_on_close="+(isAskOnClose()?1:0)+","+
-                "always_on_top="+(isAlwaysOnTop()?1:0)+","+
-                "autostart="+(isAutostart()?1:0)+","+
-                "download_auto="+(isDownloadAutomatico()?1:0)+","+
-                "min_download_auto="+getMinRicerca()+","+
-                "new_update="+(isNewUpdate()?1:0)+","+
-                "last_version="+getLastVersion()+","+
-                "download_sottotitoli="+(isRicercaSottotitoli()?1:0)+","+
-                "external_vlc="+(isExtenalVLC()?1:0)+","+
-                "vlc_autoload="+(isVLCAutoload()?1:0)+","+
-                "itasa="+(isEnableITASA()?1:0)+","+
-                "hide_viste="+(isLettoreNascondiViste()?1:0)+","+
-                "hide_ignorate="+(isLettoreNascondiIgnore()?1:0)+","+
-                "hide_rimosse="+(isLettoreNascondiRimosso()?1:0)+","+
-                "ordine_lettore="+getLettoreOrdine();
-		Database.updateQuery(query);
-		*/
 	}
 	public static boolean isWindows(){
 		return getSistemaOperativo().contains("Windows");
@@ -495,12 +412,12 @@ public class Settings {
 		try {
 			fw=new FileWriter(path);
 			fw.append("always_on_top="+isAlwaysOnTop()+"\n");
-			fw.append("download_path="+"\""+getDirectoryDownload()+"\n");
-			fw.append("utorrent="+"\""+getClientPath()+"\n");
-			fw.append("vlc="+"\""+getVLCPath()+"\n");
-			fw.append("itasa_user="+"\""+getItasaUsername()+"\n");
-			fw.append("itasa_pass="+"\""+getItasaPassword()+"\n");
-			fw.append("client_id="+"\""+getClientID()+"\n");
+			fw.append("download_path="+getDirectoryDownload()+"\n");
+			fw.append("utorrent="+getClientPath()+"\n");
+			fw.append("vlc="+getVLCPath()+"\n");
+			fw.append("itasa_user="+getItasaUsername()+"\n");
+			fw.append("itasa_pass="+getItasaPassword()+"\n");
+			fw.append("client_id="+getClientID()+"\n");
 			fw.append("tray_on_icon="+isTrayOnIcon()+"\n");
 			fw.append("start_hidden="+isStartHidden()+"\n");
 			fw.append("ask_on_close="+isAskOnClose()+"\n");
@@ -633,6 +550,10 @@ public class Settings {
 			}
 		} 
 		catch (FileNotFoundException e) {
+			if(OperazioniFile.fileExists(getUserDir()+"database2.sqlite"))
+				setLastVersion(117);
+			else
+				setLastVersion(0);
 			e.printStackTrace();
 		}
 		finally {

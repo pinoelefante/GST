@@ -65,6 +65,7 @@ public class ControlloAggiornamenti {
 		}
 	}
 	public void update() {
+		System.out.println("Current:"+Settings.getVersioneSoftware()+"\nOnline:"+getVersioneOnline());
 		if(getVersioneOnline()>Settings.getVersioneSoftware()){
     		if(scarica()) {
     			String[] cmd={

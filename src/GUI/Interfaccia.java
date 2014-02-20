@@ -56,12 +56,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
-import javax.swing.SwingUtilities;
 
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
-import chrriis.dj.nativeswing.swtimpl.components.WebBrowserAdapter;
-import chrriis.dj.nativeswing.swtimpl.components.WebBrowserWindowWillOpenEvent;
 
 import javax.swing.border.TitledBorder;
 import javax.swing.JCheckBox;
@@ -1742,7 +1739,7 @@ public class Interfaccia extends JFrame {
 		comboBoxLettoreOrdine.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Settings.setLettoreOrdine(comboBoxLettoreOrdine.getSelectedIndex());
-				Settings.AggiornaDB();
+				Settings.salvaSettings();
 				disegnaLettore();
 			}
 		});
@@ -1766,21 +1763,21 @@ public class Interfaccia extends JFrame {
 		chckbxNascondiViste.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Settings.setLettoreNascondiViste(chckbxNascondiViste.isSelected());
-				Settings.AggiornaDB();
+				Settings.salvaSettings();
 				disegnaLettore();
 			}
 		});
 		chckbxNascondiIgnorate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Settings.setLettoreNascondiIgnore(chckbxNascondiIgnorate.isSelected());
-				Settings.AggiornaDB();
+				Settings.salvaSettings();
 				disegnaLettore();
 			}
 		});
 		chckbxNascondiRimosse.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Settings.setLettoreNascondiRimosso(chckbxNascondiRimosse.isSelected());
-				Settings.AggiornaDB();
+				Settings.salvaSettings();
 				disegnaLettore();
 			}
 		});
@@ -1880,7 +1877,7 @@ public class Interfaccia extends JFrame {
 				Settings.setClientPath(txt_utorrent_path.getText());
 				Settings.setDirectoryDownload(txt_download_path.getText());
 				Settings.setVLCPath(txt_vlc_path.getText());
-				Settings.AggiornaDB();
+				Settings.salvaSettings();
 				
 				if(Settings.isDownloadAutomatico()){
 					ThreadRicercaAutomatica.avvia();
