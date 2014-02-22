@@ -10,8 +10,8 @@ import Database.Database;
 import GUI.Advertising;
 import GUI.FrameLoading;
 import GUI.Interfaccia;
-import GUI.InterfacciaManutenzione;
 import InfoManager.TheTVDB;
+import Manutenzione.InterfacciaManutenzione;
 
 public class Main {
 	public static FrameLoading 					fl;
@@ -20,23 +20,19 @@ public class Main {
 	public static void main(String[] args) {
 		boolean isManutenzione=isManutenzione(args);
 		
-		if(!isManutenzione){
-			@SuppressWarnings("unused")
-			InstanceManager instance_manager=new InstanceManager();
-		}
-		
 		Settings.baseSettings();
 		if(isManutenzione){
 			JFrame frame=new InterfacciaManutenzione();
 			frame.setVisible(true);
 		}
 		else {
+			@SuppressWarnings("unused")
+			InstanceManager instance_manager=new InstanceManager();
 			try{
 				if(Settings.isWindows())
 					UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 				else 
 					UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-				
 				
 				fl=new FrameLoading();
 				fl.start();

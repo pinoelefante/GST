@@ -14,6 +14,7 @@ import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteConfig.SynchronousMode;
 
 import Programma.ManagerException;
+import Programma.OperazioniFile;
 import Programma.Settings;
 import StruttureDati.db.KVItem;
 import StruttureDati.db.KVResult;
@@ -33,6 +34,7 @@ public class Database {
 	public static final String TABLE_TVDB_EPISODI = "tvdb_ep";
 	
 	private final static String NOMEDB=Settings.getUserDir()+"database2.sqlite";
+	private static boolean freshNew=false;
 
 	public static Connection Connect() {
 		if(con!=null)
@@ -44,7 +46,8 @@ public class Database {
 			conf.enableRecursiveTriggers(true);
 			conf.enforceForeignKeys(true);
 			conf.setSynchronous(SynchronousMode.OFF);
-			
+			if(!OperazioniFile.fileExists(NOMEDB))
+				freshNew=true;
 			con = DriverManager.getConnection("jdbc:sqlite:"+NOMEDB, conf.toProperties());
 			System.out.println("Connessione OK");
 			checkIntegrita();
@@ -72,6 +75,9 @@ public class Database {
 		//checkIntegrita();
 		return con;
 		
+	}
+	public static boolean isFreshNew(){
+		return freshNew;
 	}
 	public static void Disconnect(){
 		try {

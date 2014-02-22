@@ -228,4 +228,26 @@ public class Manutenzione {
 		truncate(con,Database.TABLE_TVDB_SERIE);
 		Database.rebuildDB(con);
 	}
+	public static void generaLauncherManutenzione(){
+		String exe=Settings.getEXEName();
+		String command="";
+		if(exe.toLowerCase().endsWith(".jar")){
+			command="\""+System.getProperty("java.home");
+			command+=File.separator+"bin"+File.separator+"java\" -jar ";
+		}
+		command+="\""+exe+"\""+" manutenzione";
+		
+		try {
+			FileWriter fw=new FileWriter(Settings.getCurrentDir()+"manutenzione.bat");
+			FileWriter fw2=new FileWriter(Settings.getUserDir()+"manutenzione.bat");
+			fw.append(command);
+			fw2.append(command);
+			fw.close();
+			fw2.close();
+		} 
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+	}
 }

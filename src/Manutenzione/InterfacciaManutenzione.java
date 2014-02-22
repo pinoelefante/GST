@@ -1,9 +1,11 @@
-package GUI;
+package Manutenzione;
 
 import javax.swing.JFrame;
 import java.awt.GridLayout;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingConstants;
@@ -14,7 +16,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.border.EtchedBorder;
 
-import Manutenzione.Manutenzione;
 import Database.Database;
 import Programma.Settings;
 
@@ -111,23 +112,43 @@ public class InterfacciaManutenzione extends JFrame{
 		});
 		btnImportaDaSql.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(Manutenzione.importaDBdaSQL(Database.Connect(), Settings.getUserDir()+"gst_db_backup.sql")){
-					JOptionPane.showMessageDialog(InterfacciaManutenzione.this, "Importazione completata con successo");
-				}
-				else {
-					JOptionPane.showMessageDialog(InterfacciaManutenzione.this, "Importazione completata con degli errori");
+				JFileChooser fc=new JFileChooser(Settings.getUserDir());
+				fc.setMultiSelectionEnabled(true);
+				fc.setDialogTitle("Seleziona file SQL da importare");
+				fc.setFileHidingEnabled(false);
+				if(fc.showOpenDialog(InterfacciaManutenzione.this)==JFileChooser.APPROVE_OPTION){
+					String dir=fc.getSelectedFile().getAbsolutePath();
+					if(Manutenzione.importaDBdaSQL(Database.Connect(), dir/*Settings.getUserDir()+"gst_db_backup.sql"*/)){
+						JOptionPane.showMessageDialog(InterfacciaManutenzione.this, "Importazione completata con successo");
+					}
+					else {
+						JOptionPane.showMessageDialog(InterfacciaManutenzione.this, "Importazione completata con degli errori o il file non è un database valido");
+					}
 				}
 			}
 		});
 		btnImportaDaDatabase.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Manutenzione.importaDBdaSQLite("C:\\Documents and Settings\\Pino\\Documenti\\database2.sqlite", Database.Connect());
-				
+				JFileChooser fc=new JFileChooser(Settings.getUserDir());
+				fc.setMultiSelectionEnabled(true);
+				fc.setDialogTitle("Seleziona database da importare");
+				fc.setFileHidingEnabled(false);
+				if(fc.showOpenDialog(InterfacciaManutenzione.this)==JFileChooser.APPROVE_OPTION){
+					String dir=fc.getSelectedFile().getAbsolutePath();
+					if(Manutenzione.importaDBdaSQLite(dir, Database.Connect())){
+						JOptionPane.showMessageDialog(InterfacciaManutenzione.this, "Importazione completata con successo");
+					}
+					else {
+						JOptionPane.showMessageDialog(InterfacciaManutenzione.this, "Importazione completata con degli errori o il file non è un database valido");
+					}
+				}
 			}
 		});
 		btnCancellaTutto.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Manutenzione.truncateAll(Database.Connect());
+				int conferma=JOptionPane.showConfirmDialog(InterfacciaManutenzione.this, "Confermi l'eliminazione del contenuto del database?","Conferma eliminazione",JOptionPane.YES_NO_OPTION);
+				if(conferma==JOptionPane.YES_OPTION)
+					Manutenzione.truncateAll(Database.Connect());
 			}
 		});
 	}

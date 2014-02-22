@@ -10,6 +10,7 @@ import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteConfig.SynchronousMode;
 
 import Database.Database;
+import Manutenzione.Manutenzione;
 import Naming.CaratteristicheFile;
 import SerieTV.SerieTV;
 import StruttureDati.db.KVResult;
@@ -20,21 +21,32 @@ public class Update {
 			switch(Settings.getLastVersion()){
 				case 0:
 				case 102:
+					System.out.println("Aggiornamento 102-103");
 					update_102_to_103();
 				case 103: 
+					System.out.println("Aggiornamento 103-104");
 					update_103_to_104();
 				case 107:
+					System.out.println("Aggiornamento 107-108");
 					update_107_to_108();
 				case 110:
+					System.out.println("Aggiornamento 110-111");
 					update_110_to_111();
 				case 117:
+					System.out.println("Aggiornamento 117-118");
 					update_117_to_118();
+				case 118:
+					System.out.println("Aggiornamento 118-119");
+					update_118_to_119();
 				default:
 					Settings.setLastVersion(Settings.getVersioneSoftware());
 					Settings.setNewUpdate(false);
 					Settings.salvaSettings();
 			}
 		}
+	}
+	private static void update_118_to_119() {
+		Manutenzione.generaLauncherManutenzione();
 	}
 	private static void update_117_to_118(){
 		String query="SELECT * FROM "+Database.TABLE_SETTINGS;
@@ -93,6 +105,12 @@ public class Update {
 		Settings.salvaSettings();
 	}
 	private static void update_110_to_111(){
+		if(OperazioniFile.fileExists(Settings.getCurrentDir()+"database2.sqlite") && Database.isFreshNew()){
+			Manutenzione.esportaDBinSQL(Database.Connect(), Settings.getCurrentDir());
+			Manutenzione.importaDBdaSQLite(Settings.getCurrentDir()+"database2.sqlite", Database.Connect());
+			OperazioniFile.deleteFile(Settings.getCurrentDir()+"database2.sqlite");
+		}
+		/*
 		Database.Disconnect();
 		if(OperazioniFile.fileExists(Settings.getUserDir()+"database2.sqlite"))
 			OperazioniFile.copyfile(Settings.getUserDir()+"database2.sqlite", Settings.getUserDir()+"database2.sqlite.bak");
@@ -107,6 +125,7 @@ public class Update {
 			ManagerException.registraEccezione("Si è verificato un errore durante l'aggiornamento del software.\nNon è stato possibile copiare il vecchio database.\nSe questa è una nuova installazione, questo errore può essere ignorato.");
 			Database.Connect();
 		}
+		*/
 	}
 	private static void update_107_to_108(){
 		Settings.setEnableITASA(true);
@@ -148,14 +167,13 @@ public class Update {
 				Database.updateQuery(query[j]);
 	}
 	private static void update_102_to_103(){
-		SQLiteConfig conf=new SQLiteConfig();
-		conf.enableRecursiveTriggers(true);
-		conf.enforceForeignKeys(true);
-		conf.setSynchronous(SynchronousMode.OFF);
-		
 		String NOMEDB=Settings.getCurrentDir()+"database.db";
-		if(OperazioniFile.fileExists(NOMEDB)){
+		if(OperazioniFile.fileExists(NOMEDB) && Database.isFreshNew()){
 			try {
+				SQLiteConfig conf=new SQLiteConfig();
+				conf.enableRecursiveTriggers(true);
+				conf.enforceForeignKeys(true);
+				conf.setSynchronous(SynchronousMode.OFF);
 				Connection con = DriverManager.getConnection("jdbc:sqlite:"+NOMEDB, conf.toProperties());
 				
 				String query_settings="SELECT * FROM settings";
@@ -261,6 +279,7 @@ public class Update {
 				}
 				//TODO cercare doppioni serie tv
 				con.close();
+				OperazioniFile.deleteFile(NOMEDB);
 			}
 			catch (SQLException e) {
 				e.printStackTrace();

@@ -11,7 +11,7 @@ import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.WinReg;
 
 public class Settings {
-	private static final int	VersioneSoftware					= 118;
+	private static final int	VersioneSoftware					= 119;
 	public static final String	IndirizzoDonazioni					= "http://pinoelefante.altervista.org/donazioni/donazione_gst.html";
 	private static String		current_dir							= "";
 	private static String		user_dir							= "";
@@ -240,16 +240,17 @@ public class Settings {
 		caricaFile();
 	}
 
+	@SuppressWarnings("unused")
 	public static void createAutoStart() {
 		if(isWindows()){
 			Advapi32Util.registrySetStringValue(WinReg.HKEY_CURRENT_USER, "Software\\Microsoft\\Windows\\CurrentVersion\\Run", "GestioneSerieTV", getCurrentDir()+"GestioneSerieTV5.exe");
 		}
 		else if(isLinux()){
-			String path_exec=System.getProperty("java.home")+File.separator+"java -jar "+getCurrentDir()+"st.jar";
+			String path_exec=System.getProperty("java.home")+File.separator+"bin"+File.separator+"java -jar "+getCurrentDir()+"st.jar";
 			//TODO
 		}
 		else if(isMacOS()){
-			String path_exec=System.getProperty("java.home")+File.separator+"java -jar "+getCurrentDir()+"st.jar";
+			String path_exec=System.getProperty("java.home")+File.separator+"bin"+File.separator+"java -jar "+getCurrentDir()+"st.jar";
 			//TODO
 		}
 	}
@@ -402,9 +403,8 @@ public class Settings {
 		VLCAutoload = vLCAutoload;
 	}
 	public static String getEXEName(){
-		//TODO
 		String exe=System.getProperty("sun.java.command");
-		return null;
+		return exe;
 	}
 	private static synchronized void salvaFile(){
 		String path=getUserDir()+"settings.dat";
@@ -550,10 +550,10 @@ public class Settings {
 			}
 		} 
 		catch (FileNotFoundException e) {
-			if(OperazioniFile.fileExists(getUserDir()+"database2.sqlite"))
-				setLastVersion(117);
-			else
+			if(Database.Database.isFreshNew())
 				setLastVersion(0);
+			else
+				setLastVersion(117);
 			e.printStackTrace();
 		}
 		finally {
