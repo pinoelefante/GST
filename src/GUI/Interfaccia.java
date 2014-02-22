@@ -89,7 +89,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.CompoundBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.FlowLayout;
 
 public class Interfaccia extends JFrame {
 	private static Interfaccia thisframe;
