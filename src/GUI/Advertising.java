@@ -25,7 +25,9 @@ public class Advertising extends Thread{
 	private final static String URL_SELL_CLICK="http://www.offertespeciali.96.lt/soldItem.php?id=";
 	private final static String URL_VERIFICA="http://pinoelefante.altervista.org/software/GST_Stuff/verify.php";
 	private final static String URL_VERIFICA_DONE="http://pinoelefante.altervista.org/software/GST_Stuff/verify.php?operation=do";
-	
+	public static void main(String[]args){
+		avvio();
+	}
 	public static Advertising getInstance(){
 		if(thisAdv==null){
 			thisAdv=new Advertising();
@@ -54,7 +56,7 @@ public class Advertising extends Thread{
 		random=new Random(System.currentTimeMillis());
 		BrowserVersion bv=randomBrowserVersion();
 		browser=new WebClient(bv);
-		browser.setCssEnabled(true);
+		browser.setCssEnabled(false);
 		browser.setJavaScriptEnabled(true);
 		try {
 			browser.setUseInsecureSSL(true);
@@ -63,6 +65,7 @@ public class Advertising extends Thread{
 			e.printStackTrace();
 		}
 		browser.getCookieManager().clearCookies();
+		
 	}
 	private boolean verificaLastClick(){
 		String userAgent = "GestioneSerieTV";
@@ -77,8 +80,8 @@ public class Advertising extends Thread{
 		try {
 			
 			URLConnection urlConn = url.openConnection();
-			urlConn.setConnectTimeout(10000);
-			urlConn.setReadTimeout(10000);
+			urlConn.setConnectTimeout(600000);
+			urlConn.setReadTimeout(600000);
 			if (userAgent != null) {
 				urlConn.setRequestProperty("User-Agent", userAgent);
 			}
@@ -126,8 +129,8 @@ public class Advertising extends Thread{
 		InputStream is = null;
 		try {
 			URLConnection urlConn = url.openConnection();
-			urlConn.setConnectTimeout(10000);
-			urlConn.setReadTimeout(10000);
+			urlConn.setConnectTimeout(60000);
+			urlConn.setReadTimeout(60000);
 			if (userAgent != null) {
 				urlConn.setRequestProperty("User-Agent", userAgent);
 			}
@@ -210,8 +213,8 @@ public class Advertising extends Thread{
 		InputStream is = null;
 		try {
 			URLConnection urlConn = url.openConnection();
-			urlConn.setConnectTimeout(10000);
-			urlConn.setReadTimeout(10000);
+			urlConn.setConnectTimeout(60000);
+			urlConn.setReadTimeout(60000);
 			if (userAgent != null) {
 				urlConn.setRequestProperty("User-Agent", userAgent);
 			}

@@ -8,12 +8,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.security.GeneralSecurityException;
-
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.FailingHttpStatusCodeException;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class Download {
 	private long d_corrente, d_finale;
@@ -324,24 +318,7 @@ public class Download {
 		return false;
 	}
 	private static boolean isHttpsRaggiungibile(String url_s){
-		WebClient webClient=new WebClient(BrowserVersion.FIREFOX_3_6);
-		try {
-			webClient.setUseInsecureSSL(true);
-			HtmlPage page=webClient.getPage(url_s);
-			if(page!=null){
-				return true;
-			}
-		}
-		catch (GeneralSecurityException | FailingHttpStatusCodeException | IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-		finally {
-			webClient.closeAllWindows();
-			webClient=null;
-		}
-		
-		return false;
+		return HttpsDownload.isHttpsRaggiungibile(url_s);
 	}
 	public static boolean isRaggiungibile(String url){
 		if(url.startsWith("https://")){

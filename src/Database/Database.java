@@ -34,7 +34,9 @@ public class Database {
 	
 	private final static String NOMEDB=Settings.getUserDir()+"database2.sqlite";
 
-	public static void Connect() {
+	public static Connection Connect() {
+		if(con!=null)
+			return con;
 		try {
 			Class.forName("org.sqlite.JDBC");
 			
@@ -46,6 +48,7 @@ public class Database {
 			con = DriverManager.getConnection("jdbc:sqlite:"+NOMEDB, conf.toProperties());
 			System.out.println("Connessione OK");
 			checkIntegrita();
+			return con;
 		} 
 		catch (Exception e) {
 			System.out.println("Connessione Fallita");
@@ -54,6 +57,21 @@ public class Database {
 			JOptionPane.showMessageDialog(null, "Errore fatale: impossibile connettersi al database");
 			System.exit(0);
 		}
+		return null;
+	}
+	public static Connection ConnectToDB(String path) throws Exception{
+		Class.forName("org.sqlite.JDBC");
+			
+		SQLiteConfig conf=new SQLiteConfig();
+		conf.enableRecursiveTriggers(true);
+		conf.enforceForeignKeys(true);
+		conf.setSynchronous(SynchronousMode.OFF);
+			
+		Connection con = DriverManager.getConnection("jdbc:sqlite:"+path, conf.toProperties());
+		System.out.println("Connessione OK");
+		//checkIntegrita();
+		return con;
+		
 	}
 	public static void Disconnect(){
 		try {
@@ -387,8 +405,38 @@ public class Database {
 		}
 		return columns;
 	}
+	public static ArrayList<String> getTableColumns(Connection con,String tableName) { 
+		ArrayList<String> columns = new ArrayList<String>();
+		try {
+			String cmd = "pragma table_info(" + tableName + ");"; 
+			Statement st=con.createStatement();
+			ResultSet cur=st.executeQuery(cmd);
+			
+			while (cur.next()) {
+				String nome=cur.getString(2);
+				columns.add(nome);
+			}
+			cur.close();
+		}
+		catch(SQLException e){
+			e.printStackTrace();
+			ManagerException.registraEccezione(e);
+		}
+		return columns;
+	}
 	private static boolean checkColumn(String table, String field){
 		ArrayList<String> columns=getTableColumns(table);
+		for(int i=0;i<columns.size();i++){
+			if(columns.get(i).compareTo(field)==0){
+				//ManagerException.registraEccezione(new Exception("Campo '"+field+"' già presente nella tabella '"+table+"'"));
+				return true;
+			}
+		}
+		//System.out.println(field+ " non presente");
+		return false;
+	}
+	public static boolean checkColumn(Connection con, String table, String field){
+		ArrayList<String> columns=getTableColumns(con,table);
 		for(int i=0;i<columns.size();i++){
 			if(columns.get(i).compareTo(field)==0){
 				//ManagerException.registraEccezione(new Exception("Campo '"+field+"' già presente nella tabella '"+table+"'"));
@@ -485,7 +533,35 @@ public class Database {
 		}
 		return (ins_ok==0?false:true);
 	}
+	public static boolean updateQuery(Connection con,String query){
+		//System.out.println(query);
+		int ins_ok=0;
+		try {
+			Statement stat=con.createStatement();
+			ins_ok=stat.executeUpdate(query);
+		}
+		catch (SQLException e) {
+			System.out.println("INSERT "+e.getMessage());
+			System.out.println(query);
+			e.printStackTrace();
+			ManagerException.registraEccezione(query);
+			ManagerException.registraEccezione(e);
+		}
+		return (ins_ok==0?false:true);
+	}
 	public static void rebuildDB(){
+		System.out.println("ottimizzazione db in corso...");
+		Statement st;
+		try {
+			st = con.createStatement();
+			st.execute("VACUUM");
+			st.close();
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	public static void rebuildDB(Connection con){
 		System.out.println("ottimizzazione db in corso...");
 		Statement st;
 		try {
@@ -519,6 +595,20 @@ public class Database {
 		catch(SQLException e){
 			System.out.println(e.getMessage());
 			ManagerException.registraEccezione(e);
+			return null;
+		}
+	}
+	public static Object eseguiQuery(Connection conn,String query){
+		if(query==null || query.isEmpty())
+			return true;
+		query=query.trim();
+		if(query.startsWith("INSERT") || query.startsWith("DELETE") || query.startsWith("UPDATE") || query.startsWith("ALTER")){
+			return updateQuery(conn,query);
+		}
+		else if(query.startsWith("SELECT")){
+			return selectQuery(conn,query);
+		}
+		else {
 			return null;
 		}
 	}

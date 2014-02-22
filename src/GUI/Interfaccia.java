@@ -89,6 +89,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.CompoundBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.FlowLayout;
 
 public class Interfaccia extends JFrame {
 	private static Interfaccia thisframe;
@@ -1017,8 +1018,8 @@ public class Interfaccia extends JFrame {
 		btnChiudiADS.setToolTipText("Chiudi pubblicit\u00E0");
 		btnChiudiADS.setBounds(696, 492, 33, 23);
 		InfoPanel.add(btnChiudiADS);
-
-		/** TODO decommentare per la distribuzione *//*
+		
+		/* *//*
 		
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {

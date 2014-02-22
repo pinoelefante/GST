@@ -41,4 +41,18 @@ public class HttpsDownload {
 		}
 		return null;
 	}
+	public static boolean isHttpsRaggiungibile(String url_s){
+		try {
+			webClient.setUseInsecureSSL(true);
+			HtmlPage page=webClient.getPage(url_s);
+			if(page!=null){
+				return true;
+			}
+		}
+		catch (GeneralSecurityException | FailingHttpStatusCodeException | IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		return false;
+	}
 }
