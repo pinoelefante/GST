@@ -71,7 +71,9 @@ public class ControlloAggiornamenti {
     			String[] cmd={
     					System.getProperty("java.home")+File.separator+"bin"+File.separator+"java"+(Settings.isWindows()?".exe":""), 
     					"-jar", 
-    					Settings.getCurrentDir()+"gst_updater.jar"
+    					Settings.getCurrentDir()+"gst_updater.jar",
+    					Settings.getEXEName(),
+    					Settings.isWindows()?"windows":"other"
     			};
     			try {
     				OperazioniFile.deleteFile(Settings.getUserDir()+"eccezioni.txt");
