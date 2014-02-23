@@ -75,6 +75,7 @@ public class ControlloAggiornamenti {
     			};
     			try {
     				OperazioniFile.deleteFile(Settings.getUserDir()+"eccezioni.txt");
+    				Manutenzione.Manutenzione.esportaDBinSQL(Database.Database.Connect(), Settings.getUserDir()+File.separator+"backup");
     				Runtime.getRuntime().exec(cmd);
     				System.exit(0);
     			}
