@@ -81,8 +81,10 @@ public class Database {
 	}
 	public static void Disconnect(){
 		try {
-			con.close();
-			con=null;
+			if(con!=null){
+				con.close();
+				con=null;
+			}
 		}
 		catch (SQLException e) {
 			e.printStackTrace();

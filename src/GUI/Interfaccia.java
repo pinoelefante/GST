@@ -970,6 +970,9 @@ public class Interfaccia extends JFrame {
 		btnOpzioniPredefiniti.setEnabled(false);
 		btnOpzioniPredefiniti.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/reset.png")));
 		panel_6.add(btnOpzioniPredefiniti);
+		
+		btnManutenzione = new JButton("Manutenzione");
+		panel_6.add(btnManutenzione);
 
 		InfoPanel = new JPanel();
 		tab.addTab("Info  ", new ImageIcon(Interfaccia.class.getResource("/GUI/res/info.png")), InfoPanel, null);
@@ -1958,6 +1961,23 @@ public class Interfaccia extends JFrame {
 				txt_download_path.setText(destinazione_path);
 			}
 		});
+		btnManutenzione.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				int conf=JOptionPane.showConfirmDialog(Interfaccia.this, "Vuoi passare alla modalità Manutenzione?\n(Il programma verrà chiuso)", "Avvio manutenzione", JOptionPane.YES_NO_OPTION);
+				if(conf==JOptionPane.YES_OPTION){
+					Manutenzione.Manutenzione.generaLauncherManutenzione();
+					try {
+						String[] command={Settings.getCurrentDir()+"manutenzione.bat"};
+						Runtime.getRuntime().exec(command);
+					} 
+					catch (IOException e) {
+						e.printStackTrace();
+					}
+					System.exit(0);
+				}
+				
+			}
+		});
 		btnLettoreUpdate.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if(comboBoxLettoreStagione.getSelectedItem()==null){
@@ -2363,6 +2383,7 @@ public class Interfaccia extends JFrame {
 	private JInfoPanel panel_info_episodio;
 	private JButton btnInfoSerieTutte;
 	private JButton btnInfoSerieAggiunte;
+	private JButton btnManutenzione;
 	public void removeTray() {
 		TrayIcon[] ic = tray.getTrayIcons();
 		if (ic.length > 0)
