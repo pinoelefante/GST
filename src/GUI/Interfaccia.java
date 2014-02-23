@@ -1029,7 +1029,7 @@ public class Interfaccia extends JFrame {
 		lblRisultatoAggiornamenti.setBounds(539, 242, 179, 35);
 		InfoPanel.add(lblRisultatoAggiornamenti);
 
-		lblDona = new JLabel("<html>Se il programma \u00E8 di tua utilit\u00E0, potresti pensare di effettua una donazione (tramite PayPal) cliccando sull'immagine. Un tuo piccolo gesto pu\u00F2 essere uno grande per me</html>");
+		lblDona = new JLabel("<html>Hai trovato utilile il programma?<br>Aiuta a farlo crescere effettuando una donazione.</html>");
 		lblDona.setToolTipText("Clicca per effettuare una donazione");
 		lblDona.setVerticalAlignment(SwingConstants.TOP);
 		lblDona.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/dona.png")));
