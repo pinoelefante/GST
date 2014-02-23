@@ -91,8 +91,8 @@ public class PanelPreferenze extends JPanel {
 		btnDefault.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Preferenze p=new Preferenze(Settings.getRegolaDownloadDefault());
-				serie.setPreferenze(p);
-				serie.aggiornaDB();
+				//serie.setPreferenze(p);
+				//serie.aggiornaDB();
 				chckbxScaricaHd.setSelected(p.isPreferisciHD());
 				chckbxScaricaPreair.setSelected(p.isDownloadPreair());
 				chckbxScaricaTutto.setSelected(p.isScaricaTutto());
@@ -101,6 +101,7 @@ public class PanelPreferenze extends JPanel {
 		});
 		btnSalva.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				System.out.println("Salvando preferenze serie");
 				btnSalva.setEnabled(false);
 				boolean last_hd=serie.getPreferenze().isPreferisciHD();
 				boolean last_preair=serie.getPreferenze().isDownloadPreair();
@@ -116,6 +117,7 @@ public class PanelPreferenze extends JPanel {
 						serie.getEpisodio(i).setDownloadableFirst(Episodio.INDEX_SD, Torrent.IGNORATO, Torrent.SCARICARE);
 						serie.getEpisodio(i).setDownloadableFirst(Episodio.INDEX_PRE, Torrent.IGNORATO, Torrent.SCARICARE);
 					}
+					Interfaccia.getInterfaccia().inizializzaDownloadScroll();
 				}
 				else {
 					if(last_hd!=chckbxScaricaHd.isSelected() || last_preair!=chckbxScaricaPreair.isSelected()){
