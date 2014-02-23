@@ -62,6 +62,11 @@ public class PanelPreferenze extends JPanel {
 		chckbxScaricaPreair.setSelected(serie.getPreferenze().isDownloadPreair());
 		panel_1.add(chckbxScaricaPreair);
 		
+		if(serie.getPreferenze().isScaricaTutto()){
+			chckbxScaricaPreair.setEnabled(false);
+			chckbxScaricaHd.setEnabled(false);
+		}
+		
 		JPanel panel_2 = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panel_2.getLayout();
 		flowLayout.setVgap(10);
@@ -82,16 +87,27 @@ public class PanelPreferenze extends JPanel {
 				btnSalva.setEnabled(false);
 				boolean last_hd=serie.getPreferenze().isPreferisciHD();
 				boolean last_preair=serie.getPreferenze().isDownloadPreair();
+				//boolean last_tutto=serie.getPreferenze().isScaricaTutto();
 				serie.getPreferenze().setDownloadPreair(chckbxScaricaPreair.isSelected());
 				serie.getPreferenze().setPreferisciHD(chckbxScaricaHd.isSelected());
+				serie.getPreferenze().setScaricaTutto(chckbxScaricaTutto.isSelected());
 				serie.aggiornaDB();
 				
-				if(last_hd!=chckbxScaricaHd.isSelected() || last_preair!=chckbxScaricaPreair.isSelected()){
+				if(serie.getPreferenze().isScaricaTutto()){
 					for(int i=0;i<serie.getNumEpisodi();i++){
-						serie.getEpisodio(i).setDownloadableFirst(Episodio.INDEX_HD, chckbxScaricaHd.isSelected()?Torrent.IGNORATO:Torrent.SCARICARE, chckbxScaricaHd.isSelected()?Torrent.SCARICARE:Torrent.IGNORATO);
-						serie.getEpisodio(i).setDownloadableFirst(Episodio.INDEX_PRE, chckbxScaricaPreair.isSelected()?Torrent.IGNORATO:Torrent.SCARICARE, chckbxScaricaPreair.isSelected()?Torrent.SCARICARE:Torrent.IGNORATO);
+						serie.getEpisodio(i).setDownloadableFirst(Episodio.INDEX_HD, Torrent.IGNORATO, Torrent.SCARICARE);
+						serie.getEpisodio(i).setDownloadableFirst(Episodio.INDEX_SD, Torrent.IGNORATO, Torrent.SCARICARE);
+						serie.getEpisodio(i).setDownloadableFirst(Episodio.INDEX_PRE, Torrent.IGNORATO, Torrent.SCARICARE);
 					}
-					Interfaccia.getInterfaccia().inizializzaDownloadScroll();
+				}
+				else {
+					if(last_hd!=chckbxScaricaHd.isSelected() || last_preair!=chckbxScaricaPreair.isSelected()){
+						for(int i=0;i<serie.getNumEpisodi();i++){
+							serie.getEpisodio(i).setDownloadableFirst(Episodio.INDEX_HD, chckbxScaricaHd.isSelected()?Torrent.IGNORATO:Torrent.SCARICARE, chckbxScaricaHd.isSelected()?Torrent.SCARICARE:Torrent.IGNORATO);
+							serie.getEpisodio(i).setDownloadableFirst(Episodio.INDEX_PRE, chckbxScaricaPreair.isSelected()?Torrent.IGNORATO:Torrent.SCARICARE, chckbxScaricaPreair.isSelected()?Torrent.SCARICARE:Torrent.IGNORATO);
+						}
+						Interfaccia.getInterfaccia().inizializzaDownloadScroll();
+					}
 				}
 			}
 		});
@@ -111,6 +127,8 @@ public class PanelPreferenze extends JPanel {
 				if(chckbxScaricaTutto.isSelected()){
 					chckbxScaricaHd.setEnabled(false);
 					chckbxScaricaPreair.setEnabled(false);
+					chckbxScaricaHd.setSelected(true);
+					chckbxScaricaPreair.setSelected(true);
 				}
 				else {
 					chckbxScaricaHd.setEnabled(true);

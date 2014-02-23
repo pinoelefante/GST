@@ -99,15 +99,25 @@ public class Episodio {
 	}
 	public boolean isRimosso(){
 		ArrayList<Torrent> tutti=new ArrayList<Torrent>();
-		if(serietv.getPreferenze().isPreferisciHD()){
+		if(serietv.getPreferenze().isScaricaTutto()){
 			if(getLinkHD()!=null)
 				tutti.add(getLinkHD());
-		}
-		if(getLinkNormale()!=null)
-			tutti.add(getLinkNormale());
-		if(serietv.getPreferenze().isDownloadPreair()){
+			if(getLinkNormale()!=null)
+				tutti.add(getLinkNormale());
 			if(getLinkPreair()!=null)
 				tutti.add(getLinkPreair());
+		}
+		else {
+			if(serietv.getPreferenze().isPreferisciHD()){
+				if(getLinkHD()!=null)
+					tutti.add(getLinkHD());
+			}
+			if(getLinkNormale()!=null)
+				tutti.add(getLinkNormale());
+			if(serietv.getPreferenze().isDownloadPreair()){
+				if(getLinkPreair()!=null)
+					tutti.add(getLinkPreair());
+			}
 		}
 		if(tutti.isEmpty())
 			return true;
@@ -152,19 +162,30 @@ public class Episodio {
 	}
 	public boolean isScaricato(){
 		ArrayList<Torrent> tutti=new ArrayList<Torrent>();
-		if(serietv.getPreferenze().isPreferisciHD()){
+		boolean scarica_tutto=serietv.getPreferenze().isScaricaTutto();
+		if(serietv.getPreferenze().isScaricaTutto()){
 			if(getLinkHD()!=null)
 				tutti.add(getLinkHD());
-		}
-		if(getLinkNormale()!=null)
-			tutti.add(getLinkNormale());
-		if(serietv.getPreferenze().isDownloadPreair())
+			if(getLinkNormale()!=null)
+				tutti.add(getLinkNormale());
 			if(getLinkPreair()!=null)
 				tutti.add(getLinkPreair());
-		
+		}
+		else {
+			if(serietv.getPreferenze().isPreferisciHD()){
+				if(getLinkHD()!=null)
+					tutti.add(getLinkHD());
+			}
+			if(getLinkNormale()!=null)
+				tutti.add(getLinkNormale());
+			if(serietv.getPreferenze().isDownloadPreair())
+				if(getLinkPreair()!=null)
+					tutti.add(getLinkPreair());
+		}
 		if(tutti.isEmpty())
 			return true;
 		
+		int count=0;
 		for(int i=0;i<tutti.size();i++){
 			Torrent t=tutti.get(i);
 			switch(t.getScaricato()){
@@ -172,10 +193,20 @@ public class Episodio {
 				case Torrent.VISTO:
 				case Torrent.RIMOSSO:
 				case Torrent.IGNORATO:
-					return true;
+					if(scarica_tutto)
+						count++;
+					else
+						return true;
 			}
 		}
-		return false;
+		if(scarica_tutto){
+			if(count==tutti.size())
+				return true;
+			else
+				return false;
+		}
+		else
+			return false;
 	}
 	public void scaricaLink(Torrent link){
 		ArrayList<Torrent> tutti=new ArrayList<Torrent>();
@@ -420,35 +451,36 @@ public class Episodio {
 			if(t_sd!=null && t_sd.getScaricato()==Torrent.SCARICARE)
 				links.add(t_sd);
 			Torrent t_pre=getLinkPreair();
-			if(t_pre!=null & t_pre.getScaricato()==Torrent.SCARICARE)
+			if(t_pre!=null && t_pre.getScaricato()==Torrent.SCARICARE)
 				links.add(t_pre);
 			if(links.size()==0)
 				return null;
 			else
 				return links;
 		}
-		
-		if(serietv.getPreferenze().isPreferisciHD()){
-    		Torrent t=getLinkHD();
-			if(t!=null){
-				if(t.getScaricato()==Torrent.SCARICARE){
-					links.add(t);
+		else {
+			if(serietv.getPreferenze().isPreferisciHD()){
+	    		Torrent t=getLinkHD();
+				if(t!=null){
+					if(t.getScaricato()==Torrent.SCARICARE){
+						links.add(t);
+						return links;
+					}
+				}
+			}
+			if(ep_normali.size()>0){
+				if(getLinkNormale().getScaricato()==Torrent.SCARICARE){
+					links.add(getLinkNormale());
 					return links;
 				}
 			}
-		}
-		if(ep_normali.size()>0){
-			if(getLinkNormale().getScaricato()==Torrent.SCARICARE){
-				links.add(getLinkNormale());
-				return links;
-			}
-		}
-		if(serietv.getPreferenze().isDownloadPreair()){
-			Torrent t=getLinkPreair();
-			if(t!=null){
-				if(t.getScaricato()==Torrent.SCARICARE){
-					links.add(t);
-					return links;
+			if(serietv.getPreferenze().isDownloadPreair()){
+				Torrent t=getLinkPreair();
+				if(t!=null){
+					if(t.getScaricato()==Torrent.SCARICARE){
+						links.add(t);
+						return links;
+					}
 				}
 			}
 		}
