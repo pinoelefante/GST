@@ -1801,16 +1801,19 @@ public class Interfaccia extends JFrame {
 					if (panel_scroll_download.getComponent(i) instanceof PanelEpisodioDownload) {
 						PanelEpisodioDownload p = (PanelEpisodioDownload) panel_scroll_download.getComponent(i);
 						if (p.isDownloadSelected()) {
-							Torrent t = p.getLink();
-							if (t != null) {
-								try {
-									Download.downloadMagnet(t.getUrl(), Settings.getDirectoryDownload() + File.separator + t.getSerieTV().getFolderSerie());
-									p.scarica(t);
-									panel_scroll_download.remove(p);
-								}
-								catch (IOException e) {
-									ManagerException.registraEccezione(e);
-									e.printStackTrace();
+							ArrayList<Torrent> torrent = p.getLink();
+							if (torrent != null) {
+								for(int j=0;j<torrent.size();j++){
+									Torrent t=torrent.get(j);
+									try {
+										Download.downloadMagnet(t.getUrl(), Settings.getDirectoryDownload() + File.separator + t.getSerieTV().getFolderSerie());
+										p.scarica(t);
+										panel_scroll_download.remove(p);
+									}
+									catch (IOException e) {
+										ManagerException.registraEccezione(e);
+										e.printStackTrace();
+									}
 								}
 							}
 							else {

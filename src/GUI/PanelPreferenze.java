@@ -30,7 +30,7 @@ public class PanelPreferenze extends JPanel {
 	private JButton btnSalva;
 
 	private JCheckBox chckbxScaricaHd;
-
+	private JCheckBox chckbxScaricaTutto;
 	private JCheckBox chckbxScaricaPreair;
 
 	public PanelPreferenze(SerieTV s) {
@@ -49,6 +49,10 @@ public class PanelPreferenze extends JPanel {
 		FlowLayout flowLayout_1 = (FlowLayout) panel_1.getLayout();
 		flowLayout_1.setVgap(10);
 		add(panel_1, BorderLayout.CENTER);
+		
+		chckbxScaricaTutto=new JCheckBox("Scarica tutto");
+		chckbxScaricaTutto.setSelected(serie.getPreferenze().isScaricaTutto());
+		panel_1.add(chckbxScaricaTutto);
 		
 		chckbxScaricaHd = new JCheckBox("Scarica HD (se disponibile)");
 		chckbxScaricaHd.setSelected(serie.getPreferenze().isPreferisciHD());
@@ -101,11 +105,26 @@ public class PanelPreferenze extends JPanel {
 				abilitaTastoSalva();
 			}
 		});
+		chckbxScaricaTutto.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				abilitaTastoSalva();
+				if(chckbxScaricaTutto.isSelected()){
+					chckbxScaricaHd.setEnabled(false);
+					chckbxScaricaPreair.setEnabled(false);
+				}
+				else {
+					chckbxScaricaHd.setEnabled(true);
+					chckbxScaricaPreair.setEnabled(true);
+				}
+				
+			}
+		});
 	}
 	private void abilitaTastoSalva(){
 		boolean stato_hd=serie.getPreferenze().isPreferisciHD();
 		boolean stato_pre=serie.getPreferenze().isDownloadPreair();
-		if(stato_hd!=chckbxScaricaHd.isSelected() || stato_pre!=chckbxScaricaPreair.isSelected())
+		boolean stato_all=serie.getPreferenze().isScaricaTutto();
+		if(stato_hd!=chckbxScaricaHd.isSelected() || stato_pre!=chckbxScaricaPreair.isSelected() || stato_all!=chckbxScaricaTutto.isSelected())
 			btnSalva.setEnabled(true);
 		else
 			btnSalva.setEnabled(false);

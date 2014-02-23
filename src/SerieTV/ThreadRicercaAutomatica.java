@@ -49,13 +49,16 @@ public class ThreadRicercaAutomatica extends Thread {
 		ArrayList<Episodio> torrents=GestioneSerieTV.caricaEpisodiDaScaricareOffline();
 		for(int i=0;i<torrents.size();i++){
 			Episodio ep=torrents.get(i);
-			Torrent torrent=ep.getLinkDownload();
-			try {
-				Download.downloadMagnet(torrent.getUrl(), Settings.getDirectoryDownload() + File.separator + torrent.getSerieTV().getFolderSerie());
-				ep.scaricaLink(torrent);
-			} 
-			catch (IOException e) {
-				e.printStackTrace();
+			ArrayList<Torrent> l_torrent=ep.getLinkDownload();
+			for(int j=0;j<l_torrent.size();j++){
+				Torrent torrent=l_torrent.get(j);
+				try {
+					Download.downloadMagnet(torrent.getUrl(), Settings.getDirectoryDownload() + File.separator + torrent.getSerieTV().getFolderSerie());
+					ep.scaricaLink(torrent);
+				} 
+				catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}

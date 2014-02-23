@@ -12,6 +12,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
@@ -130,8 +131,8 @@ public class PanelEpisodioDownload extends JPanel {
 	public void setSelected(boolean state){
 		chckbxnomeserie.setSelected(state);
 	}
-	public Torrent getLink(){
-		Torrent t=ep.getLinkDownload();
+	public ArrayList<Torrent> getLink(){
+		ArrayList<Torrent> t=ep.getLinkDownload();
 		return t;
 	}
 	public void scarica(Torrent link){
@@ -206,9 +207,9 @@ public class PanelEpisodioDownload extends JPanel {
 		});
 		btnInfo.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				Torrent link=getLink();
-				if(link!=null){
-					Thread t=new DisegnaInfoEpisodio(link);
+				ArrayList<Torrent> link=getLink();
+				if(link!=null && link.size()>0){
+					Thread t=new DisegnaInfoEpisodio(link.get(0));
 					t.start();
 				}
 			}

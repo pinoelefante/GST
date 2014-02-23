@@ -3,8 +3,9 @@ package SerieTV;
 public class Preferenze {
 	private boolean download_preair;
 	private boolean scarica_hd;
+	private boolean scarica_tutto;
 	
-	private static int HD=2, PREAIR=1;
+	private static int TUTTO=4,HD=2, PREAIR=1;
 	
 	public int toValue(){
 		int value=0;
@@ -13,6 +14,9 @@ public class Preferenze {
 		
 		if(scarica_hd)
 			value+=HD;
+		
+		if(scarica_tutto)
+			value+=TUTTO;
 		
 		return value;
 	}
@@ -34,12 +38,21 @@ public class Preferenze {
 	public void setDownloadPreair(boolean b){
 		download_preair=b;
 	}
+	public void setScaricaTutto(boolean s){
+		scarica_tutto=s;
+	}
+	public boolean isScaricaTutto(){
+		return scarica_tutto;
+	}
 	public void setFromValue(int value){
 		int res=value&1;
 		setDownloadPreair(res==1?true:false);
 		value=value>>1;
 		res=value&1;
 		setPreferisciHD(res==1?true:false);
+		value=value>>1;
+		res=value&1;
+		setScaricaTutto(res==1?true:false);
 		value=value>>1;
 	}
 }
