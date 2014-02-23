@@ -965,9 +965,8 @@ public class Interfaccia extends JFrame {
 		btnOpzioniSalva.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/salva.png")));
 		panel_6.add(btnOpzioniSalva);
 
-		JButton btnOpzioniPredefiniti = new JButton("Predefiniti");
-		//TODO abilitare dopo aver creato il listener per le opzioni predefinite
-		btnOpzioniPredefiniti.setEnabled(false);
+		btnOpzioniPredefiniti = new JButton("Predefiniti");
+		btnOpzioniPredefiniti.setEnabled(true);
 		btnOpzioniPredefiniti.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/reset.png")));
 		panel_6.add(btnOpzioniPredefiniti);
 		
@@ -1217,6 +1216,13 @@ public class Interfaccia extends JFrame {
 	}
 
 	private void addListener() {
+		btnOpzioniPredefiniti.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Settings.defaultSettings();
+				inizializzaOpzioni();
+				Settings.salvaSettings();
+			}
+		});
 		txt_add_episodio_link.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				if (e.getButton() == MouseEvent.BUTTON3 || e.getButton() == MouseEvent.BUTTON2) {
@@ -2384,6 +2390,7 @@ public class Interfaccia extends JFrame {
 	private JButton btnInfoSerieTutte;
 	private JButton btnInfoSerieAggiunte;
 	private JButton btnManutenzione;
+	private JButton btnOpzioniPredefiniti;
 	public void removeTray() {
 		TrayIcon[] ic = tray.getTrayIcons();
 		if (ic.length > 0)

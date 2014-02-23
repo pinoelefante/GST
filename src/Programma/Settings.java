@@ -236,6 +236,23 @@ public class Settings {
     "hide_rimosse"
     "ordine_lettore"
     */
+	public static void defaultSettings(){
+		setAlwaysOnTop(true);
+		setTrayOnIcon(true);
+		setStartHidden(false);
+		setAskOnClose(true);
+		setAutostart(true);
+		setDownloadAutomatico(false);
+		setMinRicerca(480);
+		setRicercaSottotitoli(true);
+		setExtenalVLC(false);
+		setVLCAutoload(true);
+		setEnableITASA(true);
+		setLettoreNascondiViste(false);
+		setLettoreNascondiIgnore(true);
+		setLettoreNascondiRimosso(true);
+		setLettoreOrdine(0);
+	}
 	public static void CaricaSetting(){
 		caricaFile();
 	}
