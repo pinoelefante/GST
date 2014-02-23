@@ -16,6 +16,8 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JCheckBox;
 
+import Programma.Settings;
+import SerieTV.Preferenze;
 import SerieTV.SerieTV;
 import SerieTV.Torrent;
 import StruttureDati.serietv.Episodio;
@@ -28,6 +30,7 @@ public class PanelPreferenze extends JPanel {
 	private SerieTV serie;
 
 	private JButton btnSalva;
+	private JButton btnDefault;
 
 	private JCheckBox chckbxScaricaHd;
 	private JCheckBox chckbxScaricaTutto;
@@ -76,12 +79,26 @@ public class PanelPreferenze extends JPanel {
 		btnSalva.setEnabled(false);
 		panel_2.add(btnSalva);
 		
+		btnDefault=new JButton("Default");
+		panel_2.add(btnDefault);
+		
 		addListener();
 	}
 	public SerieTV getSerie(){
 		return serie;
 	}
 	private void addListener(){
+		btnDefault.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Preferenze p=new Preferenze(Settings.getRegolaDownloadDefault());
+				serie.setPreferenze(p);
+				serie.aggiornaDB();
+				chckbxScaricaHd.setSelected(p.isPreferisciHD());
+				chckbxScaricaPreair.setSelected(p.isDownloadPreair());
+				chckbxScaricaTutto.setSelected(p.isScaricaTutto());
+				btnSalva.getActionListeners()[0].actionPerformed(new ActionEvent(btnSalva, 0, ""));
+			}
+		});
 		btnSalva.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnSalva.setEnabled(false);

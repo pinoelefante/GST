@@ -42,7 +42,14 @@ public class Settings {
 	private static boolean 		enableITASA							= true;
 	private static boolean 		lettore_nascondi_viste				= true;
 	private static int			lettore_ordine						= 0;
+	private static int			default_regola_download_episodi		= 0;
 	
+	public static int getRegolaDownloadDefault(){
+		return default_regola_download_episodi;
+	}
+	public static void setRegolaDownloadDefault(int d){
+		default_regola_download_episodi=d;
+	}
 	public static int getVersioneSoftware() {
 		return VersioneSoftware;
 	}
@@ -451,7 +458,8 @@ public class Settings {
 			fw.append("hide_viste="+isLettoreNascondiViste()+"\n");
 			fw.append("hide_ignorate="+isLettoreNascondiIgnore()+"\n");
 			fw.append("hide_rimosse="+isLettoreNascondiRimosso()+"\n");
-			fw.append("ordine_lettore="+getLettoreOrdine());
+			fw.append("ordine_lettore="+getLettoreOrdine()+"\n");
+			fw.append("regola_download="+getRegolaDownloadDefault());
 		} 
 		catch (IOException e) {
 			ManagerException.registraEccezione(e);
@@ -548,6 +556,9 @@ public class Settings {
 								break;
 							case "ordine_lettore":
 								setLettoreOrdine(Integer.parseInt(kv[1]));
+								break;
+							case "regola_download":
+								setRegolaDownloadDefault(Integer.parseInt(kv[1]));
 								break;
 							/*	
 							case "":

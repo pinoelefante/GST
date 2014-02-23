@@ -1,5 +1,7 @@
 package SerieTV;
 
+import Programma.Settings;
+
 public class Preferenze {
 	private boolean download_preair;
 	private boolean scarica_hd;
@@ -24,7 +26,7 @@ public class Preferenze {
 		setFromValue(value);
 	}
 	public Preferenze(){
-		setFromValue(0);
+		setFromValue(Settings.getRegolaDownloadDefault());
 	}
 	public boolean isPreferisciHD(){
 		return scarica_hd;

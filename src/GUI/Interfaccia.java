@@ -11,6 +11,7 @@ import Programma.OperazioniFile;
 import Programma.Settings;
 import LettoreVideo.Player;
 import SerieTV.GestioneSerieTV;
+import SerieTV.Preferenze;
 import SerieTV.SerieTV;
 import SerieTV.ThreadRicercaAutomatica;
 import SerieTV.Torrent;
@@ -427,6 +428,33 @@ public class Interfaccia extends JFrame {
 		btnAggiornaElencoRegole = new JButton("");
 		btnAggiornaElencoRegole.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/aggiorna.png")));
 		panel_13.add(btnAggiornaElencoRegole);
+		
+		panel = new JPanel();
+		panel_12.add(panel, BorderLayout.NORTH);
+		
+		lblRegolaDefault = new JLabel("Regola default");
+		panel.add(lblRegolaDefault);
+		
+		panel_2 = new JPanel();
+		panel_12.add(panel_2, BorderLayout.CENTER);
+		
+		Preferenze pref=new Preferenze(Settings.getRegolaDownloadDefault());
+		chckbxScaricaTutto = new JCheckBox("Scarica tutto");
+		chckbxScaricaTutto.setSelected(pref.isScaricaTutto());
+		panel_2.add(chckbxScaricaTutto);
+		
+		chckbxScaricaHdse = new JCheckBox("Scarica HD (se disponibile)");
+		chckbxScaricaHdse.setSelected(pref.isPreferisciHD());
+		panel_2.add(chckbxScaricaHdse);
+		
+		chckbxScaricaPreairse = new JCheckBox("Scarica Preair (se disponibile)");
+		chckbxScaricaPreairse.setSelected(pref.isDownloadPreair());
+		panel_2.add(chckbxScaricaPreairse);
+		
+		if(pref.isScaricaTutto()){
+			chckbxScaricaPreairse.setEnabled(false);
+			chckbxScaricaHdse.setEnabled(false);
+		}
 
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.getVerticalScrollBar().setUnitIncrement(5);
@@ -1216,6 +1244,46 @@ public class Interfaccia extends JFrame {
 	}
 
 	private void addListener() {
+		chckbxScaricaTutto.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if(chckbxScaricaTutto.isSelected()){
+					chckbxScaricaHdse.setSelected(true);
+					chckbxScaricaPreairse.setSelected(true);
+					chckbxScaricaHdse.setEnabled(false);
+					chckbxScaricaPreairse.setEnabled(false);
+				}
+				else {
+					chckbxScaricaHdse.setEnabled(true);
+					chckbxScaricaPreairse.setEnabled(true);
+				}
+				Preferenze p=new Preferenze();
+				p.setScaricaTutto(chckbxScaricaTutto.isSelected());
+				p.setPreferisciHD(chckbxScaricaHdse.isSelected());
+				p.setDownloadPreair(chckbxScaricaPreairse.isSelected());
+				Settings.setRegolaDownloadDefault(p.toValue());
+				Settings.salvaSettings();
+			}
+		});
+		chckbxScaricaHdse.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Preferenze p=new Preferenze();
+				p.setScaricaTutto(chckbxScaricaTutto.isSelected());
+				p.setPreferisciHD(chckbxScaricaHdse.isSelected());
+				p.setDownloadPreair(chckbxScaricaPreairse.isSelected());
+				Settings.setRegolaDownloadDefault(p.toValue());
+				Settings.salvaSettings();
+			}
+		});
+		chckbxScaricaPreairse.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Preferenze p=new Preferenze();
+				p.setScaricaTutto(chckbxScaricaTutto.isSelected());
+				p.setPreferisciHD(chckbxScaricaHdse.isSelected());
+				p.setDownloadPreair(chckbxScaricaPreairse.isSelected());
+				Settings.setRegolaDownloadDefault(p.toValue());
+				Settings.salvaSettings();
+			}
+		});
 		btnOpzioniPredefiniti.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Settings.defaultSettings();
@@ -2394,6 +2462,12 @@ public class Interfaccia extends JFrame {
 	private JButton btnInfoSerieAggiunte;
 	private JButton btnManutenzione;
 	private JButton btnOpzioniPredefiniti;
+	private JPanel panel;
+	private JLabel lblRegolaDefault;
+	private JPanel panel_2;
+	private JCheckBox chckbxScaricaTutto;
+	private JCheckBox chckbxScaricaHdse;
+	private JCheckBox chckbxScaricaPreairse;
 	public void removeTray() {
 		TrayIcon[] ic = tray.getTrayIcons();
 		if (ic.length > 0)
