@@ -21,9 +21,10 @@ import javax.swing.JComboBox;
 import javax.swing.JOptionPane;
 import javax.swing.border.EtchedBorder;
 
+import GUI.player.Player;
 import Interfacce.ValueChangeSubscriber;
-import LettoreVideo.Player;
-import LettoreVideo.PlaylistItem;
+//import LettoreVideo.Player;
+//import LettoreVideo.PlaylistItem;
 import Programma.Download;
 import Programma.OperazioniFile;
 import Programma.Settings;
@@ -203,7 +204,7 @@ public class PanelEpisodioLettore extends JPanel implements ValueChangeSubscribe
 		});
 		btnPlaylist.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(playlist==null){
+				/*if(playlist==null){
 					playlist=cercaPlaylist(PanelEpisodioLettore.this);
 					if(playlist!=null){
 						playlist.addItem(new PlaylistItem(torrent));
@@ -216,6 +217,8 @@ public class PanelEpisodioLettore extends JPanel implements ValueChangeSubscribe
 				if(playlist!=null){
 					playlist.addItem(new PlaylistItem(torrent));
 				}
+				*/
+				Player.getInstance().add(torrent.getFilePath());
 			}
 		});
 		btnPlay.addActionListener(new ActionListener() {
@@ -237,21 +240,16 @@ public class PanelEpisodioLettore extends JPanel implements ValueChangeSubscribe
 					}
 				}
 				else {
-					Player player=playlist.getPlayer();
+					//Player player=playlist.getPlayer();
 					String filepath=torrent.getFilePath();
 					if(filepath.length()>0){
-						if(player!=null){
-							if(player.isLinked()){
-								playlist.addItem(new PlaylistItem(torrent));
-								player.play(filepath);
-								cmb_stato_episodio.setSelectedIndex(Torrent.VISTO);
-							}
-						}
-						else {
-							PlayerOLD.play(filepath);
-							cmb_stato_episodio.setSelectedIndex(Torrent.VISTO);
-						}
-					}
+						Player.getInstance().add(filepath);
+						int ind=Player.getInstance().getPlayList().size();
+						Player.getInstance().playItem(ind-1);
+						//playlist.addItem(new PlaylistItem(torrent));
+						//player.play(filepath);
+						cmb_stato_episodio.setSelectedIndex(Torrent.VISTO);
+					}	
 				}
 			}
 		});

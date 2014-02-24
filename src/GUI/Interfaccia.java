@@ -2,6 +2,7 @@ package GUI;
 
 import javax.swing.JFrame;
 
+import GUI.player.Player;
 import Naming.CaratteristicheFile;
 import Programma.ControlloAggiornamenti;
 import Programma.Download;
@@ -9,7 +10,7 @@ import Programma.FileManager;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
-import LettoreVideo.Player;
+//import LettoreVideo.Player;
 import SerieTV.GestioneSerieTV;
 import SerieTV.Preferenze;
 import SerieTV.SerieTV;
@@ -57,6 +58,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
 import javax.swing.JButton;
+import javax.swing.SwingUtilities;
 
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
@@ -91,6 +93,9 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import uk.co.caprica.vlcj.binding.LibVlc;
+import uk.co.caprica.vlcj.binding.LibVlcFactory;
+
 public class Interfaccia extends JFrame {
 	private static Interfaccia thisframe;
 	private static final long  serialVersionUID = 1L;
@@ -101,7 +106,7 @@ public class Interfaccia extends JFrame {
 	private JTextField		 txt_download_path;
 	private JTextField		 txt_vlc_path;
 
-	private Player			 VLCPanel;
+//	private Player			 VLCPanel;
 	private JPanel			 LettorePanel;
 	private JWebBrowser		advertising;
 	private JTextField		 txt_itasa_cerca;
@@ -701,29 +706,29 @@ public class Interfaccia extends JFrame {
 		LettorePanel = new JPanel();
 		tab.addTab("Lettore", new ImageIcon(Interfaccia.class.getResource("/GUI/res/player.png")), LettorePanel, null);
 		LettorePanel.setLayout(null);
-
+/** VLC instance
 		btnVLCInstance = new JButton("Carica VLC");
 		btnVLCInstance.setBounds(165, 115, 100, 25);
 		LettorePanel.add(btnVLCInstance);
-
+*/
 		cmb_serie_lettore = new JComboBox<SerieTV>();
-		cmb_serie_lettore.setBounds(45, 263, 260, 20);
+		cmb_serie_lettore.setBounds(45, 287, 260, 20);
 		LettorePanel.add(cmb_serie_lettore);
 
 		JLabel lblSerie = new JLabel("Serie");
-		lblSerie.setBounds(12, 265, 37, 16);
+		lblSerie.setBounds(10, 289, 37, 16);
 		LettorePanel.add(lblSerie);
 
 		JLabel lblStagione = new JLabel("Stagione");
-		lblStagione.setBounds(323, 265, 55, 16);
+		lblStagione.setBounds(323, 289, 55, 16);
 		LettorePanel.add(lblStagione);
 
 		comboBoxLettoreStagione = new JComboBox<Integer>();
-		comboBoxLettoreStagione.setBounds(377, 263, 45, 20);
+		comboBoxLettoreStagione.setBounds(377, 287, 45, 20);
 		LettorePanel.add(comboBoxLettoreStagione);
 
 		JScrollPane scrollPaneLettoreEpisodi = new JScrollPane();
-		scrollPaneLettoreEpisodi.setBounds(0, 285, 739, 210);
+		scrollPaneLettoreEpisodi.setBounds(0, 310, 739, 185);
 		scrollPaneLettoreEpisodi.getVerticalScrollBar().setUnitIncrement(8);
 		LettorePanel.add(scrollPaneLettoreEpisodi);
 
@@ -748,7 +753,7 @@ public class Interfaccia extends JFrame {
 		chckbxNascondiRimosse.setBounds(277, 497, 140, 24);
 		chckbxNascondiRimosse.setSelected(Settings.isLettoreNascondiRimosso());
 		LettorePanel.add(chckbxNascondiRimosse);
-
+/** VLC buttons
 		playlist = new JPlaylist();
 		PanelEpisodioLettore.setPlaylist(playlist);
 		playlist.setBorder(new TitledBorder(null, "Playlist", TitledBorder.LEADING, TitledBorder.BOTTOM, null, null));
@@ -760,17 +765,17 @@ public class Interfaccia extends JFrame {
 		btnVLCFullscreen.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/fullscreen.png")));
 		btnVLCFullscreen.setBounds(433, 104, 26, 26);
 		LettorePanel.add(btnVLCFullscreen);
-
+*/
 		JLabel lblOrdine = new JLabel("Ordine");
-		lblOrdine.setBounds(450, 265, 44, 16);
+		lblOrdine.setBounds(450, 289, 44, 16);
 		LettorePanel.add(lblOrdine);
 
 		comboBoxLettoreOrdine = new JComboBox<String>();
 		comboBoxLettoreOrdine.setModel(new DefaultComboBoxModel<String>(new String[] { "Crescente", "Decrescente" }));
-		comboBoxLettoreOrdine.setBounds(500, 263, 112, 20);
+		comboBoxLettoreOrdine.setBounds(500, 287, 112, 20);
 		comboBoxLettoreOrdine.setSelectedIndex(Settings.getLettoreOrdine());
 		LettorePanel.add(comboBoxLettoreOrdine);
-
+/** VLC buttons
 		buttonVLCPlay = new JButton("");
 		buttonVLCPlay.setToolTipText("Play");
 		buttonVLCPlay.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/play_pause.png")));
@@ -808,10 +813,10 @@ public class Interfaccia extends JFrame {
 		btnVLCNext.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/nextt.png")));
 		btnVLCNext.setBounds(433, 78, 26, 26);
 		LettorePanel.add(btnVLCNext);
-
+*/
 		btnLettoreUpdate = new JButton("");
 		btnLettoreUpdate.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/aggiorna.png")));
-		btnLettoreUpdate.setBounds(701, 260, 26, 26);
+		btnLettoreUpdate.setBounds(701, 282, 26, 26);
 		LettorePanel.add(btnLettoreUpdate);
 		
 		btnLettoreApriCartella = new JButton("Apri cartella");
@@ -1110,9 +1115,20 @@ public class Interfaccia extends JFrame {
 				
 				initSubDownload();
 				GestioneSerieTV.getSubManager().loadLast10();
-				
+				/** VLC instance
 				if(Settings.isVLCAutoload())
 					btnVLCInstance.doClick();
+				*/
+				LibVlc libVlc = LibVlcFactory.factory().create();
+				SwingUtilities.invokeLater(new Runnable() {
+		            @Override
+		            public void run() {
+		                Player p=Player.getInstance();
+		                LettorePanel.add(p.getPanel());
+		            }
+		        });
+				
+				
 			}
 		}
 		Thread t=new t_init();
@@ -1476,7 +1492,7 @@ public class Interfaccia extends JFrame {
 				lblRicercaOre.setText("( " + ore + ((ore == 1) ? " ora " : " ore ") + minuti + " min )");
 			}
 		});
-
+/**VLC instance
 		btnVLCInstance.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				class VLCLoader extends Thread {
@@ -1561,7 +1577,7 @@ public class Interfaccia extends JFrame {
 				VLCPanel.prev();
 			}
 		});
-
+*/
 		addWindowListener(new WindowListener() {
 			public void windowOpened(WindowEvent arg0) {}
 			public void windowIconified(WindowEvent arg0) {
@@ -1577,12 +1593,14 @@ public class Interfaccia extends JFrame {
 						if (advertising != null)
 							advertising.disposeNativePeer();
 						NativeInterface.close();
+						/*
 						if (VLCPanel != null) {
 							if (VLCPanel.isLinked()) {
 								VLCPanel.stop();
 								VLCPanel.release();
 							}
 						}
+						*/
 						setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 						System.exit(0);
 					}

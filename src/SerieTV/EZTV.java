@@ -387,7 +387,7 @@ public class EZTV extends ProviderSerieTV{
         				int inizio = linea.indexOf("magnet:?xt=urn:btih:");
         				int fine = linea.indexOf("\" class=\"magnet\"");
         				String url_magnet = linea.substring(inizio, fine);
-        				System.out.println(url_magnet);
+        				//System.out.println(url_magnet);
         				if(url_magnet.length()>0){
             				Torrent t=new Torrent(serie, url_magnet, Torrent.SCARICARE);
             				t.parseMagnet();
