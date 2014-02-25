@@ -243,7 +243,7 @@ public class Player extends VlcjTest {
         mediaPlayer.addMediaPlayerEventListener(new TestPlayerMediaPlayerEventListener());
      
         // This might be useful
-        // enableMousePointer(false);
+        enableMousePointer(true);
     }
 
     private final class TestPlayerMediaPlayerEventListener extends MediaPlayerEventAdapter {
@@ -383,7 +383,6 @@ public class Player extends VlcjTest {
      *
      * @param enable
      */
-    @SuppressWarnings("unused")
     private void enableMousePointer(boolean enable) {
         Logger.debug("enableMousePointer(enable={})", enable);
         if(enable) {
@@ -483,12 +482,6 @@ public class Player extends VlcjTest {
 		}
 		
 	}
-
-	public void setRandom(boolean rand) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 	public void playItem(int index) {
 		if(index<playlist.size() && index>=0 && !playlist.isEmpty()){
 			mediaPlayer.playMedia(playlist.get(index).getPath());
@@ -559,5 +552,8 @@ public class Player extends VlcjTest {
 	}
 	public void setPlaylistVisibile(boolean b) {
 		playlistPanel.setVisible(b);		
+	}
+	public JPanel getControls(){
+		return controlsPanel;
 	}
 }

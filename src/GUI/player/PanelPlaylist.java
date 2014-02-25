@@ -79,6 +79,7 @@ public class PanelPlaylist extends JPanel{
 		list.setDropTarget(new DropTarget(){
 			private static final long serialVersionUID = 1L;
 
+			@SuppressWarnings("unchecked")
 			public synchronized void drop(DropTargetDropEvent evt) {
 	            try {
 	            	if(player==null)

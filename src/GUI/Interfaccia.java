@@ -10,7 +10,6 @@ import Programma.FileManager;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
-//import LettoreVideo.Player;
 import SerieTV.GestioneSerieTV;
 import SerieTV.Preferenze;
 import SerieTV.SerieTV;
@@ -74,7 +73,6 @@ import javax.swing.border.LineBorder;
 import java.awt.Color;
 
 import javax.swing.JScrollPane;
-import javax.swing.JSlider;
 
 import java.awt.event.MouseAdapter;
 import java.util.ArrayList;
@@ -106,7 +104,6 @@ public class Interfaccia extends JFrame {
 	private JTextField		 txt_download_path;
 	private JTextField		 txt_vlc_path;
 
-//	private Player			 VLCPanel;
 	private JPanel			 LettorePanel;
 	private JWebBrowser		advertising;
 	private JTextField		 txt_itasa_cerca;
@@ -121,17 +118,12 @@ public class Interfaccia extends JFrame {
 	private JTextField		 txt_add_episodio_stagione;
 	private JTextField		 txt_add_episodio_episodio;
 	private JTextField		 txt_add_episodio_link;
-	private JPlaylist		  playlist;
 	private JComboBox<SerieTV> cmb_serie_aggiunte;
 	private JComboBox<SerieTV> cmb_serie_aggiunte_add_episodio;
 	private JComboBox<SerieTV> cmb_serie_lettore;
 	private JComboBox<SerieTV> cmb_serie_sottotitoli;
 	private JComboBox<SerieTV> cmb_serie_tutte;
 
-	private JSlider			slider_volume;
-	private JLabel			 lblTimer;
-	private JLabel			 imgVolume;
-	private JSlider			slider_time;
 	private JPanel			 panel_scroll_download;
 	private JButton			btnAggiorna;
 	private JPanel			 panel_nuove_serie;
@@ -170,12 +162,6 @@ public class Interfaccia extends JFrame {
 	private JButton			btnCercaAggiornamenti;
 	private JButton			btnAggiornaAds;
 	private JButton			btnChiudiADS;
-	private JButton			btnVLCInstance;
-	private JButton			buttonVLCPlay;
-	private JButton			buttonVLCStop;
-	private JButton			btnVLCPrec;
-	private JButton			btnVLCNext;
-	private JButton			btnVLCFullscreen;
 	private JLabel			 lblRisultatoAggiornamenti;
 	private JLabel			 lblVersioneAttuale;
 	private JLabel			 lblRicercaOre;
@@ -706,11 +692,7 @@ public class Interfaccia extends JFrame {
 		LettorePanel = new JPanel();
 		tab.addTab("Lettore", new ImageIcon(Interfaccia.class.getResource("/GUI/res/player.png")), LettorePanel, null);
 		LettorePanel.setLayout(null);
-/** VLC instance
-		btnVLCInstance = new JButton("Carica VLC");
-		btnVLCInstance.setBounds(165, 115, 100, 25);
-		LettorePanel.add(btnVLCInstance);
-*/
+
 		cmb_serie_lettore = new JComboBox<SerieTV>();
 		cmb_serie_lettore.setBounds(45, 287, 260, 20);
 		LettorePanel.add(cmb_serie_lettore);
@@ -753,19 +735,7 @@ public class Interfaccia extends JFrame {
 		chckbxNascondiRimosse.setBounds(277, 497, 140, 24);
 		chckbxNascondiRimosse.setSelected(Settings.isLettoreNascondiRimosso());
 		LettorePanel.add(chckbxNascondiRimosse);
-/** VLC buttons
-		playlist = new JPlaylist();
-		PanelEpisodioLettore.setPlaylist(playlist);
-		playlist.setBorder(new TitledBorder(null, "Playlist", TitledBorder.LEADING, TitledBorder.BOTTOM, null, null));
-		playlist.setBounds(469, 0, 226, 210);
-		LettorePanel.add(playlist);
 
-		btnVLCFullscreen = new JButton("");
-		btnVLCFullscreen.setToolTipText("Schermo intero");
-		btnVLCFullscreen.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/fullscreen.png")));
-		btnVLCFullscreen.setBounds(433, 104, 26, 26);
-		LettorePanel.add(btnVLCFullscreen);
-*/
 		JLabel lblOrdine = new JLabel("Ordine");
 		lblOrdine.setBounds(450, 289, 44, 16);
 		LettorePanel.add(lblOrdine);
@@ -775,45 +745,7 @@ public class Interfaccia extends JFrame {
 		comboBoxLettoreOrdine.setBounds(500, 287, 112, 20);
 		comboBoxLettoreOrdine.setSelectedIndex(Settings.getLettoreOrdine());
 		LettorePanel.add(comboBoxLettoreOrdine);
-/** VLC buttons
-		buttonVLCPlay = new JButton("");
-		buttonVLCPlay.setToolTipText("Play");
-		buttonVLCPlay.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/play_pause.png")));
-		buttonVLCPlay.setBounds(433, 0, 26, 26);
-		LettorePanel.add(buttonVLCPlay);
 
-		buttonVLCStop = new JButton("");
-		buttonVLCStop.setToolTipText("Stop");
-		buttonVLCStop.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/stop.png")));
-		buttonVLCStop.setBounds(433, 26, 26, 26);
-		LettorePanel.add(buttonVLCStop);
-
-		JButton buttonPlaylistRimuovi = playlist.getButtonDel();
-		buttonPlaylistRimuovi.setToolTipText("Rimuovi dalla playlist");
-		buttonPlaylistRimuovi.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/cestino.png")));
-		buttonPlaylistRimuovi.setBounds(701, 172, 26, 26);
-		LettorePanel.add(buttonPlaylistRimuovi);
-
-		JButton buttonPlaylistDown = playlist.getButtonDown();
-		buttonPlaylistDown.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/down.png")));
-		buttonPlaylistDown.setBounds(701, 107, 26, 26);
-		LettorePanel.add(buttonPlaylistDown);
-
-		JButton buttonPlaylistUp = playlist.getButtonUp();
-		buttonPlaylistUp.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/up.png")));
-		buttonPlaylistUp.setBounds(701, 76, 26, 26);
-		LettorePanel.add(buttonPlaylistUp);
-
-		btnVLCPrec = new JButton("");
-		btnVLCPrec.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/prev.png")));
-		btnVLCPrec.setBounds(433, 52, 26, 26);
-		LettorePanel.add(btnVLCPrec);
-
-		btnVLCNext = new JButton("");
-		btnVLCNext.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/nextt.png")));
-		btnVLCNext.setBounds(433, 78, 26, 26);
-		LettorePanel.add(btnVLCNext);
-*/
 		btnLettoreUpdate = new JButton("");
 		btnLettoreUpdate.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/aggiorna.png")));
 		btnLettoreUpdate.setBounds(701, 282, 26, 26);
@@ -1107,18 +1039,14 @@ public class Interfaccia extends JFrame {
 				reloadSeriePreferite();
 				reloadSerieDisponibili();
 
-				//inizializzaDownloadScroll();
-
 				buttonReloadSerie.doClick();
 
 				btnAggiorna.doClick();
 				
 				initSubDownload();
 				GestioneSerieTV.getSubManager().loadLast10();
-				/** VLC instance
-				if(Settings.isVLCAutoload())
-					btnVLCInstance.doClick();
-				*/
+				
+				@SuppressWarnings("unused")
 				LibVlc libVlc = LibVlcFactory.factory().create();
 				SwingUtilities.invokeLater(new Runnable() {
 		            @Override
@@ -1492,92 +1420,7 @@ public class Interfaccia extends JFrame {
 				lblRicercaOre.setText("( " + ore + ((ore == 1) ? " ora " : " ore ") + minuti + " min )");
 			}
 		});
-/**VLC instance
-		btnVLCInstance.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				class VLCLoader extends Thread {
-					private JButton source;
 
-					public VLCLoader(JButton s) {
-						source = s;
-					}
-
-					public void run() {
-						source.setEnabled(false);
-						source.setText("Loading...");
-						try {
-							VLCPanel = new Player(LettorePanel, playlist.getPlaylist());
-						}
-						catch (Exception e) {
-							e.printStackTrace();
-							JOptionPane.showMessageDialog(thisframe, "Errore durante il caricamento di VLC");
-							source.setText("Carica VLC");
-							source.setEnabled(true);
-							return;
-						}
-						if (VLCPanel.isLinked()) {
-							VLCPanel.setBounds(10, 0, 417, 235);
-							LettorePanel.add(VLCPanel.getPlayerPane());
-							LettorePanel.remove(source);
-
-							slider_time = VLCPanel.getProgressSlider();
-							slider_time.setBounds(11, 237, 368, 16);
-							LettorePanel.add(slider_time);
-
-							slider_volume = VLCPanel.getVolumeSlider();
-							slider_volume.setOrientation(SwingConstants.VERTICAL);
-							slider_volume.setBounds(433, 130, 26, 86);
-							LettorePanel.add(slider_volume);
-
-							lblTimer = VLCPanel.getCurrentTimeLabel();
-							lblTimer.setHorizontalAlignment(SwingConstants.CENTER);
-							lblTimer.setBounds(377, 237, 50, 16);
-							LettorePanel.add(lblTimer);
-
-							imgVolume = new JLabel("");
-							imgVolume.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/volume.png")));
-							imgVolume.setBounds(433, 215, 26, 26);
-							LettorePanel.add(imgVolume);
-
-							VLCPanel.addListener();
-
-							LettorePanel.revalidate();
-							LettorePanel.repaint();
-							playlist.setPlayer(VLCPanel);
-						}
-					}
-				}
-				Thread t = new VLCLoader((JButton) arg0.getSource());
-				t.start();
-			}
-		});
-
-		buttonVLCPlay.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				VLCPanel.play();
-			}
-		});
-		buttonVLCStop.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				VLCPanel.stop();
-			}
-		});
-		btnVLCFullscreen.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				VLCPanel.set_fullscreen();
-			}
-		});
-		btnVLCNext.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				VLCPanel.next();
-			}
-		});
-		btnVLCPrec.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				VLCPanel.prev();
-			}
-		});
-*/
 		addWindowListener(new WindowListener() {
 			public void windowOpened(WindowEvent arg0) {}
 			public void windowIconified(WindowEvent arg0) {
@@ -1593,14 +1436,6 @@ public class Interfaccia extends JFrame {
 						if (advertising != null)
 							advertising.disposeNativePeer();
 						NativeInterface.close();
-						/*
-						if (VLCPanel != null) {
-							if (VLCPanel.isLinked()) {
-								VLCPanel.stop();
-								VLCPanel.release();
-							}
-						}
-						*/
 						setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 						System.exit(0);
 					}

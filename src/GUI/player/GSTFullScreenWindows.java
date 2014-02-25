@@ -36,7 +36,6 @@ public class GSTFullScreenWindows implements FullScreenStrategy {
 			});
 		}
 	}
-	
 	@Override
 	public void enterFullScreenMode() {
 		float current_position=Player.getInstance().getPosition();
@@ -76,6 +75,7 @@ public class GSTFullScreenWindows implements FullScreenStrategy {
 		isFullscreen=false;
 		Interfaccia.getInterfaccia().setVisible(true);
 		Player.getInstance().setPlaylistVisibile(true);
+		Player.getInstance().getControls().setVisible(true);
 	}
 
 	@Override

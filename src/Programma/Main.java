@@ -4,6 +4,8 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 
+import chrriis.dj.nativeswing.swtimpl.NativeInterface;
+
 import SerieTV.GestioneSerieTV;
 import SerieTV.ThreadRicercaAutomatica;
 import Database.Database;
@@ -56,6 +58,7 @@ public class Main {
 					public void run(){
 						Database.rebuildDB();
 						Database.Disconnect();
+						NativeInterface.close();
 					}
 				});
 				

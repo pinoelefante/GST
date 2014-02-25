@@ -1,4 +1,4 @@
-package GUI;
+package GUI.player;
 
 import java.awt.Desktop;
 import java.io.File;
@@ -7,7 +7,7 @@ import java.io.IOException;
 import Programma.ManagerException;
 import Programma.Settings;
 
-public class PlayerOLD {
+public class PlayerEsterno {
 	private static String stringa;
 	private static Thread player;
 	

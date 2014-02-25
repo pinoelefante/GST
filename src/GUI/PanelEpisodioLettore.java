@@ -3,7 +3,6 @@ package GUI;
 import javax.swing.JPanel;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -22,9 +21,8 @@ import javax.swing.JOptionPane;
 import javax.swing.border.EtchedBorder;
 
 import GUI.player.Player;
+import GUI.player.PlayerEsterno;
 import Interfacce.ValueChangeSubscriber;
-//import LettoreVideo.Player;
-//import LettoreVideo.PlaylistItem;
 import Programma.Download;
 import Programma.OperazioniFile;
 import Programma.Settings;
@@ -34,7 +32,6 @@ import StruttureDati.serietv.Episodio;
 
 public class PanelEpisodioLettore extends JPanel implements ValueChangeSubscriber{
 	private static final long serialVersionUID = 1L;
-	private static JPlaylist playlist;
 	private Episodio episodio;
 	private Torrent torrent;
 	private JComboBox<String> cmb_stato_episodio;
@@ -204,21 +201,12 @@ public class PanelEpisodioLettore extends JPanel implements ValueChangeSubscribe
 		});
 		btnPlaylist.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				/*if(playlist==null){
-					playlist=cercaPlaylist(PanelEpisodioLettore.this);
-					if(playlist!=null){
-						playlist.addItem(new PlaylistItem(torrent));
-						System.out.println("Playlist trovata");
-					}
-					else {
-						System.out.println("Playlist non trovata");
-					}
+				String path=torrent.getFilePath();
+				if(path==null || path.isEmpty()){
+					JOptionPane.showMessageDialog(PanelEpisodioLettore.this, "File non trovato");
+					return;
 				}
-				if(playlist!=null){
-					playlist.addItem(new PlaylistItem(torrent));
-				}
-				*/
-				Player.getInstance().add(torrent.getFilePath());
+				Player.getInstance().add(path);
 			}
 		});
 		btnPlay.addActionListener(new ActionListener() {
@@ -235,19 +223,16 @@ public class PanelEpisodioLettore extends JPanel implements ValueChangeSubscribe
 				if(Settings.isExtenalVLC()){
 					String filepath=torrent.getFilePath();
 					if(filepath.length()>0){
-						PlayerOLD.play(filepath);
+						PlayerEsterno.play(filepath);
 						cmb_stato_episodio.setSelectedIndex(Torrent.VISTO);
 					}
 				}
 				else {
-					//Player player=playlist.getPlayer();
 					String filepath=torrent.getFilePath();
 					if(filepath.length()>0){
 						Player.getInstance().add(filepath);
 						int ind=Player.getInstance().getPlayList().size();
 						Player.getInstance().playItem(ind-1);
-						//playlist.addItem(new PlaylistItem(torrent));
-						//player.play(filepath);
 						cmb_stato_episodio.setSelectedIndex(Torrent.VISTO);
 					}	
 				}
@@ -361,24 +346,6 @@ public class PanelEpisodioLettore extends JPanel implements ValueChangeSubscribe
 				frame.setVisible(true);
 			}
 		});
-	}
-	private JPlaylist cercaPlaylist(Container c){
-		if(c instanceof JPlaylist)
-			return (JPlaylist) c;
-		else {
-			for(int i=0;i<c.getComponentCount();i++){
-				if(c.getComponent(i) instanceof JPlaylist)
-					return (JPlaylist) c.getComponent(i);
-			}
-			if(c.getParent()!=null){
-				return cercaPlaylist(c.getParent());
-			}
-			else 
-				return null;
-		}
-	}
-	public static void setPlaylist(JPlaylist p){
-		playlist=p;
 	}
 	@Override
 	public void sendNotifica() {
