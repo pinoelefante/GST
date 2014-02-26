@@ -48,11 +48,14 @@ public class GSTFullScreenWindows implements FullScreenStrategy {
 		parent=panel_player.getParent();
 		if(parent!=null)
 			parent.remove(panel_player);
+		boolean isPlaying=Player.getInstance().isPlaying();
 		Player.getInstance().stop();
 		frame.add(panel_player);
 		frame.setVisible(true);
 		Player.getInstance().play();
 		Player.getInstance().setPosition(current_position);
+		if(!isPlaying)
+			Player.getInstance().pause();
 		isFullscreen=true;
 		Interfaccia.getInterfaccia().setVisible(false);
 		Player.getInstance().setPlaylistVisibile(false);
@@ -65,11 +68,14 @@ public class GSTFullScreenWindows implements FullScreenStrategy {
 			panel_player.setBounds(0, 0, 739, 277);
 			parent.add(panel_player);
 		}
+		boolean isPlaying=Player.getInstance().isPlaying();
 		float current_position=Player.getInstance().getPosition();
 		Player.getInstance().stop();
 		if(current_position>=0){
 			Player.getInstance().play();
 			Player.getInstance().setPosition(current_position);
+			if(!isPlaying)
+				Player.getInstance().pause();
 		}
 		frame.setVisible(false);
 		isFullscreen=false;

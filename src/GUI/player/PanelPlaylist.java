@@ -8,6 +8,8 @@ import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
 import java.util.List;
 
@@ -17,6 +19,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 
 import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
@@ -32,7 +35,7 @@ public class PanelPlaylist extends JPanel{
 
 	public PanelPlaylist(){
 		setLayout(new BorderLayout(0, 0));
-		
+		setBorder(new TitledBorder("Playlist"));
 		JPanel panel = new JPanel();
 		add(panel, BorderLayout.SOUTH);
 		
@@ -102,6 +105,23 @@ public class PanelPlaylist extends JPanel{
 	                ex.printStackTrace();
 	            }
 	        }
+		});
+		list.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent evt) {
+				@SuppressWarnings("unchecked")
+				JList<ItemPlaylist> list = (JList<ItemPlaylist>)evt.getSource();
+				if (evt.getClickCount() >= 2) {
+					int index = list.locationToIndex(evt.getPoint());
+					if(index>=0){
+						Player.getInstance().playItem(index);
+					}
+				}
+			}
+		});
+		btnRimuovi.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+			}
 		});
 	}
 	public void ridisegna(){

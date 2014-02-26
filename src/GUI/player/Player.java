@@ -556,4 +556,7 @@ public class Player extends VlcjTest {
 	public JPanel getControls(){
 		return controlsPanel;
 	}
+	public boolean isPlaying(){
+		return mediaPlayer.isPlaying();
+	}
 }
