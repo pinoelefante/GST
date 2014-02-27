@@ -33,7 +33,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingUtilities;
@@ -52,31 +51,22 @@ public class PlayerControlsPanel extends JPanel {
 
     private static final long serialVersionUID = 1L;
 
-    private static final int SKIP_TIME_MS = 10 * 1000;
-
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
 
     private final EmbeddedMediaPlayer mediaPlayer;
 
     private JLabel timeLabel;
-//    private JProgressBar positionProgressBar;
     private JSlider positionSlider;
     private JLabel chapterLabel;
 
     private JButton previousChapterButton;
-    private JButton rewindButton;
     private JButton stopButton;
     private JButton pauseButton;
     private JButton playButton;
-    private JButton fastForwardButton;
     private JButton nextChapterButton;
 
     private JButton toggleMuteButton;
     private JSlider volumeSlider;
-
-    private JButton captureButton;
-
-    private JButton connectButton;
 
     private JButton fullScreenButton;
 
@@ -103,12 +93,6 @@ public class PlayerControlsPanel extends JPanel {
     private void createControls() {
         timeLabel = new JLabel("hh:mm:ss");
 
-        // positionProgressBar = new JProgressBar();
-        // positionProgressBar.setMinimum(0);
-        // positionProgressBar.setMaximum(1000);
-        // positionProgressBar.setValue(0);
-        // positionProgressBar.setToolTipText("Time");
-
         positionSlider = new JSlider();
         positionSlider.setMinimum(0);
         positionSlider.setMaximum(1000);
@@ -120,10 +104,6 @@ public class PlayerControlsPanel extends JPanel {
         previousChapterButton = new JButton();
         previousChapterButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/control_start_blue.png")));
         previousChapterButton.setToolTipText("Go to previous chapter");
-
-        rewindButton = new JButton();
-        rewindButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/control_rewind_blue.png")));
-        rewindButton.setToolTipText("Skip back");
 
         stopButton = new JButton();
         stopButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/control_stop_blue.png")));
@@ -137,10 +117,6 @@ public class PlayerControlsPanel extends JPanel {
         playButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/control_play_blue.png")));
         playButton.setToolTipText("Play");
 
-        fastForwardButton = new JButton();
-        fastForwardButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/control_fastforward_blue.png")));
-        fastForwardButton.setToolTipText("Skip forward");
-
         nextChapterButton = new JButton();
         nextChapterButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/control_end_blue.png")));
         nextChapterButton.setToolTipText("Go to next chapter");
@@ -153,16 +129,9 @@ public class PlayerControlsPanel extends JPanel {
         volumeSlider.setOrientation(JSlider.HORIZONTAL);
         volumeSlider.setMinimum(LibVlcConst.MIN_VOLUME);
         volumeSlider.setMaximum(100);
+        volumeSlider.setValue(100);
         volumeSlider.setPreferredSize(new Dimension(100, 40));
         volumeSlider.setToolTipText("Change volume");
-
-        captureButton = new JButton();
-        captureButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/camera.png")));
-        captureButton.setToolTipText("Take picture");
-
-        connectButton = new JButton();
-        connectButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/connect.png")));
-        connectButton.setToolTipText("Connect to media");
 
         fileChooser = new JFileChooser();
         fileChooser.setApproveButtonText("Play");
@@ -207,16 +176,12 @@ public class PlayerControlsPanel extends JPanel {
         
         bottomPanel.add(fullScreenButton);
         bottomPanel.add(previousChapterButton);
-        //bottomPanel.add(rewindButton);
         bottomPanel.add(stopButton);
         bottomPanel.add(pauseButton);
         bottomPanel.add(playButton);
-        //bottomPanel.add(fastForwardButton);
         bottomPanel.add(nextChapterButton);
         bottomPanel.add(volumeSlider);
         bottomPanel.add(toggleMuteButton);
-        bottomPanel.add(captureButton);
-        //bottomPanel.add(connectButton);
         bottomPanel.add(subTitlesButton);
 
         add(bottomPanel, BorderLayout.SOUTH);
@@ -261,14 +226,6 @@ public class PlayerControlsPanel extends JPanel {
         updateChapter(chapter, chapterCount);
     }
 
-    private void skip(int skipTime) {
-        // Only skip time if can handle time setting
-        if(mediaPlayer.getLength() > 0) {
-            mediaPlayer.skip(skipTime);
-            updateUIState();
-        }
-    }
-
     private void registerListeners() {
         mediaPlayer.addMediaPlayerEventListener(new MediaPlayerEventAdapter() {
             @Override
@@ -304,13 +261,6 @@ public class PlayerControlsPanel extends JPanel {
             }
         });
 
-        rewindButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                skip(-SKIP_TIME_MS);
-            }
-        });
-
         stopButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -331,14 +281,7 @@ public class PlayerControlsPanel extends JPanel {
                 Player.getInstance().play();
             }
         });
-
-        fastForwardButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                skip(SKIP_TIME_MS);
-            }
-        });
-
+        
         nextChapterButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -360,25 +303,6 @@ public class PlayerControlsPanel extends JPanel {
                 // if(!source.getValueIsAdjusting()) {
                 mediaPlayer.setVolume(source.getValue());
                 // }
-            }
-        });
-
-        captureButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mediaPlayer.saveSnapshot();
-            }
-        });
-
-        connectButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                mediaPlayer.enableOverlay(false);
-                String mediaUrl = JOptionPane.showInputDialog(PlayerControlsPanel.this, "Enter a media URL", "Connect to media", JOptionPane.QUESTION_MESSAGE);
-                if(mediaUrl != null && mediaUrl.length() > 0) {
-                    mediaPlayer.playMedia(mediaUrl);
-                }
-                mediaPlayer.enableOverlay(true);
             }
         });
 
