@@ -36,7 +36,7 @@ public class Prerequisiti {
 			ManagerException.registraEccezione(e1);
 		}
 		checkUtility();
-		//checkVLC();
+		checkVLC();
 	}
 	private static void checkUtility() {
 		if(list_utility.isEmpty())
@@ -179,7 +179,7 @@ public class Prerequisiti {
 		list_dipendenze.add(new Dipendenza("platform-3.5.2.jar", "jna-platform-3.5.2.jar", sito+"platform-3.5.2.jar", "indipendent", 1192357L, true, true));
 		list_dipendenze.add(new Dipendenza("sevenzipjbinding-AllPlatforms.jar", "sevenzipjbinding-AllPlatforms.jar", sito+"sevenzipjbinding-AllPlatforms.jar", "indipendent", 5686371L, true, true));
 		list_dipendenze.add(new Dipendenza("sevenzipjbinding.jar", "sevenzipjbinding.jar", sito+"sevenzipjbinding.jar", "indipendent",31653L, true, true));
-		//list_dipendenze.add(new Dipendenza("vlcj-2.4.0.jar", "vlcj.jar", sito+"vlcj-2.4.0.jar", "indipendent", 345388L, true, true));
+		list_dipendenze.add(new Dipendenza("vlcj-2.4.0.jar", "vlcj.jar", sito+"vlcj-2.4.0.jar", "indipendent", 345388L, true, true));
 		
 		if(Settings.isLinux()){
 			if(!x86){

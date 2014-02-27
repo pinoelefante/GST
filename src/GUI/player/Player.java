@@ -40,6 +40,10 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.SwingUtilities;
 
+import Programma.Settings;
+
+import com.sun.jna.NativeLibrary;
+
 import uk.co.caprica.vlcj.binding.LibVlc;
 import uk.co.caprica.vlcj.binding.LibVlcFactory;
 import uk.co.caprica.vlcj.binding.internal.libvlc_media_t;
@@ -52,6 +56,8 @@ import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.MediaPlayerFactory;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 import uk.co.caprica.vlcj.player.embedded.FullScreenStrategy;
+import uk.co.caprica.vlcj.runtime.RuntimeUtil;
+import uk.co.caprica.vlcj.runtime.x.LibXUtil;
 
 /**
  * Simple test harness creates an AWT Window and plays a video.
@@ -63,7 +69,7 @@ import uk.co.caprica.vlcj.player.embedded.FullScreenStrategy;
  * Java7 provides -Dsun.java2d.xrender=True or -Dsun.java2d.xrender=true, might give some general
  * performance improvements in graphics rendering.
  */
-public class Player extends VlcjTest {
+public class Player {
     private final JPanel mainFrame;
     private final Canvas videoSurface;
     private final JPanel controlsPanel;
@@ -89,7 +95,15 @@ public class Player extends VlcjTest {
             }
         });
     }
+    private static boolean search_path=false;
     public static synchronized Player getInstance(){
+    	if(!search_path){
+    		search_path=true;
+	    	LibXUtil.initialise();
+	    	String path=Settings.getCurrentDir()+"lib"+File.separator+"vlc"+File.separator+Settings.getOSName()+"-"+Settings.getVMArch();
+	    	NativeLibrary.addSearchPath(RuntimeUtil.getLibVlcLibraryName(), path);
+    	}
+
     	if(instance==null)
     		instance=new Player();
     	return instance;
@@ -248,15 +262,6 @@ public class Player extends VlcjTest {
                 mediaPlayer.setLogoLocation(10, 10);
                 mediaPlayer.enableLogo(true);
             }
-
-            // Demo the marquee
-            mediaPlayer.setMarqueeText("vlcj java bindings for vlc");
-            mediaPlayer.setMarqueeSize(40);
-            mediaPlayer.setMarqueeOpacity(95);
-            mediaPlayer.setMarqueeColour(Color.white);
-            mediaPlayer.setMarqueeTimeout(5000);
-            mediaPlayer.setMarqueeLocation(50, 120);
-            mediaPlayer.enableMarquee(true);
 
             // Not quite sure how crop geometry is supposed to work...
             //

@@ -91,9 +91,6 @@ import javax.swing.border.CompoundBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import uk.co.caprica.vlcj.binding.LibVlc;
-import uk.co.caprica.vlcj.binding.LibVlcFactory;
-
 public class Interfaccia extends JFrame {
 	private static Interfaccia thisframe;
 	private static final long  serialVersionUID = 1L;
@@ -1046,11 +1043,10 @@ public class Interfaccia extends JFrame {
 				initSubDownload();
 				GestioneSerieTV.getSubManager().loadLast10();
 				
-				@SuppressWarnings("unused")
-				LibVlc libVlc = LibVlcFactory.factory().create();
 				SwingUtilities.invokeLater(new Runnable() {
 		            @Override
 		            public void run() {
+		            	//LibVlc libVlc = LibVlcFactory.factory().create();
 		                Player p=Player.getInstance();
 		                LettorePanel.add(p.getPanel());
 		            }

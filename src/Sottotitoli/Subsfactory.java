@@ -111,17 +111,17 @@ public class Subsfactory implements ProviderSottotitoli {
 			//System.out.println(sub);
 			if(sub!=null){
 				if(t.getEpisodio()==sub.getEpisodio()){
-					System.out.println("Episodio OK");
+					//System.out.println("Episodio OK");
 					if(t.getStagione()==sub.getStagione()){
-						System.out.println("Stagione OK");
+						//System.out.println("Stagione OK");
 						return sub.getUrlDownload();
 					}
 					else {
-						System.out.println("Stagione non OK");
+						//System.out.println("Stagione non OK");
 					}
 				}
 				else {
-					System.out.println("Episodio non OK - "+t.getEpisodio()+" diverso da "+sub.getEpisodio());
+					//System.out.println("Episodio non OK - "+t.getEpisodio()+" diverso da "+sub.getEpisodio());
 				}
 			}
 		}
