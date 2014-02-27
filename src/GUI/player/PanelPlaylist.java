@@ -120,7 +120,9 @@ public class PanelPlaylist extends JPanel{
 		});
 		btnRimuovi.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
+				int index=list.getSelectedIndex();
+				if(index>=0)
+					Player.getInstance().remove(index);
 			}
 		});
 	}

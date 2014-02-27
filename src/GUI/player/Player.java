@@ -162,28 +162,7 @@ public class Player extends VlcjTest {
         mainFrame.add(videoSurface, BorderLayout.CENTER);
         mainFrame.add(controlsPanel, BorderLayout.SOUTH);
         mainFrame.add(playlistPanel, BorderLayout.EAST);
-        //mainFrame.setJMenuBar(buildMenuBar());
-        /*
-        mainFrame.pack();
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent evt) {
-                Logger.debug("windowClosing(evt={})", evt);
-
-                if(mediaPlayer != null) {
-                    mediaPlayer.release();
-                    mediaPlayer = null;
-                }
-
-                if(mediaPlayerFactory != null) {
-                    mediaPlayerFactory.release();
-                    mediaPlayerFactory = null;
-                }
-            }
-        });
-        */
-
+        
         // Global AWT key handler, you're better off using Swing's InputMap and
         // ActionMap with a JFrame - that would solve all sorts of focus issues too
         Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
@@ -255,7 +234,8 @@ public class Player extends VlcjTest {
         @Override
         public void finished(MediaPlayer mediaPlayer) {
             Logger.debug("finished(mediaPlayer={})", mediaPlayer);
-            next();
+            if(hasNext())
+            	next();
         }
 
         @Override
@@ -465,7 +445,11 @@ public class Player extends VlcjTest {
 		else if(!playlist.isEmpty())
 			mediaPlayer.playMedia(playlist.get(current_item_playlist).getPath());
 	}
-
+	public boolean hasNext(){
+		if(current_item_playlist==playlist.size() || playlist.isEmpty())
+			return false;
+		return true;
+	}
 	public void next() {
 		current_item_playlist++;
 		if(current_item_playlist>=playlist.size())
@@ -547,6 +531,9 @@ public class Player extends VlcjTest {
 	public Dimension getVideoSurfaceSize(){
 		return videoSurface.getSize();
 	}
+	public Canvas getVideoSurface(){
+		return videoSurface;
+	}
 	public void setVideoSurfaceSize(Dimension d){
 		videoSurface.setPreferredSize(d);
 	}
@@ -558,5 +545,11 @@ public class Player extends VlcjTest {
 	}
 	public boolean isPlaying(){
 		return mediaPlayer.isPlaying();
+	}
+	public EmbeddedMediaPlayer getPlayer(){
+		return mediaPlayer;
+	}
+	public MediaPlayerFactory getFactory(){
+		return mediaPlayerFactory;
 	}
 }
