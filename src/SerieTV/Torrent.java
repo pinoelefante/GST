@@ -3,12 +3,13 @@ package SerieTV;
 import java.io.File;
 import java.util.ArrayList;
 
+import GUI.player.ItemPlaylistInterface;
 import Interfacce.ValueChangeNotifier;
 import Interfacce.ValueChangeSubscriber;
 import Naming.CaratteristicheFile;
 import Programma.Settings;
 
-public class Torrent implements ValueChangeNotifier{
+public class Torrent implements ValueChangeNotifier, ItemPlaylistInterface{
 	public final static int SCARICARE=0, SCARICATO=1, VISTO=2, RIMOSSO=3, IGNORATO=4; 
 	private String	url;
 	private int		stato; //0 non scaricato - 1 scaricato - 2 visto - 3 rimosso - 4 ignorato
@@ -285,5 +286,17 @@ public class Torrent implements ValueChangeNotifier{
 				sottoscrittori.remove(i);
 			}
 		}
+	}
+	@Override
+	public void setPlayed() {
+		setScaricato(Torrent.VISTO, true);
+	}
+	@Override
+	public String getPath() {
+		return getFilePath();
+	}
+	@Override
+	public String getToShow() {
+		return serietv.getNomeSerie()+" S"+getStagione()+"E"+getEpisodio()+" - "+(is720p()?"HD":"SD");
 	}
 }

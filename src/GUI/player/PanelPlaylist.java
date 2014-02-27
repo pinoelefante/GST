@@ -29,7 +29,7 @@ public class PanelPlaylist extends JPanel{
 	private Player player;
 	private JButton btnAggiungi;
 	private JButton btnRimuovi;
-	private JList<ItemPlaylist> list;
+	private JList<ItemPlaylistInterface> list;
 	private JFileChooser fileChooser;
 	
 
@@ -48,7 +48,7 @@ public class PanelPlaylist extends JPanel{
 		JScrollPane scrollPane = new JScrollPane();
 		add(scrollPane, BorderLayout.CENTER);
 		
-		list = new JList<ItemPlaylist>();
+		list = new JList<ItemPlaylistInterface>();
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane.setViewportView(list);
 		
@@ -129,7 +129,7 @@ public class PanelPlaylist extends JPanel{
 	public void ridisegna(){
 		if(player==null)
 			player=Player.getInstance();
-		list.setListData(player.getPlaylist().toArray(new ItemPlaylist[player.getPlaylist().size()]));
+		list.setListData(player.getPlaylist().toArray(new ItemPlaylistInterface[player.getPlaylist().size()]));
 		list.revalidate();
 		list.repaint();
 	}

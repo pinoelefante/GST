@@ -2,7 +2,7 @@ package GUI.player;
 
 import java.io.File;
 
-class ItemPlaylist {
+class ItemPlaylist implements ItemPlaylistInterface{
 	private String path;
 	private String toShow;
 	public ItemPlaylist(String path){
@@ -25,4 +25,6 @@ class ItemPlaylist {
 	public String toString(){
 		return toShow;
 	}
+	@Override
+	public void setPlayed() {}
 }

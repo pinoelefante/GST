@@ -98,7 +98,7 @@ public class Player extends VlcjTest {
     	return mainFrame;
     }
     private Player() {
-    	playlist=new ArrayList<ItemPlaylist>();
+    	playlist=new ArrayList<ItemPlaylistInterface>();
         
         videoSurface = new Canvas();
 
@@ -171,47 +171,7 @@ public class Player extends VlcjTest {
                 if(event instanceof KeyEvent) {
                     KeyEvent keyEvent = (KeyEvent)event;
                     if(keyEvent.getID() == KeyEvent.KEY_PRESSED) {
-                        if(keyEvent.getKeyCode() == KeyEvent.VK_F12) {
-                            controlsPanel.setVisible(!controlsPanel.isVisible());
-                            mainFrame.invalidate();
-                            mainFrame.validate();
-                        }
-                        else if(keyEvent.getKeyCode() == KeyEvent.VK_A) {
-                            mediaPlayer.setAudioDelay(mediaPlayer.getAudioDelay() - 50000);
-                        }
-                        else if(keyEvent.getKeyCode() == KeyEvent.VK_S) {
-                            mediaPlayer.setAudioDelay(mediaPlayer.getAudioDelay() + 50000);
-                        }
-                        // else if(keyEvent.getKeyCode() == KeyEvent.VK_N) {
-                        // mediaPlayer.nextFrame();
-                        // }
-                        else if(keyEvent.getKeyCode() == KeyEvent.VK_1) {
-                            mediaPlayer.setTime(60000 * 1);
-                        }
-                        else if(keyEvent.getKeyCode() == KeyEvent.VK_2) {
-                            mediaPlayer.setTime(60000 * 2);
-                        }
-                        else if(keyEvent.getKeyCode() == KeyEvent.VK_3) {
-                            mediaPlayer.setTime(60000 * 3);
-                        }
-                        else if(keyEvent.getKeyCode() == KeyEvent.VK_4) {
-                            mediaPlayer.setTime(60000 * 4);
-                        }
-                        else if(keyEvent.getKeyCode() == KeyEvent.VK_5) {
-                            mediaPlayer.setTime(60000 * 5);
-                        }
-                        else if(keyEvent.getKeyCode() == KeyEvent.VK_6) {
-                            mediaPlayer.setTime(60000 * 6);
-                        }
-                        else if(keyEvent.getKeyCode() == KeyEvent.VK_7) {
-                            mediaPlayer.setTime(60000 * 7);
-                        }
-                        else if(keyEvent.getKeyCode() == KeyEvent.VK_8) {
-                            mediaPlayer.setTime(60000 * 8);
-                        }
-                        else if(keyEvent.getKeyCode() == KeyEvent.VK_9) {
-                            mediaPlayer.setTime(60000 * 9);
-                        }
+                       
                     }
                 }
             }
@@ -442,8 +402,9 @@ public class Player extends VlcjTest {
 	public void play() {
 		if(mediaPlayer.isPlayable())
 			mediaPlayer.play();
-		else if(!playlist.isEmpty())
-			mediaPlayer.playMedia(playlist.get(current_item_playlist).getPath());
+		else if(!playlist.isEmpty()){
+			playItem(current_item_playlist);
+		}
 	}
 	public boolean hasNext(){
 		if(current_item_playlist==playlist.size() || playlist.isEmpty())
@@ -455,31 +416,33 @@ public class Player extends VlcjTest {
 		if(current_item_playlist>=playlist.size())
 			current_item_playlist=0;
 		if(!playlist.isEmpty())
-			mediaPlayer.playMedia(playlist.get(current_item_playlist).getPath());
+			playItem(current_item_playlist);
 	}
 
 	public void prev() {
 		if(current_item_playlist>0){
 			current_item_playlist--;
 			if(!playlist.isEmpty())
-				mediaPlayer.playMedia(playlist.get(current_item_playlist).getPath());
+				playItem(current_item_playlist);
 		}
 		
 	}
 	public void playItem(int index) {
 		if(index<playlist.size() && index>=0 && !playlist.isEmpty()){
-			mediaPlayer.playMedia(playlist.get(index).getPath());
+			ItemPlaylistInterface item=playlist.get(index);
+			mediaPlayer.playMedia(item.getPath());
+			item.setPlayed();
 			current_item_playlist=index;
 		}
 	};
 	
 	public ArrayList<String> getPlayList() {
 		ArrayList<String> str=new ArrayList<>();
-		for(ItemPlaylist i: playlist)
+		for(ItemPlaylistInterface i: playlist)
 			str.add(i.getToShow());
 		return str;
 	}
-	private ArrayList<ItemPlaylist> playlist;
+	private ArrayList<ItemPlaylistInterface> playlist;
 	private int current_item_playlist;
 
 	public void add(String path) {
@@ -488,6 +451,11 @@ public class Player extends VlcjTest {
 			return;
 		}
 		playlist.add(new ItemPlaylist(path));
+		if(playlistPanel!=null)
+			playlistPanel.ridisegna();
+	}
+	public void add(ItemPlaylistInterface i){
+		playlist.add(i);
 		if(playlistPanel!=null)
 			playlistPanel.ridisegna();
 	}
@@ -517,7 +485,7 @@ public class Player extends VlcjTest {
 	public void pause() {
 		mediaPlayer.pause();
 	}
-	protected ArrayList<ItemPlaylist> getPlaylist(){
+	protected ArrayList<ItemPlaylistInterface> getPlaylist(){
 		return playlist;
 	}
 	public float getPosition(){

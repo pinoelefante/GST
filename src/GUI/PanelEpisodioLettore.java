@@ -206,7 +206,7 @@ public class PanelEpisodioLettore extends JPanel implements ValueChangeSubscribe
 					JOptionPane.showMessageDialog(PanelEpisodioLettore.this, "File non trovato");
 					return;
 				}
-				Player.getInstance().add(path);
+				Player.getInstance().add(torrent);
 			}
 		});
 		btnPlay.addActionListener(new ActionListener() {
@@ -230,7 +230,7 @@ public class PanelEpisodioLettore extends JPanel implements ValueChangeSubscribe
 				else {
 					String filepath=torrent.getFilePath();
 					if(filepath.length()>0){
-						Player.getInstance().add(filepath);
+						Player.getInstance().add(torrent);
 						int ind=Player.getInstance().getPlayList().size();
 						Player.getInstance().playItem(ind-1);
 						cmb_stato_episodio.setSelectedIndex(Torrent.VISTO);
