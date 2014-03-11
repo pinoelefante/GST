@@ -62,6 +62,7 @@ public class GSTFullScreenWindows implements FullScreenStrategy {
 					case KeyEvent.VK_SPACE:
 						Player.getInstance().pause();
 						break;
+					case KeyEvent.VK_F:
 					case KeyEvent.VK_ESCAPE:
 						exitFullScreenMode();
 						break;
