@@ -4,6 +4,10 @@ import java.awt.Container;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
@@ -37,6 +41,35 @@ public class GSTFullScreenWindows implements FullScreenStrategy {
 				public void windowClosed(WindowEvent arg0) {}
 				public void windowActivated(WindowEvent arg0) {}
 			});
+			frame.setFocusable(true);
+			frame.addFocusListener(new FocusListener() {
+				public void focusLost(FocusEvent e) {
+					System.out.println("focus perso");
+					frame.setState(JFrame.NORMAL);
+					frame.toFront();
+					frame.requestFocus();
+				}
+				public void focusGained(FocusEvent arg0) {
+					System.out.println("Focus acquisito");
+				}
+			});
+			frame.addKeyListener(new KeyListener() {
+				public void keyTyped(KeyEvent arg0) {}
+				public void keyReleased(KeyEvent arg0) {}
+				
+				public void keyPressed(KeyEvent arg0) {
+					switch(arg0.getKeyCode()){
+					case KeyEvent.VK_SPACE:
+						Player.getInstance().pause();
+						break;
+					case KeyEvent.VK_ESCAPE:
+						exitFullScreenMode();
+						break;
+					}
+				}
+			});
+			frame.requestFocusInWindow();
+			frame.requestFocus();
 		}
 	}
 	@Override
@@ -131,9 +164,11 @@ public class GSTFullScreenWindows implements FullScreenStrategy {
 					
 					if(checkCount>=25){
 						Player.getInstance().getControls().setVisible(false);
+						frame.requestFocus();
 					}
 					else {
 						Player.getInstance().getControls().setVisible(true);
+						frame.requestFocus();
 					}
 					sleep(200L);
 				}

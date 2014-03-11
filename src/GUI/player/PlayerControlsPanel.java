@@ -57,7 +57,7 @@ public class PlayerControlsPanel extends JPanel {
 
     private JLabel timeLabel;
     private JSlider positionSlider;
-    private JLabel chapterLabel;
+    private JLabel totalTimeLabel;
 
     private JButton previousChapterButton;
     private JButton stopButton;
@@ -99,7 +99,7 @@ public class PlayerControlsPanel extends JPanel {
         positionSlider.setValue(0);
         positionSlider.setToolTipText("Position");
 
-        chapterLabel = new JLabel("00/00");
+        totalTimeLabel = new JLabel("hh:mm:ss");
 
         previousChapterButton = new JButton();
         previousChapterButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/control_start_blue.png")));
@@ -166,7 +166,7 @@ public class PlayerControlsPanel extends JPanel {
 
         topPanel.add(timeLabel, BorderLayout.WEST);
         topPanel.add(positionPanel, BorderLayout.CENTER);
-        topPanel.add(chapterLabel, BorderLayout.EAST);
+        topPanel.add(totalTimeLabel, BorderLayout.EAST);
 
         add(topPanel, BorderLayout.NORTH);
 
@@ -219,11 +219,10 @@ public class PlayerControlsPanel extends JPanel {
         }
         long time = mediaPlayer.getTime();
         int position = (int)(mediaPlayer.getPosition() * 1000.0f);
-        int chapter = mediaPlayer.getChapter();
-        int chapterCount = mediaPlayer.getChapterCount();
+        
         updateTime(time);
         updatePosition(position);
-        updateChapter(chapter, chapterCount);
+        //updateTotalTime(chapterCount);
     }
 
     private void registerListeners() {
@@ -343,8 +342,7 @@ public class PlayerControlsPanel extends JPanel {
         public void run() {
             final long time = mediaPlayer.getTime();
             final int position = (int)(mediaPlayer.getPosition() * 1000.0f);
-            final int chapter = mediaPlayer.getChapter();
-            final int chapterCount = mediaPlayer.getChapterCount();
+            final long totalTime = mediaPlayer.getLength();
 
             // Updates to user interface components must be executed on the Event
             // Dispatch Thread
@@ -354,7 +352,7 @@ public class PlayerControlsPanel extends JPanel {
                     if(mediaPlayer.isPlaying()) {
                         updateTime(time);
                         updatePosition(position);
-                        updateChapter(chapter, chapterCount);
+                        updateTotalTime(totalTime);
                     }
                 }
             });
@@ -371,11 +369,9 @@ public class PlayerControlsPanel extends JPanel {
         positionSlider.setValue(value);
     }
 
-    private void updateChapter(int chapter, int chapterCount) {
-        String s = chapterCount != -1 ? (chapter + 1) + "/" + chapterCount : "-";
-        chapterLabel.setText(s);
-        chapterLabel.invalidate();
-        validate();
+    private void updateTotalTime(long totaltTime) {
+    	String s = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(totaltTime), TimeUnit.MILLISECONDS.toMinutes(totaltTime) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(totaltTime)), TimeUnit.MILLISECONDS.toSeconds(totaltTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(totaltTime)));
+        totalTimeLabel.setText(s);
     }
 /*
     private void updateVolume(int value) {

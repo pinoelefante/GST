@@ -17,7 +17,6 @@
  * Copyright 2009, 2010, 2011, 2012, 2013, 2014 Caprica Software Limited.
  */
 package GUI.player;
-import java.awt.AWTEvent;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Color;
@@ -25,7 +24,6 @@ import java.awt.Dimension;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
-import java.awt.event.AWTEventListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -131,6 +129,7 @@ public class Player {
 
         List<String> vlcArgs = new ArrayList<String>();
 
+        vlcArgs.add("--no-video-title-show");
         vlcArgs.add("--no-snapshot-preview");
         vlcArgs.add("--quiet");
         vlcArgs.add("--quiet-synchro");
@@ -179,6 +178,7 @@ public class Player {
         
         // Global AWT key handler, you're better off using Swing's InputMap and
         // ActionMap with a JFrame - that would solve all sorts of focus issues too
+        /*
         Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener() {
             @Override
             public void eventDispatched(AWTEvent event) {
@@ -190,9 +190,8 @@ public class Player {
                 }
             }
         }, AWTEvent.KEY_EVENT_MASK);
-
+        */
         mainFrame.setVisible(true);
-
         mediaPlayer.addMediaPlayerEventListener(new TestPlayerMediaPlayerEventListener());
      
         // This might be useful
