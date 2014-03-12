@@ -50,6 +50,8 @@ import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -76,6 +78,7 @@ import javax.swing.JScrollPane;
 
 import java.awt.event.MouseAdapter;
 import java.util.ArrayList;
+import java.util.Vector;
 
 import javax.swing.JTable;
 import javax.swing.ListSelectionModel;
@@ -569,7 +572,7 @@ public class Interfaccia extends JFrame {
 		panel_sub_associatore.add(btnSubsfactoryUpdate);
 
 		JScrollPane scrollPane_subscaricare = new JScrollPane();
-		scrollPane_subscaricare.setBounds(0, 202, 370, 220);
+		scrollPane_subscaricare.setBounds(0, 202, 340, 220);
 		scrollPane_subscaricare.getVerticalScrollBar().setUnitIncrement(5);
 		SottotitoliPanel.add(scrollPane_subscaricare);
 
@@ -581,13 +584,13 @@ public class Interfaccia extends JFrame {
 		panel_SottotitoliDaScaricare.setLayout(new GridLayout(0, 1, 0, 0));
 
 		JScrollPane scrollPane_logsub = new JScrollPane();
-		scrollPane_logsub.setBounds(372, 202, 367, 220);
+		scrollPane_logsub.setBounds(343, 202, 396, 220);
 		scrollPane_logsub.getVerticalScrollBar().setUnitIncrement(5);
 		SottotitoliPanel.add(scrollPane_logsub);
 
 		tableSubDownloaded = new JTable();
-		tableSubDownloaded.setModel(new DefaultTableModel(new String[] { "Serie", "Stagione", "Episodio", "da" },0) {
-			boolean[] columnEditables = new boolean[] { false, false, false, false };
+		tableSubDownloaded.setModel(new DefaultTableModel(new String[] { "Serie", "Stagione", "Episodio", "da", "" },0) {
+			boolean[] columnEditables = new boolean[] { false, false, false, false,true };
 
 			public boolean isCellEditable(int row, int column) {
 				return columnEditables[column];
@@ -2277,11 +2280,53 @@ public class Interfaccia extends JFrame {
 
 	public void addEntrySottotitolo(String nomeserie, int stagione, int episodio, String provider, boolean tray_not) {
 		DefaultTableModel model = (DefaultTableModel) tableSubDownloaded.getModel();
-		model.addRow(new Object[] { nomeserie, stagione, episodio, provider });
+		model.addRow(new Object[] { nomeserie, stagione, episodio, provider, "play" });
 		if(tray!=null && tray_not){
 			String messaggio=nomeserie+" S"+(stagione<10?"0"+stagione:stagione)+"E"+(episodio<10?"0"+episodio:episodio)+" - "+provider;
 			tray.getTrayIcons()[0].displayMessage("", messaggio, MessageType.INFO);
 		}
+		Action play = new AbstractAction(){
+			private static final long serialVersionUID = 1L;
+
+			public void actionPerformed(ActionEvent e){
+				JTable table = (JTable)e.getSource();
+				Vector row=((DefaultTableModel)table.getModel()).getDataVector();
+				int index_nomeserie=((DefaultTableModel)table.getModel()).findColumn("Serie");
+				int index_stagione=((DefaultTableModel)table.getModel()).findColumn("Stagione");
+				int index_episodio=((DefaultTableModel)table.getModel()).findColumn("Episodio");
+				int indexRow = Integer.valueOf( e.getActionCommand() );
+				
+				row.elementAt(indexRow);
+				
+				String nomeSerieRow=(String) ((Vector)row.elementAt(indexRow)).elementAt(index_nomeserie);
+				Integer stagioneRow=(Integer) ((Vector)row.elementAt(indexRow)).elementAt(index_stagione);
+				Integer episodioRow=(Integer) ((Vector)row.elementAt(indexRow)).elementAt(index_episodio);
+				
+				//JOptionPane.showMessageDialog(thisframe, "Index Row:"+indexRow+"\nIndexNomeSerie:"+index_nomeserie+"\nIndexStagione:"+index_stagione+"\nIndexEpisodio:"+index_episodio);
+				
+		        ArrayList<SerieTV> st=GestioneSerieTV.getElencoSerieInserite();
+		        for(int i=0;i<st.size();i++){
+		        	SerieTV s=st.get(i);
+		        	if(s.getNomeSerie().compareToIgnoreCase(nomeSerieRow)==0){
+		        		for(int j=0;j<s.getNumEpisodi();j++){
+		        			Episodio ep=s.getEpisodio(j);
+		        			if(ep.getStagione()==stagioneRow && ep.getEpisodio()==episodioRow){
+		        				Torrent t=ep.getLinkLettore();
+		        				Player.getInstance().add(t);
+		        				tab.setSelectedIndex(3);
+		        				Player p=Player.getInstance();
+		        				p.playItem(p.getPlayList().size()-1);
+		        				return;
+		        			}
+		        		}
+		        	}
+		        }
+		        JOptionPane.showMessageDialog(thisframe, "Episodio non trovato");
+		        
+		    }
+		};
+		@SuppressWarnings("unused")
+		ButtonColumn buttonColumn = new ButtonColumn(tableSubDownloaded, play, 4);
 	}
 	public void subAddSubDownload(Torrent t){
 		panel_SottotitoliDaScaricare.add(new PanelSubDown(t));
