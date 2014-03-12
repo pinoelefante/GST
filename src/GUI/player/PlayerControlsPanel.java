@@ -25,12 +25,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -45,6 +47,7 @@ import uk.co.caprica.vlcj.binding.LibVlcConst;
 import uk.co.caprica.vlcj.filter.swing.SwingFileFilterFactory;
 import uk.co.caprica.vlcj.player.MediaPlayer;
 import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
+import uk.co.caprica.vlcj.player.TrackDescription;
 import uk.co.caprica.vlcj.player.embedded.EmbeddedMediaPlayer;
 
 public class PlayerControlsPanel extends JPanel {
@@ -67,11 +70,10 @@ public class PlayerControlsPanel extends JPanel {
 
     private JButton toggleMuteButton;
     private JSlider volumeSlider;
-
     private JButton fullScreenButton;
-
     private JButton subTitlesButton;
-
+    private JComboBox<SubItem> subtitleChoiser;
+    private JButton playlistButton;
     private JFileChooser fileChooser;
 
     private boolean mousePressedPlaying = false;
@@ -149,6 +151,13 @@ public class PlayerControlsPanel extends JPanel {
         subTitlesButton = new JButton();
         subTitlesButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/comment.png")));
         subTitlesButton.setToolTipText("Cycle sub-titles");
+        
+        playlistButton=new JButton();
+        playlistButton.setIcon(new ImageIcon(getClass().getClassLoader().getResource("icons/control_playlist.png")));
+        playlistButton.setToolTipText("Mostra/Nascondi playlist");
+        
+        subtitleChoiser=new JComboBox<SubItem>();
+        subtitleChoiser.setToolTipText("Traccia sottotitolo");
     }
 
     private void layoutControls() {
@@ -182,7 +191,8 @@ public class PlayerControlsPanel extends JPanel {
         bottomPanel.add(nextChapterButton);
         bottomPanel.add(volumeSlider);
         bottomPanel.add(toggleMuteButton);
-        bottomPanel.add(subTitlesButton);
+        bottomPanel.add(subtitleChoiser);
+        bottomPanel.add(playlistButton);
 
         add(bottomPanel, BorderLayout.SOUTH);
     }
@@ -222,7 +232,6 @@ public class PlayerControlsPanel extends JPanel {
         
         updateTime(time);
         updatePosition(position);
-        //updateTotalTime(chapterCount);
     }
 
     private void registerListeners() {
@@ -311,23 +320,21 @@ public class PlayerControlsPanel extends JPanel {
                 mediaPlayer.toggleFullScreen();
             }
         });
-
-        subTitlesButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int spu = mediaPlayer.getSpu();
-                if(spu > -1) {
-                    spu ++ ;
-                    if(spu > mediaPlayer.getSpuCount()) {
-                        spu = -1;
-                    }
-                }
-                else {
-                    spu = 0;
-                }
-                mediaPlayer.setSpu(spu);
-            }
-        });
+        playlistButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				Player p=Player.getInstance();
+				JPanel panel=p.getPlaylistPanel();
+				panel.setVisible(!panel.isVisible());
+			}
+		});
+        subtitleChoiser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.out.println("Traccia sub corrente: "+mediaPlayer.getSpu());
+				SubItem sub=(SubItem) subtitleChoiser.getSelectedItem();
+				mediaPlayer.setSpu(sub.getID());
+				System.out.println("Traccia sub cambiata in: "+mediaPlayer.getSpu());
+			}
+		});
     }
 
     private final class UpdateRunnable implements Runnable {
@@ -338,21 +345,25 @@ public class PlayerControlsPanel extends JPanel {
             this.mediaPlayer = mediaPlayer;
         }
 
-        @Override
+        private boolean firstRead=true;
         public void run() {
             final long time = mediaPlayer.getTime();
             final int position = (int)(mediaPlayer.getPosition() * 1000.0f);
-            final long totalTime = mediaPlayer.getLength();
+            final long totalTime = mediaPlayer.getLength();            
 
             // Updates to user interface components must be executed on the Event
             // Dispatch Thread
             SwingUtilities.invokeLater(new Runnable() {
-                @Override
                 public void run() {
                     if(mediaPlayer.isPlaying()) {
                         updateTime(time);
                         updatePosition(position);
-                        updateTotalTime(totalTime);
+                        
+                        if(firstRead){
+                        	updateTotalTime(totalTime);
+                            updateSubtitlesList();
+                        	firstRead=false;
+                        }
                     }
                 }
             });
@@ -372,6 +383,41 @@ public class PlayerControlsPanel extends JPanel {
     private void updateTotalTime(long totaltTime) {
     	String s = String.format("%02d:%02d:%02d", TimeUnit.MILLISECONDS.toHours(totaltTime), TimeUnit.MILLISECONDS.toMinutes(totaltTime) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(totaltTime)), TimeUnit.MILLISECONDS.toSeconds(totaltTime) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(totaltTime)));
         totalTimeLabel.setText(s);
+        System.out.println("Aggiorno il tempo totale");
+    }
+    private void updateSubtitlesList(){
+    	subtitleChoiser.removeAllItems();
+    	List<TrackDescription> list=mediaPlayer.getSpuDescriptions();
+    	for(int i=0;i<list.size();i++){
+    		TrackDescription tr=list.get(i);
+    		SubItem sub=new SubItem(tr.id(), tr.id()==-1?"Disabilita":"Traccia "+(i));
+    		subtitleChoiser.addItem(sub);
+    	}
+    	if(list.size()>1)
+    		subtitleChoiser.setSelectedIndex(1);
+    	/*
+    	subtitleChoiser.removeAllItems();
+    	subtitleChoiser.addItem("Disabilita");
+    	for(int i=0;i<num_tracks;i++){
+    		subtitleChoiser.addItem("Traccia "+(i+1));
+    	}
+    	if(num_tracks>0)
+    		subtitleChoiser.setSelectedIndex(1);
+    	*/
+    }
+    class SubItem {
+    	private int id;
+    	private String nome;
+    	public SubItem(int id, String nome){
+    		this.id=id;
+    		this.nome=nome;
+    	}
+    	public String toString(){
+    		return nome;
+    	}
+    	public int getID(){
+    		return id;
+    	}
     }
 /*
     private void updateVolume(int value) {

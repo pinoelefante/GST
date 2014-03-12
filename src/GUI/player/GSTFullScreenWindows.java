@@ -45,9 +45,11 @@ public class GSTFullScreenWindows implements FullScreenStrategy {
 			frame.addFocusListener(new FocusListener() {
 				public void focusLost(FocusEvent e) {
 					System.out.println("focus perso");
-					frame.setState(JFrame.NORMAL);
-					frame.toFront();
-					frame.requestFocus();
+					if(!Player.getInstance().getControls().isVisible()){
+						frame.setState(JFrame.NORMAL);
+						frame.toFront();
+						frame.requestFocus();
+					}
 				}
 				public void focusGained(FocusEvent arg0) {
 					System.out.println("Focus acquisito");
@@ -58,14 +60,25 @@ public class GSTFullScreenWindows implements FullScreenStrategy {
 				public void keyReleased(KeyEvent arg0) {}
 				
 				public void keyPressed(KeyEvent arg0) {
+					Player p=Player.getInstance();
 					switch(arg0.getKeyCode()){
-					case KeyEvent.VK_SPACE:
-						Player.getInstance().pause();
-						break;
-					case KeyEvent.VK_F:
-					case KeyEvent.VK_ESCAPE:
-						exitFullScreenMode();
-						break;
+						case KeyEvent.VK_SPACE:
+							Player.getInstance().pause();
+							break;
+						case KeyEvent.VK_F:
+						case KeyEvent.VK_ESCAPE:
+							exitFullScreenMode();
+							break;
+						case KeyEvent.VK_P:
+							JPanel panel=p.getPlaylistPanel();
+							panel.setVisible(!panel.isVisible());
+							break;
+						case KeyEvent.VK_LEFT:
+							p.skip(-5000);
+							break;
+						case KeyEvent.VK_RIGHT:
+							p.skip(5000L);
+							break;
 					}
 				}
 			});
@@ -169,7 +182,7 @@ public class GSTFullScreenWindows implements FullScreenStrategy {
 					}
 					else {
 						Player.getInstance().getControls().setVisible(true);
-						frame.requestFocus();
+						//frame.requestFocus();
 					}
 					sleep(200L);
 				}

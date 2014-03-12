@@ -3,6 +3,7 @@ package GUI;
 import javax.swing.JFrame;
 
 import GUI.player.Player;
+import GUI.player.PlayerEsterno;
 import Naming.CaratteristicheFile;
 import Programma.ControlloAggiornamenti;
 import Programma.Download;
@@ -2288,6 +2289,7 @@ public class Interfaccia extends JFrame {
 		Action play = new AbstractAction(){
 			private static final long serialVersionUID = 1L;
 
+			@SuppressWarnings("rawtypes")
 			public void actionPerformed(ActionEvent e){
 				JTable table = (JTable)e.getSource();
 				Vector row=((DefaultTableModel)table.getModel()).getDataVector();
@@ -2295,14 +2297,10 @@ public class Interfaccia extends JFrame {
 				int index_stagione=((DefaultTableModel)table.getModel()).findColumn("Stagione");
 				int index_episodio=((DefaultTableModel)table.getModel()).findColumn("Episodio");
 				int indexRow = Integer.valueOf( e.getActionCommand() );
-				
-				row.elementAt(indexRow);
-				
+								
 				String nomeSerieRow=(String) ((Vector)row.elementAt(indexRow)).elementAt(index_nomeserie);
 				Integer stagioneRow=(Integer) ((Vector)row.elementAt(indexRow)).elementAt(index_stagione);
 				Integer episodioRow=(Integer) ((Vector)row.elementAt(indexRow)).elementAt(index_episodio);
-				
-				//JOptionPane.showMessageDialog(thisframe, "Index Row:"+indexRow+"\nIndexNomeSerie:"+index_nomeserie+"\nIndexStagione:"+index_stagione+"\nIndexEpisodio:"+index_episodio);
 				
 		        ArrayList<SerieTV> st=GestioneSerieTV.getElencoSerieInserite();
 		        for(int i=0;i<st.size();i++){
@@ -2310,18 +2308,33 @@ public class Interfaccia extends JFrame {
 		        	if(s.getNomeSerie().compareToIgnoreCase(nomeSerieRow)==0){
 		        		for(int j=0;j<s.getNumEpisodi();j++){
 		        			Episodio ep=s.getEpisodio(j);
-		        			if(ep.getStagione()==stagioneRow && ep.getEpisodio()==episodioRow){
+		        			if(ep.getStagione()==stagioneRow && ep.getEpisodio()==episodioRow){     				
 		        				Torrent t=ep.getLinkLettore();
-		        				Player.getInstance().add(t);
-		        				tab.setSelectedIndex(3);
-		        				Player p=Player.getInstance();
-		        				p.playItem(p.getPlayList().size()-1);
+		        				if(t.getFilePath()!=null || !t.getFilePath().isEmpty()){
+		        					if(Settings.isExtenalVLC()){
+		        						PlayerEsterno.play(t.getFilePath());
+		        					}
+		        					else {
+			        					Player p=Player.getInstance();
+			        					p.add(t);
+			        					if(!p.isPlaying()){
+			        						tab.setSelectedIndex(3);
+				        					p.playItem(p.getPlayList().size()-1);
+			        					}
+			        					else {
+			        						JOptionPane.showMessageDialog(thisframe, "Aggiunto alla playlist");
+			        					}
+		        					}
+		        				}
+		        				else {
+		        					JOptionPane.showMessageDialog(thisframe, "Il file non è presente");
+		        				}
 		        				return;
 		        			}
 		        		}
 		        	}
 		        }
-		        JOptionPane.showMessageDialog(thisframe, "Episodio non trovato");
+		        JOptionPane.showMessageDialog(thisframe, "Episodio o serie non trovata");
 		        
 		    }
 		};

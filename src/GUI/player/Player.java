@@ -528,4 +528,11 @@ public class Player {
 	public MediaPlayerFactory getFactory(){
 		return mediaPlayerFactory;
 	}
+	public JPanel getPlaylistPanel(){
+		return playlistPanel;
+	}
+	public void skip(long pos){
+		if(isPlaying())
+			mediaPlayer.skip(pos);
+	}
 }

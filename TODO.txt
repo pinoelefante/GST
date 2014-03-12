@@ -1,5 +1,4 @@
 ﻿FARE
-- rivedere operazioni avvio (vari doClick())
 - feedback utenti
 - più social. pagina facebook. follow su twitter
 - file lingua esterno
@@ -12,23 +11,17 @@
 - trovare informazioni sulle serie
 - informazioni sull'episodio
 - download dei trailer da primetvseries
-- mostrare le nuove serie di eztv
 - calendario serie tv
 - selezione puntata di partenza della serie
 - ricerca vlc automatica
-- tasto "copia" per le puntate per copiare su un altro dispositivo
 - riduci a icona quando viene cliccato play
 - modalità Remote
 - scaricare sottotitolo quando il file video è presente
-- libreria zip
 - quando si clicca play, se il sottotitolo non è presente si analizzano prima i file presenti nella cartella per cercarlo (se ha un nome diverso) e rinominarlo, altrimenti si scarica
 - i file zip non si devono considerare sottotitoli.
 - inserimento changelog
-- database repair
 - inserimento sottotitolo in database
 - stato aggiornamento nella parte inferiore del frame
-- tab con offerte zanox
-- ultime serie inserite
 
 DA ULTIMARE
 
