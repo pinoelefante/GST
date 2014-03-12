@@ -202,13 +202,16 @@ public class Player {
         @Override
         public void mediaChanged(MediaPlayer mediaPlayer, libvlc_media_t media, String mrl) {
             Logger.debug("mediaChanged(mediaPlayer={},media={},mrl={})", mediaPlayer, media, mrl);
+            System.out.println("media changed");
+            ((PlayerControlsPanel)controlsPanel).setReadInfo(true);
         }
 
         @Override
         public void finished(MediaPlayer mediaPlayerC) {
-            Logger.debug("finished(mediaPlayer={})", mediaPlayerC);
-            if(hasNext())
+            //Logger.debug("finished(mediaPlayer={})", mediaPlayerC);
+            if(hasNext()){
             	next();
+            }
             else {
             	stop();
             	mediaPlayer.toggleFullScreen();
@@ -217,19 +220,20 @@ public class Player {
 
         @Override
         public void paused(MediaPlayer mediaPlayer) {
-            Logger.debug("paused(mediaPlayer={})", mediaPlayer);
+            //Logger.debug("paused(mediaPlayer={})", mediaPlayer);
         }
 
         @Override
-        public void playing(MediaPlayer mediaPlayer) {
+        public void playing(MediaPlayer mediaPlayer) {/*
             Logger.debug("playing(mediaPlayer={})", mediaPlayer);
             MediaDetails mediaDetails = mediaPlayer.getMediaDetails();
             Logger.info("mediaDetails={}", mediaDetails);
+            */
         }
 
         @Override
         public void stopped(MediaPlayer mediaPlayer) {
-            Logger.debug("stopped(mediaPlayer={})", mediaPlayer);
+            //Logger.debug("stopped(mediaPlayer={})", mediaPlayer);
         }
 
         @Override

@@ -331,12 +331,18 @@ public class PlayerControlsPanel extends JPanel {
 			public void actionPerformed(ActionEvent arg0) {
 				System.out.println("Traccia sub corrente: "+mediaPlayer.getSpu());
 				SubItem sub=(SubItem) subtitleChoiser.getSelectedItem();
-				mediaPlayer.setSpu(sub.getID());
-				System.out.println("Traccia sub cambiata in: "+mediaPlayer.getSpu());
+				if(sub!=null){
+					mediaPlayer.setSpu(sub.getID());
+					System.out.println("Traccia sub cambiata in: "+mediaPlayer.getSpu());
+				}
 			}
 		});
     }
 
+    public void setReadInfo(boolean s){
+    	firstReadInfo=s;
+    }
+    private boolean firstReadInfo = true;
     private final class UpdateRunnable implements Runnable {
 
         private final MediaPlayer mediaPlayer;
@@ -344,8 +350,6 @@ public class PlayerControlsPanel extends JPanel {
         private UpdateRunnable(MediaPlayer mediaPlayer) {
             this.mediaPlayer = mediaPlayer;
         }
-
-        private boolean firstRead=true;
         public void run() {
             final long time = mediaPlayer.getTime();
             final int position = (int)(mediaPlayer.getPosition() * 1000.0f);
@@ -359,10 +363,10 @@ public class PlayerControlsPanel extends JPanel {
                         updateTime(time);
                         updatePosition(position);
                         
-                        if(firstRead){
-                        	updateTotalTime(totalTime);
+                        if(firstReadInfo){
                             updateSubtitlesList();
-                        	firstRead=false;
+                        	firstReadInfo=false;
+                        	updateTotalTime(totalTime);
                         }
                     }
                 }
@@ -385,7 +389,8 @@ public class PlayerControlsPanel extends JPanel {
         totalTimeLabel.setText(s);
         System.out.println("Aggiorno il tempo totale");
     }
-    private void updateSubtitlesList(){
+    public void updateSubtitlesList(){
+    	System.out.println("Aggiornando elenco sottotitoli");
     	subtitleChoiser.removeAllItems();
     	List<TrackDescription> list=mediaPlayer.getSpuDescriptions();
     	for(int i=0;i<list.size();i++){
