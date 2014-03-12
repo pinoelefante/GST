@@ -205,10 +205,14 @@ public class Player {
         }
 
         @Override
-        public void finished(MediaPlayer mediaPlayer) {
-            Logger.debug("finished(mediaPlayer={})", mediaPlayer);
+        public void finished(MediaPlayer mediaPlayerC) {
+            Logger.debug("finished(mediaPlayer={})", mediaPlayerC);
             if(hasNext())
             	next();
+            else {
+            	stop();
+            	mediaPlayer.toggleFullScreen();
+            }
         }
 
         @Override
@@ -411,7 +415,7 @@ public class Player {
 		}
 	}
 	public boolean hasNext(){
-		if(current_item_playlist==playlist.size() || playlist.isEmpty())
+		if(current_item_playlist==playlist.size()-1 || current_item_playlist==playlist.size() || playlist.isEmpty())
 			return false;
 		return true;
 	}
