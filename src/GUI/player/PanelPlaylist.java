@@ -133,4 +133,7 @@ public class PanelPlaylist extends JPanel{
 		list.revalidate();
 		list.repaint();
 	}
+	public void setSelectedItem(int index){
+		list.setSelectedIndex(index);
+	}
 }

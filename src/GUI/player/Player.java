@@ -427,15 +427,17 @@ public class Player {
 		current_item_playlist++;
 		if(current_item_playlist>=playlist.size())
 			current_item_playlist=0;
-		if(!playlist.isEmpty())
+		if(!playlist.isEmpty()){
 			playItem(current_item_playlist);
+		}
 	}
 
 	public void prev() {
 		if(current_item_playlist>0){
 			current_item_playlist--;
-			if(!playlist.isEmpty())
+			if(!playlist.isEmpty()){
 				playItem(current_item_playlist);
+			}
 		}
 		
 	}
@@ -445,6 +447,7 @@ public class Player {
 			mediaPlayer.playMedia(item.getPath());
 			item.setPlayed();
 			current_item_playlist=index;
+			playlistPanel.setSelectedItem(current_item_playlist);
 		}
 	};
 	

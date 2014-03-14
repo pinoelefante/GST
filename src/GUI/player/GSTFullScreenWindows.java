@@ -166,6 +166,7 @@ public class GSTFullScreenWindows implements FullScreenStrategy {
 		}
 		public void run(){
 			try {
+				Player player=Player.getInstance();
 				while (true) {
 					Point p=MouseInfo.getPointerInfo().getLocation();
 					if(p.x==lastPoint.x && p.y==lastPoint.y){
@@ -182,7 +183,9 @@ public class GSTFullScreenWindows implements FullScreenStrategy {
 					}
 					else {
 						Player.getInstance().getControls().setVisible(true);
-						//frame.requestFocus();
+						if(!((PlayerControlsPanel)player.getControls()).hasFocusOnSubTracks()){
+							frame.requestFocus();
+						}
 					}
 					sleep(200L);
 				}

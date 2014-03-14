@@ -424,6 +424,9 @@ public class PlayerControlsPanel extends JPanel {
     		return id;
     	}
     }
+    public boolean hasFocusOnSubTracks(){
+    	return subtitleChoiser.hasFocus();
+    }
 /*
     private void updateVolume(int value) {
         volumeSlider.setValue(value);
