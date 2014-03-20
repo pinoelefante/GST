@@ -124,6 +124,7 @@ public class Subspedia implements ProviderSottotitoli {
 								if(attr.getTextContent().contains("a href")){
 									if(attr.getTextContent().contains(".zip")){
 										link=attr.getTextContent().substring(attr.getTextContent().indexOf("a href")+"a href".length()+2, attr.getTextContent().indexOf(".zip")+".zip".length());
+										link=link.replace("http://www.weebly.com", "");
 									}
 								}
 								break;
@@ -147,17 +148,21 @@ public class Subspedia implements ProviderSottotitoli {
 			ManagerException.registraEccezione(e);
 		}
 	}
-	/*
+	
 	private void stampaFeed(){
 		for(int i=0;i<rss.size();i++){
 			System.out.println(rss.get(i));
 		}
 	}
-	*/
 
 	@Override
 	public int getProviderID() {
 		return GestoreSottotitoli.SUBSPEDIA;
+	}
+	public static void main(String[] args){
+		Subspedia sp=new Subspedia();
+		sp.scaricaFeed();
+		sp.stampaFeed();
 	}
 
 }
