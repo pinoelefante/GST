@@ -1,0 +1,12 @@
+- URL protocol handler ex: gst://numidserie
+- premium (rimozione di pubblicità/online sync)
+- estrazione zip con 7zip (attualmente viene usato ZipFile interno a java)
+- TheTVDB API
+- Subspedia
+- Subsfactory
+- sottotitoli in inglese
+- calendario
+- vlc linux utilizzabile solo se installato
+
+
+- importare una serie tv da una cartella

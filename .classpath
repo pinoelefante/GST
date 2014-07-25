@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="C:/workspaceEE/GST/lib/commons-codec.jar"/>
+	<classpathentry kind="lib" path="C:/workspaceEE/GST/lib/commons-collections.jar"/>
+	<classpathentry kind="lib" path="C:/workspaceEE/GST/lib/commons-io.jar"/>
+	<classpathentry kind="lib" path="C:/workspaceEE/GST/lib/commons-lang3.jar"/>
+	<classpathentry kind="lib" path="C:/workspaceEE/GST/lib/commons-logging.jar"/>
+	<classpathentry kind="lib" path="C:/workspaceEE/GST/lib/cssparser.jar"/>
+	<classpathentry kind="lib" path="C:/workspaceEE/GST/lib/DJNativeSwing.jar"/>
+	<classpathentry kind="lib" path="C:/workspaceEE/GST/lib/DJNativeSwing-SWT.jar"/>
+	<classpathentry kind="lib" path="C:/workspaceEE/GST/lib/htmlunit.jar"/>
+	<classpathentry kind="lib" path="C:/workspaceEE/GST/lib/htmlunit-core-js.jar"/>
+	<classpathentry kind="lib" path="C:/workspaceEE/GST/lib/httpclient.jar"/>
+	<classpathentry kind="lib" path="C:/workspaceEE/GST/lib/httpcore.jar"/>
+	<classpathentry kind="lib" path="C:/workspaceEE/GST/lib/httpmime.jar"/>
+	<classpathentry kind="lib" path="C:/workspaceEE/GST/lib/jna-3.5.2.jar"/>
+	<classpathentry kind="lib" path="C:/workspaceEE/GST/lib/jna-platform-3.5.2.jar"/>
+	<classpathentry kind="lib" path="C:/workspaceEE/GST/lib/nekohtml.jar"/>
+	<classpathentry kind="lib" path="C:/workspaceEE/GST/lib/sac.jar"/>
+	<classpathentry kind="lib" path="C:/workspaceEE/GST/lib/sevenzipjbinding.jar"/>
+	<classpathentry kind="lib" path="C:/workspaceEE/GST/lib/sevenzipjbinding-AllPlatforms.jar"/>
+	<classpathentry kind="lib" path="C:/workspaceEE/GST/lib/sqlite-jdbc.jar"/>
+	<classpathentry kind="lib" path="C:/workspaceEE/GST/lib/swt-win32-x86.jar"/>
+	<classpathentry kind="lib" path="C:/workspaceEE/GST/lib/xalan.jar"/>
+	<classpathentry kind="lib" path="C:/workspaceEE/GST/lib/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="C:/workspaceEE/GST/lib/vlcj.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
