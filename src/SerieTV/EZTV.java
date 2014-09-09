@@ -28,9 +28,10 @@ public class EZTV extends ProviderSerieTV{
 		super();
 		cleanUpTemp();
 		baseUrls=new ArrayList<String>();
-		baseUrls.add("http://eztv.it");
-		baseUrls.add("https://eztv-proxy.net");
-		baseUrls.add("http://eztv.openinternet.biz");
+		baseUrls.add("http://tvshowsmanager.hostei.com/?url=https://eztv.it");
+		baseUrls.add("https://eztv.it");
+		//baseUrls.add("https://eztv-proxy.net");
+		//baseUrls.add("http://eztv.openinternet.biz");
 		baseUrl=getOnlineUrl();
 		System.out.println("Base URL in uso: "+baseUrl);
 	}
