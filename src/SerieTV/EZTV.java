@@ -60,6 +60,7 @@ public class EZTV extends ProviderSerieTV{
 		try{
 			System.out.println("EZTV.it - Aggiornando elenco serie tv");
 			String base_url=/*WebProxyManager.getUrlProxy()+*/getBaseURL();
+			/*
 			if(base_url.startsWith("https")){
 				HtmlPage showlist = HttpsDownload.downloadPageFromHttpsUrl(base_url+"/showlist/");
 				List<HtmlAnchor> shows=showlist.getAnchors();
@@ -114,6 +115,7 @@ public class EZTV extends ProviderSerieTV{
 				System.out.println("EZTV - aggiornamento elenco serie tv completo\nCaricate "+caricate+" nuove serie");
 			}
 			else {
+			*/
 				Download downloader=new Download(base_url+"/showlist/", Settings.getUserDir()+"file.html");
 				downloader.avviaDownload();
 				try {
@@ -200,7 +202,7 @@ public class EZTV extends ProviderSerieTV{
 					}
 				}
 				OperazioniFile.deleteFile(Settings.getUserDir()+"file.html");
-			}
+			//}
 		}
 		catch(Exception e){
 			
@@ -363,9 +365,11 @@ public class EZTV extends ProviderSerieTV{
 		System.out.println("Aggiornando i link di: "+serie.getNomeSerie());
 	
 		try{
+			
     		String base_url=/*WebProxyManager.getUrlProxy()+*/getBaseURL();
     		//System.out.println(base_url+"/shows/"+serie.getUrl()+"/");
     		base_url+="/shows/"+serie.getUrl()+"/";
+    		/*
     		if(base_url.startsWith("https")){
     			HtmlPage pagina=HttpsDownload.downloadPageFromHttpsUrl(base_url);
     			List<HtmlAnchor> links=pagina.getAnchors();
@@ -381,7 +385,7 @@ public class EZTV extends ProviderSerieTV{
     			pagina.cleanUp();
     			pagina.remove();
     		}
-    		else {
+    		else {*/
     			Download download=new Download(base_url, Settings.getUserDir()+serie.getNomeSerie());
         		download.avviaDownload();
         		download.getDownloadThread().join();
@@ -406,7 +410,7 @@ public class EZTV extends ProviderSerieTV{
         		file.close();
         		fr.close();
         		OperazioniFile.deleteFile(Settings.getUserDir()+serie.getNomeSerie());
-    		}
+    		//}
     		
     		if(serie.isConclusa()){
     			serie.setStopSearch(true, true);
