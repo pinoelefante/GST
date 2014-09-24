@@ -24,12 +24,19 @@ public class EZTV extends ProviderSerieTV {
 		super();
 		cleanUpTemp();
 		baseUrls = new ArrayList<String>();
-		baseUrls.add("http://tvshowsmanager.hostei.com/?url=https://eztv.it");
+		baseUrls.add("http://gestioneserietv.altervista.org/proxy.php?url=https://eztv.it");
 		baseUrls.add("https://eztv.it");
+		baseUrls.add("http://tvshowsmanager.hostei.com/?url=https://eztv.it");
+		
 		// baseUrls.add("https://eztv-proxy.net");
 		// baseUrls.add("http://eztv.openinternet.biz");
 		baseUrl = getOnlineUrl();
 		System.out.println("Base URL in uso: " + baseUrl);
+	}
+	public static void main(String[] args){
+		Database.Connect();
+		EZTV ez = new EZTV();
+		System.out.println("URL = "+ez.getOnlineUrl());
 	}
 
 	private String getOnlineUrl() {

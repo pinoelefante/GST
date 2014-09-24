@@ -11,7 +11,7 @@ import com.sun.jna.platform.win32.Advapi32Util;
 import com.sun.jna.platform.win32.WinReg;
 
 public class Settings {
-	private static final int	VersioneSoftware					= 124;
+	private static final int	VersioneSoftware					= 125;
 	public static final String	IndirizzoDonazioni					= "http://pinoelefante.altervista.org/donazioni/donazione_gst.html";
 	private static String		current_dir							= "";
 	private static String		user_dir							= "";
@@ -172,7 +172,10 @@ public class Settings {
 		return MinRicerca;
 	}
 	public static void setMinRicerca(int minRicerca) {
-		MinRicerca = minRicerca;
+		if(minRicerca<60)
+			MinRicerca=60;
+		else
+			MinRicerca = minRicerca;
 	}
 	public static void setClientID(String id){
 		ClientID=id;
