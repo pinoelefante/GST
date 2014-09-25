@@ -90,7 +90,7 @@ public class Update {
 			Settings.setAlwaysOnTop(((int) res.getValueByKey("always_on_top"))==1?true:false);
 			Settings.setAutostart(((int) res.getValueByKey("autostart"))==1?true:false);
             Settings.setDownloadAutomatico(((int) res.getValueByKey("download_auto"))==1?true:false);
-            Settings.setMinRicerca((int) res.getValueByKey("min_download_auto"));
+            //Settings.setMinRicerca((int) res.getValueByKey("min_download_auto"));
             Settings.setNewUpdate(((int) res.getValueByKey("new_update"))==1?true:false);
             Settings.setLastVersion((int) res.getValueByKey("last_version"));
             Settings.setRicercaSottotitoli(((int) res.getValueByKey("download_sottotitoli"))==1?true:false);
@@ -197,8 +197,8 @@ public class Update {
 					Settings.setAutostart(startwin==1?true:false);
 					int ricerca_auto=(int) settings.get(0).getValueByKey("ricerca_auto");
 					Settings.setDownloadAutomatico(ricerca_auto==1?true:false);
-					int min_ricerca=(int) settings.get(0).getValueByKey("min_ricerca");
-					Settings.setMinRicerca(min_ricerca);
+					//int min_ricerca=(int) settings.get(0).getValueByKey("min_ricerca");
+					//Settings.setMinRicerca(min_ricerca);
 					int last_ver=(int) settings.get(0).getValueByKey("last_version");
 					Settings.setLastVersion(last_ver);
 					int ricerca_sub=(int) settings.get(0).getValueByKey("ricerca_sub");

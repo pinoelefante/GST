@@ -22,7 +22,7 @@ public class Settings {
 	private static boolean		StartHidden							= false;
 	private static boolean		Autostart							= true;
 	private static boolean		DownloadAutomatico					= false;
-	private static int			MinRicerca							= 480;
+	//private static int			MinRicerca							= 480;
 	private static String		SistemaOperativo					= "";
 	private static boolean		canStartDownloadAutomatico			= false;
 	
