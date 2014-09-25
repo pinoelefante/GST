@@ -1,5 +1,6 @@
 package SerieTV;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -24,19 +25,20 @@ public class EZTV extends ProviderSerieTV {
 		super();
 		cleanUpTemp();
 		baseUrls = new ArrayList<String>();
-		baseUrls.add("http://gestioneserietv.altervista.org/proxy.php?url=https://eztv.it");
+		baseUrls.add("http://gestioneserietv.altervista.org/proxy_v2/proxy.php?url=https://eztv.it");
 		baseUrls.add("https://eztv.it");
 		baseUrls.add("http://tvshowsmanager.hostei.com/?url=https://eztv.it");
-		
+
 		// baseUrls.add("https://eztv-proxy.net");
 		// baseUrls.add("http://eztv.openinternet.biz");
 		baseUrl = getOnlineUrl();
 		System.out.println("Base URL in uso: " + baseUrl);
 	}
-	public static void main(String[] args){
+
+	public static void main(String[] args) {
 		Database.Connect();
 		EZTV ez = new EZTV();
-		System.out.println("URL = "+ez.getOnlineUrl());
+		System.out.println("URL = " + ez.getOnlineUrl());
 	}
 
 	private String getOnlineUrl() {
@@ -61,109 +63,145 @@ public class EZTV extends ProviderSerieTV {
 
 	@Override
 	public void aggiornaElencoSerie() {
-		try {
-			System.out.println("EZTV.it - Aggiornando elenco serie tv");
-			String base_url = /* WebProxyManager.getUrlProxy()+ */getBaseURL();
-
-			Download downloader = new Download(base_url + "/showlist/",
-					Settings.getUserDir() + "file.html");
-			downloader.avviaDownload();
+		if (getBaseURL()
+				.compareTo(
+						"http://gestioneserietv.altervista.org/proxy_v2/proxy.php?url=https://eztv.it") == 0) {
 			try {
-				downloader.getDownloadThread().join();
-			} catch (InterruptedException e1) {
-				e1.printStackTrace();
-				// aggiornaElencoSerie();
-			}
-			FileReader f_r = null;
-			Scanner file = null;
-			int caricate = 0;
-			try {
-				f_r = new FileReader(Settings.getUserDir() + "file.html");
-				file = new Scanner(f_r);
-
+				Download.downloadFromUrl(getBaseURL() + "/showlist/",
+						Settings.getUserDir() + "file.html");
+				Scanner file = new Scanner(new File(Settings.getUserDir()
+						+ "file.html"));
+				int caricate = 0;
 				while (file.hasNextLine()) {
-					String linea = file.nextLine().trim();
-					if (linea.contains("\"thread_link\"")) {
-						String nomeserie = linea.substring(
-								linea.indexOf("class=\"thread_link\">")
-										+ "class=\"thread_link\">".length(),
-								linea.indexOf("</a>")).trim();
-						String url = linea.substring(
-								linea.indexOf("<a href=\"")
-										+ "<a href=\"".length(),
-								linea.indexOf("\" class=\"thread_link\">"))
-								.trim();
-						url = url.replace(base_url, "");
-						url = url.replace("/shows/", "");
-						url = url.substring(0, url.indexOf("/"));
-						String nextline = file.nextLine().trim();
-						int stato = 0;
-						if (nextline.contains("ended"))
-							stato = 1;
-						switch (nomeserie) {
-						case "T1":
-						case "T2":
-						case "T3":
-						case "T4":
-						case "T5":
-						case "T6":
-						case "T7":
-						case "T8":
-						case "T9":
-						case "Temp1":
-						case "Temp2":
-						case "Temp3":
-						case "Temp4":
-						case "Temp5":
-						case "Temp6":
-						case "Temp7":
-						case "Temp8":
-						case "Temp9":
-						case "Temporary_Placeholder":
-						case "Temporary_Placeholder_2":
-						case "Temp 01":
-						case "temp 01":
-						case "Temp 02":
-						case "Temp 03":
-						case "Temp 04":
-						case "Temp01":
-						case "Temp02":
-						case "Temp03":
-						case "Temp04":
-							continue;
+					String nome = file.nextLine().trim();
+					String url = file.nextLine().trim();
+					url = url.replace("/shows/", "");
+					url = url.substring(0, url.indexOf("/"));
+					SerieTV toInsert = new SerieTV(this, nome, url);
 
-						}
-						SerieTV toInsert = new SerieTV(this, nomeserie, url);
-						toInsert.setConclusa(stato == 0 ? false : true);
+					if (addSerieFromOnline(toInsert) == null) { // null se non è
+																// presente nel
+																// database
+						salvaSerieInDB(toInsert);
+						caricate++;
+					}
 
-						if (addSerieFromOnline(toInsert) == null) { // null se
-																	// non è
-																	// presente
-																	// nel
-																	// database
-							salvaSerieInDB(toInsert);
-							caricate++;
+				}
+				file.close();
+				OperazioniFile.deleteFile(Settings.getUserDir() + "file.html");
+				System.out
+						.println("Sono state caricate " + caricate + " serie");
+			} catch (IOException e1) {
+				e1.printStackTrace();
+				return;
+			}
+
+		} else
+			try {
+				System.out.println("EZTV.it - Aggiornando elenco serie tv");
+				String base_url = getBaseURL();
+
+				Download downloader = new Download(base_url + "/showlist/",
+						Settings.getUserDir() + "file.html");
+				downloader.avviaDownload();
+				try {
+					downloader.getDownloadThread().join();
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+				FileReader f_r = null;
+				Scanner file = null;
+				int caricate = 0;
+				try {
+					f_r = new FileReader(Settings.getUserDir() + "file.html");
+					file = new Scanner(f_r);
+
+					while (file.hasNextLine()) {
+						String linea = file.nextLine().trim();
+						if (linea.contains("\"thread_link\"")) {
+							String nomeserie = linea
+									.substring(
+											linea.indexOf("class=\"thread_link\">")
+													+ "class=\"thread_link\">"
+															.length(),
+											linea.indexOf("</a>")).trim();
+							String url = linea.substring(
+									linea.indexOf("<a href=\"")
+											+ "<a href=\"".length(),
+									linea.indexOf("\" class=\"thread_link\">"))
+									.trim();
+							url = url.replace(base_url, "");
+							url = url.replace("/shows/", "");
+							url = url.substring(0, url.indexOf("/"));
+							String nextline = file.nextLine().trim();
+							int stato = 0;
+							if (nextline.contains("ended"))
+								stato = 1;
+							switch (nomeserie) {
+							case "T1":
+							case "T2":
+							case "T3":
+							case "T4":
+							case "T5":
+							case "T6":
+							case "T7":
+							case "T8":
+							case "T9":
+							case "Temp1":
+							case "Temp2":
+							case "Temp3":
+							case "Temp4":
+							case "Temp5":
+							case "Temp6":
+							case "Temp7":
+							case "Temp8":
+							case "Temp9":
+							case "Temporary_Placeholder":
+							case "Temporary_Placeholder_2":
+							case "Temp 01":
+							case "temp 01":
+							case "Temp 02":
+							case "Temp 03":
+							case "Temp 04":
+							case "Temp01":
+							case "Temp02":
+							case "Temp03":
+							case "Temp04":
+								continue;
+
+							}
+							SerieTV toInsert = new SerieTV(this, nomeserie, url);
+							toInsert.setConclusa(stato == 0 ? false : true);
+
+							if (addSerieFromOnline(toInsert) == null) { // null
+																		// se
+																		// non è
+																		// presente
+																		// nel
+																		// database
+								salvaSerieInDB(toInsert);
+								caricate++;
+							}
 						}
 					}
-				}
-				System.out
-						.println("EZTV - aggiornamento elenco serie tv completo\nCaricate "
-								+ caricate + " nuove serie");
-			} catch (FileNotFoundException e) {
-				ManagerException.registraEccezione(e);
-			} finally {
-				file.close();
-				try {
-					f_r.close();
-				} catch (IOException e) {
-					e.printStackTrace();
+					System.out
+							.println("EZTV - aggiornamento elenco serie tv completo\nCaricate "
+									+ caricate + " nuove serie");
+				} catch (FileNotFoundException e) {
 					ManagerException.registraEccezione(e);
+				} finally {
+					file.close();
+					try {
+						f_r.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+						ManagerException.registraEccezione(e);
+					}
 				}
-			}
-			OperazioniFile.deleteFile(Settings.getUserDir() + "file.html");
-		} catch (Exception e) {
+				OperazioniFile.deleteFile(Settings.getUserDir() + "file.html");
+			} catch (Exception e) {
 
-		}
+			}
 	}
 
 	@Override
@@ -342,6 +380,27 @@ public class EZTV extends ProviderSerieTV {
 			return;
 		System.out.println("Aggiornando i link di: " + serie.getNomeSerie());
 
+		if(getBaseURL().compareTo("http://gestioneserietv.altervista.org/proxy_v2/proxy.php?url=https://eztv.it")==0){
+			try {
+				Download.downloadFromUrl(getBaseURL() + "/shows/" + serie.getUrl() + "/",Settings.getUserDir()+serie.getNomeSerie());
+				Scanner file = new Scanner(new File(Settings.getUserDir()+serie.getNomeSerie()));
+				while (file.hasNextLine()) {
+					String magnet = file.nextLine().trim();
+					if(!magnet.isEmpty()){
+						Torrent t = new Torrent(serie, magnet, Torrent.SCARICARE);
+						t.parseMagnet();
+						serie.addEpisodio(t);
+					}
+				}
+				file.close();
+				OperazioniFile.deleteFile(Settings.getUserDir()+serie.getNomeSerie());
+			} 
+			catch (IOException e1) {
+				e1.printStackTrace();
+				return;
+			}
+		}
+		else
 		try {
 
 			String base_url = /* WebProxyManager.getUrlProxy()+ */getBaseURL();
