@@ -32,10 +32,10 @@ public class ThreadRicercaAutomatica extends Thread {
 				Interfaccia.getInterfaccia().inizializzaDownloadScroll();
 				do {
 					sleep(60000L);
-					System.out.println("Attesa prossimo download: "+i+"/"+(Settings.getMinRicerca()*60));
+					System.out.println("Attesa prossimo download: "+i+"/28800");
 					i=i+60;
 				}
-				while(i<Settings.getMinRicerca()*60);
+				while(i<28800);
 				aggiorna();
 			}
 		}

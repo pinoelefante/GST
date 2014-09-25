@@ -143,7 +143,6 @@ public class Interfaccia extends JFrame {
 	private JCheckBox		  chckbxAvviaRidottoA;
 	private JCheckBox		  chckbxTrayOnIcon;
 	private JCheckBox		  chckbxAutoAbilita;
-	private JComboBox<Integer> comboBoxMinutiRicercaAutomatica;
 	private JCheckBox		  chckbxAbilitaDownloadSottotitoli;
 	private JCheckBox		  chckbxAbilitaItaliansubsnet;
 	private JLabel			 lblItasaloginresult;
@@ -161,11 +160,8 @@ public class Interfaccia extends JFrame {
 	private JButton			btnIgnora;
 	private JLabel			 lblDona;
 	private JButton			btnCercaAggiornamenti;
-	private JButton			btnAggiornaAds;
-	private JButton			btnChiudiADS;
 	private JLabel			 lblRisultatoAggiornamenti;
 	private JLabel			 lblVersioneAttuale;
-	private JLabel			 lblRicercaOre;
 	private JTabbedPane		tab;
 	private JPanel			 OpzioniPanel;
 	private JButton			btnLettoreUpdate;
@@ -803,7 +799,7 @@ public class Interfaccia extends JFrame {
 
 		JPanel panel_opzioni_download_automatico = new JPanel();
 		panel_opzioni_download_automatico.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Download automatico", TitledBorder.CENTER, TitledBorder.TOP, null, null));
-		panel_opzioni_download_automatico.setBounds(372, 11, 350, 65);
+		panel_opzioni_download_automatico.setBounds(372, 11, 350, 45);
 		OpzioniPanel.add(panel_opzioni_download_automatico);
 		panel_opzioni_download_automatico.setLayout(null);
 
@@ -811,24 +807,6 @@ public class Interfaccia extends JFrame {
 		chckbxAutoAbilita.setBounds(6, 9, 97, 23);
 		chckbxAutoAbilita.setEnabled(true);
 		panel_opzioni_download_automatico.add(chckbxAutoAbilita);
-
-		comboBoxMinutiRicercaAutomatica = new JComboBox<Integer>();
-		comboBoxMinutiRicercaAutomatica.addItem(60);
-		comboBoxMinutiRicercaAutomatica.addItem(240);
-		comboBoxMinutiRicercaAutomatica.addItem(480);
-		comboBoxMinutiRicercaAutomatica.addItem(960);
-		comboBoxMinutiRicercaAutomatica.addItem(1440);
-		comboBoxMinutiRicercaAutomatica.setBounds(10, 33, 66, 20);
-		panel_opzioni_download_automatico.add(comboBoxMinutiRicercaAutomatica);
-
-		JLabel lblMinutiTraOgni = new JLabel("minuti tra ogni ricerca");
-		lblMinutiTraOgni.setBounds(83, 35, 157, 14);
-		panel_opzioni_download_automatico.add(lblMinutiTraOgni);
-
-		lblRicercaOre = new JLabel("");
-		lblRicercaOre.setBounds(252, 35, 86, 16);
-		lblRicercaOre.setText("( 1 ora 0 min )");
-		panel_opzioni_download_automatico.add(lblRicercaOre);
 
 		JPanel panel_4 = new JPanel();
 		panel_4.setBorder(new TitledBorder(null, "Sottotitoli", TitledBorder.CENTER, TitledBorder.TOP, null, null));
@@ -860,12 +838,6 @@ public class Interfaccia extends JFrame {
 		txt_itasa_pass = new JPasswordField();
 		txt_itasa_pass.setBounds(115, 95, 150, 27);
 		panel_4.add(txt_itasa_pass);
-
-		JButton btnItasaVerificaLogin = new JButton("Verifica login");
-		//<TODO abilitare dopo aver fixato il listener per verificare il login su itasa
-		btnItasaVerificaLogin.setEnabled(false);
-		btnItasaVerificaLogin.setBounds(278, 64, 108, 26);
-		panel_4.add(btnItasaVerificaLogin);
 
 		lblItasaloginresult = new JLabel("");
 		lblItasaloginresult.setBounds(278, 98, 108, 16);
@@ -973,18 +945,6 @@ public class Interfaccia extends JFrame {
 		lblDona.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/dona.png")));
 		lblDona.setBounds(381, 291, 337, 70);
 		InfoPanel.add(lblDona);
-
-		btnAggiornaAds = new JButton("");
-		btnAggiornaAds.setToolTipText("Aggiorna pubblicit\u00E0");
-		btnAggiornaAds.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/aggiorna.png")));
-		btnAggiornaAds.setBounds(696, 372, 33, 23);
-		InfoPanel.add(btnAggiornaAds);
-
-		btnChiudiADS = new JButton("");
-		btnChiudiADS.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/remove.png")));
-		btnChiudiADS.setToolTipText("Chiudi pubblicit\u00E0");
-		btnChiudiADS.setBounds(696, 492, 33, 23);
-		InfoPanel.add(btnChiudiADS);
 		
 		/* *//*
 		
@@ -1176,7 +1136,6 @@ public class Interfaccia extends JFrame {
 		chckbxAvviaRidottoA.setSelected(Settings.isStartHidden());
 		chckbxTrayOnIcon.setSelected(Settings.isTrayOnIcon());
 		chckbxAutoAbilita.setSelected(Settings.isDownloadAutomatico());
-		comboBoxMinutiRicercaAutomatica.setSelectedItem(Settings.getMinRicerca());
 		chckbxAbilitaDownloadSottotitoli.setSelected(Settings.isRicercaSottotitoli());
 		chckbxAbilitaItaliansubsnet.setSelected(Settings.isEnableITASA());
 		chckbxCaricaVlcAutomaticamente.setSelected(Settings.isVLCAutoload());
@@ -1326,12 +1285,6 @@ public class Interfaccia extends JFrame {
 				}
 			}
 		});
-		btnAggiornaAds.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				if (advertising != null)
-					advertising.navigate("http://pinoelefante.altervista.org/ads.html");
-			}
-		});
 
 		lblDona.addMouseListener(new MouseListener() {
 			public void mouseReleased(MouseEvent arg0) {}
@@ -1398,26 +1351,6 @@ public class Interfaccia extends JFrame {
 				}
 				Thread t = new ThreadAggiornameno();
 				t.start();
-			}
-		});
-
-		btnChiudiADS.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				NativeInterface.close();
-				InfoPanel.remove(advertising);
-				InfoPanel.remove(btnAggiornaAds);
-				InfoPanel.remove(btnChiudiADS);
-				InfoPanel.revalidate();
-				InfoPanel.repaint();
-			}
-		});
-
-		comboBoxMinutiRicercaAutomatica.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				int minuti = (Integer) comboBoxMinutiRicercaAutomatica.getSelectedItem();
-				int ore = minuti / 60;
-				minuti = minuti % 60;
-				lblRicercaOre.setText("( " + ore + ((ore == 1) ? " ora " : " ore ") + minuti + " min )");
 			}
 		});
 
@@ -1799,7 +1732,6 @@ public class Interfaccia extends JFrame {
 				Settings.setStartHidden(chckbxAvviaRidottoA.isSelected());
 				Settings.setTrayOnIcon(chckbxTrayOnIcon.isSelected());
 				Settings.setDownloadAutomatico(chckbxAutoAbilita.isSelected());
-				Settings.setMinRicerca((int) comboBoxMinutiRicercaAutomatica.getSelectedItem());
 				Settings.setRicercaSottotitoli(chckbxAbilitaDownloadSottotitoli.isSelected());
 				Settings.setEnableITASA(chckbxAbilitaItaliansubsnet.isSelected());
 				if (txt_itasa_pass.getPassword().length > 0) {

@@ -168,15 +168,6 @@ public class Settings {
 	public static void setItasaPassword(String itasa_Password) {
 		Itasa_Password = itasa_Password;
 	}
-	public static int getMinRicerca() {
-		return MinRicerca;
-	}
-	public static void setMinRicerca(int minRicerca) {
-		if(minRicerca<60)
-			MinRicerca=60;
-		else
-			MinRicerca = minRicerca;
-	}
 	public static void setClientID(String id){
 		ClientID=id;
 	}
@@ -190,7 +181,6 @@ public class Settings {
 		setStartHidden(false);
 		setAutostart(true);
 		setDownloadAutomatico(false);
-		setMinRicerca(480);
 		setRicercaSottotitoli(true);
 		setAlwaysOnTop(true);
 	}
@@ -253,7 +243,7 @@ public class Settings {
 		setAskOnClose(true);
 		setAutostart(true);
 		setDownloadAutomatico(false);
-		setMinRicerca(480);
+		//setMinRicerca(480);
 		setRicercaSottotitoli(true);
 		setExtenalVLC(false);
 		setVLCAutoload(true);
@@ -451,7 +441,7 @@ public class Settings {
 			fw.append("always_on_top="+isAlwaysOnTop()+"\n");
 			fw.append("autostart="+isAutostart()+"\n");
 			fw.append("download_auto="+isDownloadAutomatico()+"\n");
-			fw.append("min_download_auto="+getMinRicerca()+"\n");
+			//fw.append("min_download_auto="+getMinRicerca()+"\n");
 			fw.append("new_update="+isNewUpdate()+"\n");
 			fw.append("last_version="+getLastVersion()+"\n");
 			fw.append("download_sottotitoli="+isRicercaSottotitoli()+"\n");
@@ -527,9 +517,10 @@ public class Settings {
 							case "download_auto":
 								setDownloadAutomatico(Boolean.parseBoolean(kv[1]));
 								break;
-							case "min_download_auto":
+							/*case "min_download_auto":
 								setMinRicerca(Integer.parseInt(kv[1]));
 								break;
+							*/
 							case "new_update":
 								setNewUpdate(Boolean.parseBoolean(kv[1]));
 								break;
