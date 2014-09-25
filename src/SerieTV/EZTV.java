@@ -25,8 +25,8 @@ public class EZTV extends ProviderSerieTV {
 		super();
 		cleanUpTemp();
 		baseUrls = new ArrayList<String>();
-		baseUrls.add("http://gestioneserietv.altervista.org/proxy_v2/proxy.php?url=https://eztv.it");
 		baseUrls.add("https://eztv.it");
+		baseUrls.add("http://gestioneserietv.altervista.org/proxy_v2/proxy.php?url=https://eztv.it");
 		baseUrls.add("http://tvshowsmanager.hostei.com/?url=https://eztv.it");
 
 		// baseUrls.add("https://eztv-proxy.net");
