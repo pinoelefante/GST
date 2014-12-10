@@ -13,7 +13,6 @@ import Programma.Download;
 import Programma.ManagerException;
 import Programma.OperazioniFile;
 import Programma.Settings;
-import Programma.WebProxyManager;
 import StruttureDati.db.KVResult;
 import StruttureDati.serietv.Episodio;
 
@@ -45,10 +44,15 @@ public class EZTV extends ProviderSerieTV {
 		for (int i = 0; i < baseUrls.size(); i++) {
 			String url_b = baseUrls.get(i);
 			System.out.println("Verificando: " + url_b);
-			if (Download.isRaggiungibile(url_b))
-				return url_b;
+			try {
+				if (Download.isRaggiungibile(url_b))
+					return url_b;
+			}
+			catch(Exception e ){
+				
+			}
 		}
-		return WebProxyManager.getUrlProxy() + "http://eztv.it";
+		return baseUrls.get(1);
 	}
 
 	public String getProviderName() {

@@ -44,6 +44,8 @@ public class HttpsDownload {
 	public static boolean isHttpsRaggiungibile(String url_s){
 		try {
 			webClient.setUseInsecureSSL(true);
+			webClient.setActiveXNative(false);
+			webClient.setJavaScriptEnabled(false);
 			HtmlPage page=webClient.getPage(url_s);
 			if(page!=null){
 				return true;

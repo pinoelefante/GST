@@ -1,6 +1,70 @@
 package GUI;
 
+import java.awt.AWTException;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Desktop;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
+import java.awt.SystemTray;
+import java.awt.Toolkit;
+import java.awt.TrayIcon;
+import java.awt.TrayIcon.MessageType;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ContainerEvent;
+import java.awt.event.ContainerListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.util.ArrayList;
+import java.util.Vector;
+
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JPasswordField;
+import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EtchedBorder;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.table.DefaultTableModel;
 
 import GUI.player.Player;
 import GUI.player.PlayerEsterno;
@@ -21,79 +85,8 @@ import Sottotitoli.ProviderSottotitoli;
 import Sottotitoli.SerieSub;
 import Sottotitoli.SerieSubSubsfactory;
 import StruttureDati.serietv.Episodio;
-
-import javax.swing.JTabbedPane;
-
-import java.awt.AWTException;
-import java.awt.BorderLayout;
-import java.awt.Desktop;
-import java.awt.Dimension;
-import java.awt.MenuItem;
-import java.awt.PopupMenu;
-import java.awt.SystemTray;
-import java.awt.Toolkit;
-import java.awt.TrayIcon;
-import java.awt.TrayIcon.MessageType;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ContainerEvent;
-import java.awt.event.ContainerListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
-import javax.swing.JButton;
-import javax.swing.SwingUtilities;
-
 import chrriis.dj.nativeswing.swtimpl.NativeInterface;
 import chrriis.dj.nativeswing.swtimpl.components.JWebBrowser;
-
-import javax.swing.border.TitledBorder;
-import javax.swing.JCheckBox;
-import javax.swing.UIManager;
-import javax.swing.JComboBox;
-import javax.swing.JTextField;
-import javax.swing.JPasswordField;
-import javax.swing.border.LineBorder;
-
-import java.awt.Color;
-
-import javax.swing.JScrollPane;
-
-import java.awt.event.MouseAdapter;
-import java.util.ArrayList;
-import java.util.Vector;
-
-import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.DefaultComboBoxModel;
-
-import java.awt.GridLayout;
-import java.io.File;
-import java.io.IOException;
-
-import javax.swing.border.EtchedBorder;
-import javax.swing.border.CompoundBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 public class Interfaccia extends JFrame {
 	private static Interfaccia thisframe;
@@ -210,10 +203,116 @@ public class Interfaccia extends JFrame {
 
 		tab = new JTabbedPane(JTabbedPane.TOP);
 		getContentPane().add(tab, BorderLayout.CENTER);
+		
+		PanelNew = new JPanel();
+		tab.addTab("Novit\u00E0", null, PanelNew, null);
+		
+		panel_3 = new JPanel();
+		PanelNew.add(panel_3);
+		panel_3.setLayout(new BorderLayout(0, 0));
+		
+		btnScaricaNew = new JButton("Scarica");
+		btnScaricaNew.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				class ThreadD extends Thread {
+					public void run(){
+						btnScaricaNew.setEnabled(false);
+						if(OperazioniFile.fileExists(Settings.getCurrentDir()+"gstLauncher.exe") && getHashFile().compareTo(getHashOnline())==0){
+							avviaFile();
+						}
+						else
+							scaricaFile();
+					}
+				}
+				Thread t = new ThreadD();
+				t.start();
+			}
+			private String convertByteArrayToHexString(byte[] arrayBytes) {
+			    StringBuffer stringBuffer = new StringBuffer();
+			    for (int i = 0; i < arrayBytes.length; i++) {
+			        stringBuffer.append(Integer.toString((arrayBytes[i] & 0xff) + 0x100, 16).substring(1));
+			    }
+			    return stringBuffer.toString();
+			}
+			private String getHashFile(){
+				File file = new File(Settings.getCurrentDir()+"gstLauncher.exe");
+				try (FileInputStream inputStream = new FileInputStream(file)) {
+			        MessageDigest digest = MessageDigest.getInstance("MD5");
+			 
+			        byte[] bytesBuffer = new byte[1024];
+			        int bytesRead = -1;
+			 
+			        while ((bytesRead = inputStream.read(bytesBuffer)) != -1) {
+			            digest.update(bytesBuffer, 0, bytesRead);
+			        }
+			 
+			        byte[] hashedBytes = digest.digest();
+			 
+			        return convertByteArrayToHexString(hashedBytes);
+			    } 
+			    catch (Exception ex) {
+			       ex.printStackTrace();
+			    }
+				return "";
+			}
+			private String getHashOnline(){
+				return "6df4029beca80586759be50536da66a2";
+			}
+			private void scaricaFile(){
+				class ThreadT extends Thread {
+					public void run() {
+						Download d = new Download("http://pinoelefante.altervista.org/software/GSTJ/gstLauncher.exe", Settings.getCurrentDir()+"gstLauncher.exe");
+						d.avviaDownload();
+						while(!d.isComplete()){
+							if(d.getFileSize()==0)
+								progressBarNew.setIndeterminate(true);
+							else {
+								progressBarNew.setIndeterminate(false);
+								progressBarNew.setValue((int) ((d.getFileSizeDowloaded()*100)/d.getFileSize()));
+							}
+							try {
+								sleep(500);
+							} 
+							catch (InterruptedException e) {
+								e.printStackTrace();
+								btnScaricaNew.setEnabled(true);
+							}
+						}
+						progressBarNew.setValue(100);
+						btnScaricaNew.setEnabled(true);
+						avviaFile();
+					}
+				}
+				ThreadT t = new ThreadT();
+				t.start();
+			}
+			private void avviaFile(){
+				try {
+					Runtime.getRuntime().exec(Settings.getCurrentDir()+"gstLauncher.exe");
+					System.out.println("launcher avviato");
+					System.exit(0);
+				}
+				catch (IOException e) {
+					e.printStackTrace();
+					btnScaricaNew.setEnabled(true);
+				}
+			}
+		});
+		panel_3.add(btnScaricaNew);
+		
+		lblNewLabel_1 = new JLabel("<html>E' disponibile una versione completamente rivisitata di  Gestione Serie TV.<br> Per continuare a scaricare gli episodi delle tue serie preferite, cliccare il bottone sottostante.</html>");
+		panel_3.add(lblNewLabel_1, BorderLayout.NORTH);
+		
+		progressBarNew = new JProgressBar();
+		panel_3.add(progressBarNew, BorderLayout.SOUTH);
+		
+		progressBarNew.setMinimum(0);
+		progressBarNew.setMaximum(100);
+		progressBarNew.setValue(0);
 
 		JPanel DownloadPanel = new JPanel();
 		tab.addTab("Download", new ImageIcon(Interfaccia.class.getResource("/GUI/res/download.png")), DownloadPanel, null);
-		tab.setEnabledAt(0, true);
+		tab.setEnabledAt(1, true);
 		DownloadPanel.setLayout(null);
 
 		JScrollPane scrollPane = new JScrollPane();
@@ -2307,6 +2406,11 @@ public class Interfaccia extends JFrame {
 	private JCheckBox chckbxScaricaTutto;
 	private JCheckBox chckbxScaricaHdse;
 	private JCheckBox chckbxScaricaPreairse;
+	private JPanel PanelNew;
+	private JLabel lblNewLabel_1;
+	private JButton btnScaricaNew;
+	private JPanel panel_3;
+	private JProgressBar progressBarNew;
 	public void removeTray() {
 		TrayIcon[] ic = tray.getTrayIcons();
 		if (ic.length > 0)
