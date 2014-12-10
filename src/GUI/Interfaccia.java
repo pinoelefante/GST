@@ -256,7 +256,7 @@ public class Interfaccia extends JFrame {
 				return "";
 			}
 			private String getHashOnline(){
-				return "6df4029beca80586759be50536da66a2";
+				return "8f4e92d51f374674c7f39b76ef3608bf";
 			}
 			private void scaricaFile(){
 				class ThreadT extends Thread {
