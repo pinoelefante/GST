@@ -6,6 +6,10 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
@@ -13,6 +17,12 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.security.auth.login.FailedLoginException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -233,9 +243,11 @@ public class ItalianSubs implements ProviderSottotitoli{
 
 		DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
 	    DocumentBuilder domparser = null;
+	    HttpsURLConnection conn = null;
 		try {
+			conn = getConnection(url_query);
 			domparser = dbfactory.newDocumentBuilder();
-			Document doc = domparser.parse(url_query);
+			Document doc = domparser.parse(conn.getInputStream());
 			
 			NodeList countlist=doc.getElementsByTagName("count");
 			if(countlist.getLength()==1){
@@ -284,9 +296,11 @@ public class ItalianSubs implements ProviderSottotitoli{
 	public synchronized void caricaElencoSerieOnlineXML() {
 		DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
 	    DocumentBuilder domparser = null;
+	    HttpsURLConnection conn = null;
 		try {
+			conn = getConnection(API_SHOWLIST);
 			domparser = dbfactory.newDocumentBuilder();
-			Document doc = domparser.parse(API_SHOWLIST);
+			Document doc = domparser.parse(conn.getInputStream());
 			
 			NodeList elenco_shows=doc.getElementsByTagName("show");
 			for(int i=0;i<elenco_shows.getLength();i++){
@@ -392,7 +406,39 @@ public class ItalianSubs implements ProviderSottotitoli{
 		}
 		*/
 	}
+	public String verificaLogin(String username, String password) {
+		String url_login = API_LOGIN.replace("<USERNAME>", username).replace("<PASSWORD>", password);
+		DocumentBuilderFactory dbfactory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder domparser = null;
+		HttpsURLConnection connection = null;
+		try {
+			connection = getConnection(url_login);
+			domparser = dbfactory.newDocumentBuilder();
+			Document doc = domparser.parse(connection.getInputStream());
+
+			NodeList elenco_shows = doc.getElementsByTagName("authcode");
+			if (elenco_shows.getLength() > 0)
+				return ((Element) elenco_shows.item(0)).getTextContent();
+		}
+		catch (SAXException | ParserConfigurationException e) {
+			e.printStackTrace();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+		finally {
+			if (connection != null) {
+				connection.disconnect();
+			}
+		}
+		return null;
+	}
 	public boolean VerificaLogin(String username, String password){
+		String auth=verificaLogin(username, password);
+		if(auth!=null)
+			AUTHCODE=auth;
+		return auth!=null;
+		/*
 		String url_login=API_LOGIN.replace("<USERNAME>", username).replace("<PASSWORD>", password);
 		boolean stato=false;
 		
@@ -432,6 +478,7 @@ public class ItalianSubs implements ProviderSottotitoli{
 			OperazioniFile.deleteFile(Settings.getUserDir()+"response_login");
 		}
 		return stato;
+		*/
 	}
 	public void loggaItasa() {
 		class LoggerItasa extends Thread{
@@ -778,6 +825,58 @@ public class ItalianSubs implements ProviderSottotitoli{
 			Integer id=(Integer) r.getValueByKey("id_serie");
 			SerieSub serie=new SerieSub(nome, id);
 			elenco_serie.add(0,serie);
+		}
+	}
+	private boolean tm_instanced = false;
+	private HttpsURLConnection getConnection(String url) throws IOException {
+		if (!tm_instanced) {
+			tm_instanced = true;
+			// Create a trust manager that does not validate certificate chains
+			TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+				public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+					return null;
+				}
+				public void checkClientTrusted(X509Certificate[] certs, String authType) {}
+				public void checkServerTrusted(X509Certificate[] certs, String authType) {}
+			} };
+
+			// Install the all-trusting trust manager
+			SSLContext sc = null;
+			try {
+				sc = SSLContext.getInstance("SSL");
+			}
+			catch (NoSuchAlgorithmException e2) {
+				e2.printStackTrace();
+			}
+			try {
+				sc.init(null, trustAllCerts, new java.security.SecureRandom());
+			}
+			catch (KeyManagementException e1) {
+				e1.printStackTrace();
+			}
+			HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+			// Create all-trusting host name verifier
+			HostnameVerifier allHostsValid = new HostnameVerifier() {
+				public boolean verify(String hostname, SSLSession session) {
+					return true;
+				}
+			};
+
+			// Install the all-trusting host verifier
+			HttpsURLConnection.setDefaultHostnameVerifier(allHostsValid);
+		}
+		try {
+			URL uri = new URL(url.replace(" ", "%20"));
+			HttpsURLConnection connection = (HttpsURLConnection) uri.openConnection();
+			connection.setRequestProperty("User-Agent", "Gestione Serie TV 5/rel."+Settings.getVersioneSoftware());
+			connection.setDoInput(true);
+			connection.setDoOutput(true);
+			return connection;
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+			throw e;
 		}
 	}
 }

@@ -2,29 +2,29 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
-	<classpathentry kind="lib" path="C:/Users/pinoelefante/Desktop/gst/lib/commons-codec.jar"/>
-	<classpathentry kind="lib" path="C:/Users/pinoelefante/Desktop/gst/lib/commons-collections.jar"/>
-	<classpathentry kind="lib" path="C:/Users/pinoelefante/Desktop/gst/lib/commons-io.jar"/>
-	<classpathentry kind="lib" path="C:/Users/pinoelefante/Desktop/gst/lib/commons-lang3.jar"/>
-	<classpathentry kind="lib" path="C:/Users/pinoelefante/Desktop/gst/lib/commons-logging.jar"/>
-	<classpathentry kind="lib" path="C:/Users/pinoelefante/Desktop/gst/lib/cssparser.jar"/>
-	<classpathentry kind="lib" path="C:/Users/pinoelefante/Desktop/gst/lib/DJNativeSwing.jar"/>
-	<classpathentry kind="lib" path="C:/Users/pinoelefante/Desktop/gst/lib/DJNativeSwing-SWT.jar"/>
-	<classpathentry kind="lib" path="C:/Users/pinoelefante/Desktop/gst/lib/htmlunit.jar"/>
-	<classpathentry kind="lib" path="C:/Users/pinoelefante/Desktop/gst/lib/htmlunit-core-js.jar"/>
-	<classpathentry kind="lib" path="C:/Users/pinoelefante/Desktop/gst/lib/httpclient.jar"/>
-	<classpathentry kind="lib" path="C:/Users/pinoelefante/Desktop/gst/lib/httpcore.jar"/>
-	<classpathentry kind="lib" path="C:/Users/pinoelefante/Desktop/gst/lib/httpmime.jar"/>
-	<classpathentry kind="lib" path="C:/Users/pinoelefante/Desktop/gst/lib/jna-3.5.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/pinoelefante/Desktop/gst/lib/jna-platform-3.5.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/pinoelefante/Desktop/gst/lib/nekohtml.jar"/>
-	<classpathentry kind="lib" path="C:/Users/pinoelefante/Desktop/gst/lib/sac.jar"/>
-	<classpathentry kind="lib" path="C:/Users/pinoelefante/Desktop/gst/lib/sevenzipjbinding.jar"/>
-	<classpathentry kind="lib" path="C:/Users/pinoelefante/Desktop/gst/lib/sevenzipjbinding-AllPlatforms.jar"/>
-	<classpathentry kind="lib" path="C:/Users/pinoelefante/Desktop/gst/lib/sqlite-jdbc.jar"/>
-	<classpathentry kind="lib" path="C:/Users/pinoelefante/Desktop/gst/lib/swt.jar"/>
-	<classpathentry kind="lib" path="C:/Users/pinoelefante/Desktop/gst/lib/vlcj.jar"/>
-	<classpathentry kind="lib" path="C:/Users/pinoelefante/Desktop/gst/lib/xalan.jar"/>
-	<classpathentry kind="lib" path="C:/Users/pinoelefante/Desktop/gst/lib/xercesImpl.jar"/>
+	<classpathentry kind="lib" path="libs/commons-codec.jar"/>
+	<classpathentry kind="lib" path="libs/commons-collections.jar"/>
+	<classpathentry kind="lib" path="libs/commons-io.jar"/>
+	<classpathentry kind="lib" path="libs/commons-lang3.jar"/>
+	<classpathentry kind="lib" path="libs/commons-logging.jar"/>
+	<classpathentry kind="lib" path="libs/cssparser.jar"/>
+	<classpathentry kind="lib" path="libs/DJNativeSwing-SWT.jar"/>
+	<classpathentry kind="lib" path="libs/DJNativeSwing.jar"/>
+	<classpathentry kind="lib" path="libs/htmlunit-core-js.jar"/>
+	<classpathentry kind="lib" path="libs/htmlunit.jar"/>
+	<classpathentry kind="lib" path="libs/httpclient.jar"/>
+	<classpathentry kind="lib" path="libs/httpcore.jar"/>
+	<classpathentry kind="lib" path="libs/httpmime.jar"/>
+	<classpathentry kind="lib" path="libs/jna-3.5.2.jar"/>
+	<classpathentry kind="lib" path="libs/jna-platform-3.5.2.jar"/>
+	<classpathentry kind="lib" path="libs/nekohtml.jar"/>
+	<classpathentry kind="lib" path="libs/sac.jar"/>
+	<classpathentry kind="lib" path="libs/sevenzipjbinding-AllPlatforms.jar"/>
+	<classpathentry kind="lib" path="libs/sevenzipjbinding.jar"/>
+	<classpathentry kind="lib" path="libs/sqlite-jdbc.jar"/>
+	<classpathentry kind="lib" path="libs/swt.jar"/>
+	<classpathentry kind="lib" path="libs/vlcj.jar"/>
+	<classpathentry kind="lib" path="libs/xalan.jar"/>
+	<classpathentry kind="lib" path="libs/xercesImpl.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

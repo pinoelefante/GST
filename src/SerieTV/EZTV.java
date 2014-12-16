@@ -24,12 +24,10 @@ public class EZTV extends ProviderSerieTV {
 		super();
 		cleanUpTemp();
 		baseUrls = new ArrayList<String>();
-		baseUrls.add("https://eztv.it");
 		baseUrls.add("http://gestioneserietv.altervista.org/proxy_v2/proxy.php?url=https://eztv.it");
-		baseUrls.add("http://tvshowsmanager.hostei.com/?url=https://eztv.it");
+		baseUrls.add("https://eztv.it");
+		baseUrls.add("http://gestioneserietv.altervista.org/proxy_v2/proxy.php?url=https://eztv-proxy.net");
 
-		// baseUrls.add("https://eztv-proxy.net");
-		// baseUrls.add("http://eztv.openinternet.biz");
 		baseUrl = getOnlineUrl();
 		System.out.println("Base URL in uso: " + baseUrl);
 	}
@@ -67,14 +65,10 @@ public class EZTV extends ProviderSerieTV {
 
 	@Override
 	public void aggiornaElencoSerie() {
-		if (getBaseURL()
-				.compareTo(
-						"http://gestioneserietv.altervista.org/proxy_v2/proxy.php?url=https://eztv.it") == 0) {
+		if (getBaseURL().startsWith("http://gestioneserietv.altervista.org/proxy_v2/proxy.php?url=")) {
 			try {
-				Download.downloadFromUrl(getBaseURL() + "/showlist/",
-						Settings.getUserDir() + "file.html");
-				Scanner file = new Scanner(new File(Settings.getUserDir()
-						+ "file.html"));
+				Download.downloadFromUrl(getBaseURL() + "/showlist/", Settings.getUserDir() + "file.html");
+				Scanner file = new Scanner(new File(Settings.getUserDir() + "file.html"));
 				int caricate = 0;
 				while (file.hasNextLine()) {
 					String nome = file.nextLine().trim();
@@ -95,7 +89,8 @@ public class EZTV extends ProviderSerieTV {
 				OperazioniFile.deleteFile(Settings.getUserDir() + "file.html");
 				System.out
 						.println("Sono state caricate " + caricate + " serie");
-			} catch (IOException e1) {
+			} 
+			catch (IOException e1) {
 				e1.printStackTrace();
 				return;
 			}
@@ -105,12 +100,12 @@ public class EZTV extends ProviderSerieTV {
 				System.out.println("EZTV.it - Aggiornando elenco serie tv");
 				String base_url = getBaseURL();
 
-				Download downloader = new Download(base_url + "/showlist/",
-						Settings.getUserDir() + "file.html");
+				Download downloader = new Download(base_url + "/showlist/",	Settings.getUserDir() + "file.html");
 				downloader.avviaDownload();
 				try {
 					downloader.getDownloadThread().join();
-				} catch (InterruptedException e1) {
+				}
+				catch (InterruptedException e1) {
 					e1.printStackTrace();
 				}
 				FileReader f_r = null;
@@ -123,17 +118,8 @@ public class EZTV extends ProviderSerieTV {
 					while (file.hasNextLine()) {
 						String linea = file.nextLine().trim();
 						if (linea.contains("\"thread_link\"")) {
-							String nomeserie = linea
-									.substring(
-											linea.indexOf("class=\"thread_link\">")
-													+ "class=\"thread_link\">"
-															.length(),
-											linea.indexOf("</a>")).trim();
-							String url = linea.substring(
-									linea.indexOf("<a href=\"")
-											+ "<a href=\"".length(),
-									linea.indexOf("\" class=\"thread_link\">"))
-									.trim();
+							String nomeserie = linea.substring(linea.indexOf("class=\"thread_link\">")+ "class=\"thread_link\">".length(),linea.indexOf("</a>")).trim();
+							String url = linea.substring(linea.indexOf("<a href=\"")+ "<a href=\"".length(),linea.indexOf("\" class=\"thread_link\">")).trim();
 							url = url.replace(base_url, "");
 							url = url.replace("/shows/", "");
 							url = url.substring(0, url.indexOf("/"));
@@ -188,23 +174,25 @@ public class EZTV extends ProviderSerieTV {
 							}
 						}
 					}
-					System.out
-							.println("EZTV - aggiornamento elenco serie tv completo\nCaricate "
-									+ caricate + " nuove serie");
-				} catch (FileNotFoundException e) {
+					System.out.println("EZTV - aggiornamento elenco serie tv completo\nCaricate "+ caricate + " nuove serie");
+				} 
+				catch (FileNotFoundException e) {
 					ManagerException.registraEccezione(e);
-				} finally {
+				} 
+				finally {
 					file.close();
 					try {
 						f_r.close();
-					} catch (IOException e) {
+					} 
+					catch (IOException e) {
 						e.printStackTrace();
 						ManagerException.registraEccezione(e);
 					}
 				}
 				OperazioniFile.deleteFile(Settings.getUserDir() + "file.html");
-			} catch (Exception e) {
-
+			} 
+			catch (Exception e) {
+	
 			}
 	}
 
@@ -384,7 +372,7 @@ public class EZTV extends ProviderSerieTV {
 			return;
 		System.out.println("Aggiornando i link di: " + serie.getNomeSerie());
 
-		if(getBaseURL().compareTo("http://gestioneserietv.altervista.org/proxy_v2/proxy.php?url=https://eztv.it")==0){
+		if(getBaseURL().startsWith("http://gestioneserietv.altervista.org/proxy_v2/proxy.php?url=")){
 			try {
 				Download.downloadFromUrl(getBaseURL() + "/shows/" + serie.getUrl() + "/",Settings.getUserDir()+serie.getNomeSerie());
 				Scanner file = new Scanner(new File(Settings.getUserDir()+serie.getNomeSerie()));
@@ -405,53 +393,53 @@ public class EZTV extends ProviderSerieTV {
 			}
 		}
 		else
-		try {
-
-			String base_url = /* WebProxyManager.getUrlProxy()+ */getBaseURL();
-			base_url += "/shows/" + serie.getUrl() + "/";
-			Download download = new Download(base_url, Settings.getUserDir()
-					+ serie.getNomeSerie());
-			download.avviaDownload();
-			download.getDownloadThread().join();
-
-			FileReader fr = new FileReader(Settings.getUserDir()
-					+ serie.getNomeSerie());
-			Scanner file = new Scanner(fr);
-			while (file.hasNextLine()) {
-				String linea = file.nextLine();
-				if (linea.contains("magnet:?xt=urn:btih:")) {
-					int inizio = linea.indexOf("magnet:?xt=urn:btih:");
-					int fine = linea.indexOf("\" class=\"magnet\"");
-					String url_magnet = linea.substring(inizio, fine);
-					// System.out.println(url_magnet);
-					if (url_magnet.length() > 0) {
-						Torrent t = new Torrent(serie, url_magnet,
-								Torrent.SCARICARE);
-						t.parseMagnet();
-						serie.addEpisodio(t);
+			try {
+	
+				String base_url = /* WebProxyManager.getUrlProxy()+ */getBaseURL();
+				base_url += "/shows/" + serie.getUrl() + "/";
+				Download download = new Download(base_url, Settings.getUserDir()
+						+ serie.getNomeSerie());
+				download.avviaDownload();
+				download.getDownloadThread().join();
+	
+				FileReader fr = new FileReader(Settings.getUserDir()
+						+ serie.getNomeSerie());
+				Scanner file = new Scanner(fr);
+				while (file.hasNextLine()) {
+					String linea = file.nextLine();
+					if (linea.contains("magnet:?xt=urn:btih:")) {
+						int inizio = linea.indexOf("magnet:?xt=urn:btih:");
+						int fine = linea.indexOf("\" class=\"magnet\"");
+						String url_magnet = linea.substring(inizio, fine);
+						// System.out.println(url_magnet);
+						if (url_magnet.length() > 0) {
+							Torrent t = new Torrent(serie, url_magnet,
+									Torrent.SCARICARE);
+							t.parseMagnet();
+							serie.addEpisodio(t);
+						}
 					}
 				}
+				file.close();
+				fr.close();
+				OperazioniFile.deleteFile(Settings.getUserDir()
+						+ serie.getNomeSerie());
+	
+				if (serie.isConclusa()) {
+					serie.setStopSearch(true, true);
+				}
 			}
-			file.close();
-			fr.close();
-			OperazioniFile.deleteFile(Settings.getUserDir()
-					+ serie.getNomeSerie());
-
-			if (serie.isConclusa()) {
-				serie.setStopSearch(true, true);
+	
+			catch (InterruptedException e) {
+				e.printStackTrace();
+				ManagerException.registraEccezione(e);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+				ManagerException.registraEccezione(e);
+			} catch (IOException e) {
+				e.printStackTrace();
+				ManagerException.registraEccezione(e);
 			}
-		}
-
-		catch (InterruptedException e) {
-			e.printStackTrace();
-			ManagerException.registraEccezione(e);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			ManagerException.registraEccezione(e);
-		} catch (IOException e) {
-			e.printStackTrace();
-			ManagerException.registraEccezione(e);
-		}
 	}
 
 	private void cleanUpTemp() {
