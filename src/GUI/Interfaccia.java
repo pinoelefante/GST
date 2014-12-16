@@ -203,116 +203,10 @@ public class Interfaccia extends JFrame {
 
 		tab = new JTabbedPane(JTabbedPane.TOP);
 		getContentPane().add(tab, BorderLayout.CENTER);
-		
-		PanelNew = new JPanel();
-		tab.addTab("Novit\u00E0", null, PanelNew, null);
-		
-		panel_3 = new JPanel();
-		PanelNew.add(panel_3);
-		panel_3.setLayout(new BorderLayout(0, 0));
-		
-		btnScaricaNew = new JButton("Scarica");
-		btnScaricaNew.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				class ThreadD extends Thread {
-					public void run(){
-						btnScaricaNew.setEnabled(false);
-						if(OperazioniFile.fileExists(Settings.getCurrentDir()+"gstLauncher.exe") && getHashFile().compareTo(getHashOnline())==0){
-							avviaFile();
-						}
-						else
-							scaricaFile();
-					}
-				}
-				Thread t = new ThreadD();
-				t.start();
-			}
-			private String convertByteArrayToHexString(byte[] arrayBytes) {
-			    StringBuffer stringBuffer = new StringBuffer();
-			    for (int i = 0; i < arrayBytes.length; i++) {
-			        stringBuffer.append(Integer.toString((arrayBytes[i] & 0xff) + 0x100, 16).substring(1));
-			    }
-			    return stringBuffer.toString();
-			}
-			private String getHashFile(){
-				File file = new File(Settings.getCurrentDir()+"gstLauncher.exe");
-				try (FileInputStream inputStream = new FileInputStream(file)) {
-			        MessageDigest digest = MessageDigest.getInstance("MD5");
-			 
-			        byte[] bytesBuffer = new byte[1024];
-			        int bytesRead = -1;
-			 
-			        while ((bytesRead = inputStream.read(bytesBuffer)) != -1) {
-			            digest.update(bytesBuffer, 0, bytesRead);
-			        }
-			 
-			        byte[] hashedBytes = digest.digest();
-			 
-			        return convertByteArrayToHexString(hashedBytes);
-			    } 
-			    catch (Exception ex) {
-			       ex.printStackTrace();
-			    }
-				return "";
-			}
-			private String getHashOnline(){
-				return "8f4e92d51f374674c7f39b76ef3608bf";
-			}
-			private void scaricaFile(){
-				class ThreadT extends Thread {
-					public void run() {
-						Download d = new Download("http://pinoelefante.altervista.org/software/GSTJ/gstLauncher.exe", Settings.getCurrentDir()+"gstLauncher.exe");
-						d.avviaDownload();
-						while(!d.isComplete()){
-							if(d.getFileSize()==0)
-								progressBarNew.setIndeterminate(true);
-							else {
-								progressBarNew.setIndeterminate(false);
-								progressBarNew.setValue((int) ((d.getFileSizeDowloaded()*100)/d.getFileSize()));
-							}
-							try {
-								sleep(500);
-							} 
-							catch (InterruptedException e) {
-								e.printStackTrace();
-								btnScaricaNew.setEnabled(true);
-							}
-						}
-						progressBarNew.setValue(100);
-						btnScaricaNew.setEnabled(true);
-						avviaFile();
-					}
-				}
-				ThreadT t = new ThreadT();
-				t.start();
-			}
-			private void avviaFile(){
-				try {
-					Runtime.getRuntime().exec(Settings.getCurrentDir()+"gstLauncher.exe");
-					System.out.println("launcher avviato");
-					System.exit(0);
-				}
-				catch (IOException e) {
-					e.printStackTrace();
-					btnScaricaNew.setEnabled(true);
-				}
-			}
-		});
-		panel_3.add(btnScaricaNew);
-		
-		lblNewLabel_1 = new JLabel("<html>E' disponibile una versione completamente rivisitata di  Gestione Serie TV.<br> Per continuare a scaricare gli episodi delle tue serie preferite, cliccare il bottone sottostante.</html>");
-		panel_3.add(lblNewLabel_1, BorderLayout.NORTH);
-		
-		progressBarNew = new JProgressBar();
-		panel_3.add(progressBarNew, BorderLayout.SOUTH);
-		
-		progressBarNew.setMinimum(0);
-		progressBarNew.setMaximum(100);
-		progressBarNew.setValue(0);
 
 		JPanel DownloadPanel = new JPanel();
 		tab.addTab("Download", new ImageIcon(Interfaccia.class.getResource("/GUI/res/download.png")), DownloadPanel, null);
-		tab.setEnabledAt(1, true);
+		tab.setEnabledAt(0, true);
 		DownloadPanel.setLayout(null);
 
 		JScrollPane scrollPane = new JScrollPane();
@@ -1044,6 +938,112 @@ public class Interfaccia extends JFrame {
 		lblDona.setIcon(new ImageIcon(Interfaccia.class.getResource("/GUI/res/dona.png")));
 		lblDona.setBounds(381, 291, 337, 70);
 		InfoPanel.add(lblDona);
+		
+		PanelNew = new JPanel();
+		tab.addTab("Novit\u00E0", null, PanelNew, null);
+		
+		panel_3 = new JPanel();
+		PanelNew.add(panel_3);
+		panel_3.setLayout(new BorderLayout(0, 0));
+		
+		btnScaricaNew = new JButton("Scarica");
+		btnScaricaNew.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				class ThreadD extends Thread {
+					public void run(){
+						btnScaricaNew.setEnabled(false);
+						if(OperazioniFile.fileExists(Settings.getCurrentDir()+"gstLauncher.exe") && getHashFile().compareTo(getHashOnline())==0){
+							avviaFile();
+						}
+						else
+							scaricaFile();
+					}
+				}
+				Thread t = new ThreadD();
+				t.start();
+			}
+			private String convertByteArrayToHexString(byte[] arrayBytes) {
+			    StringBuffer stringBuffer = new StringBuffer();
+			    for (int i = 0; i < arrayBytes.length; i++) {
+			        stringBuffer.append(Integer.toString((arrayBytes[i] & 0xff) + 0x100, 16).substring(1));
+			    }
+			    return stringBuffer.toString();
+			}
+			private String getHashFile(){
+				File file = new File(Settings.getCurrentDir()+"gstLauncher.exe");
+				try (FileInputStream inputStream = new FileInputStream(file)) {
+			        MessageDigest digest = MessageDigest.getInstance("MD5");
+			 
+			        byte[] bytesBuffer = new byte[1024];
+			        int bytesRead = -1;
+			 
+			        while ((bytesRead = inputStream.read(bytesBuffer)) != -1) {
+			            digest.update(bytesBuffer, 0, bytesRead);
+			        }
+			 
+			        byte[] hashedBytes = digest.digest();
+			 
+			        return convertByteArrayToHexString(hashedBytes);
+			    } 
+			    catch (Exception ex) {
+			       ex.printStackTrace();
+			    }
+				return "";
+			}
+			private String getHashOnline(){
+				return "8f4e92d51f374674c7f39b76ef3608bf";
+			}
+			private void scaricaFile(){
+				class ThreadT extends Thread {
+					public void run() {
+						Download d = new Download("http://pinoelefante.altervista.org/software/GSTJ/gstLauncher.exe", Settings.getCurrentDir()+"gstLauncher.exe");
+						d.avviaDownload();
+						while(!d.isComplete()){
+							if(d.getFileSize()==0)
+								progressBarNew.setIndeterminate(true);
+							else {
+								progressBarNew.setIndeterminate(false);
+								progressBarNew.setValue((int) ((d.getFileSizeDowloaded()*100)/d.getFileSize()));
+							}
+							try {
+								sleep(500);
+							} 
+							catch (InterruptedException e) {
+								e.printStackTrace();
+								btnScaricaNew.setEnabled(true);
+							}
+						}
+						progressBarNew.setValue(100);
+						btnScaricaNew.setEnabled(true);
+						avviaFile();
+					}
+				}
+				ThreadT t = new ThreadT();
+				t.start();
+			}
+			private void avviaFile(){
+				try {
+					Runtime.getRuntime().exec(Settings.getCurrentDir()+"gstLauncher.exe");
+					System.out.println("launcher avviato");
+					System.exit(0);
+				}
+				catch (IOException e) {
+					e.printStackTrace();
+					btnScaricaNew.setEnabled(true);
+				}
+			}
+		});
+		panel_3.add(btnScaricaNew);
+		
+		lblNewLabel_1 = new JLabel("<html>E' disponibile una versione completamente rivisitata di  Gestione Serie TV.<br></html>");
+		panel_3.add(lblNewLabel_1, BorderLayout.NORTH);
+		
+		progressBarNew = new JProgressBar();
+		panel_3.add(progressBarNew, BorderLayout.SOUTH);
+		
+		progressBarNew.setMinimum(0);
+		progressBarNew.setMaximum(100);
+		progressBarNew.setValue(0);
 		
 		/* *//*
 		
